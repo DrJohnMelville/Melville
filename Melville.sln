@@ -1,8 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.IOC", "src\Melville.IOC\Melville.IOC.csproj", "{38E22C65-8C05-4703-9587-A0133996C165}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.IOC.AspNet", "src\Melville.IOC.AspNet\Melville.IOC.AspNet.csproj", "{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.IOC.Test", "src\Melville.IOC.Test\Melville.IOC.Test.csproj", "{02E5FFF0-7332-4E91-A315-421EA044DC4B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38E22C65-8C05-4703-9587-A0133996C165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38E22C65-8C05-4703-9587-A0133996C165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38E22C65-8C05-4703-9587-A0133996C165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38E22C65-8C05-4703-9587-A0133996C165}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02E5FFF0-7332-4E91-A315-421EA044DC4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02E5FFF0-7332-4E91-A315-421EA044DC4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02E5FFF0-7332-4E91-A315-421EA044DC4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02E5FFF0-7332-4E91-A315-421EA044DC4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
