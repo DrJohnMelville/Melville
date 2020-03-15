@@ -32,7 +32,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             this.inner = inner;
         }
 
-        public object GetService(Type serviceType)
+        public object? GetService(Type serviceType)
         {
             try
             {

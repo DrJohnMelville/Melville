@@ -7,10 +7,12 @@
 
 
     <PropertyGroup>
-        <Version>0.1.7</Version><Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        <Version>0.1.7</Version>
+        <Authors>John Melville, MS, MD</Authors>
+        <Company>DrJohnMelville</Company>
         <Title>Melville.IOC</Title>
         <PackageDescription>A highly configurable IOC Container</PackageDescription>
+        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
