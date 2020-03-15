@@ -2,9 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.3.1</Version>
+    <Version>0.3.2</Version>
     <Authors>John Melville</Authors>
-    <Company>None</Company>
+    <Company>Melville Computiing</Company>
+    <Title>Melville.TestHelpers</Title>
     <Description>A library that makes unit testing a little bit easier.</Description>
     <Copyright>2018 John Melville</Copyright>
     <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
