@@ -9,6 +9,7 @@
     <Title>Melville.Mvvm.TestHelpers</Title>
     <Description>Test methods for Melville.MVVM</Description>
     <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
