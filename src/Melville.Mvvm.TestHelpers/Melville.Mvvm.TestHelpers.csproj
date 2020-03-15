@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    
+    <Version>0.1.4</Version>
+    <Authors>John Melville, MD</Authors>
+    <Company>Melville Computing</Company>
+    <Title>Melville.Mvvm.TestHelpers</Title>
+    <Description>Test methods for Melville.MVVM</Description>
+    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MockFiles\HasGpsInfo.jpg" />
+    <None Remove="MockFiles\sample.mp3" />
+    <None Remove="MockFiles\Test.bmp" />
+    <None Remove="MockFiles\Test.gif" />
+    <None Remove="MockFiles\Test.jpg" />
+    <None Remove="MockFiles\Test.png" />
+    <None Remove="MockFiles\Test.tif" />
+    <None Remove="MockFiles\Test.xamlText" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="MockFiles\HasGpsInfo.jpg" />
+    <EmbeddedResource Include="MockFiles\sample.mp3" />
+    <EmbeddedResource Include="MockFiles\Test.bmp" />
+    <EmbeddedResource Include="MockFiles\Test.gif" />
+    <EmbeddedResource Include="MockFiles\Test.jpg" />
+    <EmbeddedResource Include="MockFiles\Test.png" />
+    <EmbeddedResource Include="MockFiles\Test.tif" />
+    <EmbeddedResource Include="MockFiles\Test.xamlText" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.6.0" />
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
+  </ItemGroup>
+
+</Project>

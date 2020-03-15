@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>0.3.1</Version>
+    <Authors>John Melville</Authors>
+    <Company>None</Company>
+    <Description>A library that makes unit testing a little bit easier.</Description>
+    <Copyright>2018 John Melville</Copyright>
+    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="xunit.assert">
+      <HintPath>..\packages\xunit.assert.2.4.1-pre.build.4059\lib\netstandard2.0\xunit.assert.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
