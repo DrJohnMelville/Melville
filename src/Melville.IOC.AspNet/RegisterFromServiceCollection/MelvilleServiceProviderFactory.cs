@@ -17,7 +17,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
         public IServiceProvider CreateServiceProvider(IocContainer containerBuilder)
         {
             var adapter = new ServiceProviderAdapter(containerBuilder);
-            containerBuilder.Bind<IServiceScopeFactory>().ToConstant(adapter);
+            containerBuilder.BindIfMNeeded<IServiceScopeFactory>().And<IServiceProvider>().ToConstant(adapter);
             return adapter;
         }
     }

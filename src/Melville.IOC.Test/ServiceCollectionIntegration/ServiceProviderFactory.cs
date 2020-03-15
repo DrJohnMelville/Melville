@@ -1,4 +1,5 @@
-﻿using Melville.IOC.AspNet.RegisterFromServiceCollection;
+﻿using System;
+using Melville.IOC.AspNet.RegisterFromServiceCollection;
 using Melville.IOC.IocContainers;
 using Melville.IOC.Test.IocContainers;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,14 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             {
                 Assert.NotNull(scope.ServiceProvider.GetService<ISimpleObject>());               
             }
+        }
+
+        [Fact]
+        public void ServiceProviderBindsIServiceProvider()
+        {
+            var sc = new ServiceCollection();
+            var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
+            Assert.NotNull(prov.GetService<IServiceProvider>());            
         }
     }
 }

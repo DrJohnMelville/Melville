@@ -23,6 +23,6 @@ namespace WebDashboard.Startup
         private IBindingRequest ParameterInfoToRequest(ParameterInfo info) => 
             ((IBindingRequest) new RootBindingRequest(info.ParameterType, service)).CreateSubRequest(info);
 
-        public object Get(Type type) => service.Get(type);
+        public object? Get(Type type) => service.Get(type);
     }
 }
