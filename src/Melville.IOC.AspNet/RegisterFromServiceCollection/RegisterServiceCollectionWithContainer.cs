@@ -8,6 +8,13 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
 {
     public static class RegisterServiceCollectionWithContainer
     {
+        public static void BindServiceCollection(this IBindableIocService container,
+            Action<IServiceCollection> collectionConfig)
+        {
+            var sc = new ServiceCollection();
+            collectionConfig(sc);
+            container.BindServiceCollection(sc);
+        }
         public static void BindServiceCollection(this IBindableIocService container, IServiceCollection services)
         {
             foreach (var service in services)

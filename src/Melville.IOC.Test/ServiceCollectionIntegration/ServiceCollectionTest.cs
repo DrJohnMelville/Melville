@@ -8,7 +8,7 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
 {
     public class ServiceCollectionTest
     {
-        private readonly IServiceCollection source = new ServiceCollection();
+        private readonly IServiceCollection source = new Melville.IOC.AspNet.RegisterFromServiceCollection.ServiceCollection();
         private readonly IocContainer sut = new IocContainer();
 
         [Fact]
@@ -17,6 +17,13 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             source.AddTransient<ISimpleObject2, SimpleObjectImplementation>();
             sut.BindServiceCollection(source);
             Assert.True(sut.Get<ISimpleObject2>() is SimpleObjectImplementation);
+        }
+
+        [Fact]
+        public void SecondFormulation()
+        {
+            sut.BindServiceCollection(i=>i.AddTransient<ISimpleObject2, SimpleObjectImplementation>());
+            Assert.NotNull(sut.Get<ISimpleObject2>());
         }
         [Fact]
         public void BindToConstant()

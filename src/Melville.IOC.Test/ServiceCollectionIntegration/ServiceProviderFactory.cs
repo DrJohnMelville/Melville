@@ -4,6 +4,7 @@ using Melville.IOC.IocContainers;
 using Melville.IOC.Test.IocContainers;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
+using ServiceCollection = Melville.IOC.AspNet.RegisterFromServiceCollection.ServiceCollection;
 
 namespace Melville.IOC.Test.ServiceCollectionIntegration
 {
