@@ -13,6 +13,7 @@
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPF</Title>
+    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
     <PackageDescription>WPF specific MVVM Goodies including the EventBinding</PackageDescription>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
