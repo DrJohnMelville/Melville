@@ -17,12 +17,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
+      <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
+      <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Melville.MVVM" Version="0.2.2" />
-      <PackageReference Include="Melville.MVVM.Wpf" Version="0.2.8" />
-      <PackageReference Include="Melville.WpfControls" Version="0.2.2" />
       <PackageReference Include="Serilog.Sinks.Trace" Version="2.1.0" />
     </ItemGroup>
 

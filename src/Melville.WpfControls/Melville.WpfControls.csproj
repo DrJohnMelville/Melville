@@ -8,11 +8,12 @@
 
 
   <PropertyGroup>
-    <Version>0.2.2</Version>
+    <Version>0.2.3</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPFControls</Title>
     <PackageDescription>John Melville's favorite WPF controls</PackageDescription>
+    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -24,7 +25,6 @@
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls.WebView" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-     <PackageReference Include="Melville.MVVM.Wpf" Version="0.2.9" />     
+    <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
   </ItemGroup>
-
 </Project>
