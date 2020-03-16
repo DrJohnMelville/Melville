@@ -8,7 +8,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
 {
     public static class RegisterServiceCollectionWithContainer
     {
-        public static void BindServiceCollection(this IocContainer container, IServiceCollection services)
+        public static void BindServiceCollection(this IBindableIocService container, IServiceCollection services)
         {
             foreach (var service in services)
             {
@@ -16,7 +16,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             }
         }
 
-        private static void BindSingleService(IocContainer container, ServiceDescriptor service)
+        private static void BindSingleService(IBindableIocService container, ServiceDescriptor service)
         {
             if (service.ImplementationType?.IsGenericTypeDefinition ?? false)
             {
@@ -27,13 +27,13 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             BindConcreteType(container, service);
         }
 
-        private static void BindOpenGeneric(IocContainer container, ServiceDescriptor service)
+        private static void BindOpenGeneric(IBindableIocService container, ServiceDescriptor service)
         {
             container.ConfigurePolicy<IRegisterGeneric>().Register(service.ServiceType,
                 service.ImplementationType, i => SetLifetime(i, service));
         }
 
-        private static void BindConcreteType(IocContainer container, ServiceDescriptor service)
+        private static void BindConcreteType(IBindableIocService container, ServiceDescriptor service)
         {
             var bindingTarget = CreateBindingTarget(container, service);
             var activator = CreateActivator(bindingTarget, service);
@@ -58,7 +58,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             }
         }
 
-        private static IPickBindingTarget CreateBindingTarget(IocContainer container, ServiceDescriptor service)
+        private static IPickBindingTarget CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
         {
             return container.ConfigurePolicy<IPickBindingTargetSource>()
                 .Bind(service.ServiceType, false);
