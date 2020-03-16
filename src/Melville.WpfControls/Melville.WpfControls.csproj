@@ -2,7 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>   
-    <DebugType>Full</DebugType>
+    <DebugType>Full</DebugType>   
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
 
@@ -23,13 +24,7 @@
     <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls.WebView" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-     <PackageReference Include="Melville.MVVM.Wpf" Version="0.2.9"/>
-     
+     <PackageReference Include="Melville.MVVM.Wpf" Version="0.2.9" />     
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+
 </Project>

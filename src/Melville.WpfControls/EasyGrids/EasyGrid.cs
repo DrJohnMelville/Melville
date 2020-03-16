@@ -84,8 +84,9 @@ namespace Melville.WpfControls.EasyGrids
       var nextCol = 0;
       var direction = EasyGridFlow.LeftToRight;
 
-      foreach (UIElement child in InternalChildren)
+      foreach (UIElement? child in InternalChildren)
       {
+        if (child == null) continue;
         var newFlow = GetFlow(child);
         direction = newFlow == EasyGridFlow.None ? direction : newFlow;
 

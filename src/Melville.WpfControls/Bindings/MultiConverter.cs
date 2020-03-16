@@ -35,11 +35,11 @@ namespace Melville.WpfControls.Bindings
     }
 
     #region Convert and ConvertBack methods for both interfaces
-    public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+    public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     { //IMultiValueConverter
       return DynamicInvoke(function, defaultValue, values, parameter, culture);
     }
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
     { // IValueConverter
       return Convert(new[] { value }, targetType, parameter, culture);
     }
@@ -47,10 +47,10 @@ namespace Melville.WpfControls.Bindings
     { // IMultiValueConverter
       if (inverseFunction == null)
         throw new InvalidOperationException("No inverse converter has been defined.");
-      object result = DynamicInvoke(inverseFunction, Enumerable.Repeat(Binding.DoNothing, targetTypes.Length).ToArray(), new[] { value }, parameter, culture);
+      var result = DynamicInvoke(inverseFunction, Enumerable.Repeat(Binding.DoNothing, targetTypes.Length).ToArray(), new[] { value }, parameter, culture);
       if (!inverseFunction.Method.ReturnType.IsArray)
         result = new[] { result };
-      return (object[])result;
+      return (object[])(result??Array.Empty<object>());
     }
 
     public bool HasInverseFunction => inverseFunction != null;
@@ -61,14 +61,12 @@ namespace Melville.WpfControls.Bindings
     }
     #endregion
 
-    private object DynamicInvoke(Delegate func, object defaultResult, object[] args, object parameter, CultureInfo culture)
+    private object? DynamicInvoke(Delegate func, object defaultResult, object[] args, object parameter, CultureInfo culture)
     {
       var adjustedValues = ComputeValidCallParameters(func, args, parameter, culture);
       try
       {
-        return adjustedValues == null ?
-                                        defaultResult :
-                                                        func.DynamicInvoke(adjustedValues);
+        return adjustedValues == null ? defaultResult : func.DynamicInvoke(adjustedValues);
       }
       catch (Exception)
       { // the custom in WPF is for binding failures to do so silently 
