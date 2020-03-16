@@ -48,6 +48,7 @@ namespace Melville.MVVM.Wpf.ViewFrames
 
     private static void RunMethodsFromOnDisplayedAttributes(DependencyObject frame, object viewModel)
     {
+      if (viewModel == null) return;
       foreach (var initializer in viewModel.GetType().GetCustomAttributes().OfType<OnDisplayedAttribute>())
       {
         initializer.DoCall(viewModel, frame);

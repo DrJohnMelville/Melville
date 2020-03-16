@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>   
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <Version>0.2.2</Version>
+    <Authors>John Melville, MS, MD</Authors>
+    <Company>Melville Computing</Company>
+    <Title>Melville.MVM.WPFControls</Title>
+    <PackageDescription>John Melville's favorite WPF controls</PackageDescription>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Themes\Generic.xaml" />
+    <None Remove="TimePickers\DateTimePicker.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls.WebView" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+     <PackageReference Include="Melville.MVVM.Wpf" Version="0.2.9"/>
+     
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+</Project>

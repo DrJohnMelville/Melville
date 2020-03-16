@@ -2,12 +2,14 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Description>This is a library of my favorite wpf controls</Description>
-        <OutputType>Library</OutputType>
+        
         <DebugType>Full</DebugType>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
-
+      <Folder Include="Properties" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Moq" Version="4.13.1" />
@@ -15,9 +17,6 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
         <PackageReference Include="Xunit.StaFact" Version="0.3.18"/>
-
-        <ProjectReference Include="..\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj" />
-        <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
-        <ProjectReference Include="..\Melville.TestHelpers\Melville.TestHelpers.csproj" />
     </ItemGroup>
+    
 </Project>
