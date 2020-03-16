@@ -2,7 +2,7 @@
 using Melville.MVVM.BusinessObjects;
 using System;
 
-namespace Melville.TestGoodies.Test.InpcTesting
+namespace Melville.TestHelpers.Test.InpcTesting
 {
   public sealed partial class BusinessObjectTesterTest
   {

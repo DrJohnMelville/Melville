@@ -7,7 +7,7 @@ using Melville.TestHelpers.InpcTesting;
 using Xunit;
 using Xunit.Sdk;
 
-namespace Melville.TestGoodies.Test.InpcTesting
+namespace Melville.TestHelpers.Test.InpcTesting
 {
   public sealed partial class BusinessObjectTesterTest
   {

@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="Melville.MVVM.Wpf.SequenceViews.SequenceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings"
+             xmlns:sequenceViews="clr-namespace:Melville.MVVM.Wpf.SequenceViews"
+             xmlns:listRearrange="clr-namespace:Melville.MVVM.Wpf.MouseDragging.ListRearrange"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Text="{Binding Title}"/>
+        <Button Grid.Column="1" wpfHacks:VisibilityHack.CollapseIfNull="{Binding NewItemFactory}"
+                Click="{eventBindings:EventBinding AddNewItem}">Add</Button>
+        <Button Grid.Column="2" Margin="10 0 0 0" wpfHacks:VisibilityHack.CollapseUnless="{Binding CanDelete}"
+                wpfHacks:DisabledHack.DisableIfNull="{Binding Current}"
+                Click="{eventBindings:EventBinding DeleteItem}">Delete</Button>
+        <ListBox ItemsSource="{Binding Collection}" SelectedItem="{Binding Current}"
+                 Grid.Row="1" Grid.ColumnSpan="3"
+                 listRearrange:TreeArrange.DragTypeBackground="{Binding ArrangeType}"
+                 DisplayMemberPath="{Binding DisplayMemberPath, RelativeSource={RelativeSource AncestorType={x:Type sequenceViews:SequenceView}}}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>
+       </ListBox> 
+    </Grid>
+</UserControl>

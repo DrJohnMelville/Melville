@@ -4,7 +4,7 @@ using Melville.TestHelpers.Assertions;
 using Melville.TestHelpers.DeepComparisons;
 using Xunit;
 
-namespace Melville.TestGoodies.Test.DeepComparisons
+namespace Melville.TestHelpers.Test.DeepComparisons
 {
     public sealed class DeepComparisonTest
     {

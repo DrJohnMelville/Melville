@@ -9,7 +9,7 @@ using Melville.TestHelpers.MockConstruction;
 using Moq;
 using Xunit;
 
-namespace Melville.TestGoodies.Test.MockConstruction
+namespace Melville.TestHelpers.Test.MockConstruction
 {
   public sealed class CreateWithMocksTest
   {

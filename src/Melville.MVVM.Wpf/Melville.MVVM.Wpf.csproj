@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DebugType>Full</DebugType>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <Version>0.2.9</Version>
+    <Authors>John Melville, MS, MD</Authors>
+    <Company>Melville Computing</Company>
+    <Title>Melville.MVM.WPF</Title>
+    <PackageDescription>WPF specific MVVM Goodies including the EventBinding</PackageDescription>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
+    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.0.0" />
+    <PackageReference Include="Serilog" Version="2.9.0" />
+  </ItemGroup>
+ </Project>
