@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 
@@ -17,6 +18,7 @@ namespace Melville.Wpf.Samples.ApplicationRoot
         private static App Application(IIocService root)
         {
             var application = root.Get<App>();
+            application.AttachDiRoot(new DiBridge(root));
             application.InitializeComponent();
             application.MainWindow = VisibleMainWindow(root);
             return application;

@@ -5,13 +5,9 @@ namespace Melville.MVVM.Wpf.RootWindows
 {
     public partial class RootNavigationWindow : Window
     {
-        public RootNavigationWindow(INavigationWindow viewModel, IDIIntegration? diScopeFactory = null)
+        public RootNavigationWindow(INavigationWindow viewModel)
         {
             InitializeComponent();
-            if (diScopeFactory != null)
-            {
-                DiIntegration.SetContainer(this,diScopeFactory);
-            }
             DataContext = viewModel;
         }
     }

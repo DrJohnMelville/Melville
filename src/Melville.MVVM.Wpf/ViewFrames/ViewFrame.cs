@@ -76,7 +76,7 @@ namespace Melville.MVVM.Wpf.ViewFrames
 
     private static UIElement CreateView(Type targetType, DependencyObject frame)
     {
-      return (UIElement) (DiIntegration.GetContainer(frame).Get(targetType) ??
+      return (UIElement) (DiIntegration.SearchForContainer(frame).Get(targetType) ??
         DisplayMessage("DI container failed to create type "+ targetType.Name));
     }
 

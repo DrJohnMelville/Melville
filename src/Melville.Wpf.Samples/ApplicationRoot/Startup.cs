@@ -37,7 +37,6 @@ namespace Melville.Wpf.Samples.ApplicationRoot
 
         private void RegisterInfrastructure()
         {
-            service.Bind<IDIIntegration>().To<DiBridge>();
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()

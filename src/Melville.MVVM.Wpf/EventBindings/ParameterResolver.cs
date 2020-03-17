@@ -17,7 +17,7 @@ namespace Melville.MVVM.Wpf.EventBindings
       object?[] inputParam)
     {
       var ret = new List<object>();
-      var scope = DiIntegration.GetContainer(sender).CreateScope();
+      var scope = DiIntegration.SearchForContainer(sender).CreateScope();
       foreach (var parameter in parameters)
       {
         if (!ActualOrDefaultParamValue(parameter, sender, inputParam, scope, out var actualVal)) return null;

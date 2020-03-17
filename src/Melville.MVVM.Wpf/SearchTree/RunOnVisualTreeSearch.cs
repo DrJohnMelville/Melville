@@ -79,6 +79,11 @@ namespace Melville.MVVM.Wpf.SearchTree
             return true;
           }
         }
+        else
+        {
+          Log.Error("Failed to bind parameters for: {methodName} on {Type}", methodName, target.GetType().Name );
+          
+        }
       }
 
       return false;
