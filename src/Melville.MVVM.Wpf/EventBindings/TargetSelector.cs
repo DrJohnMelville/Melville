@@ -24,24 +24,27 @@ namespace Melville.MVVM.Wpf.EventBindings
     public static IEnumerable<object> AllSources(this DependencyObject sender,
       params object[] firstItems)
     {
-      return InnerSources()
+      return InnerSources(sender)
         .SelectMany(SearchAdditionalTargets)
-        .Prepend(firstItems).Where(i => i != null).Distinct();
+        .Prepend(firstItems)
+        .Append(Application.Current)
+        .Where(i => i != null).Distinct();
 
-      IEnumerable<object> InnerSources()
+    }
+    private static IEnumerable<object> InnerSources(DependencyObject sender)
+    {
+      DependencyObject? current = sender;
+      while (current != null)
       {
-        DependencyObject? current = sender;
-        while (current != null)
-        {
-          yield return current.GetValue(FrameworkElement.DataContextProperty);
-          yield return current;
-          var prior = current;
-          current = VisualTreeHelper.GetParent(current) ??
-                    LogicalTreeHelper.GetParent(prior) ??
-                    (current as Popup)?.PlacementTarget;
-        }
+        yield return current.GetValue(FrameworkElement.DataContextProperty);
+        yield return current;
+        var prior = current;
+        current = VisualTreeHelper.GetParent(current) ??
+                  LogicalTreeHelper.GetParent(prior) ??
+                  (current as Popup)?.PlacementTarget;
       }
     }
+
 
     private static IEnumerable<object> SearchAdditionalTargets(object arg)
     {
