@@ -17,6 +17,7 @@ namespace Melville.Wpf.Samples.SampleTreeViewDisplays
         public SamplesTreeViewModel(SampleDirectory directory)
         {
             AllSamples = directory.Items;
+            CurrentItem = directory.DefaultItem();
         }
     }
 }

@@ -1,17 +1,14 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.Tracing;
+﻿using System.Diagnostics.Tracing;
 using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 
 namespace Melville.Wpf.Samples
 {
-    public class SampleDirectory
+    public class SampleDirectory: SampleDirectoryDsl
     {
-        public List<ISampleTreeItem> Items { get; } = new List<ISampleTreeItem>();
-
-        private ISampleTreeItem Node(string name, params ISampleTreeItem[] children) => 
-            new SampleTreeNode(name, children);
-        private ISampleTreeItem Page<T>(string name) => new SampleTreeItemViewModel<T>(name);
+        public ISampleTreeItem DefaultItem() =>
+            SearchTreeForSample<CallMethodOnApplicationViewModel>();
+        
         public SampleDirectory()
         {
             Items.AddRange(new []
@@ -24,5 +21,6 @@ namespace Melville.Wpf.Samples
             Node("Application Bindings",
                 Page<CallMethodOnApplicationViewModel>("Call Method On Application")     
             );
+
     }
 }
