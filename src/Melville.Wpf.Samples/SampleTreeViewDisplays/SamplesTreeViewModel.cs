@@ -1,7 +1,22 @@
-﻿namespace Melville.Wpf.Samples.SampleTreeViewDisplays
+﻿using System.Collections.Generic;
+using Melville.MVVM.BusinessObjects;
+
+namespace Melville.Wpf.Samples.SampleTreeViewDisplays
 {
-    public class SamplesTreeViewModel
+    public class SamplesTreeViewModel: NotifyBase
     {
+        private ISampleTreeItem? currentItem;
+        public ISampleTreeItem? CurrentItem 
+        {
+            get => currentItem;
+            set => AssignAndNotify(ref currentItem, value);
+        }
         
+        public List<ISampleTreeItem> AllSamples { get; }
+
+        public SamplesTreeViewModel(SampleDirectory directory)
+        {
+            AllSamples = directory.Items;
+        }
     }
 }

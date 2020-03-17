@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace WebDashboard.WpfHacks
+namespace Melville.MVVM.Wpf.WpfHacks
 {
     public class TreeViewHelper
     {
@@ -56,4 +56,5 @@ namespace WebDashboard.WpfHacks
             }
         }
     }
+
 }
