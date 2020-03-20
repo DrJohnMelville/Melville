@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -67,20 +68,28 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 
       foreach (var candidate in CandidateMethods(target, methodName))
       {
-        Log.Debug("Trying Method {methodName} on {Type}", methodName, target.GetType().Name );
-        var parameters = ParameterResolver.Resolve(candidate.GetParameters(), root, inputParams);
-        if (parameters != null)
-        {
-          var scope = parameters.GetValues(out var arguments);
-          var ret = candidate.Invoke(target, arguments);
-          o = ProcessMethodReturn(ret, inputParams, scope);
-          return true;
-        }
-        else
-        {
-          Log.Error("Failed to bind parameters for: {methodName} on {Type}", methodName, target.GetType().Name );
-          
-        }
+        if (TryRunSingleMethod(root, inputParams, target, candidate, out o)) return true;
+      }
+
+      return false;
+    }
+
+    private static bool TryRunSingleMethod(DependencyObject root, object?[] inputParams, object target, 
+      MethodInfo candidate, out object? o)
+    {
+      o = null;
+      Log.Debug("Trying Method {methodName} on {Type}", candidate.Name, candidate.DeclaringType?.Name);
+      var parameters = ParameterResolver.Resolve(candidate.GetParameters(), root, inputParams);
+      if (parameters != null)
+      {
+        var scope = parameters.GetValues(out var arguments);
+        var ret = candidate.Invoke(target, arguments);
+        o = ProcessMethodReturn(ret, inputParams, scope);
+        return true;
+      }
+      else
+      {
+        Log.Error($"Failed to bind parameters for: {candidate.Name} on {candidate.DeclaringType?.Name}");
       }
 
       return false;
@@ -147,6 +156,81 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
       }
       return funcReturn;
     }
+    
+    // Run arbitrary methods on the visual tree
+public static void Run<T1>(DependencyObject root, Action<T1> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, TR>(DependencyObject root, Func<T1,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2>(DependencyObject root, Action<T1, T2> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, TR>(DependencyObject root, Func<T1, T2,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3>(DependencyObject root, Action<T1, T2, T3> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, TR>(DependencyObject root, Func<T1, T2, T3,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4>(DependencyObject root, Action<T1, T2, T3, T4> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, TR>(DependencyObject root, Func<T1, T2, T3, T4,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5>(DependencyObject root, Action<T1, T2, T3, T4, T5> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+public static void Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(DependencyObject root, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> function)=> 
+        RunDelegate(root, function);
+    public static TR Run<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR>(DependencyObject root, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16,TR> function) => 
+      (TR)RunDelegate(root, function)!;
+    private static object? RunDelegate(DependencyObject root, Delegate function)
+    {
+      var decl = function.GetInvocationList().First();
+      if (decl.Target == null || decl.Method == null)
+        throw new InvalidOperationException("Must be a Func or Action to execute.");
+      TryRunSingleMethod(root, Array.Empty<object>(), decl.Target, decl.Method,  out var result);
+      return result;
+    }
+
 
   }
 }

@@ -3,6 +3,7 @@ using  System;
 using System.Windows;
 using System.Windows.Controls;
 using Melville.MVVM.Wpf.EventBindings;
+using Melville.MVVM.Wpf.EventBindings.SearchTree;
 using Moq;
 using Xunit;
 
@@ -151,6 +152,26 @@ namespace Melville.MVVM.WPF.Test.EventBindings
       target.Verify(i=>i.OptionalInt(14), Times.Once);
     }
 
+    [StaFact]
+    public void RunArbitraryFunc()
+    {
+      var realTb = new TextBlock {Text = "Foo"};
+      var ret = RunOnVisualTreeSearch.Run(realTb, (TextBlock tb) => tb.Text);
+       Assert.Equal(ret, ret);
+      
+    }
+    [StaFact]
+    public void RunArbitraryAction()
+    {
+      var realTB = new TextBlock {Text = "Foo"};
+      string s = "";
+      RunOnVisualTreeSearch.Run(realTB, (TextBlock tb) =>
+      {
+        s = tb.Text;
+      });
+      Assert.Equal("Foo", s);
+      
+    }
 
   }
 }

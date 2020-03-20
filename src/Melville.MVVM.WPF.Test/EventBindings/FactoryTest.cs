@@ -19,10 +19,10 @@ namespace Melville.MVVM.WPF.Test.EventBindings
       var par = new FrameworkElement();
       par.DataContext = fact.Object;
       fact.SetupGet(i => i.TargetType).Returns(typeof(string));
-      fact.Setup(i => i.Create(Mock.Of<IDIIntegration>(),par, inputParams)).Returns("FooBar");
+      fact.Setup(i => i.Create(It.IsAny<IDIIntegration>(),par, inputParams)).Returns("FooBar");
       
       Assert.True(ParameterResolver.ResolveParameter(typeof(string), par, inputParams, out var result));
-      Assert.Equal("FooBar", result.ToString());
+      Assert.Equal("FooBar", result.Create(null, par, inputParams).ToString());
     }
 
     [Fact]
