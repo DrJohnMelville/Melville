@@ -125,7 +125,8 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 
     private static object? DisposeOfValueTask(object ret, IDisposable scope)
     {
-      return AwaitAndDispose((Task)ret.Call("AsTask"), scope);
+      return AwaitAndDispose((Task)(ret.Call("AsTask")??
+        throw new InvalidOperationException("Method did not return a value.")), scope);
     }
 
     private static bool IsValueTaskOfT(Type type) => type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>);

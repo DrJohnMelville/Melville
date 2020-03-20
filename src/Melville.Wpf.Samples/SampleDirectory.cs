@@ -20,7 +20,7 @@ namespace Melville.Wpf.Samples
         }
 
         private ISampleTreeItem AppllicationIntegrationNode() =>
-            Node("Application Bindings",
+            Node("Event Binding",
                 Page<CallMethodOnApplicationViewModel>("Call Method On Application"),
                 Page<ScopedMethodCallViewModel>("Call Methods in a scope")
             );
