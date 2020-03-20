@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 using System.Windows;
-using Melville.MVVM.Wpf.SearchTree;
+using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.EventBindings
 {

@@ -1,11 +1,11 @@
-﻿using  System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Melville.MVVM.CSharpHacks;
 using Melville.MVVM.Functional;
 
-namespace Melville.MVVM.Wpf.SearchTree
+namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 {
   public static class SearchTreeParameterParser
   {

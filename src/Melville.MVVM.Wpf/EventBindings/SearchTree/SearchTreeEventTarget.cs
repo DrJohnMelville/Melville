@@ -1,12 +1,9 @@
-﻿using  System;
+﻿using System;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 
-namespace Melville.MVVM.Wpf.SearchTree
+namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 {
   public abstract class SearchTreeTarget
   {

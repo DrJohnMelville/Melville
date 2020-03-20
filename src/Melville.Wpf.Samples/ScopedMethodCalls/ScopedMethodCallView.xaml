@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.ScopedMethodCalls.ScopedMethodCallView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.ScopedMethodCalls"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type local:ScopedMethodCallViewModel}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StackPanel Margin="10">
+        <TextBlock>Bound events run in an IOC scope that gets disposed of with each call.</TextBlock>
+        <CheckBox IsChecked="{Binding IsInitialized, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Initialized</CheckBox>
+        <CheckBox IsChecked="{Binding IsDisposed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">Disposed</CheckBox>
+        <Button Click="{eventBindings:EventBinding RunVoid}">Run Void</Button>
+        <Button Click="{eventBindings:EventBinding RunInt}">Run Int</Button>
+        <Button Click="{eventBindings:EventBinding RunBool}">Run Bool</Button>
+        <Button Click="{eventBindings:EventBinding RunValueTask}">Run ValueTask</Button>
+        <Button Click="{eventBindings:EventBinding RunValueTaskT}">Run ValueTask of T</Button>
+        <Button Click="{eventBindings:EventBinding RunTask}">Run Task</Button>
+        <Button Click="{eventBindings:EventBinding RunTaskT}">Run Task of T</Button>
+        <Button Click="{eventBindings:EventBinding Clear}" Margin="0 20 0 0">Clear</Button>
+    </StackPanel>
+</UserControl>

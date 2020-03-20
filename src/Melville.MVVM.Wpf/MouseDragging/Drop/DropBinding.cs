@@ -1,7 +1,7 @@
 ﻿using  System;
 using System.Windows;
 using System.Windows.Documents;
-using Melville.MVVM.Wpf.SearchTree;
+using Melville.MVVM.Wpf.EventBindings.SearchTree;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Serilog;
 

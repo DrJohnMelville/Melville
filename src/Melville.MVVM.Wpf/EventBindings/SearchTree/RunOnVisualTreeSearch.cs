@@ -1,17 +1,16 @@
-﻿using  System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Melville.MVVM.CSharpHacks;
-using Melville.MVVM.Wpf.EventBindings;
+using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
 using Serilog;
-using Serilog.Events;
 
-namespace Melville.MVVM.Wpf.SearchTree
+namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 {
   public static class RunOnVisualTreeSearch
   {
@@ -72,12 +71,10 @@ namespace Melville.MVVM.Wpf.SearchTree
         var parameters = ParameterResolver.Resolve(candidate.GetParameters(), root, inputParams);
         if (parameters != null)
         {
-          var ret = candidate.Invoke(target, parameters.ToArray());
-          MarkReturn(ret as bool?, inputParams);
-          {
-            o = ret;
-            return true;
-          }
+          var scope = parameters.GetValues(out var arguments);
+          var ret = candidate.Invoke(target, arguments);
+          o = ProcessMethodReturn(ret, inputParams, scope);
+          return true;
         }
         else
         {
@@ -88,6 +85,7 @@ namespace Melville.MVVM.Wpf.SearchTree
 
       return false;
     }
+
 
     private static IEnumerable<MethodInfo> CandidateMethods(object sender,string methodName) => 
       sender
@@ -101,19 +99,52 @@ namespace Melville.MVVM.Wpf.SearchTree
       {
         return targets;
       }
-
       return targets.Select(i => i.
           FollowPathComponents(pathComponents.Take(pathComponents.Count - 1), true))
         .Where(i => i != null);
     }
 
-    private static void MarkReturn(bool? funcReturn, object?[] parameters)
+    private static object? ProcessMethodReturn(object? ret, object?[] inputParams, IDisposable scope)
     {
-      if (!funcReturn.HasValue) return;
+      switch (ret)
+      {
+        case null: 
+          scope.Dispose();
+          return null;
+        case bool b: 
+          scope.Dispose();
+          return MarkReturn(b, inputParams);
+        case Task t: return AwaitAndDispose(t, scope);
+        case ValueTask t : return AwaitAndDispose(t, scope);
+        case var _ when IsValueTaskOfT(ret.GetType()): return DisposeOfValueTask(ret, scope);
+        default: 
+          scope.Dispose();
+          return ret;
+      }
+    }
+
+    private static object? DisposeOfValueTask(object ret, IDisposable scope)
+    {
+      return AwaitAndDispose((Task)ret.Call("AsTask"), scope);
+    }
+
+    private static bool IsValueTaskOfT(Type type) => type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>);
+
+    private static Task AwaitAndDispose(ValueTask task, IDisposable scope) => AwaitAndDispose(task.AsTask(), scope);
+
+    private static Task AwaitAndDispose(Task task, IDisposable scope)
+    {
+      task.ContinueWith(i => scope.Dispose());
+      return task;
+    }
+
+    private static bool MarkReturn(bool funcReturn, object?[] parameters)
+    {
       foreach (var rea in parameters.OfType<RoutedEventArgs>())
       {
-        rea.Handled = funcReturn.Value;
+        rea.Handled = funcReturn;
       }
+      return funcReturn;
     }
 
   }

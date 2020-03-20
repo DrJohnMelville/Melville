@@ -1,13 +1,15 @@
 ﻿using System.Diagnostics.Tracing;
+using System.Windows;
 using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
+using Melville.Wpf.Samples.ScopedMethodCalls;
 
 namespace Melville.Wpf.Samples
 {
     public class SampleDirectory: SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<CallMethodOnApplicationViewModel>();
+            SearchTreeForSample<ScopedMethodCallViewModel>();
         
         public SampleDirectory()
         {
@@ -19,7 +21,8 @@ namespace Melville.Wpf.Samples
 
         private ISampleTreeItem AppllicationIntegrationNode() =>
             Node("Application Bindings",
-                Page<CallMethodOnApplicationViewModel>("Call Method On Application")     
+                Page<CallMethodOnApplicationViewModel>("Call Method On Application"),
+                Page<ScopedMethodCallViewModel>("Call Methods in a scope")
             );
 
     }

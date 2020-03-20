@@ -3,6 +3,7 @@ using System.Windows.Data;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.Wpf.DiParameterSources;
+using Melville.Wpf.Samples.ScopedMethodCalls;
 using Serilog;
 
 namespace Melville.Wpf.Samples.ApplicationRoot
@@ -27,6 +28,8 @@ namespace Melville.Wpf.Samples.ApplicationRoot
         {
             InjectThreadSafeCollectionMutex();
             RegisterInfrastructure();
+
+            service.Bind<DisposableDependency>().ToSelf().AsScoped();
         }
         
         private void InjectThreadSafeCollectionMutex()

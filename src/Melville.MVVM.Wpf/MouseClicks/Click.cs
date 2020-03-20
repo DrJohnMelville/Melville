@@ -1,6 +1,7 @@
 ﻿using  System;
 using System.Windows;
 using System.Windows.Input;
+using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.MouseClicks
 {
@@ -150,7 +151,7 @@ namespace Melville.MVVM.Wpf.MouseClicks
         if (CheckDimension(finalPosition.X, firstPosition.X) &&
             CheckDimension(finalPosition.Y, firstPosition.Y))
         {
-          SearchTree.RunOnVisualTreeSearch.Run(target as DependencyObject, method, new[] {args}, out var _);
+          RunOnVisualTreeSearch.Run(target as DependencyObject, method, new[] {args}, out var _);
         }
       }
       private bool CheckDimension(double endPosition, double beginPosition) => Math.Abs(endPosition - beginPosition) < 5.0;
