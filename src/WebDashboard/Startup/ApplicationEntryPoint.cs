@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
 using WebDashboard.Views;
 
@@ -35,6 +36,7 @@ namespace WebDashboard.Startup
         {
             var application = ioc.Get<App>();
             application.InitializeComponent();
+            application.AttachDiRoot(new DiBridge(ioc));
             application.MainWindow = ioc.Get<RootNavigationWindow>();
             application.MainWindow.Show();
             return application;

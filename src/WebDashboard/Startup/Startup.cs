@@ -24,7 +24,6 @@ namespace WebDashboard.Startup
             // Root Window
             service.Bind<INavigationWindow>().To<NavigationWindow>().AsSingleton();
             service.Bind<RootNavigationWindow>().And<Window>().ToSelf().AsSingleton();
-            service.Bind<IDIIntegration>().To<DiBridge>();
             
             // System Services
             service.Bind<IOpenSaveFile>().To<OpenSaveFileAdapter>();
