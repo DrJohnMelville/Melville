@@ -51,7 +51,7 @@ namespace Melville.IOC.IocContainers
         public bool CanCreate(IBindingRequest bindingRequest) => 
             constructors.Any(i => i.Value.CanCreate(bindingRequest.Clone()));
 
-        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
+        public object? Create(IBindingRequest bindingRequest)
         {
             foreach (var constructor in constructors.Where(i=>i.Value.CanCreate(bindingRequest.Clone())))
             {

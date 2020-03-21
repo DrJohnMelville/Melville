@@ -63,13 +63,13 @@ namespace Melville.IOC.TypeResolutionPolicy
             private IEnumerable<IBindingRequest> RequestsForInnerItems(IBindingRequest bindingRequest) => 
                 desiredType.GetGenericArguments().Skip(1).Select(bindingRequest.CreateSubRequest);
     
-            public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
+            public object? Create(IBindingRequest bindingRequest)
             {
                 var values = new object[desiredType.GetGenericArguments().Length];
                 var scope = bindingRequest.IocService.CreateScope();
                 values[0] = scope;
                 scope.Fill(values.AsSpan<object?>()[1..], RequestsForInnerItems(bindingRequest));
-                return (funcCreator(values), DisposalState.DisposalDone);
+                return funcCreator(values);
             }
     
             public SharingScope SharingScope() => IocContainers.SharingScope.Transient;

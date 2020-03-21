@@ -81,7 +81,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         {
             if (state != FactoryState.NotCreatedYet) return datum;
             state = FactoryState.StaticCreationDone;
-            return (T) (localRequest.IocService.Get(localRequest).Result ?? 
+            return (T) (localRequest.IocService.Get(localRequest) ?? 
                         new InvalidOperationException("Failed to fetch datum"));
         }
 

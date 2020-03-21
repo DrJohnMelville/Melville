@@ -47,10 +47,10 @@ namespace Melville.IOC.TypeResolutionPolicy
         private static bool IsTask(Type type) => type.GetGenericTypeDefinition() == typeof(Task<>);
 
         public bool CanCreate(IBindingRequest bindingRequest) => true;
-        
-        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) =>
-            (CreateOutputObject(new AsyncFunctionFactoryStub(bindingRequest, 
-                targetObjectType, asyncInitializerFactory)), DisposalState.DisposalRequired);
+
+        public object? Create(IBindingRequest bindingRequest) =>
+            CreateOutputObject(new AsyncFunctionFactoryStub(bindingRequest,
+                targetObjectType, asyncInitializerFactory));
 
         protected virtual object CreateOutputObject(AsyncFunctionFactoryStub stub) => 
             staticCreatorFactory.CreateFuncDelegate(stub);
@@ -89,7 +89,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         {
             var runnerType = typeof(AsyncFunctionFactoryImplementation<>).MakeGenericType(targetObjectType);
             var creationRunner = (IAsyncFunctionFactoryImplementation)
-                (request.IocService.Get(request.CreateSubRequest(runnerType)).Result ??
+                (request.IocService.Get(request.CreateSubRequest(runnerType)) ??
                 throw new InvalidOperationException("Could not retrieve Factory Implementation from IOC"));
             return creationRunner;
         }

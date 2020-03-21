@@ -1,9 +1,12 @@
 ﻿namespace Melville.IOC.IocContainers.ActivationStrategies
 {
-    public sealed class ConstantActivationStrategy: IActivationStrategy
+    public interface IForbidDisposal
+    {
+    }
+
+    public sealed class ConstantActivationStrategy: IActivationStrategy, IForbidDisposal
     {
         private readonly object? value;
-
         public ConstantActivationStrategy(object? value)
         {
             this.value = value;
@@ -12,7 +15,7 @@
         public SharingScope SharingScope() => IocContainers.SharingScope.Singleton;
         public bool ValidForRequest(IBindingRequest request) => true;
         public bool CanCreate(IBindingRequest bindingRequest) => true;
-        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) => 
-            (value, DisposalState.DisposalDone);
+        public object? Create(IBindingRequest bindingRequest) => 
+            value;
     }
 }

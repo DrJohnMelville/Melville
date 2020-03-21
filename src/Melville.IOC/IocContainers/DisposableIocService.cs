@@ -14,14 +14,7 @@ namespace Melville.IOC.IocContainers
     {
         void RegisterForDispose(object obj);
     }
-
-    public enum DisposalState
-    {
-        DisposalRequired = 0,
-        DisposalDone = 1,
-        DisposeOptional = 2
-    };
-
+    
     public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
     {
         public DisposableIocService(IIocService parentScope) : base(parentScope)

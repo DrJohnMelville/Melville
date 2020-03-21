@@ -10,7 +10,7 @@ namespace Melville.IOC.IocContainers
     public interface IIocService
     { 
         bool CanGet(IBindingRequest request);
-        (object? Result, DisposalState DisposalState) Get(IBindingRequest request);
+        object? Get(IBindingRequest request);
 
         IIocService? ParentScope { get; }
         bool IsGlobalScope => ParentScope == null;
@@ -42,19 +42,8 @@ namespace Melville.IOC.IocContainers
         public static T Get<T>(this IIocService ioc) => (T) ioc.Get(typeof(T));
         public static object Get(this IIocService ioc, Type serviceTppe)
         {
-            return UnwrapCheckNullAndDispose(RecursiveExceptionTracker.BasisCall(ioc.Get, new RootBindingRequest(serviceTppe, ioc)));
-        }
-
-        public static object UnwrapCheckNullAndDispose(this (object? Result, DisposalState DisposalState) value)
-        {
-            return UnwrapAndCheckDispose(value) ?? throw new IocException("Type resolved to null");
-        }
-
-        public static object? UnwrapAndCheckDispose(this (object? Result, DisposalState DisposalState) item)
-        {
-            // if (item.DisposalState == DisposalState.DisposalRequired && IsDisposable(item.Result))
-            //     throw new IocException($"{item.Result.GetType()} requires disposal but was created in global context.");
-            return item.Result;
+            return RecursiveExceptionTracker.BasisCall(ioc.Get, new RootBindingRequest(serviceTppe, ioc)) 
+                   ?? throw new IocException("Type resolved to null");
         }
 
         private static bool IsDisposable([NotNullWhen(true)]object? item) => item is IDisposable || item is IAsyncDisposable;
@@ -73,7 +62,7 @@ namespace Melville.IOC.IocContainers
             foreach (var request in requests)
             {
                 if (pos >= destination.Length) return;
-                destination[pos] = UnwrapAndCheckDispose(service.Get(request));
+                destination[pos] = service.Get(request);
                 pos++;
             }
         }
@@ -96,7 +85,7 @@ namespace Melville.IOC.IocContainers
 
         #region Get
         
-        private (object? Result, DisposalState DisposalState) GetImplementation(IBindingRequest bindingRequest)
+        private object? GetImplementation(IBindingRequest bindingRequest)
         {
             var activator = FindActivationStrategy(bindingRequest);
             return activator.Create(bindingRequest);
@@ -106,7 +95,7 @@ namespace Melville.IOC.IocContainers
             TypeResolver.ApplyResolutionPolicy(bindingRequest)??
             throw new IocException("Cannot bind type: " + bindingRequest.DesiredType.Name);
 
-        (object? Result, DisposalState DisposalState) IIocService.Get(IBindingRequest requestedType) => 
+        object? IIocService.Get(IBindingRequest requestedType) => 
             RecursiveExceptionTracker.RecursiveCall(GetImplementation, requestedType);
 
         #endregion

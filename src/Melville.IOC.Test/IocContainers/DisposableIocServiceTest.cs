@@ -29,18 +29,18 @@ namespace Melville.IOC.Test.IocContainers
         }
 
         [Theory]
-        [InlineData(DisposalState.DisposalDone)]
-        [InlineData(DisposalState.DisposeOptional)]
-        public void ForbidDisposalDoesNotThrowInGlobalScope(DisposalState state)
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ForbidDisposalDoesNotThrowInGlobalScope(bool state)
         {
             RegisterDisposeType(state);
             Assert.NotNull(sut.Get<Disposable>()); // should not throw
         }
 
-        private void RegisterDisposeType(DisposalState state)
+        private void RegisterDisposeType(bool allow)
         {
             var stem = sut.Bind<Disposable>().ToSelf();
-            if (state == DisposalState.DisposalDone)
+            if (!allow)
             {
                 stem.DoNotDispose();
             }
@@ -51,11 +51,11 @@ namespace Melville.IOC.Test.IocContainers
         }
 
         [Theory]
-        [InlineData(DisposalState.DisposalDone, 0)]
-        [InlineData(DisposalState.DisposeOptional, 1)]
-        public void ScopesIgnoreForbiddenDisposal(DisposalState state, int disposes)
+        [InlineData(false, 0)]
+        [InlineData(true, 1)]
+        public void ScopesIgnoreForbiddenDisposal(bool allow, int disposes)
         {
-            RegisterDisposeType(state);
+            RegisterDisposeType(allow);
             var scope = sut.CreateScope();
             var obj = scope.Get<Disposable>();
             scope.Dispose();
@@ -63,11 +63,11 @@ namespace Melville.IOC.Test.IocContainers
         }
         
         [Theory]
-        [InlineData(DisposalState.DisposalDone, 0)]
-        [InlineData(DisposalState.DisposeOptional, 1)]
-        public async Task OnlyTheInnermostScopeDisposes(DisposalState state, int disposes)
+        [InlineData(false, 0)]
+        [InlineData(true, 1)]
+        public async Task OnlyTheInnermostScopeDisposes(bool allow, int disposes)
         {
-            RegisterDisposeType(state);
+            RegisterDisposeType(allow);
             var outer = sut.CreateScope();
             var scope = outer.CreateScope();
             var obj = scope.Get<Disposable>();

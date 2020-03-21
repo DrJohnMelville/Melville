@@ -15,10 +15,10 @@
         }
         public override SharingScope SharingScope() => IocContainers.SharingScope.Singleton;
 
-        public override (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
+        public override object? Create(IBindingRequest bindingRequest)
         {
             CreateValueExactlyOnceForAllThreads(bindingRequest);
-            return (value, DisposalState.DisposalDone);
+            return value;
         }
 
         private void CreateValueExactlyOnceForAllThreads(IBindingRequest bindingRequest)
@@ -40,7 +40,7 @@
         private object? ComputeSingleValue(IBindingRequest bindingRequest)
         {
             var oldScope = ExchangeRequestScope(bindingRequest, bindingRequest.IocService.GlobalScope());
-            var (ret, disposeStatus) = base.Create(bindingRequest);
+            var ret = base.Create(bindingRequest);
             ExchangeRequestScope(bindingRequest, oldScope);
             return ret;
         }

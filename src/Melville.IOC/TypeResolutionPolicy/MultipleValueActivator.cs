@@ -25,11 +25,11 @@ namespace Melville.IOC.TypeResolutionPolicy
         // we can always create a list, even if it is an empty list.
         public bool CanCreate(IBindingRequest bindingRequest) => true;
 
-        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
+        public object? Create(IBindingRequest bindingRequest)
         {
             var ret = CreateResultList();
             ResolveInnerType(bindingRequest)?.CreateMany(bindingRequest, ret.Add);
-            return (ret, DisposalState.DisposalRequired);
+            return ret;
         }
 
         public bool ValidForRequest(IBindingRequest request) => true;

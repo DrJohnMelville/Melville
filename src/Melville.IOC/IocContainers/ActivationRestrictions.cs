@@ -30,7 +30,7 @@ namespace Melville.IOC.IocContainers
             this.parameters = parameters;
         }
 
-        public override (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
+        public override object? Create(IBindingRequest bindingRequest)
         {
             // here we needed to copy the array anyway so that multiple invocations get their own set of
             // variables anyway.  We append our vars to the end of the array so any values provided by a

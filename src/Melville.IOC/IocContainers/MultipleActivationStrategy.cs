@@ -20,7 +20,7 @@ namespace Melville.IOC.IocContainers
         public bool CanCreate(IBindingRequest bindingRequest) =>
             SelectActivator(bindingRequest)?.CanCreate(bindingRequest) ?? false;
          
-        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)=>
+        public object? Create(IBindingRequest bindingRequest)=>
             (SelectActivator(bindingRequest)??
                 throw new IocException($"No binding for {bindingRequest.DesiredType.Name} is valid in this context.")
             ).Create(bindingRequest);
@@ -32,7 +32,7 @@ namespace Melville.IOC.IocContainers
             {
                 var request = bindingRequest.Clone();
                 if (!strategy.ValidForRequest(request)) continue;
-                accumulator(strategy.Create(request).UnwrapCheckNullAndDispose());
+                accumulator(strategy.Create(request) ?? throw new IocException("Type resolved to null"));
             }
         }
 

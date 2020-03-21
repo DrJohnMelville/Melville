@@ -23,7 +23,7 @@ namespace Melville.IOC.IocContainers
             return ParentScope.CanGet(request);
         }
 
-        public (object? Result, DisposalState DisposalState) Get(IBindingRequest request)
+        public object? Get(IBindingRequest request)
         {
             TrySetScopeValue(request);
             return ParentScope.Get(request);

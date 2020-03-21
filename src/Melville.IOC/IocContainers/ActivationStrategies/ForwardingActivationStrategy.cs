@@ -1,4 +1,6 @@
-﻿namespace Melville.IOC.IocContainers.ActivationStrategies
+﻿using System;
+
+namespace Melville.IOC.IocContainers.ActivationStrategies
 {
     public class ForwardingActivationStrategy : IActivationStrategy
     {
@@ -12,9 +14,12 @@
         public bool CanCreate(IBindingRequest bindingRequest) => 
             InnerActivationStrategy.CanCreate(bindingRequest);
 
-        public virtual (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) => 
+        public virtual object? Create(IBindingRequest bindingRequest) => 
             InnerActivationStrategy.Create(bindingRequest);
         public virtual SharingScope SharingScope() => InnerActivationStrategy.SharingScope();
         public virtual bool ValidForRequest(IBindingRequest request) => InnerActivationStrategy.ValidForRequest(request);
+
+        public void CreateMany(IBindingRequest bindingRequest, Func<object?, int> accumulator) =>
+            InnerActivationStrategy.CreateMany(bindingRequest, accumulator);
     }
 }

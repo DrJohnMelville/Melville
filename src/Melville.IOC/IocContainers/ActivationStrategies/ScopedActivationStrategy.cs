@@ -18,15 +18,15 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
             req.IocService.ScopeList().OfType<IScope>().FirstOrDefault()??
             throw new IocException($"Attempted to create a scoped {req.DesiredType.Name} outside of a scope.");
 
-        public override (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)=>
+        public override object? Create(IBindingRequest bindingRequest)=>
             Scope(bindingRequest).TryGetValue(this, out var ret) ? 
-                (ret, DisposalState.DisposalDone) : // presumably the value got registered for disposal when created 
+                ret : // presumably the value got registered for disposal when created 
                 RecordScopedValue(bindingRequest, base.Create(bindingRequest));
 
-        private (object? Result, DisposalState DisposalState) 
-            RecordScopedValue(IBindingRequest bindingRequest, in (object? Result, DisposalState DisposalState) create)
+        private object? 
+            RecordScopedValue(IBindingRequest bindingRequest, in object? create)
         {
-            Scope(bindingRequest).SetScopeValue(this, create.Result);
+            Scope(bindingRequest).SetScopeValue(this, create);
             return create;
         }
     }
