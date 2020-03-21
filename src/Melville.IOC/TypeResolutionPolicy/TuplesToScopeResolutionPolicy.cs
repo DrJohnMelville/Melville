@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Melville.IOC.Activation;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 
 namespace Melville.IOC.TypeResolutionPolicy
@@ -71,7 +72,7 @@ namespace Melville.IOC.TypeResolutionPolicy
                 return funcCreator(values);
             }
     
-            public Lifetime2 Lifetime() => Lifetime2.Transient;
+            public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
             public bool ValidForRequest(IBindingRequest request) => true;
         }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers
@@ -10,16 +11,29 @@ namespace Melville.IOC.IocContainers
         bool CanGet(IBindingRequest request);
         object? Get(IBindingRequest request);
 
-        IIocService GlobalScope { get; }
-        bool IsGlobalScope => GlobalScope == this;
+        IIocService? ParentScope { get; }
+        bool IsGlobalScope => ParentScope == null;
 
-        IDisposableIocService CreateScope() => this.Get<Scope>();
     }
 
     public static class IocServiceOperations
     {
+        public static IIocService GlobalScope(this IIocService scope) => scope.ScopeList().Last();
+
+        public static IEnumerable<IIocService> ScopeList(this IIocService? service)
+        {
+            while (service != null)
+            {
+                yield return service;
+                service = service.ParentScope;
+            }
+        }
         // make it so we car create scopes on IocContainer without casting
-        public static IDisposableIocService CreateScope(IIocService service) => service.CreateScope();
+        public static IDisposableIocService CreateScope(this IIocService service) =>
+            service.CreateSharingScope().CreateLifetimeScope();
+        public static IIocService CreateSharingScope(this IIocService service) => new Scope(service);
+        public static IDisposableIocService CreateLifetimeScope(this IIocService service) => 
+            new DisposableIocService(service);
         public static bool CanGet<T>(this IIocService ioc) => ioc.CanGet(typeof(T));
         public static bool CanGet(this IIocService ioc, Type type) => ioc.CanGet(new RootBindingRequest(type, ioc));
         public static bool CanGet(this IIocService ioc, IEnumerable<IBindingRequest> requests) => requests.All(ioc.CanGet);
@@ -29,6 +43,7 @@ namespace Melville.IOC.IocContainers
             RecursiveExceptionTracker.BasisCall(ioc.Get, new RootBindingRequest(serviceTppe, ioc))
             ?? throw new InvalidOperationException("Type resolved to null");
         
+     
         public static object?[] Get(this IIocService service, IList<IBindingRequest> requiredParameters)
         {
             object?[] argumentArray = new object[requiredParameters.Count()];
@@ -60,15 +75,13 @@ namespace Melville.IOC.IocContainers
         {
             this.TypeResolver = typeResolver ?? new StandardTypeResolutionPolicy();
         }
-
-        public IIocService GlobalScope => this;
+        
+        public IIocService? ParentScope => null;
 
         public T ConfigurePolicy<T>() => TypeResolver.GetPolicy<T>();
 
 
         #region Get
-
-        public IDisposableIocService CreateScope() => new Scope(this);
         
         private object? GetImplementation(IBindingRequest bindingRequest)
         {

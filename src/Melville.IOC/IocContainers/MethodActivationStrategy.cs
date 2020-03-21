@@ -1,4 +1,5 @@
 ﻿using System;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 
 namespace Melville.IOC.IocContainers
@@ -18,6 +19,6 @@ namespace Melville.IOC.IocContainers
         public object? Create(IBindingRequest bindingRequest)=>
             method(bindingRequest.IocService, bindingRequest);
 
-        public Lifetime2 Lifetime() => Lifetime2.Transient;
+        public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
     }
 }

@@ -21,4 +21,10 @@
       <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.4.0" />
     </ItemGroup>
 
+
+    <ItemGroup>
+      <Compile Remove="IocContainers\OptionEnumerator.cs" />
+      <Compile Remove="IocContainers\SharingScopeActivation.cs" />
+    </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
 ﻿using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.Test.IocContainers;
 using Melville.IOC.TypeResolutionPolicy;
 using Xunit;

@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy
 {

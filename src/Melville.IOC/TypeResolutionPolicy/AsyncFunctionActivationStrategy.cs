@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Melville.IOC.Activation;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 
 namespace Melville.IOC.TypeResolutionPolicy
@@ -56,7 +57,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         protected virtual object CreateOutputObject(AsyncFunctionFactoryStub stub) => 
             staticCreatorFactory.CreateFuncDelegate(stub);
 
-        public Lifetime2 Lifetime() => Lifetime2.Transient;
+        public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
         public bool ValidForRequest(IBindingRequest request) => true;
     }
     

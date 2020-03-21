@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 
 namespace Melville.IOC.IocContainers
@@ -35,7 +36,7 @@ namespace Melville.IOC.IocContainers
         }
 
 
-        public Lifetime2 Lifetime() => strateies.Select(i => i.Lifetime()).Min();
+        public SharingScope SharingScope() => strateies.Select(i => i.SharingScope()).Min();
         public bool ValidForRequest(IBindingRequest request) => SelectActivator(request) != null;
     }
 }

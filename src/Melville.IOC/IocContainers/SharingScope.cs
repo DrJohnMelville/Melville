@@ -3,7 +3,7 @@
     /// <summary>
     /// Specifies the lifetime of a service in an <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection" />.
     /// </summary>
-    public enum Lifetime2
+    public enum SharingScope
     {
         /// <summary>
         /// Specifies that a single instance of the service will be created.

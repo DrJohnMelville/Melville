@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Melville.IOC.Activation;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 
 namespace Melville.IOC.IocContainers
@@ -68,7 +69,7 @@ namespace Melville.IOC.IocContainers
             return constructors[0].Value.Create(bindingRequest);
         }
 
-        public Lifetime2 Lifetime() => constructors[0].Value.Lifetime();
+        public SharingScope SharingScope() => constructors[0].Value.SharingScope();
 
         public bool ValidForRequest(IBindingRequest request) => constructors.Any(i => i.Value.ValidForRequest(request));
     }
