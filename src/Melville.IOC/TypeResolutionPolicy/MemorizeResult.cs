@@ -17,7 +17,7 @@ namespace Melville.IOC.TypeResolutionPolicy
 
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
         {
-            var ret = InnerPolicy.ApplyResolutionPolicy(request);
+            var ret = ObjectFactory.ForceToObjectFactory(InnerPolicy.ApplyResolutionPolicy(request));
             if (ret != null)
             {
                 cache.Bind(request.DesiredType, true).DoBinding(ret);

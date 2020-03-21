@@ -19,14 +19,15 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         public List<ITypeResolutionPolicy> Policies { get; } = new List<ITypeResolutionPolicy>();
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) =>
-            Policies
+            ObjectFactory.ForceToObjectFactory(Policies
                 .Select(i => i.ApplyResolutionPolicy(request))
-                .FirstOrDefault(i => i != null && i.ValidForRequest(request));
+                .FirstOrDefault(i => i != null && i.ValidForRequest(request)));
+
 
         public T GetPolicy<T>() => Policies
                                        .Select(i=>i is MemorizeResult mr? mr.InnerPolicy:i)
                                        .OfType<T>()
                                        .FirstOrDefault()??
-        throw new InvalidOperationException("No policy object of type: " + typeof(T).Name);
+                                   throw new InvalidOperationException("No policy object of type: " + typeof(T).Name);
     }
 }

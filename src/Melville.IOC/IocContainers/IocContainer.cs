@@ -52,8 +52,8 @@ namespace Melville.IOC.IocContainers
 
         public static object? UnwrapAndCheckDispose(this (object? Result, DisposalState DisposalState) item)
         {
-            if (item.DisposalState == DisposalState.DisposalRequired && IsDisposable(item.Result))
-                throw new IocException($"{item.Result.GetType()} requires disposal but was created in global context.");
+            // if (item.DisposalState == DisposalState.DisposalRequired && IsDisposable(item.Result))
+            //     throw new IocException($"{item.Result.GetType()} requires disposal but was created in global context.");
             return item.Result;
         }
 

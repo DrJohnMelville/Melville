@@ -10,6 +10,11 @@ namespace Melville.IOC.IocContainers
     { 
     }
 
+    public interface IRegisterDispose
+    {
+        void RegisterForDispose(object obj);
+    }
+
     public enum DisposalState
     {
         DisposalRequired = 0,
@@ -17,35 +22,24 @@ namespace Melville.IOC.IocContainers
         DisposeOptional = 2
     };
 
-    public class DisposableIocService: IDisposableIocService
+    public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
     {
+        public DisposableIocService(IIocService parentScope) : base(parentScope)
+        {
+        }
+
         private readonly List<object> itemsToDispose = new List<object>();
-        public DisposableIocService(IIocService parentScope)
+
+        public void RegisterForDispose(object? ret)
         {
-            ParentScope = parentScope;
+            itemsToDispose.Add(ret);
         }
 
-        public IIocService ParentScope { get; }
-
-        public bool CanGet(IBindingRequest request) => ParentScope.CanGet(request);
-        
-        public (object? Result, DisposalState DisposalState) Get(IBindingRequest request)
-        {
-            request.IocService = this;
-            var (ret, oldDisposalState) = ParentScope.Get(request);
-            if (ElligibleForDispose(oldDisposalState, ret))
-            {
-                itemsToDispose.Add(ret);
-            }
-
-            return (ret, DisposalState.DisposalDone);
-        }
-
-        private static bool ElligibleForDispose(DisposalState oldDisposalState, [NotNullWhen(true)]object? ret) => 
-            oldDisposalState != DisposalState.DisposalDone && IsDisposableItem(ret);
-
-        private static bool IsDisposableItem([NotNullWhen(true)]object? ret) =>
-            ret is IDisposable || ret is IAsyncDisposable;
+        // private static bool ElligibleForDispose(DisposalState oldDisposalState, [NotNullWhen(true)]object? ret) => 
+        //     oldDisposalState != DisposalState.DisposalDone && IsDisposableItem(ret);
+        //
+        // private static bool IsDisposableItem([NotNullWhen(true)]object? ret) =>
+        //     ret is IDisposable || ret is IAsyncDisposable;
 
         public async ValueTask DisposeAsync()
         {
