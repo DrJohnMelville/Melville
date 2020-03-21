@@ -4,56 +4,58 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.IocContainers
 {
-    public class ObjectFactory: IActivationOptions, IActivationStrategy
+    public class ObjectFactory: ForwardingActivationStrategy, IActivationOptions
     {
-        private IActivationStrategy activator;
-        public bool CanCreate(IBindingRequest bindingRequest) => 
-            activator.CanCreate(bindingRequest);
 
-        public object? Create(IBindingRequest bindingRequest) => 
-            activator.Create(bindingRequest);
-
-        public SharingScope SharingScope() => activator.SharingScope();
-        public bool ValidForRequest(IBindingRequest request) => activator.ValidForRequest(request);
-
-        public ObjectFactory(IActivationStrategy activator)
+        public ObjectFactory(IActivationStrategy innerActivationStrategy):base(innerActivationStrategy)
         {
-            this.activator = activator;
         }
 
-        public IActivationOptions AsSingleton()
-        {
-            activator = WrapWithSingletonOnlyIfNecessary();
-            return this;
-        }
+        public IActivationOptions AsSingleton() => AddActivationStrategy(WrapWithSingletonOnlyIfNecessary());
 
         private IActivationStrategy WrapWithSingletonOnlyIfNecessary() =>
-            activator.SharingScope() == IocContainers.SharingScope.Singleton ? 
-                activator:
-                new SingletonActivationStrategy(activator);
+            InnerActivationStrategy.SharingScope() == IocContainers.SharingScope.Singleton ? 
+                InnerActivationStrategy:
+                new SingletonActivationStrategy(InnerActivationStrategy);
 
-        public IActivationOptions AsScoped()
+        public IActivationOptions AsScoped() => 
+            AddActivationStrategy(new ScopedActivationStrategy(InnerActivationStrategy));
+
+        public IActivationOptions InNamedParamemter(string name) => 
+            AddActivationStrategy(new ParameterNameCondition(InnerActivationStrategy, name));
+
+        public IActivationOptions WhenConstructingType(Type? type) => 
+            AddActivationStrategy(new TargetTypeCondition(InnerActivationStrategy, type));
+
+        public IActivationOptions WithParameters(params object[] parameters) => 
+            AddActivationStrategy(new AddParametersStrategy(InnerActivationStrategy, parameters));
+
+        public IActivationOptions DoNotDispose() => AddActivationStrategy(
+            new DisposalStrategy(InnerActivationStrategy, DisposalState.DisposalDone));
+
+        public IActivationOptions DisposeIfInsideScope() => AddActivationStrategy(
+            new DisposalStrategy(InnerActivationStrategy, DisposalState.DisposeOptional));
+
+        private IActivationOptions AddActivationStrategy(IActivationStrategy newStrategy)
         {
-            activator = new ScopedActivationStrategy(activator);
+            InnerActivationStrategy = newStrategy;
             return this;
         }
+    }
 
-        public IActivationOptions InNamedParamemter(string name)
+    public sealed class DisposalStrategy : ForwardingActivationStrategy
+    {
+        private readonly DisposalState newDisposalState;
+
+        public DisposalStrategy(IActivationStrategy inner, DisposalState newDisposalState): base(inner)
         {
-            activator = new ParameterNameCondition(activator, name);
-            return this;
+            this.newDisposalState = newDisposalState;
         }
 
-        public IActivationOptions WhenConstructingType(Type? type)
+        public override (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
         {
-            activator = new TargetTypeCondition(activator, type);
-            return this;
-        }
-
-        public IActivationOptions WithParameters(params object[] parameters)
-        {
-            activator = new AddParametersStrategy(activator, parameters);
-            return this;
+            var (ret, _) = InnerActivationStrategy.Create(bindingRequest);
+            return (ret, newDisposalState);
         }
     }
 }

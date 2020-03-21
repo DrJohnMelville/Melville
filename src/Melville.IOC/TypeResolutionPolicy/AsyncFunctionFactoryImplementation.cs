@@ -81,7 +81,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         {
             if (state != FactoryState.NotCreatedYet) return datum;
             state = FactoryState.StaticCreationDone;
-            return (T) (localRequest.IocService.Get(localRequest) ?? 
+            return (T) (localRequest.IocService.Get(localRequest).Result ?? 
                         new InvalidOperationException("Failed to fetch datum"));
         }
 
@@ -103,7 +103,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             if (localRequest == null) throw new InvalidOperationException("Binding Request has not been set.");
             if (!(localRequest.RunStatic(typeof(T), "Create", parameters) is Task<T> creatorTask))
             {
-                throw new InvalidProgramException("The Type policy should have guarenteed this function returns Task<T>");
+                throw new InvalidProgramException("The Type policy should have guaranteed this function returns Task<T>");
             }
             datum = await creatorTask ;
         }

@@ -31,7 +31,8 @@ namespace Melville.IOC.IocContainers
 
     public static class RecursiveExceptionTracker
     {
-        public static object? BasisCall(Func<IBindingRequest, object?> action, IBindingRequest request)
+        public static (object? Result, DisposalState DisposalState)
+            BasisCall(Func<IBindingRequest, (object? Result, DisposalState DisposalState)> action, IBindingRequest request)
         {
             try
             {
@@ -42,7 +43,8 @@ namespace Melville.IOC.IocContainers
                 throw e.CreateElaboratedException();
             }
         }
-        public static object? RecursiveCall(Func<IBindingRequest, object?> action, IBindingRequest request)
+        public static (object? Result, DisposalState DisposalState) RecursiveCall(Func<IBindingRequest, 
+            (object? Result, DisposalState DisposalState)> action, IBindingRequest request)
         {
             try
             {

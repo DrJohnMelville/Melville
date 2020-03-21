@@ -14,11 +14,11 @@ namespace Melville.IOC.IocContainers
         void SetScopeValue(IActivationStrategy source, object? value);
     }
     
-    public sealed class Scope : IScope, IIocService
+    public sealed class SharingScopeContainer : IScope, IIocService
     {
         public IIocService ParentScope { get; }
 
-        public Scope(IIocService parentScope)
+        public SharingScopeContainer(IIocService parentScope)
         {
             ParentScope = parentScope;
         }
@@ -31,7 +31,7 @@ namespace Melville.IOC.IocContainers
             return ParentScope.CanGet(request);
         }
 
-        object? IIocService.Get(IBindingRequest request)
+        (object? Result, DisposalState DisposalState) IIocService.Get(IBindingRequest request)
         {
             request.IocService = this;
             return ParentScope.Get(request);

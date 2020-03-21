@@ -10,5 +10,7 @@ namespace Melville.IOC.IocContainers
         IActivationOptions WhenConstructingType(Type? type);
         IActivationOptions WhenConstructingType<T>() => WhenConstructingType(typeof(T));
         IActivationOptions WithParameters(params object[] parameters);
+        IActivationOptions DoNotDispose();
+        IActivationOptions DisposeIfInsideScope();
     }
 }

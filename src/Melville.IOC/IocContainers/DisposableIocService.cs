@@ -10,6 +10,13 @@ namespace Melville.IOC.IocContainers
     { 
     }
 
+    public enum DisposalState
+    {
+        DisposalRequired = 0,
+        DisposalDone = 1,
+        DisposeOptional = 2
+    };
+
     public class DisposableIocService: IDisposableIocService
     {
         private readonly List<object> itemsToDispose = new List<object>();
@@ -22,15 +29,20 @@ namespace Melville.IOC.IocContainers
 
         public bool CanGet(IBindingRequest request) => ParentScope.CanGet(request);
         
-        public object? Get(IBindingRequest request)
+        public (object? Result, DisposalState DisposalState) Get(IBindingRequest request)
         {
-            var ret = ParentScope.Get(request);
-            if (IsDisposableItem(ret))
+            request.IocService = this;
+            var (ret, oldDisposalState) = ParentScope.Get(request);
+            if (ElligibleForDispose(oldDisposalState, ret))
             {
                 itemsToDispose.Add(ret);
             }
-            return ret;
+
+            return (ret, DisposalState.DisposalDone);
         }
+
+        private static bool ElligibleForDispose(DisposalState oldDisposalState, [NotNullWhen(true)]object? ret) => 
+            oldDisposalState != DisposalState.DisposalDone && IsDisposableItem(ret);
 
         private static bool IsDisposableItem([NotNullWhen(true)]object? ret) =>
             ret is IDisposable || ret is IAsyncDisposable;

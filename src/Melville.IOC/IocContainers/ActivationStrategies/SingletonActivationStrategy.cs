@@ -6,24 +6,24 @@
         private volatile object? value;
         private volatile bool valueExists;
 
-        public SingletonActivationStrategy(IActivationStrategy innerStrategy): base(innerStrategy)
+        public SingletonActivationStrategy(IActivationStrategy innerActivationStrategyStrategy): base(innerActivationStrategyStrategy)
         { 
-            if (innerStrategy.SharingScope() != IocContainers.SharingScope.Transient)
+            if (innerActivationStrategyStrategy.SharingScope() != IocContainers.SharingScope.Transient)
             {
                 throw new IocException("Bindings may only specify at most one lifetime.");
             }
         }
         public override SharingScope SharingScope() => IocContainers.SharingScope.Singleton;
 
-        public override object? Create(IBindingRequest bindingRequest)
+        public override (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
         {
             CreateValueExactlyOnceForAllThreads(bindingRequest);
-            return value;
+            return (value, DisposalState.DisposalDone);
         }
 
         private void CreateValueExactlyOnceForAllThreads(IBindingRequest bindingRequest)
         {
-            //the double check and lock pattern relies on value and value exists being volitile fields
+            //the double check and lock pattern relies on value and valueExists being volitile fields
             if (!valueExists)
             {
                 lock (this)
@@ -40,7 +40,7 @@
         private object? ComputeSingleValue(IBindingRequest bindingRequest)
         {
             var oldScope = ExchangeRequestScope(bindingRequest, bindingRequest.IocService.GlobalScope());
-            var ret = base.Create(bindingRequest);
+            var (ret, disposeStatus) = base.Create(bindingRequest);
             ExchangeRequestScope(bindingRequest, oldScope);
             return ret;
         }

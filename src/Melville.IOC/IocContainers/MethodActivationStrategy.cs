@@ -16,8 +16,8 @@ namespace Melville.IOC.IocContainers
         // we have to assume this works
         public bool CanCreate(IBindingRequest bindingRequest) => true;
 
-        public object? Create(IBindingRequest bindingRequest)=>
-            method(bindingRequest.IocService, bindingRequest);
+        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)=>
+            (method(bindingRequest.IocService, bindingRequest), DisposalState.DisposalRequired);
 
         public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
     }

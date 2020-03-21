@@ -2,19 +2,19 @@
 {
     public class ForwardingActivationStrategy : IActivationStrategy
     {
-        private IActivationStrategy inner;
+        protected IActivationStrategy InnerActivationStrategy { get; set; }
 
-        public ForwardingActivationStrategy(IActivationStrategy inner)
+        public ForwardingActivationStrategy(IActivationStrategy innerActivationStrategy)
         {
-            this.inner = inner;
+            this.InnerActivationStrategy = innerActivationStrategy;
         }
 
         public bool CanCreate(IBindingRequest bindingRequest) => 
-            inner.CanCreate(bindingRequest);
+            InnerActivationStrategy.CanCreate(bindingRequest);
 
-        public virtual object? Create(IBindingRequest bindingRequest) => 
-            inner.Create(bindingRequest);
-        public virtual SharingScope SharingScope() => inner.SharingScope();
-        public virtual bool ValidForRequest(IBindingRequest request) => inner.ValidForRequest(request);
+        public virtual (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) => 
+            InnerActivationStrategy.Create(bindingRequest);
+        public virtual SharingScope SharingScope() => InnerActivationStrategy.SharingScope();
+        public virtual bool ValidForRequest(IBindingRequest request) => InnerActivationStrategy.ValidForRequest(request);
     }
 }

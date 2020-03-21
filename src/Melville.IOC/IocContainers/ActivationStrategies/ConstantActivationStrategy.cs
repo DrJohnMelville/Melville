@@ -12,6 +12,7 @@
         public SharingScope SharingScope() => IocContainers.SharingScope.Singleton;
         public bool ValidForRequest(IBindingRequest request) => true;
         public bool CanCreate(IBindingRequest bindingRequest) => true;
-        public object? Create(IBindingRequest bindingRequest) => value;
+        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) => 
+            (value, DisposalState.DisposalDone);
     }
 }

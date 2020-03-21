@@ -20,9 +20,10 @@ namespace Melville.IOC.IocContainers
         public bool CanCreate(IBindingRequest bindingRequest) =>
             SelectActivator(bindingRequest)?.CanCreate(bindingRequest) ?? false;
          
-        public object? Create(IBindingRequest bindingRequest)=>
-            SelectActivator(bindingRequest)?.Create(bindingRequest) ??
-            throw new IocException($"No binding for {bindingRequest.DesiredType.Name} is valid in this context.");
+        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)=>
+            (SelectActivator(bindingRequest)??
+                throw new IocException($"No binding for {bindingRequest.DesiredType.Name} is valid in this context.")
+            ).Create(bindingRequest);
 
         public void CreateMany(IBindingRequest bindingRequest,
             Func<object?, int> accumulator)
@@ -31,7 +32,7 @@ namespace Melville.IOC.IocContainers
             {
                 var request = bindingRequest.Clone();
                 if (!strategy.ValidForRequest(request)) continue;
-                accumulator(strategy.Create(request));
+                accumulator(strategy.Create(request).UnwrapCheckNullAndDispose());
             }
         }
 

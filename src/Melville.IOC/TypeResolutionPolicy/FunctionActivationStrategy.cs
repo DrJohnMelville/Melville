@@ -36,8 +36,9 @@ namespace Melville.IOC.TypeResolutionPolicy
             types.SkipLast(1).Select(i => (object) new ReplaceLiteralArgumentWithNonsenseValue(i));
 
 
-        public object? Create(IBindingRequest bindingRequest) =>
-            forwardFuncToMethodCall.CreateFuncDelegate(new FunctionFactoryImplementation(bindingRequest, resultType));
+        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) =>
+            (forwardFuncToMethodCall.CreateFuncDelegate(new FunctionFactoryImplementation(bindingRequest, resultType)),
+                DisposalState.DisposalRequired);
 
         public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
 
@@ -56,7 +57,8 @@ namespace Melville.IOC.TypeResolutionPolicy
         }
         
         public object? CreateTargetObject(object[] parameters) => 
-            bindingRequest.IocService.Get(new ParameterizedRequest(bindingRequest, desiredType, parameters));
+            bindingRequest.IocService.Get(new ParameterizedRequest(bindingRequest, desiredType, parameters))
+                .UnwrapCheckNullAndDispose();
     }
 
     

@@ -15,8 +15,9 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
         public bool CanCreate(IBindingRequest bindingRequest) => 
             bindingRequest.IocService.CanGet(ComputeDependencies(bindingRequest));
 
-        public object? Create(IBindingRequest bindingRequest) => 
-            activator(bindingRequest.IocService.Get(ComputeDependencies(bindingRequest)));
+        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) => 
+            (activator(bindingRequest.IocService.Get(ComputeDependencies(bindingRequest))), 
+                DisposalState.DisposalRequired);
 
         private List<IBindingRequest> ComputeDependencies(IBindingRequest bindingRequest) =>
             paramTypes

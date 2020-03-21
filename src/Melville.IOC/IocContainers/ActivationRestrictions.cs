@@ -7,7 +7,7 @@ namespace Melville.IOC.IocContainers
     public class ParameterNameCondition: ForwardingActivationStrategy
     {
         private readonly string name;
-        public ParameterNameCondition(IActivationStrategy inner, string name) : base(inner) => this.name = name;
+        public ParameterNameCondition(IActivationStrategy innerActivationStrategy, string name) : base(innerActivationStrategy) => this.name = name;
 
         public override bool ValidForRequest(IBindingRequest request) => 
             base.ValidForRequest(request) && request.TargetParameterName.Equals(name, StringComparison.Ordinal);
@@ -15,7 +15,7 @@ namespace Melville.IOC.IocContainers
     public class TargetTypeCondition: ForwardingActivationStrategy
     {
         private readonly Type? targetType;
-        public TargetTypeCondition(IActivationStrategy inner, Type? targetType) : base(inner) =>
+        public TargetTypeCondition(IActivationStrategy innerActivationStrategy, Type? targetType) : base(innerActivationStrategy) =>
             this.targetType = targetType;
         
         public override bool ValidForRequest(IBindingRequest request) => 
@@ -25,12 +25,12 @@ namespace Melville.IOC.IocContainers
     public class AddParametersStrategy : ForwardingActivationStrategy
     {
         private readonly object[] parameters;
-        public AddParametersStrategy(IActivationStrategy inner, object[] parameters) : base(inner)
+        public AddParametersStrategy(IActivationStrategy innerActivationStrategy, object[] parameters) : base(innerActivationStrategy)
         {
             this.parameters = parameters;
         }
 
-        public override object? Create(IBindingRequest bindingRequest)
+        public override (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest)
         {
             // here we needed to copy the array anyway so that multiple invocations get their own set of
             // variables anyway.  We append our vars to the end of the array so any values provided by a

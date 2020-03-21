@@ -10,7 +10,6 @@ namespace Melville.IOC.TypeResolutionPolicy
 {
     public class AsyncFunctionActivationStrategy: IActivationStrategy
     {
-        private readonly Type outerFunctionType;
         private readonly Type innerFunctionType;
         private readonly Type targetObjectType;
         private readonly ForwardFuncToMethodCall staticCreatorFactory;
@@ -18,7 +17,6 @@ namespace Melville.IOC.TypeResolutionPolicy
 
         public AsyncFunctionActivationStrategy(Type outerFunctionType)
         {
-            this.outerFunctionType = outerFunctionType;
             innerFunctionType = ReturnType(outerFunctionType);
             targetObjectType = GetTypeFromFuncOrTask(innerFunctionType);
             if (IsTask(innerFunctionType))
@@ -50,9 +48,9 @@ namespace Melville.IOC.TypeResolutionPolicy
 
         public bool CanCreate(IBindingRequest bindingRequest) => true;
         
-        public object? Create(IBindingRequest bindingRequest) =>
-            CreateOutputObject(new AsyncFunctionFactoryStub(bindingRequest, 
-                targetObjectType, asyncInitializerFactory));
+        public (object? Result, DisposalState DisposalState) Create(IBindingRequest bindingRequest) =>
+            (CreateOutputObject(new AsyncFunctionFactoryStub(bindingRequest, 
+                targetObjectType, asyncInitializerFactory)), DisposalState.DisposalRequired);
 
         protected virtual object CreateOutputObject(AsyncFunctionFactoryStub stub) => 
             staticCreatorFactory.CreateFuncDelegate(stub);
@@ -91,7 +89,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         {
             var runnerType = typeof(AsyncFunctionFactoryImplementation<>).MakeGenericType(targetObjectType);
             var creationRunner = (IAsyncFunctionFactoryImplementation)
-                (request.IocService.Get(request.CreateSubRequest(runnerType)) ??
+                (request.IocService.Get(request.CreateSubRequest(runnerType)).Result ??
                 throw new InvalidOperationException("Could not retrieve Factory Implementation from IOC"));
             return creationRunner;
         }
