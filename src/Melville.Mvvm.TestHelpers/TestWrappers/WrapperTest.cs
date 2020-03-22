@@ -12,6 +12,14 @@ using Xunit;
 
 namespace Melville.Mvvm.TestHelpers.TestWrappers
 {
+  /// <summary>
+  /// This class verifices that a class is a wrapper to an an interface.
+  /// A "wrapper" is a decorator with the following properties.
+  /// 1. Implements the same interface as the wrapped interface.
+  /// 2. Each call to the wrapper results in exactly one coll to the same method on the target,
+  ///    with the same arguments.
+  /// </summary>
+  /// <typeparam name="T"></typeparam>
   public sealed class WrapperTest<T>
   {
     private T source;
