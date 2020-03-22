@@ -95,7 +95,7 @@ namespace Melville.IOC.IocContainers
             TypeResolver.ApplyResolutionPolicy(bindingRequest)??
             throw new IocException("Cannot bind type: " + bindingRequest.DesiredType.Name);
 
-        object? IIocService.et(IBindingRequest requestedType) => 
+        object? IIocService.Get(IBindingRequest requestedType) => 
             RecursiveExceptionTracker.RecursiveCall(GetImplementation, requestedType);
 
         #endregion

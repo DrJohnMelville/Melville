@@ -14,7 +14,8 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
 
         public override object? Create(IBindingRequest bindingRequest)
         {
-            var ret = (T) InnerActivationStrategy.Create(bindingRequest);
+            var ret = (T) (InnerActivationStrategy.Create(bindingRequest) ??
+                throw new IocException("Wrapped Activation Strategy returned null"));
             return wrapperFunc(ret, bindingRequest);
         }
 

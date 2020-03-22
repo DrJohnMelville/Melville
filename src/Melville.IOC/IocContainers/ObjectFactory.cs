@@ -37,13 +37,25 @@ namespace Melville.IOC.IocContainers
         }
         
         public IActivationOptions<T> WrapWith<TWrapper>() where TWrapper : T =>
-            ((IActivationOptions<T>)this).WrapWith((item, request) => 
-                (T) request.IocService.Get(request.CreateSubRequest(typeof(TWrapper), item)));
+            ((IActivationOptions<T>)this).WrapWith((item, request) => GetWrappedItem<TWrapper>(request,
+                    new object[]{item?? throw new IocException("Cannot wrap a null object")})
+            );
+        
         public IActivationOptions<T> WrapWith<TWrapper>(params  object[] parameters) where TWrapper : T =>
-            ((IActivationOptions<T>)this).WrapWith((item, request) => 
-                (T) request.IocService.Get(request.CreateSubRequest(typeof(TWrapper), 
-                    parameters.Prepend(item).ToArray())));
+            ((IActivationOptions<T>)this).WrapWith((item, request) => GetWrappedItem<TWrapper>(request, 
+                PrependItem(parameters, item?? throw new IocException("Cannot wrap a null object"))));
+        
 
+        private static T GetWrappedItem<TWrapper>(IBindingRequest request, object[] parameters) where TWrapper : T
+        {
+            return (T) request.IocService.Get(request.CreateSubRequest(typeof(TWrapper)!, parameters));
+        }
+
+        private static object[] PrependItem(object[] parameters, T item)
+        {
+            return (parameters??Array.Empty<object>()).Prepend(item
+                  ?? throw new IocException("Cannot wrap a null object")).ToArray();
+        }
     }
 
 }

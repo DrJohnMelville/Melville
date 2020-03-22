@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Melville.IOC.AspNet\Melville.IOC.AspNet.csproj" />
+      <ProjectReference Include="..\Melville.Ioc.Interception\Melville.Ioc.Interception.csproj" />
       <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
     </ItemGroup>
 

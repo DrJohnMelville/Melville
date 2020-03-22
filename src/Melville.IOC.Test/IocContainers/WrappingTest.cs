@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Melville.IOC.Test.IocContainers
 {
-    public class WrappingTest
+    public sealed class WrappingTest
     {
         private readonly StringBuilder sb = new StringBuilder();
         public interface ITarget
