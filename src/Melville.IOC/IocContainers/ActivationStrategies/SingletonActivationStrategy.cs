@@ -55,5 +55,10 @@
             request.IocService = newScope;
             return ret;
         }
+
+        public static IActivationStrategy EnsureSingleton(IActivationStrategy inner) =>
+            inner.SharingScope() == IocContainers.SharingScope.Singleton
+                ? inner
+                : new SingletonActivationStrategy(inner);
     }
 }

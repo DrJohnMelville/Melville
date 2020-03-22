@@ -8,8 +8,8 @@ namespace Melville.IOC.TypeResolutionPolicy
 
     public interface IRegisterGeneric
     {
-        void Register(Type source, Type destination, Action<IActivationOptions<object>>? options = null);
-        void RegisterIfNeeded(Type source, Type destination, Action<IActivationOptions<object>>? options = null);
+        void Register(Type source, Type destination, Action<ITypesafeActivationOptions<object>>? options = null);
+        void RegisterIfNeeded(Type source, Type destination, Action<ITypesafeActivationOptions<object>>? options = null);
     }
 
     public class GenericResolutionPolicy: ITypeResolutionPolicy, IRegisterGeneric
@@ -26,7 +26,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             return null;
         }
 
-        public void RegisterIfNeeded(Type source, Type destination, Action<IActivationOptions<object>>? options = null)
+        public void RegisterIfNeeded(Type source, Type destination, Action<ITypesafeActivationOptions<object>>? options = null)
         {
             if (!registrations.ContainsKey(source))
             {
@@ -34,7 +34,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             }
         }
 
-        public void Register(Type source, Type destination, Action<IActivationOptions<object>>? options = null)
+        public void Register(Type source, Type destination, Action<ITypesafeActivationOptions<object>>? options = null)
         {
             if (!source.IsGenericTypeDefinition) throw new InvalidOperationException($"{source.Name} is not a generic type");
             if (!destination.IsGenericTypeDefinition) throw new InvalidOperationException($"{destination.Name} is not a generic type");
@@ -48,9 +48,9 @@ namespace Melville.IOC.TypeResolutionPolicy
     public class GenericActivation
     {
         private readonly Type genericTemplate;
-        private readonly Action<IActivationOptions<object>>? options;
+        private readonly Action<ITypesafeActivationOptions<object>>? options;
 
-        public GenericActivation(Type genericTemplate, Action<IActivationOptions<object>>? options)
+        public GenericActivation(Type genericTemplate, Action<ITypesafeActivationOptions<object>>? options)
         {
             this.genericTemplate = genericTemplate;
             this.options = options;

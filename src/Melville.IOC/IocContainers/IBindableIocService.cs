@@ -20,10 +20,10 @@ namespace Melville.IOC.IocContainers
             service.ConfigurePolicy<IPickBindingTargetSource>();
 
         public static void BindGeneric(this IBindableIocService services, Type source, Type destination,
-            Action<IActivationOptions<object>>? options = null) =>
+            Action<ITypesafeActivationOptions<object>>? options = null) =>
             services.ConfigurePolicy<IRegisterGeneric>().Register(source, destination, options);
         public static void BindGenericIfNeeded(this IBindableIocService services, Type source, Type destination,
-            Action<IActivationOptions<object>>? options = null) =>
+            Action<ITypesafeActivationOptions<object>>? options = null) =>
             services.ConfigurePolicy<IRegisterGeneric>().RegisterIfNeeded(source, destination, options);
     }
 }

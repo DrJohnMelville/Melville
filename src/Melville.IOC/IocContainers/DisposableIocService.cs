@@ -32,7 +32,10 @@ namespace Melville.IOC.IocContainers
         {
             //We dispose in reverse order.  Since most objects are created after their dependencies that means
             // that most objects will be disposed before their dependencies are disposed.
-            foreach (var item in Enumerable.Reverse(itemsToDispose))
+            //
+            //We call distinct so that if the user accidentally got the class registered twice, ike because it
+            // called registerWrapperForDisposal without a wrapper. it does not get disposed twice
+            foreach (var item in Enumerable.Reverse(itemsToDispose).Distinct())
             {
                 await DisposeSingleItem(item);
             }
