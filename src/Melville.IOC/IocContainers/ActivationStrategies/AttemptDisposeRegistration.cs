@@ -17,7 +17,7 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
             return ret;
         }
 
-        private void TryRegisterDisposal(object ret, IBindingRequest bindingRequest)
+        private void TryRegisterDisposal(object? ret, IBindingRequest bindingRequest)
         {
             if (IsDisposableItem(ret))
             {

@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.IocContainers
 {
-    public class ParameterNameCondition: ForwardingActivationStrategy
+    public class LambdaCondition: ForwardingActivationStrategy
     {
-        private readonly string name;
-        public ParameterNameCondition(IActivationStrategy innerActivationStrategy, string name) : base(innerActivationStrategy) => this.name = name;
+        private readonly Func<IBindingRequest, bool> shouldAllowBinding;
+
+        public LambdaCondition(IActivationStrategy inner, Func<IBindingRequest, bool> shouldAllowBinding): base(inner)
+        {
+            this.shouldAllowBinding = shouldAllowBinding;
+        }
 
         public override bool ValidForRequest(IBindingRequest request) => 
-            base.ValidForRequest(request) && request.TargetParameterName.Equals(name, StringComparison.Ordinal);
+            base.ValidForRequest(request) && shouldAllowBinding(request);
     }
-    public class TargetTypeCondition: ForwardingActivationStrategy
-    {
-        private readonly Type? targetType;
-        public TargetTypeCondition(IActivationStrategy innerActivationStrategy, Type? targetType) : base(innerActivationStrategy) =>
-            this.targetType = targetType;
-        
-        public override bool ValidForRequest(IBindingRequest request) => 
-            base.ValidForRequest(request) && request.TypeBeingConstructed == targetType;
-    }
-
+    
     public class AddParametersStrategy : ForwardingActivationStrategy
     {
         private readonly object[] parameters;

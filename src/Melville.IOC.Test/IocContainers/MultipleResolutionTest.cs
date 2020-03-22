@@ -11,47 +11,57 @@ namespace Melville.IOC.Test.IocContainers
         {
         }
 
-        public interface IIMultipleImplementation: IMultipleImplementation2 
+        public interface IMultipleImplementation: IMultipleImplementation2 
         {
         }
 
-        public class Implementation1 : IIMultipleImplementation{}
-        public class Implementation2: IIMultipleImplementation{}
-        public class Implementation3: IIMultipleImplementation{}
+        public class Implementation1 : IMultipleImplementation{}
+        public class Implementation2: IMultipleImplementation{}
+        public class Implementation3: IMultipleImplementation{}
+
+        public class ImplementationList : IMultipleImplementation
+        {
+            public ImplementationList(IList<IMultipleImplementation> impls)
+            {
+                Impls = impls;
+            }
+
+            public IList<IMultipleImplementation> Impls { get; }
+        }
 
         private readonly IocContainer sut = new IocContainer();
 
         [Fact]
         public void MultipleRegistrationBindsLastOne()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.Bind<IMultipleImplementation>().To<Implementation2>();
             
-            Assert.True(sut.Get<IIMultipleImplementation>() is Implementation2);
+            Assert.True(sut.Get<IMultipleImplementation>() is Implementation2);
         }
 
         [Fact]
         public void IfNeededRegistrationIgnoresLastOne()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.BindIfMNeeded<IIMultipleImplementation>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.BindIfMNeeded<IMultipleImplementation>().To<Implementation2>();
             
-            Assert.True(sut.Get<IIMultipleImplementation>() is Implementation1);
+            Assert.True(sut.Get<IMultipleImplementation>() is Implementation1);
         }
         [Fact]
         public void IfNeededRegistrationIgnoresLastOneIsPerInterface()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.BindIfMNeeded<IIMultipleImplementation>().And<IMultipleImplementation2>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.BindIfMNeeded<IMultipleImplementation>().And<IMultipleImplementation2>().To<Implementation2>();
             
-            Assert.True(sut.Get<IIMultipleImplementation>() is Implementation1);
+            Assert.True(sut.Get<IMultipleImplementation>() is Implementation1);
             Assert.True(sut.Get<IMultipleImplementation2>() is Implementation2);
         }
 
         [Fact]
         public void MultipleResolutionBindNone()
         {
-            var objects = sut.Get<IList<IIMultipleImplementation>>();
+            var objects = sut.Get<IList<IMultipleImplementation>>();
             
             Assert.Empty(objects);
         }
@@ -67,11 +77,11 @@ namespace Melville.IOC.Test.IocContainers
         [Fact]
         public void MultipleRegistrationBindsAll()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation2>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation3>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.Bind<IMultipleImplementation>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation3>();
 
-            var objects = sut.Get<IEnumerable<IIMultipleImplementation>>().ToList();
+            var objects = sut.Get<IEnumerable<IMultipleImplementation>>().ToList();
             Assert.Equal(3, objects.Count);
             Assert.True(objects[0] is Implementation1);
             Assert.True(objects[1] is Implementation2);
@@ -80,11 +90,11 @@ namespace Melville.IOC.Test.IocContainers
         [Fact]
         public void MultipleRegistrationBindsAllList()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation2>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation3>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.Bind<IMultipleImplementation>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation3>();
 
-            var objects = sut.Get<IList<IIMultipleImplementation>>();
+            var objects = sut.Get<IList<IMultipleImplementation>>();
             Assert.Equal(3, objects.Count);
             Assert.True(objects[0] is Implementation1);
             Assert.True(objects[1] is Implementation2);
@@ -93,11 +103,11 @@ namespace Melville.IOC.Test.IocContainers
         [Fact]
         public void MultipleRegistrationBindsAllCollection()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation2>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation3>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.Bind<IMultipleImplementation>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation3>();
 
-            var objects = sut.Get<ICollection<IIMultipleImplementation>>().ToList();
+            var objects = sut.Get<ICollection<IMultipleImplementation>>().ToList();
             Assert.Equal(3, objects.Count);
             Assert.True(objects[0] is Implementation1);
             Assert.True(objects[1] is Implementation2);
@@ -106,10 +116,10 @@ namespace Melville.IOC.Test.IocContainers
 
         public class MultiParam
         {
-            public IIMultipleImplementation Var1 { get; }
-            public IIMultipleImplementation Var2 { get; }
+            public IMultipleImplementation Var1 { get; }
+            public IMultipleImplementation Var2 { get; }
 
-            public MultiParam(IIMultipleImplementation var1, IIMultipleImplementation var2)
+            public MultiParam(IMultipleImplementation var1, IMultipleImplementation var2)
             {
                 Var1 = var1;
                 Var2 = var2;
@@ -117,18 +127,18 @@ namespace Melville.IOC.Test.IocContainers
         }
         public class SingleParam
         {
-            public SingleParam(IIMultipleImplementation single)
+            public SingleParam(IMultipleImplementation single)
             {
                 Single = single;
             }
 
-            public IIMultipleImplementation Single { get; }
+            public IMultipleImplementation Single { get; }
         }
         [Fact]
         public void NamedResolution()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>();
-            sut.Bind<IIMultipleImplementation>().To<Implementation2>().InNamedParamemter("var2");
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.Bind<IMultipleImplementation>().To<Implementation2>().InNamedParameter("var2");
             var ret = sut.Get<MultiParam>();
             Assert.True(ret.Var1 is Implementation1);
             Assert.True(ret.Var2 is Implementation2);
@@ -137,21 +147,33 @@ namespace Melville.IOC.Test.IocContainers
         [Fact]
         public void SingleResolutionRespectsName()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>().InNamedParamemter("var1");
-            sut.Bind<IIMultipleImplementation>().To<Implementation2>().InNamedParamemter("var2");
+            sut.Bind<IMultipleImplementation>().To<Implementation1>().InNamedParameter("var1");
+            sut.Bind<IMultipleImplementation>().To<Implementation2>().InNamedParameter("var2");
             sut.Get<MultiParam>(); // succeeds using named parameters;
-            Assert.Throws<IocException>(()=>sut.Get<IIMultipleImplementation>()); // no unnamed binding so fails
+            Assert.Throws<IocException>(()=>sut.Get<IMultipleImplementation>()); // no unnamed binding so fails
             Assert.Throws<IocException>(()=>sut.Get<SingleParam>()); // no unnamed binding so fails
         }
         [Fact]
         public void SingleResolutionRespectsTargetType()
         {
-            sut.Bind<IIMultipleImplementation>().To<Implementation1>().WhenConstructingType<MultiParam>();
+            sut.Bind<IMultipleImplementation>().To<Implementation1>().WhenConstructingType<MultiParam>();
             var ret = sut.Get<MultiParam>(); // succeeds using Typed parameters;
             Assert.True(ret.Var1 is Implementation1);
             Assert.True(ret.Var2 is Implementation1);
             Assert.Throws<IocException>(()=>sut.Get<SingleParam>()); // no Untyped binding so fails
-            Assert.Throws<IocException>(()=>sut.Get<IIMultipleImplementation>()); // no Untyped binding so fails
+            Assert.Throws<IocException>(()=>sut.Get<IMultipleImplementation>()); // no Untyped binding so fails
+        }
+
+        [Fact]
+        public void ConstructCompositePattern()
+        {
+            sut.Bind<IMultipleImplementation>().To<Implementation1>();
+            sut.Bind<IMultipleImplementation>().To<Implementation2>();
+            sut.Bind<IMultipleImplementation>().To<Implementation3>();
+            sut.Bind<IMultipleImplementation>().To<ImplementationList>()
+                .WhenNotConstructingType<ImplementationList>();
+            var ret = sut.Get<IMultipleImplementation>();
+            Assert.Equal(3, ((ImplementationList)ret).Impls.Count);
         }
     }
 }

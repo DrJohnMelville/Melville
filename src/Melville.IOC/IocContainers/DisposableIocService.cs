@@ -23,16 +23,10 @@ namespace Melville.IOC.IocContainers
 
         private readonly List<object> itemsToDispose = new List<object>();
 
-        public void RegisterForDispose(object? ret)
+        public void RegisterForDispose(object ret)
         {
             itemsToDispose.Add(ret);
         }
-
-        // private static bool ElligibleForDispose(DisposalState oldDisposalState, [NotNullWhen(true)]object? ret) => 
-        //     oldDisposalState != DisposalState.DisposalDone && IsDisposableItem(ret);
-        //
-        // private static bool IsDisposableItem([NotNullWhen(true)]object? ret) =>
-        //     ret is IDisposable || ret is IAsyncDisposable;
 
         public async ValueTask DisposeAsync()
         {

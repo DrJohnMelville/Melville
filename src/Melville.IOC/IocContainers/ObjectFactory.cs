@@ -32,12 +32,6 @@ namespace Melville.IOC.IocContainers
         public IActivationOptions AsScoped() => 
             AddActivationStrategy(new ScopedActivationStrategy(InnerActivationStrategy));
 
-        public IActivationOptions InNamedParamemter(string name) => 
-            AddActivationStrategy(new ParameterNameCondition(InnerActivationStrategy, name));
-
-        public IActivationOptions WhenConstructingType(Type? type) => 
-            AddActivationStrategy(new TargetTypeCondition(InnerActivationStrategy, type));
-
         public IActivationOptions WithParameters(params object[] parameters) => 
             AddActivationStrategy(new AddParametersStrategy(InnerActivationStrategy, parameters));
 
@@ -47,10 +41,14 @@ namespace Melville.IOC.IocContainers
         public IActivationOptions DisposeIfInsideScope() => AddActivationStrategy(
             new ForbidDisposalStrategy(InnerActivationStrategy, false));
 
+        public IActivationOptions When(Func<IBindingRequest, bool> predicate) => AddActivationStrategy(
+            new LambdaCondition(InnerActivationStrategy, predicate));
+
         private IActivationOptions AddActivationStrategy(IActivationStrategy newStrategy)
         {
             InnerActivationStrategy = newStrategy;
             return this;
         }
+        
     }
 }
