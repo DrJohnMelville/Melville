@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 
@@ -34,6 +35,15 @@ namespace Melville.IOC.IocContainers
             InnerActivationStrategy = newStrategy(InnerActivationStrategy);
             return this;
         }
+        
+        public IActivationOptions<T> WrapWith<TWrapper>() where TWrapper : T =>
+            ((IActivationOptions<T>)this).WrapWith((item, request) => 
+                (T) request.IocService.Get(request.CreateSubRequest(typeof(TWrapper), item)));
+        public IActivationOptions<T> WrapWith<TWrapper>(params  object[] parameters) where TWrapper : T =>
+            ((IActivationOptions<T>)this).WrapWith((item, request) => 
+                (T) request.IocService.Get(request.CreateSubRequest(typeof(TWrapper), 
+                    parameters.Prepend(item).ToArray())));
+
     }
 
 }

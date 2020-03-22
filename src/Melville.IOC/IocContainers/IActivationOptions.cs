@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.IocContainers
@@ -43,5 +44,14 @@ namespace Melville.IOC.IocContainers
     }
     public interface IActivationOptions<T>:ITypesafeActivationOptions<T>
     {
+        IActivationOptions<T> WrapWith(Func<T, T> wrapper) => WrapWith((i, j) => wrapper(i));
+        IActivationOptions<T> WrapWith(Func<T, IBindingRequest, T> wrapper) =>
+            AddActivationStrategy(i => new WrappingActivationStrategy<T>(i, wrapper));
+
+        IActivationOptions<T> WrapWith<TWrapper>() where TWrapper : T;
+        IActivationOptions<T> WrapWith<TWrapper>(params object[] parameters) where TWrapper : T;
+
+        IActivationOptions<T> RegisterWrapperForDisposal() =>
+            AddActivationStrategy(i => new AttemptDisposeRegistration(i));
     }
 }
