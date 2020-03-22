@@ -22,7 +22,7 @@ namespace Melville.IOC.TypeResolutionPolicy
 
     public static class RegisterCachedAsync
     {
-        public static IActivationOptions BindAsyncFactory<T>(this IBindableIocService service) =>
+        public static IActivationOptions<AsyncFunctionFactoryImplementation<T>> BindAsyncFactory<T>(this IBindableIocService service) =>
             service.Bind<AsyncFunctionFactoryImplementation<T>>().ToSelf();
 
     }

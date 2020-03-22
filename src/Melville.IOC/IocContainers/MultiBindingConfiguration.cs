@@ -16,16 +16,13 @@ namespace Melville.IOC.IocContainers
             this.ifNeeded = ifNeeded;
             sources.Add(typeof(TSource));
         }
-        public IActivationOptions DoBinding(IActivationStrategy strategy)
+        public IActivationOptions<TSource> DoBinding(IActivationStrategy strategy)
         {
-            return registry.Bind(sources, strategy, ifNeeded);
+            return registry.Bind<TSource>(sources, strategy, ifNeeded);
         }
         
-        public IActivationOptions To<TDestination>() where TDestination : TSource
-        {
-            return DoBinding(TypeActivatorFactory.CreateTypeActivator(typeof(TDestination)));
-        }
-
+        public IActivationOptions<TSource> To<TDestination>() where TDestination : TSource => 
+            ((IPickBindingTarget<TSource>)this).ToType(typeof(TDestination));
 
         public IPickBindingTarget<TSource> And<TDestination>()
         {

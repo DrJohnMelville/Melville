@@ -9,14 +9,14 @@ namespace Melville.IOC.IocContainers
     {
         private readonly Dictionary<Type, IActivationStrategy> bindings = new Dictionary<Type, IActivationStrategy>();
 
-        private static ObjectFactory CreateObjectFactory(IActivationStrategy strategy) => 
-            strategy is ObjectFactory factory?
+        private static ObjectFactory<T> CreateObjectFactory<T>(IActivationStrategy strategy) => 
+            strategy is ObjectFactory<T> factory?
                 factory: 
-                new ObjectFactory(strategy);
+                new ObjectFactory<T>(strategy);
 
-        public ObjectFactory Bind(IEnumerable<Type> types, IActivationStrategy strategy, bool ifNeeded)
+        public ObjectFactory<T> Bind<T>(IEnumerable<Type> types, IActivationStrategy strategy, bool ifNeeded)
         {
-            var ret = CreateObjectFactory(strategy);
+            var ret = CreateObjectFactory<T>(strategy);
             foreach (var type in types)
             {
                 RegisterActivationStrategy(type, ret, ifNeeded);
@@ -24,9 +24,9 @@ namespace Melville.IOC.IocContainers
             return ret;
         }
 
-        public ObjectFactory Bind(Type type, IActivationStrategy strategy, bool ifNeeded)
+        public ObjectFactory<T> Bind<T>(Type type, IActivationStrategy strategy, bool ifNeeded)
         {
-            var ret = CreateObjectFactory(strategy);
+            var ret = CreateObjectFactory<T>(strategy);
             RegisterActivationStrategy(type, ret, ifNeeded);
             return ret;
         }

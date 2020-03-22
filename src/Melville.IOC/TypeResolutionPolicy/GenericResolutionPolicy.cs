@@ -8,8 +8,8 @@ namespace Melville.IOC.TypeResolutionPolicy
 
     public interface IRegisterGeneric
     {
-        void Register(Type source, Type destination, Action<IActivationOptions>? options = null);
-        void RegisterIfNeeded(Type source, Type destination, Action<IActivationOptions>? options = null);
+        void Register(Type source, Type destination, Action<IActivationOptions<object>>? options = null);
+        void RegisterIfNeeded(Type source, Type destination, Action<IActivationOptions<object>>? options = null);
     }
 
     public class GenericResolutionPolicy: ITypeResolutionPolicy, IRegisterGeneric
@@ -26,7 +26,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             return null;
         }
 
-        public void RegisterIfNeeded(Type source, Type destination, Action<IActivationOptions>? options = null)
+        public void RegisterIfNeeded(Type source, Type destination, Action<IActivationOptions<object>>? options = null)
         {
             if (!registrations.ContainsKey(source))
             {
@@ -34,7 +34,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             }
         }
 
-        public void Register(Type source, Type destination, Action<IActivationOptions>? options = null)
+        public void Register(Type source, Type destination, Action<IActivationOptions<object>>? options = null)
         {
             if (!source.IsGenericTypeDefinition) throw new InvalidOperationException($"{source.Name} is not a generic type");
             if (!destination.IsGenericTypeDefinition) throw new InvalidOperationException($"{destination.Name} is not a generic type");
@@ -48,9 +48,9 @@ namespace Melville.IOC.TypeResolutionPolicy
     public class GenericActivation
     {
         private readonly Type genericTemplate;
-        private readonly Action<IActivationOptions>? options;
+        private readonly Action<IActivationOptions<object>>? options;
 
-        public GenericActivation(Type genericTemplate, Action<IActivationOptions>? options)
+        public GenericActivation(Type genericTemplate, Action<IActivationOptions<object>>? options)
         {
             this.genericTemplate = genericTemplate;
             this.options = options;
@@ -63,11 +63,11 @@ namespace Melville.IOC.TypeResolutionPolicy
             return activator;
         }
 
-        private ObjectFactory CreateConcreteObjectFactory(Type[] getGenericArguments) =>
-            new ObjectFactory(
+        private ObjectFactory<object> CreateConcreteObjectFactory(Type[] getGenericArguments) =>
+            new ObjectFactory<object>(
                 TypeActivatorFactory.CreateTypeActivator(
                     genericTemplate.MakeGenericType(getGenericArguments)));
 
-        private void ApplyConfigurationIfPresent(ObjectFactory activator) => options?.Invoke(activator);
+        private void ApplyConfigurationIfPresent(ObjectFactory<object> activator) => options?.Invoke(activator);
     }
 }

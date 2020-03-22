@@ -3,39 +3,38 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.IocContainers
 {
-    public interface IPickBindingTarget
+    public interface IPickBindingTarget<TSource>
     {
-        IActivationOptions DoBinding(IActivationStrategy strategy);
-        IActivationOptions ToType(Type type) =>
+        IActivationOptions<TSource> DoBinding(IActivationStrategy strategy);
+        IActivationOptions<TSource> ToType(Type type) =>
             DoBinding(TypeActivatorFactory.CreateTypeActivator(type));
-        IActivationOptions ToMethod(Func<IIocService, IBindingRequest, object> method) =>
-            DoBinding(new MethodActivationStrategy<object>(method));
-        IActivationOptions ToMethod(Func<IIocService, object> method) =>
-            DoBinding(new MethodActivationStrategy<object>((s,r)=>method(s)));
-        IActivationOptions ToMethod(Func<object> method) =>
-            DoBinding(new MethodActivationStrategy<object>((s,r)=>method()));
-    }
-    public interface IPickBindingTarget<TSource>: IPickBindingTarget
-    {
-        IActivationOptions To<TDestination>() where TDestination : TSource;
-        IActivationOptions ToConstant(TSource targetObject) => 
+        IActivationOptions<TSource> ToConstant(TSource targetObject) => 
             DoBinding(new ConstantActivationStrategy(targetObject!));
         IPickBindingTarget<TSource> And<TDestination>();
-        IActivationOptions ToSelf() => To<TSource>();
-         IActivationOptions ToMethod(Func<IIocService, IBindingRequest, TSource> method) =>
+        IActivationOptions<TSource> ToSelf() => To<TSource>();
+         IActivationOptions<TSource> ToMethod(Func<IIocService, IBindingRequest, TSource> method) =>
             DoBinding(new MethodActivationStrategy<TSource>(method));
-         IActivationOptions ToMethod(Func<IIocService, TSource> method) =>
+         IActivationOptions<TSource> ToMethod(Func<IIocService, TSource> method) =>
             DoBinding(new MethodActivationStrategy<TSource>((s,r)=>method(s)));
 
-         IActivationOptions ToMethod(Func<TSource> method) =>
+         IActivationOptions<TSource> ToMethod(Func<TSource> method) =>
              DoBinding(new MethodActivationStrategy<TSource>((s, r) => method()));
+         
+         // for reasons I do not completely understand, defining this method in the interface
+         // causes a runtime type constraint verification exception when TSource == TDestination
+         // The verifier is happy when the method is defined in the classes however.
+         IActivationOptions<TSource> To<TDestination>() where TDestination : TSource;
     }
-    public class BindingConfiguration: IPickBindingTarget
+
+    public class BindingConfiguration<TSource>: IPickBindingTarget<TSource>
     {
         private readonly Type targetType;
         protected BindingRegistry Registry { get; }
         protected bool IfNeeded { get; }
 
+        public BindingConfiguration(BindingRegistry registry, bool ifNeeded):
+            this(typeof(TSource), registry, ifNeeded){}
+        
         public BindingConfiguration(Type targetType, BindingRegistry registry, bool ifNeeded)
         {
             this.targetType = targetType;
@@ -43,21 +42,11 @@ namespace Melville.IOC.IocContainers
             IfNeeded = ifNeeded;
         }
 
-        public IActivationOptions DoBinding(IActivationStrategy strategy) => 
-            Registry.Bind(targetType, strategy, IfNeeded);
-    }
-    public class BindingConfiguration<TSource> : BindingConfiguration, IPickBindingTarget<TSource>
-    {
+        public IActivationOptions<TSource> DoBinding(IActivationStrategy strategy) => 
+            Registry.Bind<TSource>(targetType, strategy, IfNeeded);
 
-        public BindingConfiguration(BindingRegistry registry, bool ifNeeded):base(typeof(TSource), registry,
-            ifNeeded)
-        {
-        }
-
-        public IActivationOptions To<TDestination>() where TDestination : TSource
-        {
-            return ((IPickBindingTarget)this).ToType(typeof(TDestination));
-        }
+        public IActivationOptions<TSource> To<TDestination>() where TDestination : TSource => 
+            ((IPickBindingTarget<TSource>)this).ToType(typeof(TDestination));
 
         public IPickBindingTarget<TSource> And<TDestination>() =>
         new MultiBindingConfiguration<TSource>(Registry, IfNeeded).And<TDestination>();

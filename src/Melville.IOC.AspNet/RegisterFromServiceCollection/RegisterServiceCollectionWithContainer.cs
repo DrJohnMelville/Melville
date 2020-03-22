@@ -48,7 +48,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             SetLifetime(activator, service);
         }
 
-        private static void SetLifetime(IActivationOptions activator, ServiceDescriptor service)
+        private static void SetLifetime(IActivationOptions<object> activator, ServiceDescriptor service)
         {
             switch (service.Lifetime)
             {
@@ -66,13 +66,13 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             }
         }
 
-        private static IPickBindingTarget CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
+        private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
         {
             return container.ConfigurePolicy<IPickBindingTargetSource>()
                 .Bind(service.ServiceType, false);
         }
 
-        private static IActivationOptions CreateActivator(IPickBindingTarget target, ServiceDescriptor service) =>
+        private static IActivationOptions<object> CreateActivator(IPickBindingTarget<object> target, ServiceDescriptor service) =>
             service switch
             {
                 var x when x.ImplementationType != null => target.ToType(service.ImplementationType),
