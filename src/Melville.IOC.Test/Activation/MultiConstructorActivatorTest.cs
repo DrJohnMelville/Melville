@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Xunit;
 
 namespace Melville.IOC.Test.Activation
@@ -19,6 +20,11 @@ namespace Melville.IOC.Test.Activation
             {
                 this.StrValue = StrValue;
             }
+        }
+
+        public MultiConstructorActivatorTest()
+        {
+            sut.Bind<HasMultipleConstructors>().To<HasMultipleConstructors>(i => i.EmulateDotNet());
         }
 
         [Fact]

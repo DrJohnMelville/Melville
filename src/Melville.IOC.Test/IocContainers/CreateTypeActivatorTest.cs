@@ -1,4 +1,5 @@
 ﻿using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Xunit;
 
 namespace Melville.IOC.Test.IocContainers
@@ -15,7 +16,8 @@ namespace Melville.IOC.Test.IocContainers
         [Fact]
         public void FindsMostNumerousConstructor()
         {
-            TypeActivatorFactory.CreateTypeActivator(typeof(TwoNonOptimalConstructors)); // should not throw
+            TypeActivatorFactory.CreateTypeActivator(typeof(TwoNonOptimalConstructors),
+                ConstructorSelectors.EmulateDotNet); // should not throw
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
-namespace Melville.IOC.IocContainers
+namespace Melville.IOC.IocContainers.BindingSources
 {
     public class MultiBindingConfiguration<TSource>: IPickBindingTarget<TSource>
     {
@@ -16,15 +16,12 @@ namespace Melville.IOC.IocContainers
             this.ifNeeded = ifNeeded;
             sources.Add(typeof(TSource));
         }
-        public IActivationOptions<TSource> DoBinding(IActivationStrategy strategy)
+        public override IActivationOptions<TSource> DoBinding(IActivationStrategy strategy)
         {
             return registry.Bind<TSource>(sources, strategy, ifNeeded);
         }
         
-        public IActivationOptions<TSource> To<TDestination>() where TDestination : TSource => 
-            ((IPickBindingTarget<TSource>)this).ToType(typeof(TDestination));
-
-        public IPickBindingTarget<TSource> And<TDestination>()
+        public override IPickBindingTarget<TSource> And<TDestination>()
         {
             sources.Add(typeof(TDestination));
             return this;

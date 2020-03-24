@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
+using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 
 namespace Melville.IOC.TypeResolutionPolicy
 {
@@ -66,7 +67,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         private ObjectFactory<object> CreateConcreteObjectFactory(Type[] getGenericArguments) =>
             new ObjectFactory<object>(
                 TypeActivatorFactory.CreateTypeActivator(
-                    genericTemplate.MakeGenericType(getGenericArguments)));
+                    genericTemplate.MakeGenericType(getGenericArguments), ConstructorSelectors.MaximumArgumentCount));
 
         private void ApplyConfigurationIfPresent(ObjectFactory<object> activator) => options?.Invoke(activator);
     }

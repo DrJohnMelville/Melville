@@ -6,10 +6,10 @@ namespace Melville.Ioc.Interception
 {
     public static class ProxyGeneratorSource
     {
-        private static volatile ProxyGenerator? source;
+        private static volatile IProxyGenerator? source;
         private static object mutex = new object();
 
-        public static ProxyGenerator GetSource(IIocService service)
+        public static IProxyGenerator GetSource(IIocService service)
         {
             if (source == null)
             {
@@ -17,7 +17,9 @@ namespace Melville.Ioc.Interception
                 {
                     if (source == null)
                     {
-                        source = service.Get<ProxyGenerator>();
+                        source = service.CanGet(typeof(IProxyGenerator))?
+                            service.Get<IProxyGenerator>():
+                            new ProxyGenerator();
                     }
                 }
             }

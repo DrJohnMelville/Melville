@@ -1,6 +1,7 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
+using Melville.IOC.IocContainers.BindingSources;
 
 namespace Melville.IOC.TypeResolutionPolicy
 {

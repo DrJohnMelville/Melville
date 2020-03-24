@@ -104,9 +104,17 @@ namespace Melville.IOC.IocContainers
 
         public bool CanGet(IBindingRequest request)
         {
-            var activator = TypeResolver.ApplyResolutionPolicy(request);
-            if (activator == null) return false;
-            return activator.CanCreate(request);
+            try
+            {
+                var activator = TypeResolver.ApplyResolutionPolicy(request);
+                if (activator == null) return false;
+                return activator.CanCreate(request);
+            }
+            catch (Exception )
+            {
+                // if we run into a constructor we cannot automatically resolve, then we cannot get the type.
+                return false;
+            }
         }
         #endregion
 

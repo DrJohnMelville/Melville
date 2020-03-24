@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Melville.IOC.IocContainers.BindingSources;
 using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers

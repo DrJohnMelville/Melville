@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using Melville.IOC.Activation;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
+using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 
 namespace Melville.IOC.TypeResolutionPolicy
 {
@@ -11,7 +12,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         {
             var targetType = ApplyConvention(request.DesiredType);
             return targetType == null ? null : 
-                TypeActivatorFactory.CreateTypeActivator(targetType);
+                TypeActivatorFactory.CreateTypeActivator(targetType, ConstructorSelectors.MaximumArgumentCount);
         }
 
         private Type? ApplyConvention(Type source)
