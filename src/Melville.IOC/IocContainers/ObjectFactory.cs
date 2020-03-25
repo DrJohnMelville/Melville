@@ -7,6 +7,7 @@ namespace Melville.IOC.IocContainers
 {
     public class ObjectFactory: ForwardingActivationStrategy
     {
+        #warning CentralizeObjectFactory Creation
         public static ObjectFactory? ForceToObjectFactory(IActivationStrategy? activationStrategy)
         {
             return activationStrategy switch
@@ -56,6 +57,8 @@ namespace Melville.IOC.IocContainers
             return (parameters??Array.Empty<object>()).Prepend(item
                   ?? throw new IocException("Cannot wrap a null object")).ToArray();
         }
+
+        public ObjectFactory GetFinalFactory() => this;
     }
 
 }

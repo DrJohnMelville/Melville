@@ -8,7 +8,7 @@
             Policies.Add(new LiteralBindingPolicy());
             Policies.Add(cache);
             Policies.Add(new MemorizeResult(cache, new GetIocServiceTypes()));
-            Policies.Add(new MemorizeResult(cache, new GenericResolutionPolicy()));
+            Policies.Add(new GenericResolutionPolicy(cache));
             Policies.Add(new MemorizeResult(cache, new EnumerateMultipleBindingsPolicy(this)));
             Policies.Add(new MemorizeResult(cache, new FunctionsIntoFactories()));
             Policies.Add(new MemorizeResult(cache, new TuplesToScopeResolutionPolicy()));

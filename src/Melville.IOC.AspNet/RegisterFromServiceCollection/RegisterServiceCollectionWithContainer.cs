@@ -39,8 +39,8 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
 
         private static void BindOpenGeneric(IBindableIocService container, ServiceDescriptor service)
         {
-            container.ConfigurePolicy<IRegisterGeneric>().Register(service.ServiceType,
-                service.ImplementationType, i => SetLifetime(i, service));
+            container.BindGeneric(service.ServiceType,
+                service.ImplementationType, ConstructorSelectors.EmulateDotNet, i => SetLifetime(i, service));
         }
 
         private static void BindConcreteType(IBindableIocService container, ServiceDescriptor service)

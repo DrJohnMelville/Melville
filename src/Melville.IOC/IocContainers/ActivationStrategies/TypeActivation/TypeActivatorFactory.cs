@@ -12,6 +12,7 @@ namespace Melville.IOC.IocContainers.ActivationStrategies.TypeActivation
         public static IActivationStrategy CreateTypeActivator(Type type,
             Func<IList<ConstructorInfo>, ConstructorInfo> constructorSelector) =>
             CreateTypeActivator(type, i => constructorSelector(i).AsActivationStrategy());
+        
         public static IActivationStrategy CreateTypeActivator(Type type,
             Func<IList<ConstructorInfo>,IActivationStrategy> constructorSelector)
         {

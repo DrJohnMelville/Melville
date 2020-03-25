@@ -15,6 +15,8 @@ namespace Melville.IOC.IocContainers
     public interface ITypesafeActivationOptions<T>
     {
         IActivationOptions<T> AddActivationStrategy(Func<IActivationStrategy, IActivationStrategy> newStrategy);
+
+        ObjectFactory GetFinalFactory();
         // sharing scopes
         IActivationOptions<T> AsSingleton() => AddActivationStrategy(SingletonActivationStrategy.EnsureSingleton);
         IActivationOptions<T> AsScoped() => AddActivationStrategy(i => new ScopedActivationStrategy(i));

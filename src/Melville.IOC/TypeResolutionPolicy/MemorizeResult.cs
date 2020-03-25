@@ -1,4 +1,5 @@
-﻿using Melville.IOC.IocContainers;
+﻿using System;
+using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy
@@ -15,15 +16,12 @@ namespace Melville.IOC.TypeResolutionPolicy
         }
 
 
-        public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
-        {
-            var ret = ObjectFactory.ForceToObjectFactory(InnerPolicy.ApplyResolutionPolicy(request));
-            if (ret != null)
+        public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) =>
+            InnerPolicy.ApplyResolutionPolicy(request) switch
             {
-                cache.Bind(request.DesiredType, true).DoBinding(ret);
-            }
-
-            return ret;
-        }
+                null => null,
+                ObjectFactory obj => throw new InvalidProgramException("this should never happen."),
+                var ret => cache.Bind(request.DesiredType, true).DoBinding(ret).GetFinalFactory()
+            };
     }
 }
