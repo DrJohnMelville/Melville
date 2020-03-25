@@ -19,9 +19,9 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         public List<ITypeResolutionPolicy> Policies { get; } = new List<ITypeResolutionPolicy>();
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) =>
-            ObjectFactory.ForceToObjectFactory(Policies
+            Policies
                 .Select(i => i.ApplyResolutionPolicy(request))
-                .FirstOrDefault(i => i != null && i.ValidForRequest(request)));
+                .FirstOrDefault(i => i != null && i.ValidForRequest(request));
 
 
         public T GetPolicy<T>() => Policies

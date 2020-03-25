@@ -9,10 +9,13 @@ namespace Melville.IOC.IocContainers
     {
         private readonly Dictionary<Type, IActivationStrategy> bindings = new Dictionary<Type, IActivationStrategy>();
 
-        private static ObjectFactory<T> CreateObjectFactory<T>(IActivationStrategy strategy) => 
-            strategy is ObjectFactory<T> factory?
-                factory: 
-                new ObjectFactory<T>(strategy);
+        private static ObjectFactory<T> CreateObjectFactory<T>(IActivationStrategy strategy)
+        {
+            if (strategy is ObjectFactory)
+                throw new InvalidOperationException("tried to register a factory");
+            
+                return new ObjectFactory<T>(strategy);
+        }
 
         public ObjectFactory<T> Bind<T>(IEnumerable<Type> types, IActivationStrategy strategy, bool ifNeeded)
         {

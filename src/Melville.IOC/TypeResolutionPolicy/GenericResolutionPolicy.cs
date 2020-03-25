@@ -65,9 +65,7 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         private readonly Type genericTemplate;
         private readonly Action<ITypesafeActivationOptions<object>>? options;
-
         private readonly Func<IList<ConstructorInfo>, IActivationStrategy> constructorSelector;
-        // inject the cache and handle registration manually6
 
         public GenericActivation(Type genericTemplate, 
             Func<IList<ConstructorInfo>, IActivationStrategy> constructorSelector, 
