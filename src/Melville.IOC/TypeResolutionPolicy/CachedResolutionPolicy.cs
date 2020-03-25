@@ -1,4 +1,5 @@
 ﻿using System;
+using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.IocContainers.BindingSources;
@@ -13,7 +14,12 @@ namespace Melville.IOC.TypeResolutionPolicy
 
     public class CachedResolutionPolicy : ITypeResolutionPolicy, IPickBindingTargetSource
     {
-        private readonly BindingRegistry registry = new BindingRegistry();
+        private readonly BindingRegistry registry;
+
+        public CachedResolutionPolicy(IInjectionPolicy injectionPolicy)
+        {
+            registry = new BindingRegistry(injectionPolicy);
+        }
 
         public IPickBindingTarget<T> Bind<T>(bool ifNeeded) => new BindingConfiguration<T>(registry, ifNeeded);
         public IPickBindingTarget<object> Bind(Type type, bool ifNeeded) => new BindingConfiguration<object>(type, registry, ifNeeded);

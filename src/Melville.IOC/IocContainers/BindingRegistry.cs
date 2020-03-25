@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.IocContainers
@@ -8,13 +9,19 @@ namespace Melville.IOC.IocContainers
     public class BindingRegistry
     {
         private readonly Dictionary<Type, IActivationStrategy> bindings = new Dictionary<Type, IActivationStrategy>();
+        private readonly IInjectionPolicy injectionPolicy;
 
-        private static ObjectFactory<T> CreateObjectFactory<T>(IActivationStrategy strategy)
+        public BindingRegistry(IInjectionPolicy injectionPolicy)
+        {
+            this.injectionPolicy = injectionPolicy;
+        }
+
+        private ObjectFactory<T> CreateObjectFactory<T>(IActivationStrategy strategy)
         {
             if (strategy is ObjectFactory)
                 throw new InvalidOperationException("tried to register a factory");
             
-                return new ObjectFactory<T>(strategy);
+                return new ObjectFactory<T>(injectionPolicy.Inject(strategy));
         }
 
         public ObjectFactory<T> Bind<T>(IEnumerable<Type> types, IActivationStrategy strategy, bool ifNeeded)

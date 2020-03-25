@@ -8,7 +8,7 @@ namespace Melville.IOC.IocContainers
     public class ObjectFactory: ForwardingActivationStrategy
     {
         public ObjectFactory(IActivationStrategy innerActivationStrategy) :
-            base(new AttemptDisposeRegistration(innerActivationStrategy))
+            base(innerActivationStrategy)
         {
         }
     }
