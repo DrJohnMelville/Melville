@@ -30,6 +30,20 @@ namespace Melville.Ioc.Interception
         IInterceptorTypeDeclaration Add(Type type);
         IInterceptorTypeDeclaration Add<T>() where T:IInterceptor => Add(typeof(T));
     }
+
+    public static class TypedInterceptorImplementation
+    {
+        public static object InterceptFromTypes(IBindingRequest bindingRequest, object item, 
+            IEnumerable<Type> interceptorTypes)
+        {
+            var interceptors = bindingRequest.IocService.Get(interceptorTypes
+                    .Select(bindingRequest.CreateSubRequest).ToList())
+                .OfType<IInterceptor>()
+                .ToArray();
+            return ProxyGeneratorSource.CreateInterceptor(bindingRequest.IocService, bindingRequest.DesiredType,
+                item, interceptors);
+        }
+    }
     public class TypeInterceptorStrategy : ForwardingActivationStrategy, IInterceptorTypeDeclaration
     {
         private readonly List<Type> interceptorTypes = new List<Type>();
@@ -40,12 +54,7 @@ namespace Melville.Ioc.Interception
         public override object? Create(IBindingRequest bindingRequest)
         {
             var item = base.Create(bindingRequest) ?? throw new IOException("Cannot wrap null");
-            var interceptors = bindingRequest.IocService.Get(interceptorTypes
-                    .Select(i => bindingRequest.CreateSubRequest(i)).ToList())
-                .OfType<IInterceptor>()
-                .ToArray();
-            return ProxyGeneratorSource.CreateInterceptor(bindingRequest.IocService, bindingRequest.DesiredType,
-                item, interceptors);
+            return TypedInterceptorImplementation.InterceptFromTypes(bindingRequest, item, interceptorTypes);
         }
 
         private bool IsInterceptor(Type i)
