@@ -43,7 +43,7 @@ namespace Melville.IOC.Test.TypeResolutionPolicy
         {
             return sut
                 .TypeResolver
-                .GetPolicy<CachedResolutionPolicy>()?
+                .GetInstantiationPolicy<CachedResolutionPolicy>()?
                 .ApplyResolutionPolicy(new RootBindingRequest(typeof(SimpleObjectImplementation), sut));
         }
     }

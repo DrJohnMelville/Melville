@@ -6,7 +6,7 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         public StandardTypeResolutionPolicy()
         {
-            var cache = new CachedResolutionPolicy(new DefaultInjectionPolicy());
+            var cache = new CachedResolutionPolicy(InterceptionPolicy.AsInterceptionRule());
             Policies.Add(new LiteralBindingPolicy());
             Policies.Add(cache);
             Policies.Add(new MemorizeResult(cache, new GetIocServiceTypes()));

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 
@@ -7,9 +8,16 @@ namespace Melville.IOC.IocContainers
 {
     public class ObjectFactory: ForwardingActivationStrategy
     {
-        public ObjectFactory(IActivationStrategy innerActivationStrategy) :
+        private IInterceptionRule interceptionRule; 
+        public ObjectFactory(IActivationStrategy innerActivationStrategy, IInterceptionRule interceptionRule) :
             base(innerActivationStrategy)
         {
+            this.interceptionRule = interceptionRule;
+        }
+
+        public override object? Create(IBindingRequest bindingRequest)
+        {
+            return interceptionRule.Intercept(bindingRequest, base.Create(bindingRequest));
         }
     }
 
@@ -17,7 +25,8 @@ namespace Melville.IOC.IocContainers
     {
 
 
-        public ObjectFactory(IActivationStrategy innerActivationStrategy):base(innerActivationStrategy)
+        public ObjectFactory(IActivationStrategy innerActivationStrategy, IInterceptionRule interceptionRule):
+            base(innerActivationStrategy, interceptionRule)
         {
         }
 

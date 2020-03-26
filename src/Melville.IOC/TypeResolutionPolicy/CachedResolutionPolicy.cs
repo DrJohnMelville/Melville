@@ -16,9 +16,9 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         private readonly BindingRegistry registry;
 
-        public CachedResolutionPolicy(IInjectionPolicy injectionPolicy)
+        public CachedResolutionPolicy(IInterceptionRule interceptionPolicy)
         {
-            registry = new BindingRegistry(injectionPolicy);
+            registry = new BindingRegistry(interceptionPolicy);
         }
 
         public IPickBindingTarget<T> Bind<T>(bool ifNeeded) => new BindingConfiguration<T>(registry, ifNeeded);
