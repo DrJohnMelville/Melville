@@ -16,7 +16,7 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         private readonly BindingRegistry registry;
 
-        public CachedResolutionPolicy(IInjectionPolicy injectionPolicy)
+        public CachedResolutionPolicy(IInjectionRule injectionPolicy)
         {
             registry = new BindingRegistry(injectionPolicy);
         }

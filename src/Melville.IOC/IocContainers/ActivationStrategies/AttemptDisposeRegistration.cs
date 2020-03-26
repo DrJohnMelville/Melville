@@ -1,29 +1,35 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Melville.IOC.InjectionPolicies;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies
 {
     public sealed class AttemptDisposeRegistration : ForwardingActivationStrategy
     {
+        private static IInjectionRule rule = new AttemptDisposeRule();
         public AttemptDisposeRegistration(IActivationStrategy innerActivationStrategy) : base(innerActivationStrategy)
         {
         }
 
         public override object? Create(IBindingRequest bindingRequest)
         {
-            var ret = InnerActivationStrategy.Create(bindingRequest);
-            TryRegisterDisposal(ret, bindingRequest);
-            return ret;
+            return rule.Inject(bindingRequest, InnerActivationStrategy.Create(bindingRequest));
+        }
+    }
+    
+    public sealed class AttemptDisposeRule : IInjectionRule
+    {
+        public object? Inject(IBindingRequest request, object? source)
+        {
+            if (IsDisposableItem(source))
+            {
+                RegisterDisposal(source, request);
+            }
+
+            return source;
         }
 
-        private void TryRegisterDisposal(object? ret, IBindingRequest bindingRequest)
-        {
-            if (IsDisposableItem(ret))
-            {
-                RegisterDisposal(ret, bindingRequest);
-            }
-        }
 
         private void RegisterDisposal(object ret, IBindingRequest bindingRequest)
         {
@@ -41,4 +47,5 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
             ret is IDisposable || ret is IAsyncDisposable;
 
     }
+
 }

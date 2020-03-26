@@ -1,16 +1,28 @@
-﻿using Melville.IOC.IocContainers.ActivationStrategies;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.InjectionPolicies
 {
     public interface IInjectionPolicy
     {
-        public IActivationStrategy Inject(IActivationStrategy inner);
     }
-    public class DefaultInjectionPolicy: IInjectionPolicy
+
+    public interface IInjectionRule
     {
-        public IActivationStrategy Inject(IActivationStrategy inner)
+        object? Inject(IBindingRequest request, object? source);
+    }
+    public class DefaultInjectionPolicy: IInjectionPolicy, IInjectionRule
+    {
+        public List<IInjectionRule> Rules = new List<IInjectionRule>();
+
+        public DefaultInjectionPolicy()
         {
-            return new AttemptDisposeRegistration(inner);
+            Rules.Add(new AttemptDisposeRule());
         }
+
+        public object? Inject(IBindingRequest request, object? source) => 
+            Rules.Aggregate(source, (item, rule) => rule.Inject(request, item));
     }
 }

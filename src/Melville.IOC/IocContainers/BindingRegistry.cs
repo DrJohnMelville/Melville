@@ -9,9 +9,9 @@ namespace Melville.IOC.IocContainers
     public class BindingRegistry
     {
         private readonly Dictionary<Type, IActivationStrategy> bindings = new Dictionary<Type, IActivationStrategy>();
-        private readonly IInjectionPolicy injectionPolicy;
+        private readonly IInjectionRule injectionPolicy;
 
-        public BindingRegistry(IInjectionPolicy injectionPolicy)
+        public BindingRegistry(IInjectionRule injectionPolicy)
         {
             this.injectionPolicy = injectionPolicy;
         }
@@ -21,7 +21,7 @@ namespace Melville.IOC.IocContainers
             if (strategy is ObjectFactory)
                 throw new InvalidOperationException("tried to register a factory");
             
-                return new ObjectFactory<T>(injectionPolicy.Inject(strategy));
+                return new ObjectFactory<T>(strategy, injectionPolicy);
         }
 
         public ObjectFactory<T> Bind<T>(IEnumerable<Type> types, IActivationStrategy strategy, bool ifNeeded)
