@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
+using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Melville.IOC.IocContainers.BindingSources;
@@ -12,17 +13,23 @@ namespace Melville.IOC.IocContainers
     public interface IBindableIocService 
     {
         T ConfigurePolicy<T>();
+        IInterceptionPolicy InterceptionPolicy { get; }
     }
 
     public static class BindableIocServiceOperations
     {
+        #region Typical closed type binding
+
+        private static IPickBindingTargetSource ClosedTypeBindings<T>(IBindableIocService service) => 
+            service.ConfigurePolicy<IPickBindingTargetSource>();
         public static IPickBindingTarget<T> Bind<T>(this IBindableIocService service) => 
             ClosedTypeBindings<T>(service).Bind<T>(false);
         public static IPickBindingTarget<T> BindIfMNeeded<T>(this IBindableIocService service) => 
             ClosedTypeBindings<T>(service).Bind<T>(true);
 
-        private static IPickBindingTargetSource ClosedTypeBindings<T>(IBindableIocService service) => 
-            service.ConfigurePolicy<IPickBindingTargetSource>();
+        #endregion
+
+        #region Open generio binding
 
         public static void BindGeneric(this IBindableIocService services, Type source, Type destination,
             Action<ITypesafeActivationOptions<object>>? options = null) =>
@@ -47,5 +54,15 @@ namespace Melville.IOC.IocContainers
             Func<IList<ConstructorInfo>,IActivationStrategy> constructorSelector,
             Action<ITypesafeActivationOptions<object>>? options = null) =>
             services.ConfigurePolicy<IRegisterGeneric>().RegisterIfNeeded(source, destination, constructorSelector, options);
+
+        #endregion
+
+        #region
+
+        public static void Intercept<TSource, TDest>(this IBindableIocService service, IInterceptionRule rule) =>
+            service.InterceptionPolicy.Add(rule);
+
+
+        #endregion
     }
 }

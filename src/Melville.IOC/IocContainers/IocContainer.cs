@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.TypeResolutionPolicy;
 
@@ -80,7 +81,8 @@ namespace Melville.IOC.IocContainers
         
         public IIocService? ParentScope => null;
 
-        public T ConfigurePolicy<T>() => TypeResolver.GetPolicy<T>();
+        public T ConfigurePolicy<T>() => TypeResolver.GetInstantiationPolicy<T>();
+        public IInterceptionPolicy InterceptionPolicy => TypeResolver.InterceptionPolicy;
 
 
         #region Get

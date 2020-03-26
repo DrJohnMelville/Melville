@@ -5,24 +5,29 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.InjectionPolicies
 {
-    public interface IInjectionPolicy
+    public interface IInterceptionPolicy
     {
+        IInterceptionRule AsInterceptionRule();
+        void Add(IInterceptionRule rule);
     }
 
-    public interface IInjectionRule
+    public interface IInterceptionRule
     {
-        object? Inject(IBindingRequest request, object? source);
+        object? Intercept(IBindingRequest request, object? source);
     }
-    public class DefaultInjectionPolicy: IInjectionPolicy, IInjectionRule
+    public class DefaultInterceptionPolicy: IInterceptionPolicy, IInterceptionRule
     {
-        public List<IInjectionRule> Rules = new List<IInjectionRule>();
+        private readonly List<IInterceptionRule> rules = new List<IInterceptionRule>();
 
-        public DefaultInjectionPolicy()
+        public DefaultInterceptionPolicy()
         {
-            Rules.Add(new AttemptDisposeRule());
+            rules.Add(new AttemptDisposeRule());
         }
 
-        public object? Inject(IBindingRequest request, object? source) => 
-            Rules.Aggregate(source, (item, rule) => rule.Inject(request, item));
+        public object? Intercept(IBindingRequest request, object? source) => 
+            rules.Aggregate(source, (item, rule) => rule.Intercept(request, item));
+
+        public IInterceptionRule AsInterceptionRule() => this;
+        public void Add(IInterceptionRule rule) => rules.Add(rule);
     }
 }

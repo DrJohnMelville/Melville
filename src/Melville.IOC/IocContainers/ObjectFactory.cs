@@ -8,16 +8,16 @@ namespace Melville.IOC.IocContainers
 {
     public class ObjectFactory: ForwardingActivationStrategy
     {
-        private IInjectionRule injectionRule; 
-        public ObjectFactory(IActivationStrategy innerActivationStrategy, IInjectionRule injectionRule) :
+        private IInterceptionRule interceptionRule; 
+        public ObjectFactory(IActivationStrategy innerActivationStrategy, IInterceptionRule interceptionRule) :
             base(innerActivationStrategy)
         {
-            this.injectionRule = injectionRule;
+            this.interceptionRule = interceptionRule;
         }
 
         public override object? Create(IBindingRequest bindingRequest)
         {
-            return injectionRule.Inject(bindingRequest, base.Create(bindingRequest));
+            return interceptionRule.Intercept(bindingRequest, base.Create(bindingRequest));
         }
     }
 
@@ -25,8 +25,8 @@ namespace Melville.IOC.IocContainers
     {
 
 
-        public ObjectFactory(IActivationStrategy innerActivationStrategy, IInjectionRule injectionRule):
-            base(innerActivationStrategy, injectionRule)
+        public ObjectFactory(IActivationStrategy innerActivationStrategy, IInterceptionRule interceptionRule):
+            base(innerActivationStrategy, interceptionRule)
         {
         }
 

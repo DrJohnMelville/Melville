@@ -7,20 +7,18 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
 {
     public sealed class AttemptDisposeRegistration : ForwardingActivationStrategy
     {
-        private static IInjectionRule rule = new AttemptDisposeRule();
+        private static IInterceptionRule rule = new AttemptDisposeRule();
         public AttemptDisposeRegistration(IActivationStrategy innerActivationStrategy) : base(innerActivationStrategy)
         {
         }
 
-        public override object? Create(IBindingRequest bindingRequest)
-        {
-            return rule.Inject(bindingRequest, InnerActivationStrategy.Create(bindingRequest));
-        }
+        public override object? Create(IBindingRequest bindingRequest) => 
+            rule.Intercept(bindingRequest, InnerActivationStrategy.Create(bindingRequest));
     }
     
-    public sealed class AttemptDisposeRule : IInjectionRule
+    public sealed class AttemptDisposeRule : IInterceptionRule
     {
-        public object? Inject(IBindingRequest request, object? source)
+        public object? Intercept(IBindingRequest request, object? source)
         {
             if (IsDisposableItem(source))
             {
