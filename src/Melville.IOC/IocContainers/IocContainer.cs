@@ -83,7 +83,10 @@ namespace Melville.IOC.IocContainers
 
         public T ConfigurePolicy<T>() => TypeResolver.GetInstantiationPolicy<T>();
         public IInterceptionPolicy InterceptionPolicy => TypeResolver.InterceptionPolicy;
-
+        public void AddTypeResolutionPolicyBefore<T>(ITypeResolutionPolicy policy) => 
+            TypeResolver.AddResolutionPolicyBefore<T>(policy);
+        public void AddTypeResolutionPolicyAfter<T>(ITypeResolutionPolicy policy) => 
+            TypeResolver.AddResolutionPolicyAfter<T>(policy);
 
         #region Get
         

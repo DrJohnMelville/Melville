@@ -16,6 +16,8 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         T GetInstantiationPolicy<T>();
         IInterceptionPolicy InterceptionPolicy { get; }
+        void AddResolutionPolicyBefore<T>(ITypeResolutionPolicy policy);
+        void AddResolutionPolicyAfter<T>(ITypeResolutionPolicy policy);
     }
     public class TypeResolutionPolicyList: ITypeResolutionPolicyList
     {
@@ -32,5 +34,26 @@ namespace Melville.IOC.TypeResolutionPolicy
                                        .OfType<T>()
                                        .FirstOrDefault()??
                                    throw new InvalidOperationException("No policy object of type: " + typeof(T).Name);
+
+        public void AddResolutionPolicyBefore<T>(ITypeResolutionPolicy policy)
+        {
+            var index = Policies.FindIndex(i => i is T);
+            CheckIfItemFound(index);
+            Policies.Insert(index, policy);
+        }
+        public void AddResolutionPolicyAfter<T>(ITypeResolutionPolicy policy)
+        {
+            var index = Policies.FindLastIndex(i => i is T);
+            CheckIfItemFound(index);
+            Policies.Insert(index+1, policy);
+        }
+
+        private void CheckIfItemFound(int index)
+        {
+            if (index < 0)
+            {
+                throw new IocException("Could not find the target resolution policy in AddResolutionPolicyBefore");
+            }
+        }
     }
 }

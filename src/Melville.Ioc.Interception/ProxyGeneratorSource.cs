@@ -28,7 +28,9 @@ namespace Melville.Ioc.Interception
         }
 
         public static object CreateInterceptor(IIocService service, Type type, object target,
-            IInterceptor[] interceptors) =>
+            params IInterceptor[] interceptors) =>
             GetSource(service).CreateInterfaceProxyWithTarget(type, target, interceptors);
+        public static object CreateSyntheticObject(IIocService service, Type type, params IInterceptor[] interceptors) =>
+            GetSource(service).CreateInterfaceProxyWithoutTarget(type, interceptors);
     }
 }
