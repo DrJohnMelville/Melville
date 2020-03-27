@@ -10,7 +10,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory: SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<ScopedMethodCallViewModel>();
+            SearchTreeForSample<ScopedMethodCallViewModel`>();
         
         public SampleDirectory()
         {
