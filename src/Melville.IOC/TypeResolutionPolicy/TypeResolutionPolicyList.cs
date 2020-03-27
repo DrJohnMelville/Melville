@@ -18,6 +18,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         IInterceptionPolicy InterceptionPolicy { get; }
         void AddResolutionPolicyBefore<T>(ITypeResolutionPolicy policy);
         void AddResolutionPolicyAfter<T>(ITypeResolutionPolicy policy);
+        void RemoveTypeResolutionPolicy<T>();
     }
     public class TypeResolutionPolicyList: ITypeResolutionPolicyList
     {
@@ -37,13 +38,13 @@ namespace Melville.IOC.TypeResolutionPolicy
 
         public void AddResolutionPolicyBefore<T>(ITypeResolutionPolicy policy)
         {
-            var index = Policies.FindIndex(i => i is T);
+            var index = Policies.FindIndex(IsResolver<T>);
             CheckIfItemFound(index);
             Policies.Insert(index, policy);
         }
         public void AddResolutionPolicyAfter<T>(ITypeResolutionPolicy policy)
         {
-            var index = Policies.FindLastIndex(i => i is T);
+            var index = Policies.FindLastIndex(IsResolver<T>);
             CheckIfItemFound(index);
             Policies.Insert(index+1, policy);
         }
@@ -55,5 +56,9 @@ namespace Melville.IOC.TypeResolutionPolicy
                 throw new IocException("Could not find the target resolution policy in AddResolutionPolicyBefore");
             }
         }
+        public void RemoveTypeResolutionPolicy<T>() => Policies.RemoveAll(IsResolver<T>);
+
+        private bool IsResolver<T>(ITypeResolutionPolicy item) => item is T ||
+                                                                  (item is MemorizeResult mr && mr.InnerPolicy is T);
     }
 }

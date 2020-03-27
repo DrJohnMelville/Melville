@@ -20,7 +20,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             return null;
         }
 
-        private static void RemoveArgumentSoNooneElseCanUseIt(object[] objects, int i) => objects[i] = null;
+        private static void RemoveArgumentSoNooneElseCanUseIt(object?[] objects, int i) => objects[i] = null;
 
         private bool ObjectFillsRequest(object value, IBindingRequest request) =>
             request.DesiredType.IsInstanceOfType(value) ||

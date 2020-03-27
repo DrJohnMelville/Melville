@@ -16,6 +16,7 @@ namespace Melville.IOC.IocContainers
         IInterceptionPolicy InterceptionPolicy { get; }
         void AddTypeResolutionPolicyBefore<T>(ITypeResolutionPolicy policy);
         void AddTypeResolutionPolicyAfter<T>(ITypeResolutionPolicy policy);
+        void RemoveTypeResolutionPolicy<T>();
     }
 
     public static class BindableIocServiceOperations

@@ -15,6 +15,12 @@ namespace Melville.IOC.Test.TypeResolutionPolicy
             Assert.NotNull(sut.Get<SimpleObjectImplementation>());
         }
 
+        [Fact]
+        public void CanRemoveBindingPolicies()
+        {
+            sut.RemoveTypeResolutionPolicy<SelfBindByDefault>();
+            Assert.False(sut.CanGet<SimpleObjectImplementation>());
+        }
         public struct structWithConstructor
         {
             public structWithConstructor(SimpleObjectImplementation s)

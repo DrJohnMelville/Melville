@@ -87,6 +87,7 @@ namespace Melville.IOC.IocContainers
             TypeResolver.AddResolutionPolicyBefore<T>(policy);
         public void AddTypeResolutionPolicyAfter<T>(ITypeResolutionPolicy policy) => 
             TypeResolver.AddResolutionPolicyAfter<T>(policy);
+        public void RemoveTypeResolutionPolicy<T>() => TypeResolver.RemoveTypeResolutionPolicy<T>();
 
         #region Get
         
