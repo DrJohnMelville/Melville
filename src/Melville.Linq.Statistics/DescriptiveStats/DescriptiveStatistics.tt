@@ -1,0 +1,53 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".TT.cs" #>
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace LinqStatistics.DescriptiveStats
+{
+  public static partial class DescriptiveStatsImplementation
+  {
+  <#
+    var typeMappings = new []{
+	  new {Output = "double", Input = "double"},
+	  new {Output = "double", Input = "int"},
+	};
+    foreach (var typeDecl in typeMappings)
+	{
+  #>
+      public static (<#= typeDecl.Output #> Mean, <#= typeDecl.Output #> StdDev) MeanAndStandardDeviation(this IEnumerable<<#= typeDecl.Input #>> items,
+      bool population = false)
+    {
+      {
+        // ref: http://warrenseen.com/blog/2006/03/13/how-to-calculate-standard-deviation/
+        <#= typeDecl.Output #> mean = 0.0;
+        <#= typeDecl.Output #> sum = 0.0;
+        <#= typeDecl.Output #> stdDev = 0.0;
+        int n = 0;
+        foreach (<#= typeDecl.Output #> val in items)
+        {
+          n++;
+          <#= typeDecl.Output #> delta = val - mean;
+          mean += delta / n;
+          sum += delta * (val - mean);
+        }
+        if (1 < n)
+          stdDev = Math.Sqrt(sum / (n - (population?0:1)));
+
+        return (mean,stdDev);
+      }
+    }
+
+      public static <#= typeDecl.Output #> StandardDeviation(this IEnumerable<<#= typeDecl.Input #>> items,
+      bool population = false) => MeanAndStandardDeviation(items, population).StdDev;
+  <# } #>
+
+  }
+}

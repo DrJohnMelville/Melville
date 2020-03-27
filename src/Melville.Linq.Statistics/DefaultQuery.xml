@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Query Kind="Expression">
+  <Namespace>Melville.Linq.Statistics.DescriptiveStats</Namespace>
+  <Namespace>Melville.Linq.Statistics.FileWriter</Namespace>
+  <Namespace>Melville.Linq.Statistics.Functional</Namespace>
+  <Namespace>Melville.Linq.Statistics.Graphics</Namespace>
+  <Namespace>Melville.Linq.Statistics.HypothesisTesting</Namespace>
+  <Namespace>Melville.Linq.Statistics.Tables</Namespace>
+</Query>

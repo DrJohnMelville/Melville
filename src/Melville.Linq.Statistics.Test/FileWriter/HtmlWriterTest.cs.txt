@@ -1,0 +1,1 @@
+HtmlWriterTest.cs_WithDataRowTest|<LinqPad.Html>\r\n  <table>\r\n    <tr>\r\n      <td align="right">Data</td>\r\n      <td>10</td>\r\n      <td>20</td>\r\n    </tr>\r\n  </table>\r\n</LinqPad.Html>

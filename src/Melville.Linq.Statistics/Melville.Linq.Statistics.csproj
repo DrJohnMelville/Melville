@@ -1,0 +1,39 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <DebugType>Full</DebugType>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RootNamespace>LinqStatistics</RootNamespace>
+    <Nullable>annotations</Nullable>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <Version>0.1.0</Version>
+    <Authors>John Melville, MS, MD</Authors>
+    <Company>Melville Computing</Company>
+    <Title>LinqStatistics</Title>
+    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+    <PackageDescription>A simple data analysis framework that works well with LinqPad.</PackageDescription>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Linqpad">
+      <HintPath>C:\Program Files\LINQPad6\LINQPad.Runtime.dll</HintPath>
+    </Reference>
+    <PackageReference Include="Accord.Statistics" Version="3.8.0" />
+    <PackageReference Include="Castle.Core" Version="4.4.0" />
+  
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Melville.CurveFit\Melville.CurveFit.csproj" />
+  </ItemGroup>
+  
+</Project>
