@@ -23,7 +23,7 @@ namespace Melville.IOC.BindingRequests
             return false;
         }
 
-        object?[] ExtraParamsForChild { get; set; }
-        object?[] ExtraParamsFromParent { get; }
+        object?[] ArgumentsFormChild { get; set; }
+        object?[] ArgumentsFromParent { get; }
     }
 }

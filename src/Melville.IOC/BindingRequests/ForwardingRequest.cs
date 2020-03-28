@@ -22,8 +22,8 @@ namespace Melville.IOC.BindingRequests
             set => inner.IocService = value;
         }
 
-        public object?[] ExtraParamsFromParent => inner.ExtraParamsForChild;
-        public object?[] ExtraParamsForChild { get; set;} = Array.Empty<object>();
+        public object?[] ArgumentsFromParent => inner.ArgumentsFormChild;
+        public object?[] ArgumentsFormChild { get; set;} = Array.Empty<object>();
         public virtual bool HasDefaultValue(out object? value)
         {
             value = null;

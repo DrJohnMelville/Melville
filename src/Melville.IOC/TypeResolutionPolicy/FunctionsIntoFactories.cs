@@ -8,16 +8,6 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy
 {
-
-    public class ParameterizedRequest : TypeChangeBindingRequest
-    { 
-        public ParameterizedRequest(IBindingRequest inner, Type targetType, 
-            object[] parameters) : base(inner, targetType)
-        {
-            ExtraParamsForChild = parameters;
-        }
-    }
-
     public class FunctionsIntoFactories : ITypeResolutionPolicy
     {
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) =>

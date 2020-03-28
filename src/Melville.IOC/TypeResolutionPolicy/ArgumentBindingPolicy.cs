@@ -9,7 +9,7 @@ namespace Melville.IOC.TypeResolutionPolicy
     {
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
         {
-            var objects = request.ExtraParamsFromParent;
+            var objects = request.ArgumentsFromParent;
             for (int i = 0; i < objects.Length; i++)
             {
                 if (objects[i] is {} ret && ObjectFillsRequest(ret, request))

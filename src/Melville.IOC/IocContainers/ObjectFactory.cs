@@ -49,7 +49,8 @@ namespace Melville.IOC.IocContainers
 
         private static T GetWrappedItem<TWrapper>(IBindingRequest request, object[] parameters) where TWrapper : T
         {
-            return (T) request.IocService.Get(request.CreateSubRequest(typeof(TWrapper)!, parameters));
+            return (T) (request.IocService.Get(request.CreateSubRequest(typeof(TWrapper), parameters)) ??
+                throw new IocException($"Request for wrapper object of type {typeof(TWrapper)} returned null."));
         }
 
         private static object[] PrependItem(object[] parameters, T item)

@@ -26,10 +26,10 @@ namespace Melville.IOC.TypeResolutionPolicy
         public bool CanCreate(IBindingRequest bindingRequest) => 
             bindingRequest.IocService.CanGet(new IBindingRequest[]{InnerRequestForCanCreate(bindingRequest)});
 
-        private ParameterizedRequest InnerRequestForCanCreate(IBindingRequest bindingRequest)
+        private IBindingRequest InnerRequestForCanCreate(IBindingRequest bindingRequest)
         {
             var types = functionDelegateType.GetGenericArguments().ToList();
-            return new ParameterizedRequest(bindingRequest, types.Last(),
+            return bindingRequest.CreateSubRequest(types.Last(),
                 CreateFakeObjectsFromFunctionParameters(types).ToArray());
         }
 
@@ -57,7 +57,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         }
         
         public object? CreateTargetObject(object[] parameters) => 
-            bindingRequest.IocService.Get(new ParameterizedRequest(bindingRequest, desiredType, parameters)) 
+            bindingRequest.IocService.Get(bindingRequest.CreateSubRequest(desiredType, parameters)) 
             ?? throw new IocException("Type resolved to null");
     }
 

@@ -37,14 +37,17 @@ namespace Melville.IOC.IocContainers
         public static IIocService CreateSharingScope(this IIocService service) => new SharingScopeContainer(service);
         public static IDisposableIocService CreateLifetimeScope(this IIocService service) => 
             new DisposableIocService(service);
-        public static bool CanGet<T>(this IIocService ioc) => ioc.CanGet(typeof(T));
-        public static bool CanGet(this IIocService ioc, Type type) => ioc.CanGet(new RootBindingRequest(type, ioc));
-        public static bool CanGet(this IIocService ioc, IEnumerable<IBindingRequest> requests) => requests.All(ioc.CanGet);
+        public static bool CanGet<T>(this IIocService ioc, params object[] arguments) => 
+            ioc.CanGet(typeof(T), arguments);
+        public static bool CanGet(this IIocService ioc, Type type, params object[] arguments) => 
+            ioc.CanGet(new RootBindingRequest(type, ioc, arguments));
+        public static bool CanGet(this IIocService ioc, IEnumerable<IBindingRequest> requests) => 
+            requests.All(ioc.CanGet);
         
-        public static T Get<T>(this IIocService ioc) => (T) ioc.Get(typeof(T));
-        public static object Get(this IIocService ioc, Type serviceTppe)
+        public static T Get<T>(this IIocService ioc, params object[] arguments) => (T) ioc.Get(typeof(T), arguments);
+        public static object Get(this IIocService ioc, Type serviceTppe, params object[] arguments)
         {
-            return RecursiveExceptionTracker.BasisCall(ioc.Get, new RootBindingRequest(serviceTppe, ioc)) 
+            return RecursiveExceptionTracker.BasisCall(ioc.Get, new RootBindingRequest(serviceTppe, ioc, arguments)) 
                    ?? throw new IocException("Type resolved to null");
         }
 

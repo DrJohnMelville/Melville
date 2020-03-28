@@ -11,14 +11,14 @@ namespace Melville.IOC.IocContainers
     {
         public static object? RunStatic(this IBindingRequest request, Type target, string methodName,
             params object[] parameters) =>
-           new ParameterizedRequest(request, target, parameters).RunStatic(target, methodName);
+          request.CreateSubRequest(target, parameters).RunStatic(target, methodName);
         public static object? RunStatic(this IBindingRequest request, Type target, string methodName)
         {
             return RunStaticOrMemberMethod(request, null, methodName, target, StaticMethodSearchCriteria);
         }
         public static object? Run(this IBindingRequest request, object target, string methodName,
             params object[] paremeters) =>
-            new ParameterizedRequest(request, request.DesiredType, paremeters).Run(target, methodName);
+            request.CreateSubRequest(request.DesiredType, paremeters).Run(target, methodName);
         
         public static object? Run(this IBindingRequest request, object target, string methodName) => 
             RunStaticOrMemberMethod(request, target, methodName, target.GetType(), MemberMethodSearchCriteria);

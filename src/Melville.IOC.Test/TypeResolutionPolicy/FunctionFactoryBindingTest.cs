@@ -68,6 +68,22 @@ namespace Melville.IOC.Test.TypeResolutionPolicy
             Assert.Equal(2, item2.Int2);
             Assert.NotNull(item2.Simple);
         }
+
+        [Fact]
+        public void SpecifyParametersToGet()
+        {
+            var item = sut.Get<HasThreeArguments>(1,2);
+            Assert.Equal(1, item.Int);
+            Assert.Equal(2, item.Int2);
+            Assert.NotNull(item.Simple);
+        }
+
+        [Fact]
+        public void CanGetWithArguments()
+        {
+            Assert.False(sut.CanGet<HasThreeArguments>());
+            Assert.True(sut.CanGet<HasThreeArguments>(1,2));
+        }
         
         public class AsyncCreatable
         {
