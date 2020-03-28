@@ -43,7 +43,7 @@ namespace Melville.Mvvm.TestHelpers.MockFiles
         public MockDirectoryTreeBuilder File(string name) =>
             File(name, "Fake file content.");
 
-        private MockDirectoryTreeBuilder File(string name, string fileContent)
+        public MockDirectoryTreeBuilder File(string name, string fileContent)
         {
             dir.File(name).Create(fileContent);
             return this;
