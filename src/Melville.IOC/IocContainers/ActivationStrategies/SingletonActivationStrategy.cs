@@ -1,4 +1,6 @@
-﻿namespace Melville.IOC.IocContainers.ActivationStrategies
+﻿using Melville.IOC.BindingRequests;
+
+namespace Melville.IOC.IocContainers.ActivationStrategies
 {
     public class SingletonActivationStrategy : ForwardingActivationStrategy
     {

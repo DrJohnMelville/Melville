@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using Melville.IOC.Activation;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;

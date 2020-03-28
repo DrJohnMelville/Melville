@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.Wpf.DiParameterSources;
 

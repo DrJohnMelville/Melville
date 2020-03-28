@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Melville.IOC.Activation;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 

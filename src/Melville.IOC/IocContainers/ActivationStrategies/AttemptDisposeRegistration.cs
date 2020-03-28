@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.InjectionPolicies;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies

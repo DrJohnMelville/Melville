@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Castle.DynamicProxy;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers;
 

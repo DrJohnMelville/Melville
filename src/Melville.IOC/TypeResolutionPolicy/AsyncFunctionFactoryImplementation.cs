@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 
 namespace Melville.IOC.TypeResolutionPolicy

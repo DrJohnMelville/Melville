@@ -1,4 +1,5 @@
 ﻿using Castle.DynamicProxy;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 
 namespace Melville.Ioc.Interception.InterfaceFactories

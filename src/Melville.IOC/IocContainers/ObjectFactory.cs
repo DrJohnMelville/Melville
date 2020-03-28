@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
