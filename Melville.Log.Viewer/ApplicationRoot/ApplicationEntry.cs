@@ -2,6 +2,7 @@
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
 using Melville.Log.Viewer.HomeScreens;
+using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
 
@@ -12,7 +13,10 @@ namespace Melville.Log.Viewer.ApplicationRoot
         [STAThread]
         public static int Main(string[] commandLineArgs)
         {
-            Application(new Startup().CompositionRoot()).Run();
+            var compositionRoot = new Startup().CompositionRoot();
+            compositionRoot.Get<PipeListener>().Start();
+            Application(compositionRoot).Run();
+            compositionRoot.Get<IShutdownMonitor>().InitiateShutdown();
             return 0;
         }
 

@@ -19,4 +19,9 @@
       <ProjectReference Include="..\src\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Serilog.Formatting.Compact" Version="1.1.0" />
+      <PackageReference Include="Serilog.Formatting.Compact.Reader" Version="1.0.3" />
+    </ItemGroup>
+
 </Project>
