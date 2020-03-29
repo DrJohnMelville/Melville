@@ -34,14 +34,4 @@ namespace Melville.Log.Viewer.ApplicationRoot
         }
 
     }
-
-    public class Startup
-    {
-        private IocContainer ioc = new IocContainer();
-        public  IIocService CompositionRoot() => ioc;
-
-        public Startup()
-        {
-        }
-    }
 }

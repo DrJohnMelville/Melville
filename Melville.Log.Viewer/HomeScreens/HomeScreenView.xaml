@@ -4,9 +4,19 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Melville.Log.Viewer.HomeScreens"
+             xmlns:viewFrames="clr-namespace:Melville.MVVM.Wpf.ViewFrames;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TextBlock>Welcome to the Home Screen</TextBlock>
-    </Grid>
+             d:DataContext="{d:DesignInstance {x:Type local:HomeScreenViewModel}}">
+    <TabControl ItemsSource="{Binding Pages}">
+        <TabControl.ItemTemplate>
+            <DataTemplate DataType="{x:Type local:IHomeScreenPage}">
+                <TextBlock Text="{Binding Title}"></TextBlock>
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+        <TabControl.ContentTemplate>
+            <DataTemplate>
+                <viewFrames:ViewFrame Content="{Binding}"/>
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+    </TabControl>
 </UserControl>
