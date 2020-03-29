@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Channels;
 using Melville.IOC.IocContainers.ChildContainers;
+using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Compact;
 using Serilog.Formatting.Compact.Reader;
+using Serilog.Parsing;
 
 namespace Melville.Log.Viewer.EventSink
 {
@@ -32,6 +36,9 @@ namespace Melville.Log.Viewer.EventSink
         private async void TryConnectToServer()
         {
              await targetProtocol.Connect();
+             var localLogger = new LoggerConfiguration().WriteTo.Sink(this, LogEventLevel.Verbose).CreateLogger();
+             localLogger.Information("Source Process: {AssignProcessName}",
+                 Assembly.GetEntryAssembly()?.GetName().Name ??"No Name");
              while (true)
              {
                  var logEvent = await buffer.Reader.ReadAsync();
