@@ -13,9 +13,18 @@ namespace Melville.IOC.TypeResolutionPolicy
         IPickBindingTarget<object> Bind(Type type, bool ifNeeded);
     }
 
-    public class CachedResolutionPolicy : ITypeResolutionPolicy, IPickBindingTargetSource
+    public interface ISetBackupCache
+    {
+        void SetBackupCache(ITypeResolutionPolicy policy);
+    }
+    
+    public sealed class CachedResolutionPolicy : ITypeResolutionPolicy, IPickBindingTargetSource, ISetBackupCache
     {
         private readonly BindingRegistry registry;
+
+        private ITypeResolutionPolicy? backupCache = null;
+
+        public void SetBackupCache(ITypeResolutionPolicy policy) => backupCache = policy;
 
         public CachedResolutionPolicy(IInterceptionRule interceptionPolicy)
         {
@@ -23,10 +32,11 @@ namespace Melville.IOC.TypeResolutionPolicy
         }
 
         public IPickBindingTarget<T> Bind<T>(bool ifNeeded) => new BindingConfiguration<T>(registry, ifNeeded);
+
         public IPickBindingTarget<object> Bind(Type type, bool ifNeeded) => new BindingConfiguration<object>(type, registry, ifNeeded);
 
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) => 
             registry.TryGetBinding(request.DesiredType, out var ret) && ret.ValidForRequest(request) ?
-                ret : null;
+                ret : backupCache?.ApplyResolutionPolicy(request);
     }
 }

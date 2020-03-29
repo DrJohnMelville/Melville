@@ -46,5 +46,21 @@ namespace Melville.IOC.Test.IocContainers
             Assert.True(v2 is BO2);
             Assert.Equal(v1.Dep, v2.Dep);
         }
+        [Fact]
+        public void ManyNestedConstainers()
+        {
+            sut.Bind<Dep>().ToSelf().AsSingleton();
+            var c1 = sut.Get<ChildContainer>();
+            for (int i = 0; i < 10; i++)
+            {
+                c1 = c1.Get<ChildContainer>();
+            }
+            c1.Bind<IBO>().To<BO1>();
+
+            var v1 = c1.Get<IBO>();
+            
+            Assert.True(v1 is BO1);
+            Assert.Equal(sut.Get<Dep>(), v1.Dep);
+        }
     }
 }

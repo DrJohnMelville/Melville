@@ -62,6 +62,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Linq.Statistics", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Linq.Statistics.Test", "src\Melville.Linq.Statistics.Test\Melville.Linq.Statistics.Test.csproj", "{DCF309BF-CC45-427A-80B8-166C15B59D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Log.Viewer", "Melville.Log.Viewer\Melville.Log.Viewer.csproj", "{CC5D1FB3-D748-4F23-8365-FCA15C304DCA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +166,10 @@ Global
 		{DCF309BF-CC45-427A-80B8-166C15B59D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCF309BF-CC45-427A-80B8-166C15B59D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCF309BF-CC45-427A-80B8-166C15B59D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC5D1FB3-D748-4F23-8365-FCA15C304DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC5D1FB3-D748-4F23-8365-FCA15C304DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC5D1FB3-D748-4F23-8365-FCA15C304DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC5D1FB3-D748-4F23-8365-FCA15C304DCA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{38E22C65-8C05-4703-9587-A0133996C165} = {8379C50E-4E57-49A3-8AB1-BEC01D3CB81F}
@@ -189,5 +195,6 @@ Global
 		{A48F3287-1B2D-4FE1-9DE8-288792058941} = {BCA843E9-83B1-469E-829A-8F6D77A70FD3}
 		{1D419A07-A24C-470C-9CD6-7C611B55B9E3} = {BCA843E9-83B1-469E-829A-8F6D77A70FD3}
 		{DCF309BF-CC45-427A-80B8-166C15B59D62} = {BCA843E9-83B1-469E-829A-8F6D77A70FD3}
+		{CC5D1FB3-D748-4F23-8365-FCA15C304DCA} = {C5F1CD9D-6E6A-4EFD-8E13-DBBE4BC04205}
 	EndGlobalSection
 EndGlobal

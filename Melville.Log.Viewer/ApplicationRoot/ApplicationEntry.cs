@@ -1,0 +1,47 @@
+﻿using System;
+using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ChildContainers;
+using Melville.Log.Viewer.HomeScreens;
+using Melville.MVVM.Wpf.DiParameterSources;
+using Melville.MVVM.Wpf.RootWindows;
+
+namespace Melville.Log.Viewer.ApplicationRoot
+{
+    public class ApplicationEntry
+    {
+        [STAThread]
+        public static int Main(string[] commandLineArgs)
+        {
+            Application(new Startup().CompositionRoot()).Run();
+            return 0;
+        }
+
+        private static App Application(IIocService root)
+        {
+            var application = root.Get<App>();
+            application.AttachDiRoot(new DiBridge(root));
+            application.InitializeComponent();
+            application.MainWindow = VisibleMainWindow(root);
+            return application;
+        }
+
+        private static RootNavigationWindow VisibleMainWindow(IIocService root)
+        {
+            var ret = root.Get<RootNavigationWindow>();
+            ret.Show();
+            ((INavigationWindow)ret.DataContext).NavigateTo(root.Get<HomeScreenViewModel>());
+            return ret;
+        }
+
+    }
+
+    public class Startup
+    {
+        private IocContainer ioc = new IocContainer();
+        public  IIocService CompositionRoot() => ioc;
+
+        public Startup()
+        {
+        }
+    }
+}
