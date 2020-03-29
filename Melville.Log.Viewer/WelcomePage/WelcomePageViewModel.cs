@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Melville.Log.Viewer.EventSink;
+using Melville.Log.NamedPipeEventSink;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.BusinessObjects;
@@ -31,10 +31,10 @@ namespace Melville.Log.Viewer.WelcomePage
         {
         }
 
-        public void ConnectLog([FromServices] Func<NamedPipeEventSink> createSink)
+        public void ConnectLog([FromServices] Func<NamedPipeEventSink.NamedPipeEventSink> createSink)
         {
             logger = new LoggerConfiguration()
-                .WriteTo.Sink(createSink()).CreateLogger();
+                .WriteTo.NamedPipe().CreateLogger();
         }
 
 

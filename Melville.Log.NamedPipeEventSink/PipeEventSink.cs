@@ -1,22 +1,17 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.IO;
 using System.Reflection;
-using System.Text.Json;
 using System.Threading.Channels;
-using Melville.IOC.IocContainers.ChildContainers;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Compact;
-using Serilog.Formatting.Compact.Reader;
-using Serilog.Parsing;
 
-namespace Melville.Log.Viewer.EventSink
+namespace Melville.Log.NamedPipeEventSink
 {
     public class NamedPipeEventSink: ILogEventSink
     {
+        public LoggingLevelSwitch LevelSwitch { get; } = new LoggingLevelSwitch();
         private Channel<LogEvent> buffer = Channel.CreateBounded<LogEvent>(new BoundedChannelOptions(1000)
         {
             FullMode = BoundedChannelFullMode.DropOldest,

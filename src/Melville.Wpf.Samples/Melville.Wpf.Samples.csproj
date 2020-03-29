@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Melville.Log.NamedPipeEventSink\Melville.Log.NamedPipeEventSink.csproj" />
       <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
       <ProjectReference Include="..\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj" />
       <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />

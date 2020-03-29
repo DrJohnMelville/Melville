@@ -2,9 +2,8 @@
 using System.IO;
 using System.IO.Pipes;
 using System.Threading.Tasks;
-using Melville.Log.Viewer.NamedPipeServers;
 
-namespace Melville.Log.Viewer.EventSink
+namespace Melville.Log.NamedPipeEventSink
 {
     public interface INamedPipeWriterProtocol
     {
@@ -23,7 +22,7 @@ namespace Melville.Log.Viewer.EventSink
 
         public Task Write(byte[] data, int origin, int length)
         {
-            return outputPipe?.WriteAsync(data, origin, length);
+            return outputPipe?.WriteAsync(data, origin, length) ?? Task.CompletedTask;
         }
 
         public async Task<bool> Connect()

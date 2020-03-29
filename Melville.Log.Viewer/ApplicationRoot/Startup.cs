@@ -1,7 +1,6 @@
 ﻿using System.Drawing.Design;
 using System.Windows.Data;
 using Melville.IOC.IocContainers;
-using Melville.Log.Viewer.EventSink;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.AdvancedLists;
 

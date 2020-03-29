@@ -67,7 +67,9 @@ namespace Melville.MVVM.AdvancedLists
 
   public static class ThreadSafeCollectionBuilder
   {
-    internal static Action<IEnumerable, object> Fixup { get; private set; } = (_,__) => { ; };
+    internal static Action<IEnumerable, object> Fixup { get; private set; } = (_,__) => 
+      throw new InvalidOperationException("Cannot use threadsafe collections without calling ThreadsafeCollectionBuilder.SetFixupHook," +
+                                          "usually with a value of BindingOperations.EnableColletionSynchronization.");
 
     public static void SetFixupHook(Action<IEnumerable, object> fixup) => Fixup = fixup;
   }

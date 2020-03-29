@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Security.Principal;
 
-namespace Melville.Log.Viewer.NamedPipeServers
+namespace Melville.Log.NamedPipeEventSink
 {
     public class LoggingPipeName
     {
