@@ -40,7 +40,7 @@ namespace WebDashboard.Startup
 
         private static void StaticListInitialization()
         {
-            ThreadSafeCollectionBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
+            UiThreadBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
         }
     }
 }

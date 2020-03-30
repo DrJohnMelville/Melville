@@ -35,17 +35,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
         item.CollectionChanged += SubCollectionChanged;
       }
     }
-
-    #region UI Mutex
-
-    private readonly object mutex = new object();
-    void ICollectionWithUIMutex.RegisterCollectionWithMutex(IEnumerable target)
-    {
-      ThreadSafeCollectionBuilder.Fixup(target, mutex);
-    }
-
-    #endregion
-
+    
     private void ParentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       // we need all the sublists to find new items when they show up.
@@ -55,8 +45,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
         RemoveSubCollectionChangedNotification(i));
 
       OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-      OnPropertyChanged("Count");
-      
+      OnPropertyChanged("Count"); 
     }
 
     private void RemoveSubCollectionChangedNotification(INotifyCollectionChanged i) => i.CollectionChanged -= SubCollectionChanged;

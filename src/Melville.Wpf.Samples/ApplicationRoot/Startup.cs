@@ -35,7 +35,7 @@ namespace Melville.Wpf.Samples.ApplicationRoot
         
         private void InjectThreadSafeCollectionMutex()
         {
-            ThreadSafeCollectionBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
+            UiThreadBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
         }
 
 

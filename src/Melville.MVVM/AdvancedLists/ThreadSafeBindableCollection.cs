@@ -1,5 +1,6 @@
 ﻿using  System;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Melville.MVVM.AdvancedLists
 {
@@ -19,58 +20,40 @@ namespace Melville.MVVM.AdvancedLists
       ((ICollectionWithUIMutex)this).RegisterCollectionWithMutex(this);
     }
 
-    protected override void ClearItems()
-    {
-      lock (mutex)
-      {
-        base.ClearItems();
-      }
-    }
+    protected override void ClearItems() => UiThreadBuilder.RunOnUiThread(base.ClearItems);
 
     protected override void InsertItem(int index, T item)
     {
-      lock (mutex)
-      {
-        base.InsertItem(index, item);
-      }
+      UiThreadBuilder.RunOnUiThread(() => base.InsertItem(index, item));
     }
 
     protected override void MoveItem(int oldIndex, int newIndex)
     {
-      lock (mutex)
-      {
-        base.MoveItem(oldIndex, newIndex);
-      }
+      UiThreadBuilder.RunOnUiThread(() => base.MoveItem(oldIndex, newIndex));
     }
 
     protected override void RemoveItem(int index)
     {
-      lock (mutex)
-      {
-        base.RemoveItem(index);
-      }
+      UiThreadBuilder.RunOnUiThread(() => base.RemoveItem(index));
     }
 
     protected override void SetItem(int index, T item)
     {
-      lock (mutex)
-      {
-        base.SetItem(index, item);
-      }
+      UiThreadBuilder.RunOnUiThread(() => base.SetItem(index, item));
     }
 
     void ICollectionWithUIMutex.RegisterCollectionWithMutex(IEnumerable target)
     {
-      ThreadSafeCollectionBuilder.Fixup(target, mutex);
+//      ThreadSafeCollectionBuilder.Fixup(target, mutex);
     }
   }
 
-  public static class ThreadSafeCollectionBuilder
+  public static class UiThreadBuilder
   {
-    internal static Action<IEnumerable, object> Fixup { get; private set; } = (_,__) => 
-      throw new InvalidOperationException("Cannot use threadsafe collections without calling ThreadsafeCollectionBuilder.SetFixupHook," +
-                                          "usually with a value of BindingOperations.EnableColletionSynchronization.");
-
-    public static void SetFixupHook(Action<IEnumerable, object> fixup) => Fixup = fixup;
+    public static Action<Action> RunOnUiThread { get; set; } = a =>
+    {
+      a();
+      Debug.WriteLine("Melville.MVVM.AdvancedLists.UiThreadBuilder.RunOnUIThread Delegate not registered -- collections not being routed to UI thread");
+    };
   }
 }
