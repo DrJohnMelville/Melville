@@ -76,7 +76,28 @@ namespace Melville.IOC.Test.IocContainers
             outer.Dispose();
             Assert.Equal(disposes, obj.DisposeCount);
         }
-        
-        // createmany needs to dispose of all ihe instances.
+
+        public class DisposeHolder:IDisposable
+        {
+            public DisposeHolder(IDisposable disp)
+            {
+                Disp = disp;
+            }
+
+            public IDisposable Disp {get;}
+            public void Dispose()
+            {
+                Disp.Dispose();
+            }
+        }
+        [Fact]
+        public void ScopeDoesNotResusivelyDispose()
+        {
+            var scope = sut.CreateScope();
+        //    var s2 = scope.Get<DisposeHolder>(scope);
+            var s2 = scope.Get<IIocService>(scope);
+            scope.Dispose();
+            // should not overflow the stack
+        }
     }
 }

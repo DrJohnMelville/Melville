@@ -30,16 +30,26 @@ namespace Melville.IOC.IocContainers
 
         public async ValueTask DisposeAsync()
         {
+            foreach (var item in GenerateDisposalList())
+            {
+                await DisposeSingleItem(item);
+            }
+        }
+
+        private List<object> GenerateDisposalList()
+        {
             //We dispose in reverse order.  Since most objects are created after their dependencies that means
             // that most objects will be disposed before their dependencies are disposed.
             //
             //We call distinct so that if the user accidentally got the class registered twice, ike because it
             // called registerWrapperForDisposal without a wrapper. it does not get disposed twice
-            foreach (var item in Enumerable.Reverse(itemsToDispose).Distinct())
-            {
-                await DisposeSingleItem(item);
-            }
+            var finalDisposalList = Enumerable.Reverse(itemsToDispose).Distinct().ToList();
+            
+            // We clear the list before we dispose because this scope might get registered in itself, either
+            // directly or indirectly.  so we want to be sure that we do no dispose recursively.
             itemsToDispose.Clear();
+        
+            return finalDisposalList;
         }
 
         private static async Task DisposeSingleItem(object item)
