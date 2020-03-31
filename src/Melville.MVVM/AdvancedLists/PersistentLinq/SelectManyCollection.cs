@@ -13,16 +13,13 @@ using Melville.MVVM.Functional;
 
 namespace Melville.MVVM.AdvancedLists.PersistentLinq
 {
-  public class SelectManyCollection<TParent, TItem> : IList<TItem>, INotifyCollectionChanged, INotifyPropertyChanged,
-    ICollectionWithUIMutex
+  public class SelectManyCollection<TParent, TItem> : IList<TItem>, INotifyCollectionChanged, INotifyPropertyChanged
   {
     private readonly Func<TParent, IList<TItem>> subItems;
     private readonly IList<TParent> parentList;
     public SelectManyCollection(IList<TParent> parentList,
       Func<TParent, IList<TItem>> subItem)
     {
-      ((ICollectionWithUIMutex)this).RegisterCollectionWithMutex(this);
-
       this.parentList = parentList;
 
       subItems = subItem;
@@ -35,17 +32,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
         item.CollectionChanged += SubCollectionChanged;
       }
     }
-
-    #region UI Mutex
-
-    private readonly object mutex = new object();
-    void ICollectionWithUIMutex.RegisterCollectionWithMutex(IEnumerable target)
-    {
-      ThreadSafeCollectionBuilder.Fixup(target, mutex);
-    }
-
-    #endregion
-
+    
     private void ParentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
       // we need all the sublists to find new items when they show up.
@@ -55,8 +42,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
         RemoveSubCollectionChangedNotification(i));
 
       OnCollectionChange(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-      OnPropertyChanged("Count");
-      
+      OnPropertyChanged("Count"); 
     }
 
     private void RemoveSubCollectionChangedNotification(INotifyCollectionChanged i) => i.CollectionChanged -= SubCollectionChanged;
@@ -136,25 +122,16 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
     #region Implementation of INotifyCollectionChanged
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
-    private void OnCollectionChange(NotifyCollectionChangedEventArgs e)
-    {
-      lock (mutex)
-      {
-        CollectionChanged?.Invoke(this, e);
-      }
-    }
+    private void OnCollectionChange(NotifyCollectionChangedEventArgs e) => 
+      UiThreadBuilder.RunOnUiThread(()=> CollectionChanged?.Invoke(this, e));
 
     #endregion
 
     #region Implementation of INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
-    private void OnPropertyChanged(string property)
-    {
-      lock (mutex)
-      {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
-      }
-    }
+    private void OnPropertyChanged(string property) => 
+      UiThreadBuilder.RunOnUiThread(()=>PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property)));
+
     #endregion
 
     #region Implementation of IEnumerable

@@ -295,7 +295,7 @@ namespace Melville.CurveFit.MpFit
         {
             var conf = new MpConfig();
             int i, j, info, iflag, nfree, npegged, iter;
-            int qanylim = 0, qanypegged = 0;
+            int qanylim = 0;
 
             int ij, jj, l;
             double actred, delta, dirder, fnorm, fnorm1, gnorm, orignorm;
@@ -556,7 +556,6 @@ namespace Melville.CurveFit.MpFit
             }
 
             /* Determine if any of the parameters are pegged at the limits */
-            qanypegged = 0;
             if (qanylim != 0)
             {
                 for (j = 0; j < nfree; j++)
@@ -567,7 +566,6 @@ namespace Melville.CurveFit.MpFit
 
                     if (lpegged != 0 || upegged != 0)
                     {
-                        qanypegged = 1;
                         ij = j * ldfjac;
                         for (i = 0; i < m; i++, ij++)
                         {

@@ -14,8 +14,6 @@ namespace WebDashboard.Startup
     {
         public static void SetupIoc(IocContainer service)
         {
-            StaticListInitialization();
-            
             ConfigureLog();
 
             
@@ -36,11 +34,6 @@ namespace WebDashboard.Startup
                 .MinimumLevel.Verbose()
                 .WriteTo.Dynamic(i => i.Trace(), LogEventLevel.Information)
                 .CreateLogger();
-        }
-
-        private static void StaticListInitialization()
-        {
-            ThreadSafeCollectionBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
         }
     }
 }

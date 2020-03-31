@@ -13,8 +13,6 @@ namespace Melville.Log.Viewer.ApplicationRoot
 
         public Startup()
         {
-            ThreadSafeCollectionBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
-
             SetupPipeListener();
         }
 
