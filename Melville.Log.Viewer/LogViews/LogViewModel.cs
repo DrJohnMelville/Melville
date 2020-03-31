@@ -14,7 +14,7 @@ namespace Melville.Log.Viewer.LogViews
 {
     public class LogViewModel: NotifyBase, IHomeScreenPage
     {
-        private string title;
+        private string title = "<Not Connected>";
         public string Title
         {
             get => title;
@@ -61,6 +61,6 @@ namespace Melville.Log.Viewer.LogViews
         public DateTimeOffset TimeStamp => logEvent.Timestamp.ToLocalTime().DateTime;
         public string Message => logEvent.MessageTemplate.Render(logEvent.Properties);
         public LogEventLevel Level => logEvent.Level;
-        public string Exception => logEvent.Exception?.ToString();
+        public string Exception => logEvent.Exception?.ToString() ?? "";
     }
 }

@@ -27,18 +27,11 @@ namespace Melville.Wpf.Samples.ApplicationRoot
 
         private void Configure()
         {
-            InjectThreadSafeCollectionMutex();
             RegisterInfrastructure();
 
             service.Bind<DisposableDependency>().ToSelf().AsScoped();
         }
         
-        private void InjectThreadSafeCollectionMutex()
-        {
-            UiThreadBuilder.SetFixupHook(BindingOperations.EnableCollectionSynchronization);
-        }
-
-
         private void RegisterInfrastructure()
         {
             Serilog.Log.Logger = new LoggerConfiguration()

@@ -28,8 +28,8 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
   /// </summary>
   /// <typeparam name="TSource"The soure of the select clause.</typeparam>
   /// <typeparam name="TDest">Destination type of the select clause</typeparam>
-  public sealed class SelectCollection<TSource, TDest> : IList<TDest>, INotifyCollectionChanged, IDisposable, IList,
-    ICollectionWithUIMutex where TSource:notnull
+  public sealed class SelectCollection<TSource, TDest> : IList<TDest>, INotifyCollectionChanged, IDisposable, IList
+    where TSource:notnull
   {
     private readonly IList<TSource> source;
     private readonly Func<TSource, TDest> selector;
@@ -66,8 +66,6 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
       {
         INCC.CollectionChanged += SourceCollectionChanged;
       }
-
-      ((ICollectionWithUIMutex) this).RegisterCollectionWithMutex(this);
     }
 
     #region Cache
@@ -282,9 +280,5 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     public IEnumerable<TDest> AllMappedDestinationObjects() => cache.Values;
 
-    void ICollectionWithUIMutex.RegisterCollectionWithMutex(IEnumerable target)
-    {
-      (source as ICollectionWithUIMutex)?.RegisterCollectionWithMutex(target);
-    }
   }
 }

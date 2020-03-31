@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Melville.MVVM.AdvancedLists.PersistentLinq
 {
-  public sealed class WhereCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged, ICollectionWithUIMutex
+  public sealed class WhereCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
   {
     private readonly IList<T> source;
     private List<T> cache;
@@ -17,20 +17,14 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
     {
       this.source = source;
       this.predicate = predicate;
-      ((ICollectionWithUIMutex)this).RegisterCollectionWithMutex(this);
+
       cache = RefreshCache(); // assignment is unnecessary but it tells the compiler that cache is initalized
       if (source is INotifyCollectionChanged incc)
       {
         incc.CollectionChanged += (foo, bar) => Requery();
       }
     }
-
-    void ICollectionWithUIMutex.RegisterCollectionWithMutex(IEnumerable target)
-    {
-      (source as ICollectionWithUIMutex)?.RegisterCollectionWithMutex(target);
-    }
-
-
+    
     #region IList Members
     public IEnumerator<T> GetEnumerator()
     {
