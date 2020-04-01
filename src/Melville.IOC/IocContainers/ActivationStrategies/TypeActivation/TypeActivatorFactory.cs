@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Melville.IOC.Activation;
@@ -25,9 +24,7 @@ namespace Melville.IOC.IocContainers.ActivationStrategies.TypeActivation
         public static TypeActivationStrategy StrategyFromConstructor(ConstructorInfo constructor)
         {
             return new TypeActivationStrategy(
-                ActivationCompiler.Compile(
-                    constructor.DeclaringType??throw new InvalidDataException("Constructor has no declaring type")
-                    , constructor), constructor.GetParameters());
+                ActivationCompiler.Compile(constructor), constructor.GetParameters());
         }
 
         private static IList<ConstructorInfo> SortedConstructorList(Type type) =>
@@ -55,9 +52,7 @@ namespace Melville.IOC.IocContainers.ActivationStrategies.TypeActivation
         public static TypeActivationStrategy AsActivationStrategy(this ConstructorInfo constructor)
         {
             return new TypeActivationStrategy(
-                ActivationCompiler.Compile(
-                    constructor.DeclaringType??throw new InvalidDataException("Constructor has no declaring type")
-                    , constructor), constructor.GetParameters());
+                ActivationCompiler.Compile(constructor), constructor.GetParameters());
         }
 
         public static ConstructorInfo WithArgumentTypes(this IList<ConstructorInfo> constructors,
