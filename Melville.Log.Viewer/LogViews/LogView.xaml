@@ -5,35 +5,60 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Melville.Log.Viewer.LogViews"
              xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
+             xmlns:events="clr-namespace:Serilog.Events;assembly=Serilog"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type local:LogView}}">
-    <DataGrid ItemsSource="{Binding Events}" IsReadOnly="True" AutoGenerateColumns="False">
-        <DataGrid.Columns>
-            <DataGridTemplateColumn Header="TimeStamp" SortMemberPath="TimeStamp">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate DataType="local:LogEntryViewModel">
-                        <TextBlock Text="{Binding TimeStamp, StringFormat=MM/dd/yy HH:mm:ss}"></TextBlock>
+             d:DataContext="{d:DesignInstance {x:Type local:LogViewModel}}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock>Minimum Log Level</TextBlock>
+            <ListBox Style="{StaticResource RadioButtonList}" SelectedItem="{Binding MinimumLevel}">
+                <events:LogEventLevel>Fatal</events:LogEventLevel>
+                <events:LogEventLevel>Error</events:LogEventLevel>
+                <events:LogEventLevel>Warning</events:LogEventLevel>
+                <events:LogEventLevel>Information</events:LogEventLevel>
+                <events:LogEventLevel>Debug</events:LogEventLevel>
+                <events:LogEventLevel>Verbose</events:LogEventLevel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type events:LogEventLevel}">
+                        <TextBlock Text="{Binding}" 
+                                   Foreground="{Binding Converter={x:Static local:LogEntryViewModel.LevelToBrush}}"/>
                     </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Level" SortMemberPath="Level">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate DataType="local:LogEntryViewModel">
-                        <TextBlock Text="{Binding Level}" Foreground="{Binding EventColor}"/>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-            <DataGridTemplateColumn Header="Message" SortMemberPath="Message" Width="*">
-                <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate DataType="local:LogEntryViewModel">
-                        <StackPanel>
-                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
-                            <TextBlock Text="{Binding Exception}" TextWrapping="Wrap"
-                                       wpfHacks:VisibilityHack.CollapseIfNull="{Binding Exception}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </DataGridTemplateColumn.CellTemplate>
-            </DataGridTemplateColumn>
-        </DataGrid.Columns>
-    </DataGrid>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Events}" IsReadOnly="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="TimeStamp" SortMemberPath="TimeStamp">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="local:LogEntryViewModel">
+                            <TextBlock Text="{Binding TimeStamp, StringFormat=MM/dd/yy HH:mm:ss}"></TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Level" SortMemberPath="Level">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="local:LogEntryViewModel">
+                            <TextBlock Text="{Binding Level}" Foreground="{Binding Level, 
+                            Converter={x:Static local:LogEntryViewModel.LevelToBrush}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Message" SortMemberPath="Message" Width="*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="local:LogEntryViewModel">
+                            <StackPanel>
+                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding Exception}" TextWrapping="Wrap"
+                                           wpfHacks:VisibilityHack.CollapseIfNull="{Binding Exception}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>
