@@ -11,6 +11,7 @@
         <TextBlock>Click the Button to Log!</TextBlock>
         <Button Click="{eventBindings:EventBinding ConnectLog}">Connect a logger</Button>
         <Button Click="{eventBindings:EventBinding Log}">Log Random Number</Button>
+        <Button Click="{eventBindings:EventBinding LogException}">Log Exception</Button>
         <Border BorderBrush="Black" BorderThickness="1">
             <TextBlock Text="{Binding LastLogEntry}"/>
         </Border>

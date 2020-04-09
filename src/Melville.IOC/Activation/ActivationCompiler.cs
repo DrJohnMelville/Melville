@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
 using Melville.IOC.IocContainers;
@@ -7,22 +8,38 @@ namespace Melville.IOC.Activation
 {
     public static class ActivationCompiler
     {
+        private static readonly IDictionary<ConstructorInfo, Func<object?[], object>> compiledCache =
+            new Dictionary<ConstructorInfo, Func<object?[], object>>();
         public static Func<object?[], object> Compile(Type targetType, params Type[] parameters) =>
-            Compile(targetType, targetType.GetConstructor(parameters)??
-                                throw new IocException("No constructor found for these parameters."));
+            Compile(targetType.GetConstructor(parameters)??
+                    throw new IocException("No constructor found for these parameters."));
 
-        public static Func<object?[], object> Compile(Type targetType, ConstructorInfo constructor)
+        public static Func<object?[], object> Compile(ConstructorInfo constructor)
         {
-            ActivatableTypesPolicy.ThrowIfNotActivatable(targetType);
-            var method = new DynamicMethod("CreateInstance", typeof(object), new []{typeof(object[])});
-            EmitCreationMethod(targetType, constructor, method.GetILGenerator());
-            return AssembleToDelegate(method);
+            return CheckCacheAndCompileIfNeeded(constructor);
         }
 
-        private static void EmitCreationMethod(Type targetType, ConstructorInfo constructor, ILGenerator il)
+        private static Func<object[], object> CheckCacheAndCompileIfNeeded(ConstructorInfo constructor)
+        {
+            if (compiledCache.TryGetValue(constructor, out var precompiled)) return precompiled;
+            var ret = GenerateCompiledCode(constructor);
+            compiledCache[constructor] = ret;
+            return ret;
+        }
+
+        private static Func<object[], object> GenerateCompiledCode(ConstructorInfo constructor)
+        {
+            ActivatableTypesPolicy.ThrowIfNotActivatable(constructor.DeclaringType);
+            var method = new DynamicMethod("CreateInstance", typeof(object), new[] {typeof(object[])});
+            EmitCreationMethod(constructor, method.GetILGenerator());
+            var ret = AssembleToDelegate(method);
+            return ret;
+        }
+
+        private static void EmitCreationMethod(ConstructorInfo constructor, ILGenerator il)
         {
             EmitParameters(il, constructor.GetParameters());
-            EmitObjectCreationAndExit(constructor, il, targetType);
+            EmitObjectCreationAndExit(constructor, il, constructor.DeclaringType);
         }
 
         private static Func<object?[], object> AssembleToDelegate(DynamicMethod method) => 

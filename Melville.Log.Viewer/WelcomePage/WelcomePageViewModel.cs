@@ -38,6 +38,19 @@ namespace Melville.Log.Viewer.WelcomePage
         }
 
 
-        public void Log() => logger?.Error("The Random Number is: {Number}", randomizer.Next(1000));
+        public void Log() => logger?.Write((LogEventLevel)randomizer.Next((int) LogEventLevel.Fatal +1),
+            "The Random Number is: {Number}", randomizer.Next(1000));
+
+        public void LogException()
+        {
+            try
+            {
+                throw new Exception($"The number is {randomizer.Next(1000)}");
+            }
+            catch (Exception e)
+            {
+                logger?.Error(e, "Exception thrown");
+            }
+        }
     }
 }

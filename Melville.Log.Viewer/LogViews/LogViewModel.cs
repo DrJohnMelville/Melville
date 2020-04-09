@@ -3,23 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Media;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
+using Melville.WpfControls.Bindings;
 using Serilog.Events;
 using Serilog.Formatting.Compact.Reader;
 
 namespace Melville.Log.Viewer.LogViews
 {
-    public class LogViewModel: NotifyBase, IHomeScreenPage
+    public class LogViewModel : NotifyBase, IHomeScreenPage
     {
         private string title = "<Not Connected>";
+
         public string Title
         {
             get => title;
             set => AssignAndNotify(ref title, value);
         }
+
+        private LogEventLevel minimimLevel = LogEventLevel.Information;
+        public LogEventLevel MinimumLevel
+        {
+            get => minimimLevel;
+            set => AssignAndNotify(ref minimimLevel, value);
+        }
+
+        
+
 
         private readonly Stream logConnection;
         public ICollection<LogEntryViewModel> Events { get; } = new ThreadSafeBindableCollection<LogEntryViewModel>();
@@ -53,6 +67,7 @@ namespace Melville.Log.Viewer.LogViews
     public class LogEntryViewModel
     {
         private readonly LogEvent logEvent;
+
         public LogEntryViewModel(LogEvent logEvent)
         {
             this.logEvent = logEvent;
@@ -61,6 +76,17 @@ namespace Melville.Log.Viewer.LogViews
         public DateTimeOffset TimeStamp => logEvent.Timestamp.ToLocalTime().DateTime;
         public string Message => logEvent.MessageTemplate.Render(logEvent.Properties);
         public LogEventLevel Level => logEvent.Level;
-        public string Exception => logEvent.Exception?.ToString() ?? "";
+        public string? Exception => logEvent.Exception?.ToString();
+
+        public static IValueConverter LevelToBrush = LambdaConverter.Create((LogEventLevel level) =>
+            level switch
+            {
+                LogEventLevel.Fatal => Brushes.Black,
+                LogEventLevel.Error => Brushes.Red,
+                LogEventLevel.Warning => Brushes.DeepPink,
+                LogEventLevel.Information => Brushes.DarkOrange,
+                LogEventLevel.Debug => Brushes.LawnGreen,
+                _ => Brushes.DarkGreen
+            });
     }
 }
