@@ -131,11 +131,18 @@ namespace Melville.MVVM.FileSystem
       {
         this.dir = dir;
       }
-
+      
       public void Dispose()
       {
         dir.writeToken = null;
       }
+    }
+
+    public override void Delete()
+    { 
+      subDirectories.Clear();
+      files.Clear();
+      exists = false;
     }
   }
 }

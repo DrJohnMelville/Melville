@@ -1,4 +1,5 @@
 ﻿#nullable disable warnings
+using System;
 using  System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,8 +41,6 @@ namespace Melville.Mvvm.Test.FileSystem
       Assert.False(srcFile.Exists());
       Assert.Equal("this is a test", FileSystemHelperObjects.Content(destFile));
       Assert.Equal(FileAttributes.System, ((MockFile)destFile).Attributes);
-
-
     }
     [Fact]
     public async Task CopyFromFromTest()
@@ -109,5 +108,81 @@ namespace Melville.Mvvm.Test.FileSystem
       var srcFile = mockDir.File(src);
       Assert.Equal("r:\\ss\\" + result, srcFile.SisterFile(".ext").Path);
     }
+
+    [Fact]
+    public async Task CopyEmptyDirectory()
+    {
+      var mockDirectory1 = new MockDirectory("c:\\Mock1");
+      mockDirectory1.Create();
+      var mockDirectory2 = new MockDirectory("c:\\Mock2");
+
+      await mockDirectory2.CopyFrom(mockDirectory1);
+      Assert.True(mockDirectory1.Exists());
+      Assert.True(mockDirectory2.Exists());
+    }
+
+    [Fact]
+    public async Task CopyWithSubDirectory()
+    {
+      var mockDirectory1 = new MockDirectoryTreeBuilder().Folder("F1").Object;
+      mockDirectory1.Create();
+      var mockDirectory2 = new MockDirectory("c:\\Mock2");
+
+      await mockDirectory2.CopyFrom(mockDirectory1);
+      Assert.True(mockDirectory1.SubDirectory("F1").Exists());
+      Assert.True(mockDirectory2.SubDirectory("F1").Exists());
+      
+    }
+    [Fact]
+    public async Task CopyWithFile()
+    {
+      var mockDirectory1 = new MockDirectoryTreeBuilder().File("F1", "content").Object;
+      mockDirectory1.Create();
+      var mockDirectory2 = new MockDirectory("c:\\Mock2");
+
+      await mockDirectory2.CopyFrom(mockDirectory1);
+      Assert.True(mockDirectory1.File("F1").Exists());
+      Assert.True(mockDirectory2.File("F1").Exists());
+      Assert.Equal("content", mockDirectory2.File("F1").Content());
+      
+      
+    }
+    [Fact]
+    public async Task MoveEmptyDirectory()
+    {
+      var mockDirectory1 = new MockDirectory("c:\\Mock1");
+      mockDirectory1.Create();
+      var mockDirectory2 = new MockDirectory("c:\\Mock2");
+
+      await mockDirectory2.MoveFrom(mockDirectory1);
+      Assert.False(mockDirectory1.Exists());
+      Assert.True(mockDirectory2.Exists());
+    }
+
+    [Fact]
+    public async Task MoveWithSubDirectory()
+    {
+      var mockDirectory1 = new MockDirectoryTreeBuilder().Folder("F1").Object;
+      mockDirectory1.Create();
+      var mockDirectory2 = new MockDirectory("c:\\Mock2");
+
+      await mockDirectory2.MoveFrom(mockDirectory1);
+      Assert.False(mockDirectory1.SubDirectory("F1").Exists());
+      Assert.True(mockDirectory2.SubDirectory("F1").Exists());
+      
+    }
+    [Fact]
+    public async Task MoveWithFile()
+    {
+      var mockDirectory1 = new MockDirectoryTreeBuilder().File("F1", "content").Object;
+      mockDirectory1.Create();
+      var mockDirectory2 = new MockDirectory("c:\\Mock2");
+
+      await mockDirectory2.MoveFrom(mockDirectory1);
+      Assert.False(mockDirectory1.File("F1").Exists());
+      Assert.True(mockDirectory2.File("F1").Exists());
+      Assert.Equal("content", mockDirectory2.File("F1").Content());
+    }
+    
   }
 }

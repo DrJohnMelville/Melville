@@ -18,7 +18,20 @@ namespace Melville.MVVM.FileSystem
     public string Path => info.FullName;
     public string Name => info.Name;
     public bool Exists() => info.Exists;
-    
+    public bool ValidFileSystemPath() => true;
+    public void Delete()
+    {
+      if (!Exists()) return;
+      try
+      {
+        info.Delete();
+      }
+      catch (IOException)
+      {
+        // sometimes we cannot delete a file because we still have it cached.  We will just fix it next time.
+      }
+    }
+
     public DateTime LastAccess
     {
       get => info.LastAccessTime;
@@ -106,23 +119,9 @@ namespace Melville.MVVM.FileSystem
       }
       return ret;
     }
-
-    public void Delete()
-    {
-      if (!Exists()) return;
-      try
-      {
-        info.Delete();
-      }
-      catch (IOException)
-      {
-        // sometimes we cannot delete a file because we still have it cached.  We will just fix it next time.
-      }
-    }
-
+    
     public byte FinalProgress => 255;
     public Task WaitForFinal => Task.FromResult(1);
-    public bool ValidFileSystemPath() => true;
     public long Size => info.Length;
     public override IDirectory Directory => new FileSystemDirectory(info.Directory);
   }

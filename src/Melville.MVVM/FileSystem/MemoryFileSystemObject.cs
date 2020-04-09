@@ -12,7 +12,8 @@ namespace Melville.MVVM.FileSystem
     public DateTime LastAccess { get; set; }
     public DateTime LastWrite { get; set; }
     public DateTime Created { get; set; }
-
+    public bool ValidFileSystemPath() => false;
+    public abstract void Delete();
     public IDirectory? Directory { get; set; }
 
     protected MemoryFileSystemObject(string path)

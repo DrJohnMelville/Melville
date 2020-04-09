@@ -85,7 +85,7 @@ namespace Melville.MVVM.FileSystem
       backingStore = data;
     }
 
-    public void Delete()
+    public override void Delete()
     {
       backingStore = null;
     }
@@ -99,12 +99,7 @@ namespace Melville.MVVM.FileSystem
     {
       get { return Task<int>.FromResult(1); }
     }
-
-    public bool ValidFileSystemPath()
-    {
-      return false;
-    }
-
+    
     public long Size => backingStore == null ? 0: backingStore.Length;
   }
 }

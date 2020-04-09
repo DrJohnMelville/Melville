@@ -12,21 +12,20 @@ namespace Melville.MVVM.FileSystem
     IDirectory? Directory { get; }
     string Name { get; }
     bool Exists();
+    bool ValidFileSystemPath();
     DateTime LastAccess { get; set; }
     DateTime LastWrite { get; }
     DateTime Created { get; }
     FileAttributes Attributes { get; }
+    void Delete();
   }
 
   public interface IFile : IFileSystemObject
   {
     Task<Stream> OpenRead();
     Task<Stream> CreateWrite(FileAttributes attributes = FileAttributes.Normal);
-    void Delete();
     byte FinalProgress { get; }
-
     Task WaitForFinal { get; }
-    bool ValidFileSystemPath();
     long Size { get; }
   }
   

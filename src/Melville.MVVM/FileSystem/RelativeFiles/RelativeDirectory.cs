@@ -63,6 +63,8 @@ namespace Melville.MVVM.FileSystem.RelativeFiles
     public virtual DateTime LastWrite => GetTargetDirectory().LastWrite;
     public virtual DateTime Created => GetTargetDirectory().Created;
     public virtual FileAttributes Attributes => GetTargetDirectory().Attributes;
+    public bool ValidFileSystemPath() => GetTargetDirectory().ValidFileSystemPath();
+    public void Delete() => GetTargetDirectory().Delete();
     public virtual DateTime LastAccess
     {
       get => GetTargetDirectory().LastAccess;
