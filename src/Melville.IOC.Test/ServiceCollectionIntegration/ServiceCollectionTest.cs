@@ -10,7 +10,9 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
 {
     public class ServiceCollectionTest
     {
-        private readonly IServiceCollection source = new Melville.IOC.AspNet.RegisterFromServiceCollection.ServiceCollection();
+        private readonly IServiceCollection source =
+            new Melville.IOC.AspNet.RegisterFromServiceCollection.ServiceCollection();
+
         private readonly IocContainer sut = new IocContainer();
 
         [Fact]
@@ -24,9 +26,10 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
         [Fact]
         public void SecondFormulation()
         {
-            sut.BindServiceCollection(i=>i.AddTransient<ISimpleObject2, SimpleObjectImplementation>());
+            sut.BindServiceCollection(i => i.AddTransient<ISimpleObject2, SimpleObjectImplementation>());
             Assert.NotNull(sut.Get<ISimpleObject2>());
         }
+
         [Fact]
         public void BindToConstant()
         {
@@ -44,6 +47,7 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             sut.BindServiceCollection(source);
             Assert.True(sut.Get<ISimpleObject2>() is SimpleObjectImplementation);
         }
+
         [Fact]
         public void Singleton()
         {
@@ -64,8 +68,13 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             Assert.NotEqual(s1.Get<ISimpleObject2>(), s2.Get<ISimpleObject2>());
         }
 
-        public interface IGeneric<T>{ }
-        public class Concrete<T>: IGeneric<T> { }
+        public interface IGeneric<T>
+        {
+        }
+
+        public class Concrete<T> : IGeneric<T>
+        {
+        }
 
         [Fact]
         public void BindOpenGenerics()
@@ -73,30 +82,7 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             source.AddTransient(typeof(IGeneric<>), typeof(Concrete<>));
             sut.BindServiceCollection(source);
             Assert.True(sut.Get<IGeneric<int>>() is Concrete<int>);
-        }
-        
-        [Fact]
-        public void CanBindDisposablesInGlobalScope()
-        {
-            source.AddTransient<IDisposable>(isp => Mock.Of<IDisposable>());
-            sut.BindServiceCollection(source);
-            sut.Get<IDisposable>(); // should not throw
-        }
 
-        public class DisposableGeneric<T> : IDisposable
-        {
-            public void Dispose()
-            {
-                throw new NotImplementedException();
-            }
         }
-        [Fact]
-        public void CanBindGenericDisposablesInGlobalScope()
-        {
-            source.AddTransient(typeof(DisposableGeneric<>), typeof(DisposableGeneric<>));
-            sut.BindServiceCollection(source);
-            sut.Get<DisposableGeneric<int>>(); // should not throw
-        }
-        
     }
 }

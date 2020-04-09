@@ -7,6 +7,13 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
 {
     public class MelvilleServiceProviderFactory: IServiceProviderFactory<IocContainer>
     {
+        private readonly bool allowRootDisposables;
+
+        public MelvilleServiceProviderFactory(bool allowRootDisposables)
+        {
+            this.allowRootDisposables = allowRootDisposables;
+        }
+
         public IocContainer CreateBuilder(IServiceCollection services)
         {
             var ret = new IocContainer();
@@ -16,13 +23,16 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
 
         public IServiceProvider CreateServiceProvider(IocContainer containerBuilder)
         {
-            var adapter = new ServiceProviderAdapter(containerBuilder);
+            var adapter = new ServiceProviderAdapter(WrapContainer(containerBuilder));
             containerBuilder.BindIfMNeeded<IServiceScopeFactory>().And<IServiceProvider>()
                 .ToConstant(adapter).DisposeIfInsideScope();
               // The outermost scope never gets disposed, but this is ok because it is supposed to last for
               // the entire program.
             return adapter;
         }
+
+        private IIocService WrapContainer(IIocService containerBuilder) => 
+            allowRootDisposables?containerBuilder.CreateLifetimeScope(): containerBuilder;
     }
 
     public class ServiceProviderAdapter : IServiceProvider, ISupportRequiredService, IServiceScope, 

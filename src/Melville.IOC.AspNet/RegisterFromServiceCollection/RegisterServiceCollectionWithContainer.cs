@@ -66,8 +66,6 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
                 default:
                     throw new ArgumentOutOfRangeException("Invalid Service Lifetime");
             }
-            // Microsoft allows, and frequently does, create disposable objects in globals scope
-            activator.DisposeIfInsideScope();
         }
 
         private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
