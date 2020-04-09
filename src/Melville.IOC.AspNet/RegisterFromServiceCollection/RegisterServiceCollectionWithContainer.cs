@@ -48,7 +48,6 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             var bindingTarget = CreateBindingTarget(container, service);
             var activator = CreateActivator(bindingTarget, service);
             SetLifetime(activator, service);
-            activator.DisposeIfInsideScope();
         }
 
         private static void SetLifetime(ITypesafeActivationOptions<object> activator, ServiceDescriptor service)
@@ -67,6 +66,8 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
                 default:
                     throw new ArgumentOutOfRangeException("Invalid Service Lifetime");
             }
+            // Microsoft allows, and frequently does, create disposable objects in globals scope
+            activator.DisposeIfInsideScope();
         }
 
         private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)

@@ -82,5 +82,21 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             sut.BindServiceCollection(source);
             sut.Get<IDisposable>(); // should not throw
         }
+
+        public class DisposableGeneric<T> : IDisposable
+        {
+            public void Dispose()
+            {
+                throw new NotImplementedException();
+            }
+        }
+        [Fact]
+        public void CanBindGenericDisposablesInGlobalScope()
+        {
+            source.AddTransient(typeof(DisposableGeneric<>), typeof(DisposableGeneric<>));
+            sut.BindServiceCollection(source);
+            sut.Get<DisposableGeneric<int>>(); // should not throw
+        }
+        
     }
 }
