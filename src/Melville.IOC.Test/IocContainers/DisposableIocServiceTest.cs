@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Melville.IOC.IocContainers;
+using Melville.IOC.Test.TypeResolutionPolicy;
 using Xunit;
 
 namespace Melville.IOC.Test.IocContainers
@@ -20,6 +21,13 @@ namespace Melville.IOC.Test.IocContainers
         public void ThrowIfDisposableObjectWillNotBeDisposed()
         {
             Assert.Throws<IocException>(() => sut.Get<Disposable>());
+        }
+
+        [Fact]
+        public void CanAllowDisposableConstruction()
+        {
+            sut.AllowDisposablesInGlobalScope = true;
+            sut.Get<Disposable>(); // does not throw;
         }
         [Fact]
         public void REgisterActivationStrategiesAsConstructor()

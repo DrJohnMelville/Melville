@@ -16,6 +16,7 @@ namespace Melville.IOC.IocContainers
 
         IIocService? ParentScope { get; }
         bool IsGlobalScope => ParentScope == null;
+        bool AllowDisposablesInGlobalScope { get; set; }
 
     }
 
@@ -84,6 +85,8 @@ namespace Melville.IOC.IocContainers
         }
         
         public IIocService? ParentScope => null;
+        public bool AllowDisposablesInGlobalScope { get; set; }
+
 
         public T ConfigurePolicy<T>() => TypeResolver.GetInstantiationPolicy<T>();
         public IInterceptionPolicy InterceptionPolicy => TypeResolver.InterceptionPolicy;

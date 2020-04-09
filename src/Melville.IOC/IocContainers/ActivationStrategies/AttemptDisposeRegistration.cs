@@ -36,7 +36,7 @@ namespace Melville.IOC.IocContainers.ActivationStrategies
             {
                 reg.RegisterForDispose(ret);
             }
-            else
+            else if (!bindingRequest.IocService.AllowDisposablesInGlobalScope)
             {
                 throw new IocException($"Type {ret.GetType().Name} requires disposal but was created at global scope.");
             }

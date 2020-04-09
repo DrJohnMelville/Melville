@@ -19,7 +19,7 @@ namespace Melville.IOC.Activation
             return CheckCacheAndCompileIfNeeded(constructor);
         }
 
-        private static Func<object[], object> CheckCacheAndCompileIfNeeded(ConstructorInfo constructor)
+        private static Func<object?[], object> CheckCacheAndCompileIfNeeded(ConstructorInfo constructor)
         {
             if (compiledCache.TryGetValue(constructor, out var precompiled)) return precompiled;
             var ret = GenerateCompiledCode(constructor);
@@ -27,9 +27,10 @@ namespace Melville.IOC.Activation
             return ret;
         }
 
-        private static Func<object[], object> GenerateCompiledCode(ConstructorInfo constructor)
+        private static Func<object?[], object> GenerateCompiledCode(ConstructorInfo constructor)
         {
-            ActivatableTypesPolicy.ThrowIfNotActivatable(constructor.DeclaringType);
+            ActivatableTypesPolicy.ThrowIfNotActivatable(constructor.DeclaringType ??
+               throw new InvalidProgramException("Constructor has no declaring type"));
             var method = new DynamicMethod("CreateInstance", typeof(object), new[] {typeof(object[])});
             EmitCreationMethod(constructor, method.GetILGenerator());
             var ret = AssembleToDelegate(method);
@@ -39,7 +40,8 @@ namespace Melville.IOC.Activation
         private static void EmitCreationMethod(ConstructorInfo constructor, ILGenerator il)
         {
             EmitParameters(il, constructor.GetParameters());
-            EmitObjectCreationAndExit(constructor, il, constructor.DeclaringType);
+            EmitObjectCreationAndExit(constructor, il, constructor.DeclaringType??
+              throw new InvalidProgramException("Constructor has no declaring type"));
         }
 
         private static Func<object?[], object> AssembleToDelegate(DynamicMethod method) => 

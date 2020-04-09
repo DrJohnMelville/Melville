@@ -18,6 +18,12 @@ namespace Melville.IOC.IocContainers
 
         public IIocService ParentScope { get; }
 
+        public bool AllowDisposablesInGlobalScope
+        {
+            get => ParentScope.AllowDisposablesInGlobalScope;
+            set => ParentScope.AllowDisposablesInGlobalScope = value;
+        }
+
         public bool CanGet(IBindingRequest request)
         {
             TrySetScopeValue(request);
