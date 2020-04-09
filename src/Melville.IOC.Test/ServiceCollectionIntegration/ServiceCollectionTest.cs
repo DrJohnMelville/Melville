@@ -1,7 +1,9 @@
-﻿using Melville.IOC.AspNet.RegisterFromServiceCollection;
+﻿using System;
+using Melville.IOC.AspNet.RegisterFromServiceCollection;
 using Melville.IOC.IocContainers;
 using Melville.IOC.Test.IocContainers;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit;
 
 namespace Melville.IOC.Test.ServiceCollectionIntegration
@@ -71,6 +73,14 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             source.AddTransient(typeof(IGeneric<>), typeof(Concrete<>));
             sut.BindServiceCollection(source);
             Assert.True(sut.Get<IGeneric<int>>() is Concrete<int>);
+        }
+        
+        [Fact]
+        public void CanBindDisposablesInGlobalScope()
+        {
+            source.AddTransient<IDisposable>(isp => Mock.Of<IDisposable>());
+            sut.BindServiceCollection(source);
+            sut.Get<IDisposable>(); // should not throw
         }
     }
 }

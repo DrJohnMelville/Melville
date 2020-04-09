@@ -48,6 +48,7 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             var bindingTarget = CreateBindingTarget(container, service);
             var activator = CreateActivator(bindingTarget, service);
             SetLifetime(activator, service);
+            activator.DisposeIfInsideScope();
         }
 
         private static void SetLifetime(ITypesafeActivationOptions<object> activator, ServiceDescriptor service)
