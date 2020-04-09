@@ -7,7 +7,7 @@
 
 
     <PropertyGroup>
-        <Version>0.1.18</Version>
+        <Version>0.1.19</Version>
         <Authors>John Melville, MS, MD</Authors>
         <Company>Melville Computing</Company>
         <Title>Melville.IOC</Title>
