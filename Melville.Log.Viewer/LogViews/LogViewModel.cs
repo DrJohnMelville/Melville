@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Data;
-using System.Windows.Media;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
-using Melville.WpfControls.Bindings;
 using Serilog.Events;
 using Serilog.Formatting.Compact.Reader;
 
@@ -32,9 +28,6 @@ namespace Melville.Log.Viewer.LogViews
             set => AssignAndNotify(ref minimimLevel, value);
         }
 
-        
-
-
         private readonly Stream logConnection;
         public ICollection<LogEntryViewModel> Events { get; } = new ThreadSafeBindableCollection<LogEntryViewModel>();
 
@@ -44,49 +37,33 @@ namespace Melville.Log.Viewer.LogViews
             ClientConnected();
         }
 
-        private void ClientConnected()
+        private async void ClientConnected()
         {
-            Task.Run(() =>
+            var waitStream = new AsyncToSyncProgressStream(logConnection);
+            var reader = new LogEventReader(new StreamReader(waitStream));
+            while (await waitStream.WaitForData())
             {
-                var reader = new LogEventReader(new StreamReader(logConnection));
-                while (reader.TryRead(out var logEvent))
+                if (reader.TryRead(out var logEvent))
                 {
-                    if (logEvent.Properties.TryGetValue("AssignProcessName", out var value))
-                    {
-                        Title = value.ToString()[1..^1];
-                    }
-                    else
-                    {
-                        Events.Add(new LogEntryViewModel(logEvent));
-                    }
+                    HandleEvent(logEvent);
                 }
-            });
+            }
         }
-    }
 
-    public class LogEntryViewModel
-    {
-        private readonly LogEvent logEvent;
-
-        public LogEntryViewModel(LogEvent logEvent)
+        private void HandleEvent(LogEvent logEvent)
         {
-            this.logEvent = logEvent;
+            if (IsPrecessNameMessage(logEvent, out var value))
+            {
+                Title = value.ToString()[1..^1];
+            }
+            else
+            {
+                Events.Add(new LogEntryViewModel(logEvent));
+            }
         }
 
-        public DateTimeOffset TimeStamp => logEvent.Timestamp.ToLocalTime().DateTime;
-        public string Message => logEvent.MessageTemplate.Render(logEvent.Properties);
-        public LogEventLevel Level => logEvent.Level;
-        public string? Exception => logEvent.Exception?.ToString();
+        private static bool IsPrecessNameMessage(LogEvent logEvent, out LogEventPropertyValue value) => 
+            logEvent.Properties.TryGetValue("AssignProcessName", out value);
 
-        public static IValueConverter LevelToBrush = LambdaConverter.Create((LogEventLevel level) =>
-            level switch
-            {
-                LogEventLevel.Fatal => Brushes.Black,
-                LogEventLevel.Error => Brushes.Red,
-                LogEventLevel.Warning => Brushes.DeepPink,
-                LogEventLevel.Information => Brushes.DarkOrange,
-                LogEventLevel.Debug => Brushes.LawnGreen,
-                _ => Brushes.DarkGreen
-            });
     }
 }
