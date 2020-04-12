@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Threading.Channels;
+using System.Threading.Tasks;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -9,27 +10,21 @@ using Serilog.Formatting.Compact;
 
 namespace Melville.Log.NamedPipeEventSink
 {
-    public class NamedPipeEventSink: ILogEventSink
+    public class NamedPipeEventSink : ILogEventSink
     {
         public LoggingLevelSwitch LevelSwitch { get; } = new LoggingLevelSwitch();
-        private Channel<LogEvent> buffer = Channel.CreateBounded<LogEvent>(new BoundedChannelOptions(1000)
-        {
-            FullMode = BoundedChannelFullMode.DropOldest,
-            SingleReader = true,
-            SingleWriter = true
-        });
+        private Channel<LogEvent>? buffer;
 
         private INamedPipeWriterProtocol targetProtocol;
         private ITextFormatter format = new CompactJsonFormatter();
-        
+
         public NamedPipeEventSink(INamedPipeWriterProtocol targetProtocol)
         {
             this.targetProtocol = targetProtocol;
             TryConnectToServer();
-
         }
 
-        private async void TryReadDesiredLevel()
+        private async void StartLoopToReceiveLogLevelMessagesFromClient()
         {
             while (true)
             {
@@ -39,25 +34,47 @@ namespace Melville.Log.NamedPipeEventSink
 
         private async void TryConnectToServer()
         {
-             await targetProtocol.Connect();
-             TryReadDesiredLevel();
-             var localLogger = new LoggerConfiguration().WriteTo.Sink(this, LogEventLevel.Verbose).CreateLogger();
-             localLogger.Information("Source Process: {AssignProcessName}",
-                 Assembly.GetEntryAssembly()?.GetName().Name ??"No Name");
-             while (true)
-             {
-                 var logEvent = await buffer.Reader.ReadAsync();
-                 using var ms = new MemoryStream();
-                 using var write = new StreamWriter(ms);
-                 format.Format(logEvent, write);
-                 write.Flush();
-                 await targetProtocol.Write(ms.GetBuffer(), 0, (int) ms.Length);
-             }
+            if (!await targetProtocol.Connect()) return; // no connection so do not setup Logginc infrastrucure
+            CreateLogEventBuffer();
+            StartLoopToReceiveLogLevelMessagesFromClient();
+            WriteExecutableNameToRemoteLogger();
+            SendLogEvents();
+        }
+
+        private async void SendLogEvents()
+        {
+            while (true)
+            {
+                if (buffer == null) return; // nullability guard that should never happen
+                LogEvent logEvent = await buffer.Reader.ReadAsync();
+                using var ms = new MemoryStream();
+                using var write = new StreamWriter(ms);
+                format.Format(logEvent, write);
+                write.Flush();
+                await targetProtocol.Write(ms.GetBuffer(), 0, (int) ms.Length);
+            }
+        }
+
+        public void CreateLogEventBuffer()
+        {
+            buffer = Channel.CreateBounded<LogEvent>(new BoundedChannelOptions(1000)
+            {
+                FullMode = BoundedChannelFullMode.DropOldest,
+                SingleReader = true,
+                SingleWriter = true
+            });
+        }
+
+        private void WriteExecutableNameToRemoteLogger()
+        {
+            var localLogger = new LoggerConfiguration().WriteTo.Sink(this, LogEventLevel.Verbose).CreateLogger();
+            localLogger.Information("Source Process: {AssignProcessName}",
+                Assembly.GetEntryAssembly()?.GetName().Name ?? "No Name");
         }
 
         public void Emit(LogEvent logEvent)
         {
-            buffer.Writer.TryWrite(logEvent);
+            buffer?.Writer.TryWrite(logEvent);
         }
     }
 }
