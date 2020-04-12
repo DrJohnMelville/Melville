@@ -26,11 +26,21 @@ namespace Melville.Log.NamedPipeEventSink
         {
             this.targetProtocol = targetProtocol;
             TryConnectToServer();
+
+        }
+
+        private async void TryReadDesiredLevel()
+        {
+            while (true)
+            {
+                LevelSwitch.MinimumLevel = await targetProtocol.ReadLevel();
+            }
         }
 
         private async void TryConnectToServer()
         {
              await targetProtocol.Connect();
+             TryReadDesiredLevel();
              var localLogger = new LoggerConfiguration().WriteTo.Sink(this, LogEventLevel.Verbose).CreateLogger();
              localLogger.Information("Source Process: {AssignProcessName}",
                  Assembly.GetEntryAssembly()?.GetName().Name ??"No Name");

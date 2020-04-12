@@ -6,6 +6,7 @@ using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
+using Melville.MVVM.FileSystem;
 using Serilog.Events;
 using Serilog.Formatting.Compact.Reader;
 
@@ -22,11 +23,20 @@ namespace Melville.Log.Viewer.LogViews
         }
 
         private LogEventLevel minimimLevel = LogEventLevel.Information;
+
         public LogEventLevel MinimumLevel
         {
             get => minimimLevel;
-            set => AssignAndNotify(ref minimimLevel, value);
+            set
+            {
+                if (AssignAndNotify(ref minimimLevel, value))
+                {
+                    SendDesiredLevelToSink();
+                }
+            }
         }
+
+        private void SendDesiredLevelToSink() => logConnection.WriteAsync(new byte[] {(byte) MinimumLevel});
 
         private readonly Stream logConnection;
         public ICollection<LogEntryViewModel> Events { get; } = new ThreadSafeBindableCollection<LogEntryViewModel>();
@@ -62,8 +72,7 @@ namespace Melville.Log.Viewer.LogViews
             }
         }
 
-        private static bool IsPrecessNameMessage(LogEvent logEvent, out LogEventPropertyValue value) => 
+        private static bool IsPrecessNameMessage(LogEvent logEvent, out LogEventPropertyValue value) =>
             logEvent.Properties.TryGetValue("AssignProcessName", out value);
-
     }
 }
