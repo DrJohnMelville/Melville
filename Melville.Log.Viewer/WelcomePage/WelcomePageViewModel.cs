@@ -31,6 +31,11 @@ namespace Melville.Log.Viewer.WelcomePage
         {
         }
 
+        public void Stop()
+        {
+            // do nothing
+        }
+
         public void ConnectLog([FromServices] Func<NamedPipeEventSink.NamedPipeEventSink> createSink)
         {
             logger = new LoggerConfiguration()

@@ -5,12 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Melville.Log.Viewer.HomeScreens"
              xmlns:viewFrames="clr-namespace:Melville.MVVM.Wpf.ViewFrames;assembly=Melville.MVVM.Wpf"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:HomeScreenViewModel}}">
     <TabControl ItemsSource="{Binding Pages}">
         <TabControl.ItemTemplate>
             <DataTemplate DataType="{x:Type local:IHomeScreenPage}">
-                <TextBlock Text="{Binding Title}"></TextBlock>
+                <DockPanel LastChildFill="True" x:Name="Tab" Background="Transparent">
+                    <TextBlock Foreground="Red" Text="r" FontFamily="Marlett"
+                            DockPanel.Dock="Right" Margin="10 0 0 0"
+                            wpfHacks:VisibilityHack.CollapseUnless="{Binding IsMouseOver, ElementName=Tab}"
+                            MouseLeftButtonUp="{eventBindings:EventBinding Remove}"/>
+                    <TextBlock Text="{Binding Title}"></TextBlock>
+                </DockPanel>
             </DataTemplate>
         </TabControl.ItemTemplate>
         <TabControl.ContentTemplate>

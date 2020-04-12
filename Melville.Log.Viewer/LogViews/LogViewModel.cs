@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Threading;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.AdvancedLists;
@@ -15,15 +16,14 @@ namespace Melville.Log.Viewer.LogViews
     public class LogViewModel : NotifyBase, IHomeScreenPage
     {
         private string title = "<Not Connected>";
-
         public string Title
         {
             get => title;
             set => AssignAndNotify(ref title, value);
         }
 
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private LogEventLevel minimimLevel = LogEventLevel.Information;
-
         public LogEventLevel MinimumLevel
         {
             get => minimimLevel;
@@ -49,7 +49,7 @@ namespace Melville.Log.Viewer.LogViews
 
         private async void ClientConnected()
         {
-            var waitStream = new AsyncToSyncProgressStream(logConnection);
+            var waitStream = new AsyncToSyncProgressStream(logConnection, cancellationTokenSource.Token);
             var reader = new LogEventReader(new StreamReader(waitStream));
             while (await waitStream.WaitForData())
             {
@@ -74,5 +74,10 @@ namespace Melville.Log.Viewer.LogViews
 
         private static bool IsPrecessNameMessage(LogEvent logEvent, out LogEventPropertyValue value) =>
             logEvent.Properties.TryGetValue("AssignProcessName", out value);
+
+        public void Stop()
+        {
+            cancellationTokenSource.Cancel();
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace Melville.Log.Viewer.HomeScreens
     public interface IHomeScreenPage
     {
         string Title { get; }
+        void Stop();
     }
     public class HomeScreenViewModel
     {
@@ -22,6 +23,12 @@ namespace Melville.Log.Viewer.HomeScreens
         {
             Pages.Add(welcomePage);
             pipeListener.NewClientConnection += (_, e) => Pages.Add(modelCreator(e.ClientConnection));
+        }
+
+        public void Remove(IHomeScreenPage page)
+        {
+            Pages.Remove(page);
+            page.Stop();
         }
     }
 }

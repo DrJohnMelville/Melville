@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Melville.Log.Viewer.LogViews
@@ -8,14 +9,16 @@ namespace Melville.Log.Viewer.LogViews
     public class AsyncToSyncProgressStream : Stream
     {
         private Stream inner;
+        private readonly CancellationToken cnacellationToken;
         private Queue<(int Lenght, byte[] Data)> buffer = new Queue<(int, byte[])>();
         private (int Length, byte[] Data) currentBuffer = (0,Array.Empty<byte>());
         private int currentBufferPosition = 0;
         private volatile Task<bool> nextRead = Task.FromResult(true);
 
-        public AsyncToSyncProgressStream(Stream inner)
+        public AsyncToSyncProgressStream(Stream inner, CancellationToken cnacellationToken)
         {
             this.inner = inner;
+            this.cnacellationToken = cnacellationToken;
             ReadSource();
         }
 
@@ -29,11 +32,18 @@ namespace Melville.Log.Viewer.LogViews
 
         private async Task<bool> InnerRead()
         {
-            var innerBuffer = new byte[512];
-            var bytesRead = await inner.ReadAsync(innerBuffer, 0, innerBuffer.Length);
-            if (bytesRead == 0) return false;
-            buffer.Enqueue((bytesRead, innerBuffer));
-            return true;
+            try
+            {
+                var innerBuffer = new byte[512];
+                var bytesRead = await inner.ReadAsync(innerBuffer, 0, innerBuffer.Length, cnacellationToken);
+                if (bytesRead == 0) return false;
+                buffer.Enqueue((bytesRead, innerBuffer));
+                return true;
+            }
+            catch (TaskCanceledException e)
+            {
+                return false;
+            }
         }
 
         public bool HasDataToRead => buffer.Count > 0 || HasDataInCurrentBuffer();
@@ -41,6 +51,7 @@ namespace Melville.Log.Viewer.LogViews
         private bool HasDataInCurrentBuffer() => currentBuffer.Length > currentBufferPosition;
 
         public Task<bool> WaitForData() => HasDataToRead ? Task.FromResult(true) : nextRead;
+        
 
         public override void Flush() => throw new NotSupportedException();
 
