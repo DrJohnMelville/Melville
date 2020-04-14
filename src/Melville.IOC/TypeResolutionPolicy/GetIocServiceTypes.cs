@@ -18,6 +18,17 @@ namespace Melville.IOC.TypeResolutionPolicy
         };
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) =>
             Types.Contains(request.DesiredType) ?
-                new MethodActivationStrategy<object>((service, bindingRequest)=>service): null;
+                new MethodActivationStrategy<object>(FirstElligibleContainer): null;
+
+        private object FirstElligibleContainer(IIocService service, IBindingRequest bindingRequest)
+        {
+            while (!bindingRequest.DesiredType.IsInstanceOfType(service))
+            {
+                if (service == null) throw new IocException("No valid service container found");
+                service = service.ParentScope;
+            }
+
+            return service;
+        }
     }
 }

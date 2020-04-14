@@ -47,6 +47,22 @@ namespace Melville.IOC.Test.IocContainers
             Assert.Equal(v1.Dep, v2.Dep);
         }
         [Fact]
+        public void ChildScopeContainterResolve()
+        {
+            sut.Bind<Dep>().ToSelf().AsSingleton();
+            var c1 = sut.CreateScope().Get<ChildContainer>();
+            c1.Bind<IBO>().To<BO1>();
+            var c2 = sut.Get<ChildContainer>();
+            c2.Bind<IBO>().To<BO2>();
+
+            var v1 = c1.Get<IBO>();
+            var v2 = c2.Get<IBO>();
+            
+            Assert.True(v1 is BO1);
+            Assert.True(v2 is BO2);
+            Assert.Equal(v1.Dep, v2.Dep);
+        }
+        [Fact]
         public void ManyNestedConstainers()
         {
             sut.Bind<Dep>().ToSelf().AsSingleton();
