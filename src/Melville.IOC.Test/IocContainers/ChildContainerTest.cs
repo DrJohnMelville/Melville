@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
 using Xunit;
@@ -78,5 +79,27 @@ namespace Melville.IOC.Test.IocContainers
             Assert.True(v1 is BO1);
             Assert.Equal(sut.Get<Dep>(), v1.Dep);
         }
+
+        public class DisposableSingleton : IDisposable
+        {
+            public bool Disposed { get; set; }
+            public void Dispose()
+            {
+                Disposed = true;
+            }
+        }
+
+        [Fact]
+        public void CanCreateDisposableSingleton()
+        {
+            sut.Bind<DisposableChildContainer>().ToSelf().DisposeIfInsideScope();
+            var c1 = sut.Get<DisposableChildContainer>();
+            c1.Bind<DisposableSingleton>().ToSelf().AsSingleton();
+            var obj = c1.Get<DisposableSingleton>();
+            Assert.False(obj.Disposed);
+            c1.Dispose();
+            Assert.True(obj.Disposed);
+        }
+
     }
 }

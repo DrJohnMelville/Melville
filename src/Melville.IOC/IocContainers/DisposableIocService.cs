@@ -15,12 +15,8 @@ namespace Melville.IOC.IocContainers
         void RegisterForDispose(object obj);
     }
     
-    public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
+    public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
     {
-        public DisposableIocService(IIocService parentScope) : base(parentScope)
-        {
-        }
-
         private readonly List<object> itemsToDispose = new List<object>();
 
         public void RegisterForDispose(object ret)
@@ -72,5 +68,18 @@ namespace Melville.IOC.IocContainers
             // it is the best we can do in the context
             GC.KeepAlive(DisposeAsync());
         }
+
+    }
+
+    public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
+    {
+        private readonly DisposalRegister register = new DisposalRegister();
+        public DisposableIocService(IIocService parentScope) : base(parentScope)
+        {
+        }
+
+        public ValueTask DisposeAsync() => register.DisposeAsync();
+        public void Dispose() => register.Dispose();
+        public void RegisterForDispose(object obj) => register.RegisterForDispose(obj);
     }
 }
