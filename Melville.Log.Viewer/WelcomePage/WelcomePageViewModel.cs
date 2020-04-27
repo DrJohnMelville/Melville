@@ -16,14 +16,23 @@ namespace Melville.Log.Viewer.WelcomePage
     public class WelcomePageViewModel: NotifyBase, IHomeScreenPage
     {
         public string Title => "Home Page";
-
-
+        
         private string lastLogEntry ="";
         public string LastLogEntry
         {
             get => lastLogEntry;
             set => AssignAndNotify(ref lastLogEntry, value);
         }
+
+        private string targetUrl;
+        public string TargetUrl
+        {
+            get => targetUrl;
+            set => AssignAndNotify(ref targetUrl, value);
+        }
+
+        
+
 
         private Random randomizer = new Random();
         private ILogger? logger;
@@ -40,6 +49,11 @@ namespace Melville.Log.Viewer.WelcomePage
         {
             logger = new LoggerConfiguration()
                 .WriteTo.NamedPipe().CreateLogger();
+        }
+
+        public void ConnectToWeb()
+        {
+            ;
         }
 
 

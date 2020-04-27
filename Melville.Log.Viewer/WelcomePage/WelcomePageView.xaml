@@ -9,6 +9,9 @@
              d:DataContext="{d:DesignInstance {x:Type local:WelcomePageViewModel}}">
     <StackPanel>
         <TextBlock>Click the Button to Log!</TextBlock>
+        <TextBlock>Enter the Website you wish to connect to:</TextBlock>
+        <TextBox Text="{Binding TargetUrl}"/>
+        <Button Click="{eventBindings:EventBinding ConnectToWeb}">Begin Logging Website</Button>
         <Button Click="{eventBindings:EventBinding ConnectLog}">Connect a logger</Button>
         <Button Click="{eventBindings:EventBinding Log}">Log Random Number</Button>
         <Button Click="{eventBindings:EventBinding LogException}">Log Exception</Button>
