@@ -40,7 +40,7 @@ namespace Melville.Log.Viewer.LogViews
                 buffer.Enqueue((bytesRead, innerBuffer));
                 return true;
             }
-            catch (TaskCanceledException e)
+            catch (TaskCanceledException)
             {
                 return false;
             }

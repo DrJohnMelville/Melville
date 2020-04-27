@@ -24,7 +24,7 @@ namespace Melville.Log.Viewer.WelcomePage
             set => AssignAndNotify(ref lastLogEntry, value);
         }
 
-        private string targetUrl;
+        private string targetUrl = "";
         public string TargetUrl
         {
             get => targetUrl;

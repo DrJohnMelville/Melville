@@ -11,6 +11,14 @@ namespace Melville.Log.Viewer.LogViews
     }
     public class StreamLogConnection : ILogConnection
     {
-        
+        public Task SetDesiredLevel(LogEventLevel level)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IAsyncEnumerable<LogEvent> ReadEvents()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

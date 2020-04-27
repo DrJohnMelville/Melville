@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using Melville.Log.Viewer.HomeScreens;
@@ -72,7 +73,8 @@ namespace Melville.Log.Viewer.LogViews
             }
         }
 
-        private static bool IsPrecessNameMessage(LogEvent logEvent, out LogEventPropertyValue value) =>
+        private static bool IsPrecessNameMessage(LogEvent logEvent, 
+            [NotNullWhen(true)]out LogEventPropertyValue? value) =>
             logEvent.Properties.TryGetValue("AssignProcessName", out value);
 
         public void Stop()
