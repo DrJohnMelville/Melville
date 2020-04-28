@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
 using Serilog.Events;
-using Serilog.Formatting.Compact.Reader;
+using Serilog.Parsing;
 
 namespace Melville.Log.Viewer.LogViews
 {
@@ -23,36 +22,35 @@ namespace Melville.Log.Viewer.LogViews
         event EventHandler<LogEventArrivedEventArgs>? LogEventArrived;
         void StopReading();
     }
-    public class StreamLogConnection : ILogConnection
+
+    public class HubLogConnection : ILogConnection
     {
-        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-        private readonly Stream logConnection;
+        private readonly HubConnection connection;
+        private readonly IDisposable disposeToStopReadingEvents;
         public event EventHandler<LogEventArrivedEventArgs>? LogEventArrived;
 
-        public StreamLogConnection(Stream logConnection)
+        public HubLogConnection(string url)
         {
-            this.logConnection = logConnection;
-            ReadEventsLoop();
+            connection = new HubConnectionBuilder()
+                .WithUrl(url+"/Logging")
+                .WithAutomaticReconnect()
+                .Build();
+            disposeToStopReadingEvents = connection.On("SendLogEvent", (Action<string>)HandleLogEvent);
+            connection.StartAsync();
         }
 
-        public void StopReading() => cancellationTokenSource.Cancel();
-        private async void ReadEventsLoop()
+        private void HandleLogEvent(string serializedEvent)
         {
-            var waitStream = new AsyncToSyncProgressStream(logConnection, cancellationTokenSource.Token);
-            var reader = new LogEventReader(new StreamReader(waitStream));
-            while (await waitStream.WaitForData())
-            {
-                if (reader.TryRead(out var logEvent))
-                {
-                    HandleEvent(logEvent);
-                }
-            }
+            LogEventArrived?.Invoke(this, new LogEventArrivedEventArgs(
+                new LogEvent(DateTimeOffset.Now, LogEventLevel.Information, null,
+                    new MessageTemplate(serializedEvent, new MessageTemplateToken[0]),
+                    new LogEventProperty[0])
+                ));
         }
-        private void HandleEvent(LogEvent logEvent) => 
-            LogEventArrived?.Invoke(this, new LogEventArrivedEventArgs(logEvent));
-
 
         public ValueTask SetDesiredLevel(LogEventLevel level) => 
-            logConnection.WriteAsync(new byte[] {(byte) level});
+            new ValueTask(connection.InvokeAsync("SetMinimumLogLevel", level));
+
+        public void StopReading() => disposeToStopReadingEvents.Dispose();
     }
 }

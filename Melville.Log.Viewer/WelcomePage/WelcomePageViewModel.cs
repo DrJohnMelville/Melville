@@ -13,7 +13,11 @@ using Serilog.Formatting.Compact.Reader;
 
 namespace Melville.Log.Viewer.WelcomePage
 {
-    public class WelcomePageViewModel: NotifyBase, IHomeScreenPage
+    public interface IHasTargetUrl
+    {
+        string TargetUrl { get; }
+    }
+    public class WelcomePageViewModel: NotifyBase, IHomeScreenPage, IHasTargetUrl
     {
         public string Title => "Home Page";
         
@@ -36,26 +40,17 @@ namespace Melville.Log.Viewer.WelcomePage
 
         private Random randomizer = new Random();
         private ILogger? logger;
-        public WelcomePageViewModel()
-        {
-        }
 
         public void Stop()
         {
             // do nothing
         }
 
-        public void ConnectLog([FromServices] Func<NamedPipeEventSink.NamedPipeEventSink> createSink)
+        public void ConnectLog()
         {
             logger = new LoggerConfiguration()
                 .WriteTo.NamedPipe().CreateLogger();
         }
-
-        public void ConnectToWeb()
-        {
-            ;
-        }
-
 
         public void Log() => logger?.Write((LogEventLevel)randomizer.Next((int) LogEventLevel.Fatal +1),
             "The Random Number is: {Number}", randomizer.Next(1000));

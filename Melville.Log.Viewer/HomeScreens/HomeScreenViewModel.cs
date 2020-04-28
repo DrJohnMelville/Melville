@@ -31,5 +31,11 @@ namespace Melville.Log.Viewer.HomeScreens
             Pages.Remove(page);
             page.Stop();
         }
+        
+        public void ConnectToWeb(IHasTargetUrl targetHolder)
+        {
+            Pages.Add(new LogViewModel(new HubLogConnection(targetHolder.TargetUrl)));
+        }
+
     }
 }
