@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Serilog.Events;
+using Serilog.Formatting.Compact.Reader;
 using Serilog.Parsing;
 
 namespace Melville.Log.Viewer.LogViews
@@ -35,17 +37,17 @@ namespace Melville.Log.Viewer.LogViews
                 .WithUrl(url+"/Logging")
                 .WithAutomaticReconnect()
                 .Build();
-            disposeToStopReadingEvents = connection.On("SendLogEvent", (Action<string>)HandleLogEvent);
+            disposeToStopReadingEvents = connection.On("SendEvent", (Action<string>)HandleLogEvent);
             connection.StartAsync();
         }
 
         private void HandleLogEvent(string serializedEvent)
         {
-            LogEventArrived?.Invoke(this, new LogEventArrivedEventArgs(
-                new LogEvent(DateTimeOffset.Now, LogEventLevel.Information, null,
-                    new MessageTemplate(serializedEvent, new MessageTemplateToken[0]),
-                    new LogEventProperty[0])
-                ));
+            var eventReader = new LogEventReader(new StringReader(serializedEvent));
+            while (eventReader.TryRead(out var logEvent))
+            {
+                LogEventArrived?.Invoke(this, new LogEventArrivedEventArgs(logEvent));
+            }
         }
 
         public ValueTask SetDesiredLevel(LogEventLevel level) => 

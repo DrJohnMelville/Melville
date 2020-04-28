@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace LoggingTestWebsite
 {
@@ -32,11 +33,20 @@ namespace LoggingTestWebsite
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new []{"application/octet-stream"});
             });
+
+            services.AddTransient<HubLogEventSink, HubLogEventSink>();
+            services.AddSingleton<ILogger>(isp => Log.Logger);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .WriteTo.Sink(app.ApplicationServices.GetRequiredService<HubLogEventSink>())
+                .CreateLogger();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

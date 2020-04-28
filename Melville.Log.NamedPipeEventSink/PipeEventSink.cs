@@ -16,7 +16,7 @@ namespace Melville.Log.NamedPipeEventSink
         private Channel<LogEvent>? buffer;
 
         private INamedPipeWriterProtocol targetProtocol;
-        private ITextFormatter format = new CompactJsonFormatter();
+        private ITextFormatter logEventFormatter = new CompactJsonFormatter();
 
         public NamedPipeEventSink(INamedPipeWriterProtocol targetProtocol)
         {
@@ -49,7 +49,7 @@ namespace Melville.Log.NamedPipeEventSink
                 LogEvent logEvent = await buffer.Reader.ReadAsync();
                 using var ms = new MemoryStream();
                 using var write = new StreamWriter(ms);
-                format.Format(logEvent, write);
+                logEventFormatter.Format(logEvent, write);
                 write.Flush();
                 await targetProtocol.Write(ms.GetBuffer(), 0, (int) ms.Length);
             }
