@@ -19,10 +19,11 @@ namespace Melville.Log.Viewer.HomeScreens
         public ICollection<IHomeScreenPage> Pages { get; } = new ThreadSafeBindableCollection<IHomeScreenPage>();
 
         public HomeScreenViewModel(WelcomePageViewModel welcomePage, IPipeListener pipeListener,
-            Func<Stream, LogViewModel> modelCreator)
+            Func<ILogConnection, LogViewModel> modelCreator)
         {
             Pages.Add(welcomePage);
-            pipeListener.NewClientConnection += (_, e) => Pages.Add(modelCreator(e.ClientConnection));
+            pipeListener.NewClientConnection += (_, e) =>
+                Pages.Add(modelCreator(new StreamLogConnection(e.ClientConnection)));
         }
 
         public void Remove(IHomeScreenPage page)

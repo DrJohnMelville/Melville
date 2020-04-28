@@ -1,24 +1,58 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Serilog.Events;
+using Serilog.Formatting.Compact.Reader;
 
 namespace Melville.Log.Viewer.LogViews
 {
+    public class LogEventArrivedEventArgs : EventArgs
+    {
+        public LogEvent LogEvent { get; }
+
+        public LogEventArrivedEventArgs(LogEvent logEvent)
+        {
+            LogEvent = logEvent;
+        }
+    }
     public interface ILogConnection
     {
-        Task SetDesiredLevel(LogEventLevel level);
-        IAsyncEnumerable<LogEvent> ReadEvents();
+        ValueTask SetDesiredLevel(LogEventLevel level);
+        event EventHandler<LogEventArrivedEventArgs>? LogEventArrived;
+        void StopReading();
     }
     public class StreamLogConnection : ILogConnection
     {
-        public Task SetDesiredLevel(LogEventLevel level)
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly Stream logConnection;
+        public event EventHandler<LogEventArrivedEventArgs>? LogEventArrived;
+
+        public StreamLogConnection(Stream logConnection)
         {
-            throw new System.NotImplementedException();
+            this.logConnection = logConnection;
+            ReadEventsLoop();
         }
 
-        public IAsyncEnumerable<LogEvent> ReadEvents()
+        public void StopReading() => cancellationTokenSource.Cancel();
+        private async void ReadEventsLoop()
         {
-            throw new System.NotImplementedException();
+            var waitStream = new AsyncToSyncProgressStream(logConnection, cancellationTokenSource.Token);
+            var reader = new LogEventReader(new StreamReader(waitStream));
+            while (await waitStream.WaitForData())
+            {
+                if (reader.TryRead(out var logEvent))
+                {
+                    HandleEvent(logEvent);
+                }
+            }
         }
+        private void HandleEvent(LogEvent logEvent) => 
+            LogEventArrived?.Invoke(this, new LogEventArrivedEventArgs(logEvent));
+
+
+        public ValueTask SetDesiredLevel(LogEventLevel level) => 
+            logConnection.WriteAsync(new byte[] {(byte) level});
     }
 }

@@ -23,7 +23,6 @@ namespace Melville.Log.Viewer.LogViews
             set => AssignAndNotify(ref title, value);
         }
 
-        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private LogEventLevel minimimLevel = LogEventLevel.Information;
         public LogEventLevel MinimumLevel
         {
@@ -37,30 +36,19 @@ namespace Melville.Log.Viewer.LogViews
             }
         }
 
-        private void SendDesiredLevelToSink() => logConnection.WriteAsync(new byte[] {(byte) MinimumLevel});
 
-        private readonly Stream logConnection;
-        public ICollection<LogEntryViewModel> Events { get; } = new ThreadSafeBindableCollection<LogEntryViewModel>();
+        private readonly ILogConnection logConnection;
+        public ICollection<LogEntryViewModel> Events { get; } = 
+            new ThreadSafeBindableCollection<LogEntryViewModel>();
 
-        public LogViewModel(Stream logConnection)
+        public LogViewModel(ILogConnection logConnection)
         {
             this.logConnection = logConnection;
-            ClientConnected();
+            logConnection.LogEventArrived += HandleEvent;
         }
-
-        private async void ClientConnected()
-        {
-            var waitStream = new AsyncToSyncProgressStream(logConnection, cancellationTokenSource.Token);
-            var reader = new LogEventReader(new StreamReader(waitStream));
-            while (await waitStream.WaitForData())
-            {
-                if (reader.TryRead(out var logEvent))
-                {
-                    HandleEvent(logEvent);
-                }
-            }
-        }
-
+        
+        private void HandleEvent(object? _, LogEventArrivedEventArgs args) =>
+            HandleEvent(args.LogEvent);
         private void HandleEvent(LogEvent logEvent)
         {
             if (IsPrecessNameMessage(logEvent, out var value))
@@ -77,9 +65,7 @@ namespace Melville.Log.Viewer.LogViews
             [NotNullWhen(true)]out LogEventPropertyValue? value) =>
             logEvent.Properties.TryGetValue("AssignProcessName", out value);
 
-        public void Stop()
-        {
-            cancellationTokenSource.Cancel();
-        }
+        private void SendDesiredLevelToSink() => logConnection.SetDesiredLevel(MinimumLevel);
+        public void Stop() => logConnection.StopReading();
     }
 }
