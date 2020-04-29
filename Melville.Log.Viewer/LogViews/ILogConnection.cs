@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Serilog.Events;
 using Serilog.Formatting.Compact.Reader;
-using Serilog.Parsing;
 
 namespace Melville.Log.Viewer.LogViews
 {
@@ -34,7 +32,7 @@ namespace Melville.Log.Viewer.LogViews
         public HubLogConnection(string url)
         {
             connection = new HubConnectionBuilder()
-                .WithUrl(url+"/Logging")
+                .WithUrl(url + "/Logging")
                 .WithAutomaticReconnect()
                 .Build();
             disposeToStopReadingEvents = connection.On("SendEvent", (Action<string>)HandleLogEvent);

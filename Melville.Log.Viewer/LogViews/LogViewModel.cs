@@ -16,7 +16,7 @@ namespace Melville.Log.Viewer.LogViews
 {
     public class LogViewModel : NotifyBase, IHomeScreenPage
     {
-        private string title = "<Not Connected>";
+        private string title;
         public string Title
         {
             get => title;
@@ -41,9 +41,10 @@ namespace Melville.Log.Viewer.LogViews
         public ICollection<LogEntryViewModel> Events { get; } = 
             new ThreadSafeBindableCollection<LogEntryViewModel>();
 
-        public LogViewModel(ILogConnection logConnection)
+        public LogViewModel(ILogConnection logConnection, string title = "<Not Connected>")
         {
             this.logConnection = logConnection;
+            this.title = title;
             logConnection.LogEventArrived += HandleEvent;
         }
         
