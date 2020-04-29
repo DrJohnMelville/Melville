@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Events;
 
 namespace LoggingTestWebsite
 {
@@ -34,6 +35,7 @@ namespace LoggingTestWebsite
                     new []{"application/octet-stream"});
             });
 
+            services.AddSingleton<INotifyEvent<LogEventLevel>,NotifyEvent<LogEventLevel>>();
             services.AddTransient<HubLogEventSink, HubLogEventSink>();
             services.AddSingleton<ILogger>(isp => Log.Logger);
         }
@@ -41,10 +43,11 @@ namespace LoggingTestWebsite
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var hubLogEventSink = app.ApplicationServices.GetRequiredService<HubLogEventSink>();
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
-                .WriteTo.Sink(app.ApplicationServices.GetRequiredService<HubLogEventSink>())
+                .WriteTo.Sink(hubLogEventSink, LogEventLevel.Information, hubLogEventSink.LevelSwitch)
                 .CreateLogger();
             
             if (env.IsDevelopment())

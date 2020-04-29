@@ -30,7 +30,7 @@ namespace Melville.Log.NamedPipeEventSink
         public async Task<LogEventLevel> ReadLevel()
         {
             var readBuff = new byte[10];
-            while (outputPipe == null)
+            if (outputPipe == null)
             {
                 throw new InvalidOperationException("The stream must be open before being read.");
             }
