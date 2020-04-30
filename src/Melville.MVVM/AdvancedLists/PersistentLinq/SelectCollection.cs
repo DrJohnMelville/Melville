@@ -102,7 +102,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     [return:MaybeNull]
     public TDest TryCache([AllowNull]TSource key) => 
-      (!object.Equals(key, default(TSource)!)) && cache.TryGetValue(key, out var ret) ? ret : default!;
+      (!object.Equals(key, default(TSource)!)) && cache.TryGetValue(key!, out var ret) ? ret : default!;
     private void RemoveItemsFromCache(IList items) => items.OfType<TSource>().ForEach(i => cache.Remove(i));
     #endregion
 
@@ -153,7 +153,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
     }
     public TDest this[int index]
     {
-      get => Map(source[index]);
+      get => Map(source[index])!;
       set => throw new NotSupportedException();
     }
     #endregion

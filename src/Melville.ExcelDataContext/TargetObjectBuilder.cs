@@ -19,7 +19,8 @@ namespace Melville.ExcelDataContext
         }
 
         public static CompilationOutput BuildAssembly(AssemblyName name, string nameSpace, string typeName,
-            ISchemaDataSource source) => Compile(source.GetSourceCode(nameSpace, typeName), name.CodeBase);
+            ISchemaDataSource source) => Compile(source.GetSourceCode(nameSpace, typeName), 
+                name.CodeBase??"C:\\");
               static CompilationOutput Compile(string cSharpSourceCode, string outputFile)
         {
             File.WriteAllText(@"C:\Users\jom252\Desktop\pdf\fileOut.txt", cSharpSourceCode);

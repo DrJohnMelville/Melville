@@ -1,33 +1,12 @@
 ﻿using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting;
 using Serilog.Formatting.Compact;
 
-namespace LoggingTestWebsite.Controllers
+namespace AspNetCoreLocalLog.HubLog
 {
-    public interface ILoggingHub
-    {
-        Task SendEvent(string eventData);
-    }
-    public sealed class LoggingHub: Hub<ILoggingHub>
-    {
-        private readonly INotifyEvent<LogEventLevel> notifier;
-
-        public LoggingHub(INotifyEvent<LogEventLevel> notifier)
-        {
-            this.notifier = notifier;
-        }
-
-        public void SetMinimumLogLevel(LogEventLevel minimumLevel)
-        {
-            notifier.Fire(minimumLevel);
-        }
-    }
-
     public sealed class HubLogEventSink: ILogEventSink
     {
         private readonly ITextFormatter logEventFormatter = new CompactJsonFormatter();
@@ -44,12 +23,14 @@ namespace LoggingTestWebsite.Controllers
         private void LogEventLevelChanged(object? sender, NotifyEventArgs<LogEventLevel> e) => 
             LevelSwitch.MinimumLevel = e.EventData;
 
-        public void Emit(LogEvent logEvent)
+        public void Emit(LogEvent logEvent) => 
+            loggingHub.Clients.All.SendEvent(SerializeLogEvent(logEvent));
+
+        private string SerializeLogEvent(LogEvent logEvent)
         {
             using var write = new StringWriter();
             logEventFormatter.Format(logEvent, write);
-            var s = write.ToString();
-            loggingHub.Clients.All.SendEvent(s);
+            return write.ToString();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Melville.MVVM.Wpf.SequenceViews
     public T Current
     {
       get => current;
-      set => AssignAndNotify(ref current, value);
+      set => AssignAndNotify(ref current!, value!);
     }
 
     private Func<T>? newItemFactory;
@@ -64,7 +64,7 @@ namespace Melville.MVVM.Wpf.SequenceViews
 
     public void DeleteItem()
     {
-      if (!CanDelete) return;
+      if (!CanDelete || Current == null) return;
       Collection.Remove(Current);
       Current = default;
     }

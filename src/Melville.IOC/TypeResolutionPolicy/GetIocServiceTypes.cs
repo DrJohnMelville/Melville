@@ -22,13 +22,13 @@ namespace Melville.IOC.TypeResolutionPolicy
 
         private object FirstElligibleContainer(IIocService service, IBindingRequest bindingRequest)
         {
-            while (!bindingRequest.DesiredType.IsInstanceOfType(service))
+            IIocService? currentService = service;
+            while (currentService != null && !bindingRequest.DesiredType.IsInstanceOfType(currentService))
             {
-                if (service == null) throw new IocException("No valid service container found");
-                service = service.ParentScope;
+                currentService = service.ParentScope;
             }
-
-            return service;
+            if (currentService  == null) throw new IocException("No valid service container found");
+            return currentService;
         }
     }
 }

@@ -12,15 +12,6 @@ namespace Melville.ExcelDataContext
 {
 	public class DynamicDriver : DynamicDataContextDriver
 	{
-		static DynamicDriver()
-		{
-//			 Uncomment the following code to attach to Visual Studio's debugger when an exception is thrown:
-			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
-			{
-				if (args.Exception.StackTrace.Contains ("Melville.ExcelDataContext"))
-					Debugger.Launch ();
-			};
-		}
 		
 		#region UI Identifiers
 		public override string Name => "Excel or CSV File";
@@ -28,7 +19,8 @@ namespace Melville.ExcelDataContext
 		public override string GetConnectionDescription(IConnectionInfo cxInfo) =>
 			Path.GetFileName(new ExcelFileProperties(cxInfo).FilePath);
 		#endregion
-		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection) => LoadExcelFileName.LoadExcelFileAsConnectionInfo(cxInfo);
+		public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions options) => 
+			LoadExcelFileName.LoadExcelFileAsConnectionInfo(cxInfo);
 
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, AssemblyName assemblyToBuild, 
 			ref string nameSpace, ref string typeName) => 

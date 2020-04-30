@@ -5,13 +5,13 @@
         <Nullable>annotations</Nullable>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Melville.Mvvm.TestHelpers" Version="0.1.2" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
         <PackageReference Include="Moq" Version="4.13.1" />
         <PackageReference Include="xunit" Version="2.4.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
     </ItemGroup>
     <ItemGroup>
+      <ProjectReference Include="..\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj" />
       <ProjectReference Include="..\WebDashboard\WebDashboard.csproj" />
     </ItemGroup>
 

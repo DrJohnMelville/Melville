@@ -42,7 +42,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         public async Task<T> Create(object[] parameters)
         {
             await EnsureInitialized(parameters, FetchAndInitializeDatum);
-            return datum;
+            return datum!;
         }
 
         public void ClearCache() => state = FactoryState.NotCreatedYet;
@@ -80,7 +80,7 @@ namespace Melville.IOC.TypeResolutionPolicy
 
         private T FetchDatumIfNeeded(IBindingRequest localRequest)
         {
-            if (state != FactoryState.NotCreatedYet) return datum;
+            if (state != FactoryState.NotCreatedYet) return datum!;
             state = FactoryState.StaticCreationDone;
             return (T) (localRequest.IocService.Get(localRequest) ?? 
                         new InvalidOperationException("Failed to fetch datum"));
@@ -94,7 +94,7 @@ namespace Melville.IOC.TypeResolutionPolicy
         {
             request = parentRequest;
             await EnsureInitialized(parameters, StaticConstructor);
-            return datum;
+            return datum!;
         }
 
         private async Task StaticConstructor(object[] parameters)

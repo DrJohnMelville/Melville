@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LoggingTestWebsite.Controllers
+namespace AspNetCoreLocalLog.HubLog
 {
     public class NotifyEventArgs<T> : EventArgs
     {

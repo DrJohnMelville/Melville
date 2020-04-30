@@ -16,17 +16,12 @@ namespace Melville.ExcelDataContext.FileReader
 
         public static RawFileReader LoadFile(string path)
         {
-            RawFileReader ret = null;
-            if (path.ToLower().EndsWith(".xls"))
+            RawFileReader ret = path switch
             {
-                ret = new XlsFileReader();
-            }
-            if (path.ToLower().EndsWith(".xlsx"))
-            {
-                ret = new XlsxFileReader();
-            }
-
-            ret = ret??new CsvFileReader();
+                var s when s.EndsWith(".xls", StringComparison.OrdinalIgnoreCase) => new XlsFileReader(),
+                var s when s.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase) => new XlsxFileReader(),
+                _ => new CsvFileReader()
+            };
             ret.Load(path);
             return ret;
       

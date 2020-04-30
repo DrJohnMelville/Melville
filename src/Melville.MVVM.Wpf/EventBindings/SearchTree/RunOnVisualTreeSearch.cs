@@ -15,8 +15,9 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 {
   public static class RunOnVisualTreeSearch
   {
+    //Note that result may be null even with a successful execution.  The method could execute and return null.
     public static bool Run(DependencyObject root, string targetMethodName, object?[] inputParams,
-      [NotNullWhen(true)]out object? result)
+      out object? result)
     {
       Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
       var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
@@ -61,7 +62,7 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
     }
 
     public static bool TryInvokeMethod(DependencyObject root, object?[] inputParams, object target, string methodName,
-      [NotNullWhen(true)]out object? o)
+      out object? o)
     {
       o = null;
       if (string.IsNullOrWhiteSpace(methodName)) return false;

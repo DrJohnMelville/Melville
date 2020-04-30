@@ -17,7 +17,10 @@ namespace Melville.ExcelDataContext.FileReader
                     var rows = new List<IList<string>>();
                     while (dataReader.Read())
                     {
-                        rows.Add(Enumerable.Range(0, dataReader.FieldCount).Select(i => dataReader.GetValue(i)?.ToString()).ToList());
+                        rows.Add(Enumerable.Range(0, dataReader.FieldCount)
+                            .Select(i => dataReader.GetValue(i)?.ToString())
+                            .OfType<string>()
+                            .ToList());
                     }
                     InsertTable(dataReader.Name,rows);
           

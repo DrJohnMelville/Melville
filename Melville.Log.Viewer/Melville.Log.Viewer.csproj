@@ -26,8 +26,4 @@
       <PackageReference Include="Serilog.Formatting.Compact.Reader" Version="1.0.3" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="EventSink" />
-    </ItemGroup>
-
 </Project>

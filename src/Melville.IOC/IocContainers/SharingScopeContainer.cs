@@ -62,8 +62,8 @@ namespace Melville.IOC.IocContainers
             new Dictionary<IActivationStrategy, object?>();
         
         public bool TryGetValue(IActivationStrategy source, [NotNullWhen(true)] out object? value) =>
-            scopeItems.TryGetValue(source, out value) ||
-            ((ParentScope as IScope)?.TryGetValue(source, out value) ?? false);
+            scopeItems.TryGetValue(source, out value!) ||
+            ((ParentScope as IScope)?.TryGetValue(source, out value!) ?? false);
 
         public void SetScopeValue(IActivationStrategy source, object? value) => scopeItems.Add(source, value);
     }
