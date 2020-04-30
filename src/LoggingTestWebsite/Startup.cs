@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AspNetCoreLocalLog.HubLog;
-using LoggingTestWebsite.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,28 +24,12 @@ namespace LoggingTestWebsite
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddSignalR();
-            services.AddResponseCompression(opts =>
-            {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new []{"application/octet-stream"});
-            });
-
-            services.AddSingleton<INotifyEvent<LogEventLevel>,NotifyEvent<LogEventLevel>>();
-            services.AddTransient<HubLogEventSink, HubLogEventSink>();
-            services.AddTransient<ILogger>(isp => Log.Logger);
+            services.AddLoggingHub();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var hubLogEventSink = app.ApplicationServices.GetRequiredService<HubLogEventSink>();
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .WriteTo.Sink(hubLogEventSink, LogEventLevel.Information, hubLogEventSink.LevelSwitch)
-                .CreateLogger();
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -74,7 +53,7 @@ namespace LoggingTestWebsite
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapHub<LoggingHub>("/MelvilleSpecialLoggingHubWellKnownUrl");
+                endpoints.UseLoggingHub();
             });
         }
     }

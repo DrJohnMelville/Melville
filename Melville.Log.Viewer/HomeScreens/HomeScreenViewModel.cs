@@ -34,8 +34,15 @@ namespace Melville.Log.Viewer.HomeScreens
         
         public void ConnectToWeb(IHasTargetUrl targetHolder)
         {
-            Pages.Add(new LogViewModel(
-                new HubLogConnection(targetHolder.TargetUrl), targetHolder.TargetUrl));
+            try
+            {
+                Pages.Add(new LogViewModel(
+                    new HubLogConnection(targetHolder.TargetUrl), targetHolder.TargetUrl));
+            }
+            catch (Exception)
+            {
+                // failed to connect to website
+            }
         }
 
     }

@@ -15,6 +15,7 @@
         <PackageDescription>Add endpoint to retrieved logs from the website.</PackageDescription>
         <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
