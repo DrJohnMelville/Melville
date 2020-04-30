@@ -10,6 +10,20 @@ namespace AspNetCoreLocalLog.HubLog
 {
     public static class ConfigureHubLog
     {
+        /// <summary>
+        /// The hub logger requires two configuration entries
+        /// In Startup.ConFigureServices add:
+        ///    services.AddLoggingHub();
+        ///
+        /// In Startup.Configure inside the call to App.UseEndpoints add
+        ///             app.UseEndpoints(endpoints =>
+        /// {
+        ///       ...
+        ///     endpoints.UseLoggingHub();
+        /// });
+        /// Additionally to make ASp.Net use Serilog add to Program.cs
+        /// Host.CreateDefaultBuilder.UseSerilog(). ...
+        /// </summary>
         public static void AddLoggingHub(this IServiceCollection services)
         {
             services.AddSignalR();
@@ -23,7 +37,22 @@ namespace AspNetCoreLocalLog.HubLog
             services.AddTransient<ILogger>(isp => Log.Logger);
         }
 
-        public static void UseLoggingHub(this IEndpointRouteBuilder endpoints)
+        /// <summary>
+        /// The hub logger requires two configuration entries
+        /// In Startup.ConFigureServices add:
+        ///    srvices.AddLoggingHub();
+        ///
+        /// In Startup.Configure inside the call to App.UseEndpoints add
+        ///             app.UseEndpoints(endpoints =>
+        /// {
+        ///       ...
+        ///     endpoints.UseLoggingHub();
+        /// });
+        /// Additionally to make ASp.Net use Serilog add to Program.cs
+        /// Host.CreateDefaultBuilder.UseSerilog(). ...
+        /// </summary>
+        public static void UseLoggingHub(this IEndpointRouteBuilder endpoints, 
+            params string[] authorizationPolicyNames)
         {
             var hubLogEventSink = endpoints.ServiceProvider.GetRequiredService<HubLogEventSink>();
             Log.Logger = new LoggerConfiguration()
@@ -31,8 +60,11 @@ namespace AspNetCoreLocalLog.HubLog
                 .WriteTo.Console()
                 .WriteTo.Sink(hubLogEventSink, LogEventLevel.Information, hubLogEventSink.LevelSwitch)
                 .CreateLogger();
-            endpoints.MapHub<LoggingHub>("/MelvilleSpecialLoggingHubWellKnownUrl");
-
+            var hubEndpoint = endpoints.MapHub<LoggingHub>("/MelvilleSpecialLoggingHubWellKnownUrl");
+            if (authorizationPolicyNames.Length > 0)
+            {
+                hubEndpoint.RequireAuthorization(authorizationPolicyNames);
+            }
         }
     }
 }

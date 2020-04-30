@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using TokenServiceClient.Website;
 
 namespace LoggingTestWebsite
 {
@@ -24,6 +25,7 @@ namespace LoggingTestWebsite
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddCapWebTokenService("CapWeb", "7v0ehQkQOsWuzx9bT7hcQludASvUFcD5l5JEdkNDPaM");
             services.AddLoggingHub();
         }
 
@@ -46,14 +48,14 @@ namespace LoggingTestWebsite
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
+            app.AddCapWebAuthentication();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-                endpoints.UseLoggingHub();
+                    pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization();
+                endpoints.UseLoggingHub("Administrator");
             });
         }
     }
