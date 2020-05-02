@@ -1,8 +1,9 @@
-﻿using System.Drawing.Design;
-using System.Windows.Data;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Melville.IOC.IocContainers;
+using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
-using Melville.MVVM.AdvancedLists;
+using Microsoft.Extensions.Configuration;
 
 namespace Melville.Log.Viewer.ApplicationRoot
 {
@@ -13,7 +14,24 @@ namespace Melville.Log.Viewer.ApplicationRoot
 
         public Startup()
         {
+            SetupConfiguration();
             SetupPipeListener();
+        }
+
+        private void SetupConfiguration()
+        {
+            var builder = new ConfigurationBuilder()
+                .AddUserSecrets<Startup>()
+                .Build();
+
+            ioc.Bind<IList<TargetSite>>()
+                .ToMethod(i=>
+                {
+                    var ret= new List<TargetSite>();
+                    builder.Bind("Links", ret);
+                    return ret; 
+                })
+                .AsSingleton();
         }
 
         private void SetupPipeListener()

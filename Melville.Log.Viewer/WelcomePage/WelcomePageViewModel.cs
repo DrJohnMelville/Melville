@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Melville.Log.NamedPipeEventSink;
@@ -19,6 +21,12 @@ namespace Melville.Log.Viewer.WelcomePage
     }
     public class WelcomePageViewModel: NotifyBase, IHomeScreenPage, IHasTargetUrl
     {
+        private IList<TargetSite> sites;
+        public WelcomePageViewModel(IList<TargetSite> sites)
+        {
+            this.sites = sites;
+        }
+
         public string Title => "Home Page";
         
         private string lastLogEntry ="";
@@ -34,8 +42,6 @@ namespace Melville.Log.Viewer.WelcomePage
             get => targetUrl;
             set => AssignAndNotify(ref targetUrl, value);
         }
-
-        
 
 
         private Random randomizer = new Random();

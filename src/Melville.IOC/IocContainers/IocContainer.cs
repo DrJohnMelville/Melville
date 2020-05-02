@@ -130,6 +130,5 @@ namespace Melville.IOC.IocContainers
             }
         }
         #endregion
-
     }
 }
