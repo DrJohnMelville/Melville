@@ -7,16 +7,13 @@
              xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:WelcomePageViewModel}}">
-    <StackPanel>
-        <TextBlock>Click the Button to Log!</TextBlock>
-        <TextBlock>Enter the Website you wish to connect to:</TextBlock>
-        <TextBox Text="{Binding TargetUrl}"/>
-        <Button Click="{eventBindings:EventBinding ConnectToWeb}">Begin Logging Website</Button>
-        <Button Click="{eventBindings:EventBinding ConnectLog}">Connect a logger</Button>
-        <Button Click="{eventBindings:EventBinding Log}">Log Random Number</Button>
-        <Button Click="{eventBindings:EventBinding LogException}">Log Exception</Button>
-        <Border BorderBrush="Black" BorderThickness="1">
-            <TextBlock Text="{Binding LastLogEntry}"/>
-        </Border>
+    <StackPanel Margin="15">
+        <TextBlock TextAlignment="Center" FontSize="20">John Melville's Log Viewer</TextBlock>
+        <TextBlock Margin="0 20 0 0">This is the log viewer.  Local programs will connect 
+        automatically.  To Connect to a website, use the combobox and button below.</TextBlock>
+        
+        <ComboBox Margin="20" ItemsSource="{Binding Sites}" SelectedItem="{Binding CurrentSite}"
+                  DisplayMemberPath="Url"/>
+        <Button Click="{eventBindings:EventBinding ConnectToWeb}">Log Website</Button>
     </StackPanel>
 </UserControl>

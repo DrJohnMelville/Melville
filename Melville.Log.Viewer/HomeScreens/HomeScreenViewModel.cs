@@ -37,7 +37,7 @@ namespace Melville.Log.Viewer.HomeScreens
             try
             {
                 Pages.Add(new LogViewModel(
-                    new HubLogConnection(targetHolder.TargetUrl), targetHolder.TargetUrl));
+                    new HubLogConnection(targetHolder.CurrentSite), targetHolder.CurrentSite.Name));
             }
             catch (Exception)
             {

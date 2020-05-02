@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Melville.Log.Viewer.HomeScreens;
 using Microsoft.AspNetCore.SignalR.Client;
 using Serilog.Events;
 using Serilog.Formatting.Compact.Reader;
@@ -23,37 +24,23 @@ namespace Melville.Log.Viewer.LogViews
         public event EventHandler<LogEventArrivedEventArgs>? LogEventArrived;
         private IPersistentAccessToken token = new FakeAccessToken();
          
-        public HubLogConnection(string url)
+        public HubLogConnection(TargetSite site)
         {
             connection = new HubConnectionBuilder()
-                .WithUrl(url.TrimEnd('/','\\') + "/MelvilleSpecialLoggingHubWellKnownUrl",
+                .WithUrl(site.Url.TrimEnd('/','\\') + "/MelvilleSpecialLoggingHubWellKnownUrl",
                     o=> o.AccessTokenProvider = GetAccessToken)
                 .WithAutomaticReconnect()
                 .Build();
             disposeToStopReadingEvents = connection.On("SendEvent", (Action<string>)HandleLogEvent);
-            ConnectToHub();
+            if (site.Secret.Length > 0)
+            {
+                token = CapWebTokenFactory.CreateCapWebClient(site.Name, site.Secret);
+            }
+            connection.StartAsync();
         }
 
         private async Task<string> GetAccessToken() => 
             (await token.CurrentAccessToken()).AccessToken;
-
-        private async void ConnectToHub()
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                try
-                {
-                    await connection.StartAsync();
-                    return;
-                 }
-                catch (InvalidDataException)
-                {
-                    token = CapWebTokenFactory.CreateCapWebClient("CapWeb",
-                        "7v0ehQkQOsWuzx9bT7hcQludASvUFcD5l5JEdkNDPaM");
-                }
-                
-            }
-        }
 
         private void HandleLogEvent(string serializedEvent)
         {
