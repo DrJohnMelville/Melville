@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <UserSecretsId>7cfb7489-0c66-42f3-bec2-77a2250777de</UserSecretsId>
+    <ApplicationIcon>ApplicationRoot/app.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Remove="App.xaml" />
@@ -24,5 +25,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="3.1.3" />
     <PackageReference Include="Serilog.Formatting.Compact.Reader" Version="1.0.3" />
     <PackageReference Include="TokenServiceClient.Native" Version="0.2.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="ApplicationRoot\app.ico" />
+    <Resource Include="ApplicationRoot\app.ico" />
   </ItemGroup>
 </Project>

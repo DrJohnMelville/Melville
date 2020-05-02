@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Media.Imaging;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
 using Melville.Log.Viewer.HomeScreens;
@@ -32,6 +33,7 @@ namespace Melville.Log.Viewer.ApplicationRoot
         private static RootNavigationWindow VisibleMainWindow(IIocService root)
         {
             var ret = root.Get<RootNavigationWindow>();
+            ret.SetWindowIconFromResource("Melville.Log.Viewer", "ApplicationRoot/app.ico");
             ret.Show();
             ((INavigationWindow)ret.DataContext).NavigateTo(root.Get<HomeScreenViewModel>());
             return ret;

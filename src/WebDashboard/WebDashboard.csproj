@@ -27,8 +27,8 @@
 
     <ItemGroup>
       <None Remove="RootWindows\app.ico" />
-      <Content Include="RootWindows\app.ico">
+      <Resource Include="RootWindows\app.ico">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+      </Resource>
     </ItemGroup>
 </Project>

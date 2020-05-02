@@ -37,7 +37,9 @@ namespace WebDashboard.Startup
             var application = ioc.Get<App>();
             application.InitializeComponent();
             application.AttachDiRoot(new DiBridge(ioc));
-            application.MainWindow = ioc.Get<RootNavigationWindow>();
+            var mainWin = ioc.Get<RootNavigationWindow>();
+            mainWin.SetWindowIconFromResource("WebDashboard", "RootWindows/app.ico");
+            application.MainWindow = mainWin;
             application.MainWindow.Show();
             return application;
         }

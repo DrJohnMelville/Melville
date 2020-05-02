@@ -30,7 +30,7 @@ namespace Melville.Log.Viewer.HomeScreens
             Func<ILogConnection, LogViewModel> modelCreator)
         {
             Pages.Add(welcomePage);
-            CurrentPage = welcomePage;
+            currentPage = welcomePage;
             pipeListener.NewClientConnection += (_, e) =>
                 AddNewPage(modelCreator(new StreamLogConnection(e.ClientConnection)));
         }
