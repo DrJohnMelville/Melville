@@ -6,6 +6,7 @@ using Melville.Log.Viewer.LogViews;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.AdvancedLists;
+using Melville.MVVM.BusinessObjects;
 
 namespace Melville.Log.Viewer.HomeScreens
 {
@@ -14,16 +15,24 @@ namespace Melville.Log.Viewer.HomeScreens
         string Title { get; }
         void Stop();
     }
-    public class HomeScreenViewModel
+    public class HomeScreenViewModel: NotifyBase
     {
+        private IHomeScreenPage currentPage;
+        public IHomeScreenPage CurrentPage
+        {
+            get => currentPage;
+            set => AssignAndNotify(ref currentPage, value);
+        }
+
         public ICollection<IHomeScreenPage> Pages { get; } = new ThreadSafeBindableCollection<IHomeScreenPage>();
 
         public HomeScreenViewModel(WelcomePageViewModel welcomePage, IPipeListener pipeListener,
             Func<ILogConnection, LogViewModel> modelCreator)
         {
             Pages.Add(welcomePage);
+            CurrentPage = welcomePage;
             pipeListener.NewClientConnection += (_, e) =>
-                Pages.Add(modelCreator(new StreamLogConnection(e.ClientConnection)));
+                AddNewPage(modelCreator(new StreamLogConnection(e.ClientConnection)));
         }
 
         public void Remove(IHomeScreenPage page)
@@ -36,7 +45,7 @@ namespace Melville.Log.Viewer.HomeScreens
         {
             try
             {
-                Pages.Add(new LogViewModel(
+                AddNewPage(new LogViewModel(
                     new HubLogConnection(targetHolder.CurrentSite), targetHolder.CurrentSite.Name));
             }
             catch (Exception)
@@ -45,5 +54,10 @@ namespace Melville.Log.Viewer.HomeScreens
             }
         }
 
+        private void AddNewPage(LogViewModel page)
+        {
+            Pages.Add(page);
+            CurrentPage = page;
+        }
     }
 }
