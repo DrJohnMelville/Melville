@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.1.6</Version>
+        <Version>0.2.0</Version>
         <Authors>John Melville, MS, MD</Authors>
         <Company>Melville Computing</Company>
         <Title>ASP Net Core Logging Retrieval endpoints</Title>
