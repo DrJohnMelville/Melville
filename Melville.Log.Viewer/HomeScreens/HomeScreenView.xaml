@@ -10,7 +10,8 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:HomeScreenViewModel}}">
     <TabControl ItemsSource="{Binding Pages}" 
-                SelectedItem="{Binding CurrentPage, Mode=TwoWay, PresentationTraceSources.TraceLevel=High}">
+                SelectedItem="{Binding CurrentPage, Mode=TwoWay}"
+                KeyDown="{eventBindings:EventBinding ShellKeyHandler}">
         <TabControl.ItemTemplate>
             <DataTemplate DataType="{x:Type local:IHomeScreenPage}">
                 <DockPanel LastChildFill="True" x:Name="Tab" Background="Transparent">

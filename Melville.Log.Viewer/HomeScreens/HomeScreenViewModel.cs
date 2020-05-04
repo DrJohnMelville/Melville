@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Input;
 using Melville.Log.Viewer.LogViews;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.WelcomePage;
@@ -39,6 +40,18 @@ namespace Melville.Log.Viewer.HomeScreens
         {
             Pages.Remove(page);
             page.Stop();
+        }
+
+        public bool ShellKeyHandler(KeyEventArgs e)
+        {
+            if (e.Key == Key.F4 && e.KeyboardDevice.Modifiers == ModifierKeys.Control &&
+                CurrentPage is LogViewModel)
+            {
+                Remove(CurrentPage);
+                return true;
+            }
+
+            return false;
         }
         
         public void ConnectToWeb(IHasTargetUrl targetHolder)

@@ -56,11 +56,18 @@ namespace Melville.Log.Viewer.NamedPipeServers
 
         private async Task AcceptSingleConnection()
         {
-            await using var serverPipe = CreateNamedPipe(pipeName.ServerName);
-            await serverPipe.WaitForConnectionAsync(cancellationToken);
-            var newPipeName = pipeName.NewClientPipeName(20);
-            WaitForClientPipeConnection(newPipeName);
-            await serverPipe.WriteAsync(Encoding.UTF8.GetBytes(newPipeName + Environment.NewLine));
+            try
+            {
+                await using var serverPipe = CreateNamedPipe(pipeName.ServerName);
+                await serverPipe.WaitForConnectionAsync(cancellationToken);
+                var newPipeName = pipeName.NewClientPipeName(20);
+                WaitForClientPipeConnection(newPipeName);
+                await serverPipe.WriteAsync(Encoding.UTF8.GetBytes(newPipeName + Environment.NewLine));
+            }
+            catch (TaskCanceledException)
+            {
+                // we are closing so go away quietly
+            }
         }
 
         // wait 5 seconds for the client to connect on the private channel
