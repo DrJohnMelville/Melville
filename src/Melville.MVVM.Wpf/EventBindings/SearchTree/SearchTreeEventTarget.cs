@@ -43,12 +43,13 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
       GetType().GetMethod(nameof(RunMethod), BindingFlags.NonPublic | BindingFlags.Instance) ??
       throw new InvalidProgramException("Cannot find RunMethod");
 
-    private void RunMethod(object sender, EventArgs e) => InvokeTarget((DependencyObject)sender, e);
+    private void RunMethod(object sender, object e) => InvokeTarget((DependencyObject)sender, e);
 
     public Delegate CreateDelegate(Type? returnType)
     {
       if (returnType == null) throw new InvalidOperationException("Must specify return type of the delegate.");
-      return Delegate.CreateDelegate(returnType, this, TargetMethodInfo());
+      var targetMethodInfo = TargetMethodInfo();
+      return Delegate.CreateDelegate(returnType, this, targetMethodInfo);
     }
   }
 

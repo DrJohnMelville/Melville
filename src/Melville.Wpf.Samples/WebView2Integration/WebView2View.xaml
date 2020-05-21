@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.WebView2Integration.WebView2View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.WebView2Integration"
+             xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <wpf:CoreWebView2CreationProperties x:Key="EvergreenWebView2CreationProperties" />
+    </UserControl.Resources>
+    <Grid Background="Red" >
+        <wpf:WebView2 Source="https://www.google.com"
+            NavigationStarting="{eventBindings:EventBinding NavigationStarting}"
+                      Margin="4" ></wpf:WebView2>
+    </Grid>
+</UserControl>

@@ -12,6 +12,9 @@
       <Page Include="App.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>
+      <Page Update="WebView2Integration\WebView2View.xaml">
+        <Generator></Generator>
+      </Page>
     </ItemGroup>
 
     <ItemGroup>
@@ -22,7 +25,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Microsoft.Web.WebView2" Version="0.9.515-prerelease" />
       <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="WebView2Integration\WebView2View.xaml.cs">
+        <DependentUpon>WebView2View.xaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>
