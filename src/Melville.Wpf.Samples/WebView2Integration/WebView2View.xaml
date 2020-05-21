@@ -6,14 +6,22 @@
              xmlns:local="clr-namespace:Melville.Wpf.Samples.WebView2Integration"
              xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
              xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignData {x:Type local:WebView2ViewModel}"
              d:DesignHeight="300" d:DesignWidth="300">
-    <UserControl.Resources>
-        <wpf:CoreWebView2CreationProperties x:Key="EvergreenWebView2CreationProperties" />
-    </UserControl.Resources>
-    <Grid Background="Red" >
-        <wpf:WebView2 Source="https://www.google.com"
-            NavigationStarting="{eventBindings:EventBinding NavigationStarting}"
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock>As  of 5/21/2020 the webview2 only works when run from explorer, not from Rider.</TextBlock>
+        <wpf:WebView2 Grid.Row="1" Source="http://www.google.com"
+                      NavigationStarting="{eventBindings:EventBinding NavigationStarting}"
+                      NavigationCompleted="{eventBindings:EventBinding NavigationEnding}"
                       Margin="4" ></wpf:WebView2>
+        <TextBlock Grid.Row="2" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   wpfHacks:VisibilityHack.CollapseUnless="{Binding Loading}">Loading Buddy</TextBlock>
     </Grid>
 </UserControl>
