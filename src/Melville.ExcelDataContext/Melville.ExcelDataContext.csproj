@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-    <PackageReference Include="LINQPad.Reference" Version="1.*" />
+    <PackageReference Include="LINQPad.Reference" Version="1.1.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ConnectionDialog.xaml">
@@ -21,7 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="linqpad-samples\\*.*" />
-    <Folder Include="linqpad-samples\\" />
   </ItemGroup>
   <Target Name="PostBuild1" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\\LINQPad\\Drivers\\DataContext\\NetCore\\$(TargetName)&quot;" />

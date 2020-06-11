@@ -19,11 +19,19 @@ namespace Melville.ExcelDataContext.SchemaComputation
             var titleRow = value.FirstOrDefault();
             if (titleRow == null) return new SchemaFieldDecl[0];
             var namer = new NameSpace();
-            return titleRow.Select((i,count) => 
-                new SchemaFieldDecl(namer.Rename(i), ComputeType(
-                    value.Select(j=>j[count]).Skip(1)
-                ))).ToArray();
+            return titleRow.Select((columnName,columnIndex) => 
+                new SchemaFieldDecl(namer.Rename(columnName), 
+                    ComputeType(DataForColumnByIndex(value, columnIndex))))
+                .ToArray();
         }
+
+        private static IEnumerable<string> DataForColumnByIndex(IList<IList<string>> value, int count)
+        {
+            return value.Select(j=>CellFromRowByColumn(j, count)).Skip(1);
+        }
+
+        private static string CellFromRowByColumn(IList<string> row, int count) => 
+            count < row.Count? row[count]:"";
 
         private class TargetType
         {
@@ -48,7 +56,8 @@ namespace Melville.ExcelDataContext.SchemaComputation
             }
         }
 
-        private static Regex BooleanDetector = new Regex(@"^\s*(Y|Yes|T|True|N|No|F|False)\s*$", RegexOptions.IgnoreCase);
+        private static Regex BooleanDetector = 
+            new Regex(@"^\s*(Y|Yes|T|True|N|No|F|False)\s*$", RegexOptions.IgnoreCase);
         /// <summary>
         /// This is a complicated method.  Basically we want to find out if all the values are ints,
         /// doubles, dates, etc so we can use a better datatype.  In addition, whitespace indicates
@@ -70,7 +79,6 @@ namespace Melville.ExcelDataContext.SchemaComputation
         {
             var candidateTypes = new[]
             {
-                //next we need a boolean target type that recognizes true/false/t/f/y/n/yes/no
                 new TargetType(i => int.TryParse(i, out var _), SchemaTargetType.Int),
                 new TargetType(i => Double.TryParse(i, out var _),
                     SchemaTargetType.Double),
@@ -101,8 +109,6 @@ namespace Melville.ExcelDataContext.SchemaComputation
                 .Select(i => hasUnknown ? i.WithNulls : i.WithoutNulls)
                 .DefaultIfEmpty(SchemaTargetType.String)
                 .First();
-      
         }
-
     }
 }

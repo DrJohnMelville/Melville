@@ -16,7 +16,8 @@ namespace Melville.ExcelDataContext
 		{
 			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
 			{
-				if (args.Exception.StackTrace.Contains(typeof (DynamicDriver).Namespace))
+				//File.WriteAllText(@"C:\users\jom252\desktop\linqException.txt",args.Exception.Message+args.Exception.StackTrace);
+				if (args.Exception.StackTrace?.Contains(typeof (DynamicDriver).Namespace??"") ?? true)
 					Debugger.Launch ();
 			};
 	
