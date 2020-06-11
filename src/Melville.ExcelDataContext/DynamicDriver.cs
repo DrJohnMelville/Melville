@@ -12,7 +12,15 @@ namespace Melville.ExcelDataContext
 {
 	public class DynamicDriver : DynamicDataContextDriver
 	{
-		
+		static DynamicDriver()
+		{
+			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
+			{
+				if (args.Exception.StackTrace.Contains(typeof (DynamicDriver).Namespace))
+					Debugger.Launch ();
+			};
+	
+		}
 		#region UI Identifiers
 		public override string Name => "Excel or CSV File";
 		public override string Author => "John Melville";
