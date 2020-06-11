@@ -58,6 +58,7 @@ namespace Melville.Log.Viewer.HomeScreens
         {
             try
             {
+                if (targetHolder.CurrentSite == null) return;
                 AddNewPage(new LogViewModel(
                     new HubLogConnection(targetHolder.CurrentSite), targetHolder.CurrentSite.Name));
             }

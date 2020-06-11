@@ -18,16 +18,16 @@ namespace Melville.Log.Viewer.WelcomePage
 {
     public interface IHasTargetUrl
     {
-        TargetSite CurrentSite { get; }
+        TargetSite? CurrentSite { get; }
     }
     public class WelcomePageViewModel: NotifyBase, IHomeScreenPage, IHasTargetUrl
     {
         public IList<TargetSite> Sites { get; }
-        public TargetSite CurrentSite { get; set; }
+        public TargetSite? CurrentSite { get; set; }
         public WelcomePageViewModel(IList<TargetSite> sites)
         {
             this.Sites = sites;
-            CurrentSite = sites.First();
+            CurrentSite = sites.FirstOrDefault();
         }
 
         public string Title => "Home Page";

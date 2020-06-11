@@ -4,6 +4,17 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    
+    <PropertyGroup>
+        <Version>0.1.0</Version>
+        <Authors>John Melville, MS, MD</Authors>
+        <Company>Melville Computing</Company>
+        <Title>Melville.Log.NamedPipeEventSink</Title>
+        <PackageDescription>A Serilog sink that outputs to my private log viewer.</PackageDescription>
+        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IsPackable>true</IsPackable>
+    </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Serilog" Version="2.9.0" />
