@@ -19,7 +19,7 @@ namespace Melville.ExcelDataContext.FileReader
                     {
                         rows.Add(Enumerable.Range(0, dataReader.FieldCount)
                             .Select(i => dataReader.GetValue(i)?.ToString())
-                            .OfType<string>()
+                            .Select(i=> i??"")
                             .ToList());
                     }
                     InsertTable(dataReader.Name,rows);

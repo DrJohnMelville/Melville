@@ -11,10 +11,10 @@
 
 
   <PropertyGroup>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
-    <Title>LinqStatistics</Title>
+    <Title>Melville.Linq.Statistics</Title>
     <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
     <PackageDescription>A simple data analysis framework that works well with LinqPad.</PackageDescription>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -26,7 +26,7 @@
       <HintPath>C:\Program Files\LINQPad6\LINQPad.Runtime.dll</HintPath>
     </Reference>
     <PackageReference Include="Accord.Statistics" Version="3.8.0" />
-    <PackageReference Include="Castle.Core" Version="4.4.0" />
+    <PackageReference Include="Castle.Core" Version="4.4.1" />
   
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
   </ItemGroup>

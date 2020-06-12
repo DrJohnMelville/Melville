@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using Melville.ExcelDataContext.SchemaComputation;
 
@@ -24,7 +25,6 @@ namespace Melville.ExcelDataContext.FileReader
             };
             ret.Load(path);
             return ret;
-      
         }
 
         public ISchemaDataSource GetSchemaDataSource()
