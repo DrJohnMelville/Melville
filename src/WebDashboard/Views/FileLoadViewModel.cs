@@ -4,13 +4,14 @@ using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.ViewFrames;
+using Melville.WpfIocMvvm.StartupBases;
 using WebDashboard.Models;
 using WebDashboard.Startup;
 
 namespace WebDashboard.Views
 {
     [OnDisplayed(nameof(Setup))]
-    public class FileLoadViewModel
+    public class FileLoadViewModel: IHomeViewModel
     {
         private readonly IOpenSaveFile fileDlg;
         private readonly IStartupData startup;

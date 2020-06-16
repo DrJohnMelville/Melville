@@ -16,15 +16,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
-      <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
       <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
+      <ProjectReference Include="..\Melville.WpfIocMvvm\Melville.WpfIocMvvm.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Serilog.Sinks.Trace" Version="2.1.0" />
-    </ItemGroup>
-
+    
     <ItemGroup>
       <None Remove="RootWindows\app.ico" />
       <Resource Include="RootWindows\app.ico">

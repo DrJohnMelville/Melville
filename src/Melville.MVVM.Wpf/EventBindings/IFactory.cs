@@ -51,7 +51,7 @@ namespace Melville.MVVM.Wpf.EventBindings
   
   public class ConstantFactory: IFactory
   {
-    private object? value;
+    private readonly object? value;
 
     public ConstantFactory(object? value)
     {

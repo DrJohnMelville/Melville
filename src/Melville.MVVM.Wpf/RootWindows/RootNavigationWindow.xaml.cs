@@ -7,7 +7,13 @@ using Melville.MVVM.Wpf.DiParameterSources;
 
 namespace Melville.MVVM.Wpf.RootWindows
 {
-    public partial class RootNavigationWindow : Window
+    public interface IRootNavigationWindow
+    {
+        void SetWindowIconFromResource(string assemblyName, string iconPath);
+        void Show();
+        object DataContext { get; set; }
+    }
+    public partial class RootNavigationWindow : Window, IRootNavigationWindow
     {
         public RootNavigationWindow(INavigationWindow viewModel)
         {

@@ -1,39 +1,46 @@
-﻿using System.Windows;
-using System.Windows.Data;
+﻿using System;
+using System.Windows;
 using Melville.IOC.IocContainers;
-using Melville.MVVM.AdvancedLists;
-using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
-using Serilog;
-using Serilog.Events;
+using Melville.WpfIocMvvm.StartupBases;
+using WebDashboard.Views;
 
 namespace WebDashboard.Startup
 {
-    public static class Startup
+    public class Startup2 : StartupBase
     {
-        public static void SetupIoc(IocContainer service)
+        [STAThread]
+        public static int Main(string[] args)
         {
-            ConfigureLog();
+            ApplicationRootImplementation.Run(new Startup2(args));
+            return 0;
+        }
 
-            
-            service.Bind<IIocService>().ToConstant(service);
+        public Startup2(string[] commandLineParameters) : base(commandLineParameters)
+        {
+        }
 
+        protected override void RegisterWithIocContainer(IBindableIocService service)
+        {
+            service.AddLogging();
             // Root Window
             service.Bind<INavigationWindow>().To<NavigationWindow>().AsSingleton();
-            service.Bind<RootNavigationWindow>().And<Window>().ToSelf().AsSingleton();
+            service.Bind<RootNavigationWindow>().And<Window>().And<IRootNavigationWindow>()
+                .ToSelf().WrapWith(SetIcon).AsSingleton();
+            service.Bind<IHomeViewModel>().To<FileLoadViewModel>();
             
             // System Services
+            service.Bind<IStartupData>().To<StartupData>()
+                .WithParameters(new object[] {CommandLineParameters})
+                .AsSingleton();
             service.Bind<IOpenSaveFile>().To<OpenSaveFileAdapter>();
         }
 
-        private static void ConfigureLog()
+        private RootNavigationWindow SetIcon(RootNavigationWindow arg)
         {
-            Log
-                .Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
-                .WriteTo.Dynamic(i => i.Trace(), LogEventLevel.Information)
-                .CreateLogger();
+            arg.SetWindowIconFromResource("WebDashboard", "RootWindows/app.ico");
+            return arg;
         }
     }
 }

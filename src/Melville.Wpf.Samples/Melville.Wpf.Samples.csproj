@@ -9,24 +9,18 @@
 
     <ItemGroup>
       <ApplicationDefinition Remove="App.xaml" />
-      <Page Include="App.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </Page>
       <Page Update="WebView2Integration\WebView2View.xaml">
         <Generator></Generator>
       </Page>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Melville.Log.NamedPipeEventSink\Melville.Log.NamedPipeEventSink.csproj" />
-      <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
       <ProjectReference Include="..\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj" />
-      <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
+      <ProjectReference Include="..\Melville.WpfIocMvvm\Melville.WpfIocMvvm.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Web.WebView2" Version="0.9.515-prerelease" />
-      <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     </ItemGroup>
 
     <ItemGroup>

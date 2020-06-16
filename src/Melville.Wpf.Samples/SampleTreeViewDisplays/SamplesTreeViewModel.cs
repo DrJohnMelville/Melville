@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Melville.MVVM.BusinessObjects;
+using Melville.WpfIocMvvm.StartupBases;
 
 namespace Melville.Wpf.Samples.SampleTreeViewDisplays
 {
-    public class SamplesTreeViewModel: NotifyBase
+    public class SamplesTreeViewModel: NotifyBase, IHomeViewModel
     {
         private ISampleTreeItem? currentItem;
         public ISampleTreeItem? CurrentItem 
