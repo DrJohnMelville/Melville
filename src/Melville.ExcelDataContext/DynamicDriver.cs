@@ -7,12 +7,22 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows;
 
 namespace Melville.ExcelDataContext
 {
 	public class DynamicDriver : DynamicDataContextDriver
 	{
-		
+		static DynamicDriver()
+		{
+			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
+			{
+				File.WriteAllText(@"C:\users\jom252\desktop\linqException.txt",args.Exception.Message+args.Exception.StackTrace);
+				if (args.Exception.StackTrace?.Contains(typeof (DynamicDriver).Namespace??"") ?? true)
+					Debugger.Launch ();
+			};
+	
+		}
 		#region UI Identifiers
 		public override string Name => "Excel or CSV File";
 		public override string Author => "John Melville";
@@ -23,9 +33,11 @@ namespace Melville.ExcelDataContext
 			LoadExcelFileName.LoadExcelFileAsConnectionInfo(cxInfo);
 
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, AssemblyName assemblyToBuild, 
-			ref string nameSpace, ref string typeName) => 
-			TargetObjectBuilder.GetSchemaAndBuildAssembly(assemblyToBuild, nameSpace, typeName, 
+			ref string nameSpace, ref string typeName)
+		{
+			return TargetObjectBuilder.GetSchemaAndBuildAssembly(assemblyToBuild, nameSpace, typeName,
 				ExcelFileCache.LoadFile(cxInfo).GetSchemaDataSource());
+		}
 
 		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
 		{  

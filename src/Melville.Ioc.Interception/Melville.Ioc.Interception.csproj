@@ -16,7 +16,7 @@
     <ItemGroup>
         <PackageReference Include="Castle.Core" Version="4.4.0" />
         <PackageReference Include="NuGet.Build.Tasks.Pack" Version="5.4.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.5" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />

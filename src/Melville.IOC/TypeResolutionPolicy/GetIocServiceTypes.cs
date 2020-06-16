@@ -25,7 +25,7 @@ namespace Melville.IOC.TypeResolutionPolicy
             IIocService? currentService = service;
             while (currentService != null && !bindingRequest.DesiredType.IsInstanceOfType(currentService))
             {
-                currentService = service.ParentScope;
+                currentService = currentService.ParentScope;
             }
             if (currentService  == null) throw new IocException("No valid service container found");
             return currentService;
