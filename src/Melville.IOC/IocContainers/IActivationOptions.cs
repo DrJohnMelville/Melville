@@ -53,6 +53,13 @@ namespace Melville.IOC.IocContainers
     }
     public interface IActivationOptions<T>:ITypesafeActivationOptions<T>
     {
+        IActivationOptions<T> FixResult(Action<T> act) => FixResult((i, j) => act(i));
+        IActivationOptions<T> FixResult(Action<T, IBindingRequest> act) => 
+          WrapWith((item, bindingRequest) =>
+          {
+              act(item, bindingRequest);
+              return item;
+          });
         IActivationOptions<T> WrapWith(Func<T, T> wrapper) => WrapWith((i, j) => wrapper(i));
         IActivationOptions<T> WrapWith(Func<T, IBindingRequest, T> wrapper) =>
             AddActivationStrategy(i => new WrappingActivationStrategy<T>(i, wrapper));

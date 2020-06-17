@@ -8,6 +8,7 @@ using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
+using Melville.WpfIocMvvm.StartupBases;
 
 namespace Melville.Log.Viewer.HomeScreens
 {
@@ -16,7 +17,7 @@ namespace Melville.Log.Viewer.HomeScreens
         string Title { get; }
         void Stop();
     }
-    public class HomeScreenViewModel: NotifyBase
+    public class HomeScreenViewModel: NotifyBase, IHomeViewModel
     {
         private IHomeScreenPage currentPage;
         public IHomeScreenPage CurrentPage

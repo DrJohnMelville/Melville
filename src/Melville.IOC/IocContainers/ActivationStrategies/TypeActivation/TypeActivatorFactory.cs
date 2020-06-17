@@ -54,7 +54,6 @@ namespace Melville.IOC.IocContainers.ActivationStrategies.TypeActivation
             return new TypeActivationStrategy(
                 ActivationCompiler.Compile(constructor), constructor.GetParameters());
         }
-
         public static ConstructorInfo WithArgumentTypes(this IList<ConstructorInfo> constructors,
             params Type[] argumentTypes)
         {
@@ -67,6 +66,9 @@ namespace Melville.IOC.IocContainers.ActivationStrategies.TypeActivation
             });
         }
 
+
+        public static ConstructorInfo DefaultConstructor(this IList<ConstructorInfo> constructors) =>
+            constructors.WithArgumentTypes();
         public static ConstructorInfo WithArgumentTypes<T1>(this IList<ConstructorInfo> constructors) => 
             constructors.WithArgumentTypes(typeof(T1));
 

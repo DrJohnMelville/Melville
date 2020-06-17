@@ -8,16 +8,16 @@ using WebDashboard.Views;
 
 namespace WebDashboard.Startup
 {
-    public class Startup2 : StartupBase
+    public class Startup : StartupBase
     {
         [STAThread]
         public static int Main(string[] args)
         {
-            ApplicationRootImplementation.Run(new Startup2(args));
+            ApplicationRootImplementation.Run(new Startup(args));
             return 0;
         }
 
-        public Startup2(string[] commandLineParameters) : base(commandLineParameters)
+        public Startup(string[] commandLineParameters) : base(commandLineParameters)
         {
         }
 
@@ -27,7 +27,7 @@ namespace WebDashboard.Startup
             // Root Window
             service.Bind<INavigationWindow>().To<NavigationWindow>().AsSingleton();
             service.Bind<RootNavigationWindow>().And<Window>().And<IRootNavigationWindow>()
-                .ToSelf().WrapWith(SetIcon).AsSingleton();
+                .ToSelf().FixResult(SetIcon).AsSingleton();
             service.Bind<IHomeViewModel>().To<FileLoadViewModel>();
             
             // System Services
@@ -37,10 +37,7 @@ namespace WebDashboard.Startup
             service.Bind<IOpenSaveFile>().To<OpenSaveFileAdapter>();
         }
 
-        private RootNavigationWindow SetIcon(RootNavigationWindow arg)
-        {
+        private void SetIcon(RootNavigationWindow arg) => 
             arg.SetWindowIconFromResource("WebDashboard", "RootWindows/app.ico");
-            return arg;
-        }
     }
 }

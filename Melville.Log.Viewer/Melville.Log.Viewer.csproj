@@ -19,6 +19,7 @@
     <ProjectReference Include="..\src\Melville.IOC\Melville.IOC.csproj" />
     <ProjectReference Include="..\src\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
     <ProjectReference Include="..\src\Melville.WpfControls\Melville.WpfControls.csproj" />
+    <ProjectReference Include="..\src\Melville.WpfIocMvvm\Melville.WpfIocMvvm.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.5" />

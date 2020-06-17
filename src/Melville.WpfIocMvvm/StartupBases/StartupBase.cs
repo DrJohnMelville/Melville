@@ -1,11 +1,15 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.BindingSources;
+using Melville.IOC.TypeResolutionPolicy;
 using Melville.Log.NamedPipeEventSink;
+using Melville.MVVM.Functional;
+using Microsoft.Extensions.Configuration;
 using Serilog;
 
 namespace Melville.WpfIocMvvm.StartupBases
 {
-    public class StartupBase
+    public abstract class StartupBase
     {
         public StartupBase(string[]? commandLineParameters = null)
         {
@@ -20,22 +24,36 @@ namespace Melville.WpfIocMvvm.StartupBases
             return service;
         }
 
-        protected virtual void RegisterWithIocContainer(IBindableIocService service)
-        {
-            
-        }
+        protected abstract void RegisterWithIocContainer(IBindableIocService service);
     }
 
     public static class WpfServiceBindings
     {
-        public static void AddLogging(this IBindableIocService service)
+        public static IActivationOptions<ILogger> AddLogging(this IBindableIocService service)
         {
             Serilog.Log.Logger = new LoggerConfiguration()
                 .WriteTo.NamedPipe()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
                 .CreateLogger();
-            service.Bind<ILogger>().ToConstant(Serilog.Log.Logger);
+            return service.Bind<ILogger>().ToConstant(Serilog.Log.Logger);
         }
+
+        public static IActivationOptions<IConfigurationRoot> AddConfigurationSources(this IBindableIocService service, Action<IConfigurationBuilder> build)
+        {
+            var builder = new ConfigurationBuilder();
+            build(builder);
+            return service.Bind<IConfigurationRoot>().ToConstant(builder.Build()).DisposeIfInsideScope();
+        }
+
+        public static IActivationOptions<TSource> InitializeFromConfiguration<TSource>(
+            this IActivationOptions<TSource> src, string key) => src.FixResult((item, req) => 
+              req.IocService.Get<IConfigurationRoot>().GetSection(key).Bind(item));
+        public static IActivationOptions<TSource> InitializeFromConfiguration<TSource>(
+            this IActivationOptions<TSource> src, IConfiguration config, string key) => 
+            src.InitializeFromConfiguration(config.GetSection(key));
+        public static IActivationOptions<TSource> InitializeFromConfiguration<TSource>(
+            this IActivationOptions<TSource> src, IConfiguration config) =>
+            src.FixResult(i => config.Bind(i));
     }
 }
