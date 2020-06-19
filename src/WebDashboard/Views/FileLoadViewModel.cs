@@ -11,7 +11,7 @@ using WebDashboard.Startup;
 namespace WebDashboard.Views
 {
     [OnDisplayed(nameof(Setup))]
-    public class FileLoadViewModel: IHomeViewModel
+    public class FileLoadViewModel
     {
         private readonly IOpenSaveFile fileDlg;
         private readonly IStartupData startup;

@@ -23,7 +23,7 @@ namespace Melville.Wpf.Samples.ApplicationRoot
         protected override void RegisterWithIocContainer(IBindableIocService service)
         {
             service.AddLogging();
-            service.Bind<IHomeViewModel>().To<SamplesTreeViewModel>();
+            service.RegisterHomeViewModel<SamplesTreeViewModel>();
             service.Bind<DisposableDependency>().ToSelf().AsScoped();
         }
     }

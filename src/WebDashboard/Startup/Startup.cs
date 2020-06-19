@@ -28,7 +28,7 @@ namespace WebDashboard.Startup
             service.Bind<INavigationWindow>().To<NavigationWindow>().AsSingleton();
             service.Bind<RootNavigationWindow>().And<Window>().And<IRootNavigationWindow>()
                 .ToSelf().FixResult(SetIcon).AsSingleton();
-            service.Bind<IHomeViewModel>().To<FileLoadViewModel>();
+            service.RegisterHomeViewModel<FileLoadViewModel>();
             
             // System Services
             service.Bind<IStartupData>().To<StartupData>()

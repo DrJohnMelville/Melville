@@ -4,7 +4,7 @@ using Melville.WpfIocMvvm.StartupBases;
 
 namespace Melville.Wpf.Samples.SampleTreeViewDisplays
 {
-    public class SamplesTreeViewModel: NotifyBase, IHomeViewModel
+    public class SamplesTreeViewModel: NotifyBase
     {
         private ISampleTreeItem? currentItem;
         public ISampleTreeItem? CurrentItem 

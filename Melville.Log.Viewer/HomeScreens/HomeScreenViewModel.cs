@@ -17,7 +17,7 @@ namespace Melville.Log.Viewer.HomeScreens
         string Title { get; }
         void Stop();
     }
-    public class HomeScreenViewModel: NotifyBase, IHomeViewModel
+    public class HomeScreenViewModel: NotifyBase
     {
         private IHomeScreenPage currentPage;
         public IHomeScreenPage CurrentPage

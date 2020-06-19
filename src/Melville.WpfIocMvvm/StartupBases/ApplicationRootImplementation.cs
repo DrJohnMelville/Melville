@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
@@ -6,7 +7,6 @@ using Melville.WpfIocMvvm.IocBridges;
 
 namespace Melville.WpfIocMvvm.StartupBases
 {
-    public interface IHomeViewModel{}
     public static class ApplicationRootImplementation
     {
         /// <summary>
@@ -38,12 +38,34 @@ namespace Melville.WpfIocMvvm.StartupBases
         {
             var ret = root.Get<IRootNavigationWindow>();
             ret.Show();
-            if (ret.DataContext is INavigationWindow window &&
-                root.CanGet<IHomeViewModel>())
-            {
-                window.NavigateTo(root.Get<IHomeViewModel>());
-            }
+            TryToNavigateToHomeViewModel(root, ret);
             return ret;
+        }
+
+        private static void TryToNavigateToHomeViewModel(IIocService root, IRootNavigationWindow ret)
+        {
+            if (ret.DataContext is INavigationWindow window &&
+                root.CanGet<IHomeViewModelFactory>() &&
+                CreateHomeViewModel(root) is {} home)
+            {
+                window.NavigateTo(home);
+            }
+        }
+
+        private static object? CreateHomeViewModel(IIocService root) => 
+            root.Get<IHomeViewModelFactory>().Create(root);
+    }
+
+    public static class HomeViewRegistration
+    {
+        public static IActivationOptions<IHomeViewModelFactory> RegisterHomeViewModel<T>(
+            this IBindableIocService ioc) => ioc.RegisterHomeViewModel(i => i.Get<T>());
+
+        public static IActivationOptions<IHomeViewModelFactory> RegisterHomeViewModel(
+            this IBindableIocService ioc, Func<IIocService, object?> creator)
+        {
+            return ioc.Bind<IHomeViewModelFactory>()
+                .ToConstant(new HomeViewModelFactoryNonDefaultImplementation(creator));
         }
     }
 }
