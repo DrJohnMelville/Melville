@@ -34,7 +34,7 @@ namespace Melville.Ioc.Interception
             types(this);
         }
 
-        protected override TDest DoInterception(IBindingRequest request, [NotNull]TSource source)
+        protected override TDest DoInterception(IBindingRequest request, TSource source)
         {
             return (TDest)TypedInterceptorImplementation.InterceptFromTypes(request, source!,
                 interceptorTypes);

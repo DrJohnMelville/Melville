@@ -13,6 +13,7 @@ namespace Melville.MVVM.AdvancedLists.ListMonitors
     /// <summary>
     ///   Gets or Sets the Parent
     /// </summary>
+    [MaybeNull]
     TParent Parent { get; set; }
   }
 

@@ -37,7 +37,7 @@ namespace Melville.IOC.InjectionPolicies
 
     public abstract class InterceptorRuleBase<TSource, TDestination> : IInterceptionRule where TSource : TDestination
     {
-        protected abstract TDestination DoInterception(IBindingRequest request, [NotNull]TSource source);
+        protected abstract TDestination DoInterception(IBindingRequest request, TSource source);
 
         public object? Intercept(IBindingRequest request, object? source)
         {
@@ -58,6 +58,7 @@ namespace Melville.IOC.InjectionPolicies
             this.transformation = transformation;
         }
 
-        protected override TDest DoInterception(IBindingRequest request, TSource source) => transformation(source);
+        protected override TDest DoInterception(IBindingRequest request, TSource source) 
+            => transformation(source);
     }
 }

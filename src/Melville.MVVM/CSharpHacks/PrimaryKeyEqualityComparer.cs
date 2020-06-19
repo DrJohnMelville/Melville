@@ -1,5 +1,6 @@
 ﻿using  System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Melville.MVVM.CSharpHacks
 {
@@ -15,11 +16,19 @@ namespace Melville.MVVM.CSharpHacks
       this.keySelector = keySelector;
     }
 
-    public override bool Equals(TItem x, TItem y)
+    public override bool Equals([AllowNull]TItem x, [AllowNull]TItem y) =>
+      (x, y) switch
+      {
+        (null, null) => true,
+        (null, _) => false,
+        (_, null) => false,
+        (TItem a, TItem b) => RealCompare(a, b)
+      };
+
+    private bool RealCompare(TItem x, TItem y)
     {
       var xKey = keySelector(x);
       var yKey = keySelector(y);
-
       return xKey?.Equals(yKey) ?? yKey == null;
     }
 
