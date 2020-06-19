@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.Windows;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
@@ -42,7 +43,9 @@ namespace Melville.Log.Viewer.ApplicationRoot
         private static void SetupPipeListener(IBindableIocService service)
         {
             service.Bind<IShutdownMonitor>().To<ShutdownMonitor>().AsSingleton();
-            service.Bind<IPipeListener>().And<PipeListener>().To<PipeListener>().AsSingleton();
+            service.Bind<IPipeListener>().And<PipeListener>().To<PipeListener>()
+                .FixResult(i=>((PipeListener)i).Start())
+                .AsSingleton();
         }
 
         private static void SetupConfiguration(IBindableIocService service)
