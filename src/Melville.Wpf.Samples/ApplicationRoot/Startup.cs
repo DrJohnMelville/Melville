@@ -6,7 +6,7 @@ using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
-using Melville.WpfIocMvvm.StartupBases;
+using Melville.WpfAppFramework.StartupBases;
 using Serilog;
 
 namespace Melville.Wpf.Samples.ApplicationRoot

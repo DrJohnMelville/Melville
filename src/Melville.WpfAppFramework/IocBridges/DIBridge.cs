@@ -4,7 +4,7 @@ using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.Wpf.DiParameterSources;
 
-namespace Melville.WpfIocMvvm.IocBridges
+namespace Melville.WpfAppFramework.IocBridges
 {
     public class DiBridge:IDIIntegration
     {

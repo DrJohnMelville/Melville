@@ -3,6 +3,15 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
+
+        <Version>0.1.0</Version>
+        <Authors>John Melville, MS, MD</Authors>
+        <Company>Melville Computing</Company>
+        <Title>Melville.WpfAppFramework</Title>
+        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        <PackageDescription>Lets us configure a entire WPF navigation app with logging and IOC from a
+        single startup class</PackageDescription>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>

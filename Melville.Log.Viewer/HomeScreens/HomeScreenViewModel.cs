@@ -8,7 +8,7 @@ using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
-using Melville.WpfIocMvvm.StartupBases;
+using Melville.WpfAppFramework.StartupBases;
 
 namespace Melville.Log.Viewer.HomeScreens
 {

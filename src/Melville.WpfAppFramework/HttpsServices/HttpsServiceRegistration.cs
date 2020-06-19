@@ -2,7 +2,7 @@
 using System.Net.Http;
 using Melville.IOC.IocContainers;
 
-namespace Melville.WpfIocMvvm.HttpsServices
+namespace Melville.WpfAppFramework.HttpsServices
 {
     public static class HttpsServiceRegistration
     {

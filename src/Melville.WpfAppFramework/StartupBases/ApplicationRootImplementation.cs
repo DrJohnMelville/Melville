@@ -3,9 +3,9 @@ using System.Windows;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
-using Melville.WpfIocMvvm.IocBridges;
+using Melville.WpfAppFramework.IocBridges;
 
-namespace Melville.WpfIocMvvm.StartupBases
+namespace Melville.WpfAppFramework.StartupBases
 {
     public static class ApplicationRootImplementation
     {

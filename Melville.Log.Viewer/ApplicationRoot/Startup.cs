@@ -7,7 +7,7 @@ using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.Wpf.RootWindows;
-using Melville.WpfIocMvvm.StartupBases;
+using Melville.WpfAppFramework.StartupBases;
 using Microsoft.Extensions.Configuration;
 
 namespace Melville.Log.Viewer.ApplicationRoot

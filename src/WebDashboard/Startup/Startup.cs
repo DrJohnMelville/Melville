@@ -3,7 +3,7 @@ using System.Windows;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
-using Melville.WpfIocMvvm.StartupBases;
+using Melville.WpfAppFramework.StartupBases;
 using WebDashboard.Views;
 
 namespace WebDashboard.Startup

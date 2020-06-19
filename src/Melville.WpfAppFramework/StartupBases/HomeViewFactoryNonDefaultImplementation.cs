@@ -1,7 +1,7 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
 
-namespace Melville.WpfIocMvvm.StartupBases
+namespace Melville.WpfAppFramework.StartupBases
 {
     public interface IHomeViewModelFactory
     {

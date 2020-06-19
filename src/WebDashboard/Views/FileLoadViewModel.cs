@@ -4,7 +4,7 @@ using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.ViewFrames;
-using Melville.WpfIocMvvm.StartupBases;
+using Melville.WpfAppFramework.StartupBases;
 using WebDashboard.Models;
 using WebDashboard.Startup;
 

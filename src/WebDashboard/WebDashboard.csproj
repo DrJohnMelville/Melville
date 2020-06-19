@@ -16,8 +16,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
       <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
-      <ProjectReference Include="..\Melville.WpfIocMvvm\Melville.WpfIocMvvm.csproj" />
     </ItemGroup>
     
     <ItemGroup>

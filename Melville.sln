@@ -68,7 +68,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Log.NamedPipeEvent
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggingTestWebsite", "Src\LoggingTestWebsite\LoggingTestWebsite.csproj", "{F0EEDAB6-AABD-49B9-9DAC-95019B98D5B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.WpfIocMvvm", "src\Melville.WpfIocMvvm\Melville.WpfIocMvvm.csproj", "{12272FD4-58F6-42B6-BE62-7E73C04FB7A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.WpfAppFramework", "src\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj", "{12272FD4-58F6-42B6-BE62-7E73C04FB7A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

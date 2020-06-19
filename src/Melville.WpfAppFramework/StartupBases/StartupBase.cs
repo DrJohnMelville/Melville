@@ -7,7 +7,7 @@ using Melville.MVVM.Functional;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 
-namespace Melville.WpfIocMvvm.StartupBases
+namespace Melville.WpfAppFramework.StartupBases
 {
     public abstract class StartupBase
     {
