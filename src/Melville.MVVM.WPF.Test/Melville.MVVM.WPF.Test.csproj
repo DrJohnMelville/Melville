@@ -7,6 +7,7 @@
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
+      <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
 
     </ItemGroup>
     <ItemGroup>

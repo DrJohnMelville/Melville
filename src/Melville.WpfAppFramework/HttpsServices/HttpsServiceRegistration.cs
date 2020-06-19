@@ -8,8 +8,26 @@ namespace Melville.WpfAppFramework.HttpsServices
     {
         public static void RegisterHttpClientWithSingleSource(this IBindableIocService ioc)
         {
-            ioc.Bind<HttpMessageHandler>().To<HttpClientHandler>().AsSingleton().DisposeIfInsideScope();
+            ioc.Bind<HttpMessageHandler>().To<HttpClientHandler>()
+                .DoNotDispose()
+                .WhenConstructingType<DoNotDisposeHttpMessageHandler>();
+            ioc.Bind<HttpMessageHandler>().To<DoNotDisposeHttpMessageHandler>()
+                .AsSingleton()
+                .DisposeIfInsideScope()
+                .BlockSelfInjection();
             ioc.Bind<HttpClient>().ToSelf().WithParameters(false);
+        }
+    }
+
+    public class DoNotDisposeHttpMessageHandler : DelegatingHandler
+    {
+        public DoNotDisposeHttpMessageHandler(HttpMessageHandler innerHandler) : base(innerHandler)
+        {
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            // prevent the inner handler from being disposed
         }
     }
 }
