@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>0.3.2</Version>
+    <Version>0.3.4</Version>
     <Authors>John Melville</Authors>
     <Company>Melville Computiing</Company>
     <Title>Melville.TestHelpers</Title>
