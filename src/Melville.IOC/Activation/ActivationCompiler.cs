@@ -21,10 +21,13 @@ namespace Melville.IOC.Activation
 
         private static Func<object?[], object> CheckCacheAndCompileIfNeeded(ConstructorInfo constructor)
         {
-            if (compiledCache.TryGetValue(constructor, out var precompiled)) return precompiled;
-            var ret = GenerateCompiledCode(constructor);
-            compiledCache[constructor] = ret;
-            return ret;
+            lock (compiledCache)
+            {
+                if (compiledCache.TryGetValue(constructor, out var precompiled)) return precompiled;
+                var ret = GenerateCompiledCode(constructor);
+                compiledCache[constructor] = ret;
+                return ret;
+            }
         }
 
         private static Func<object?[], object> GenerateCompiledCode(ConstructorInfo constructor)
