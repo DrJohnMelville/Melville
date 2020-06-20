@@ -25,22 +25,37 @@ namespace WebDashboard.Models
         }
 
         public async Task<RootModel> Create(IFile pubXmlFile)
-        { 
-            var projectFile = FindProjectFile(pubXmlFile);
-            var projectFileHolder = new ProjectFileHolder(projectFile, await LoadXmlFile(projectFile));
-
-            var secretFile = await FindSecretFile(projectFileHolder.UserSecretId, pubXmlFile.Directory);
-            var publishFileHolder = new PublishFileHolder(pubXmlFile, await LoadXmlFile(pubXmlFile));
-            var pubSecretFile = await FindSecretFile(publishFileHolder.UserSecretId, pubXmlFile.Directory);
+        {
+            var (publishFileHolder,projectFileHolder )=
+                await FindFiles(pubXmlFile);
             return new RootModel(
                 publishFileHolder,
                 projectFileHolder,
-                await ParseSecretFile(secretFile),
-                new SecretFileHolder(pubSecretFile, await JsonDocument.ParseAsync(await pubSecretFile.OpenRead())));
+                await GetSecretFile(projectFileHolder.UserSecretId, pubXmlFile),
+                await GetSecretFile(publishFileHolder?.UserSecretId, pubXmlFile)
+                );
         }
 
-        private static async Task<SecretFileHolder> ParseSecretFile(IFile secretFile)
+        private async Task<(PublishFileHolder?, ProjectFileHolder)> FindFiles(IFile pubXmlFile)
         {
+            if (pubXmlFile.Extension().Equals("csproj", StringComparison.OrdinalIgnoreCase))
+            {
+                return (null, await CreateProjectFileHolder(pubXmlFile));
+            }
+            return (new PublishFileHolder(pubXmlFile, await LoadXmlFile(pubXmlFile)),
+                await CreateProjectFileHolder(FindProjectFile(pubXmlFile)));
+        }
+
+        private async Task<ProjectFileHolder> CreateProjectFileHolder(IFile projectFile) => 
+            new ProjectFileHolder(projectFile, await LoadXmlFile(projectFile));
+
+        private async Task<SecretFileHolder?> GetSecretFile(string? secretId, IFile pubXmlFile) =>
+            string.IsNullOrWhiteSpace(secretId)?null: 
+                await ParseSecretFile(await FindSecretFile(secretId, pubXmlFile.Directory));
+
+        private static async Task<SecretFileHolder?> ParseSecretFile(IFile? secretFile)
+        {
+            if (secretFile == null) return null;
             JsonDocument doc = JsonDocument.Parse("{}");
             try
             {
@@ -52,11 +67,11 @@ namespace WebDashboard.Models
             return new SecretFileHolder(secretFile, doc);
         }
 
-        private async Task<IFile> FindSecretFile(string secretId, IDirectory? directory)
+        private async Task<IFile?> FindSecretFile(string secretId, IDirectory? directory)
         {
-            if (string.IsNullOrWhiteSpace(secretId)) return CreateFakeSecretFile();
+            if (string.IsNullOrWhiteSpace(secretId)) return null;
             var secretFile = FindSecretFileOnDisk(secretId, directory);
-            if (secretFile?.Directory == null) return CreateFakeSecretFile();
+            if (secretFile?.Directory == null) return null;
             if (secretFile.Exists()) return secretFile;
             EnsureDirectoryExists(secretFile.Directory);
             await WriteEmptySecretFile(secretFile);

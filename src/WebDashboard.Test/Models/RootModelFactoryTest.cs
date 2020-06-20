@@ -71,6 +71,15 @@ namespace WebDashboard.Test.Models
             Assert.True(secretFile.Directory.Exists());
             Assert.True(secretFile.Exists());
         }
+
+        [Fact]
+        public async Task LoadFromProjectFile()
+        {
+            var ret = await sut.Create(projFile);
+            Assert.Equal("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", ret.ProjectFile.UserSecretId);
+            Assert.Null(ret.PublishFile);            
+        }
+
  
         private const string SecretText = @"{
   ""root:Secret"": ""secret 1"",

@@ -39,7 +39,7 @@ namespace WebDashboard.Views
         private IFile? GetPubXmlFile()
         {
             return HasPublishFileOnCommandLine()?startup.ArgumentAsFile(0):
-                fileDlg.GetLoadFile(null, "pubxml", "Deploy File (*.pubxml)|*.pubxml", "Pick a Deploy file");
+                fileDlg.GetLoadFile(null, "pubxml", "Project or Deploy File|*.pubxml;*.csproj", "Pick a Deploy file");
         }
 
         private bool HasPublishFileOnCommandLine() => 

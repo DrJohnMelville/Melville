@@ -12,22 +12,20 @@ namespace WebDashboard.Views
     {
         string WebConfig { get; }
         IFile ProjectFile();
-        IFile PublishFile();
+        IFile? PublishFile();
     }
 
     public class RootViewModel : NotifyBase, IRootViewModel
     {
-        private ISecretFileEditorViewModel projectSecrets;
-
-        public ISecretFileEditorViewModel ProjectSecrets
+        private ISecretFileEditorViewModel? projectSecrets = null;
+        public ISecretFileEditorViewModel? ProjectSecrets
         {
             get => projectSecrets;
             set => AssignAndNotify(ref projectSecrets, value);
         }
 
-        private ISecretFileEditorViewModel deploymentSecrets;
-
-        public ISecretFileEditorViewModel DeploymentSecrets
+        private ISecretFileEditorViewModel? deploymentSecrets = null;
+        public ISecretFileEditorViewModel? DeploymentSecrets
         {
             get => deploymentSecrets;
             set => AssignAndNotify(ref deploymentSecrets, value);
@@ -38,9 +36,12 @@ namespace WebDashboard.Views
         public RootViewModel(RootModel model)
         {
             Model = model;
-            projectSecrets = new SecretFileEditorViewModel(model.RootSecretFile);
-            deploymentSecrets = new SecretFileEditorViewModel(model.DeploymentSecretFile);
+            projectSecrets = CreateSecretEditor(model.RootSecretFile);
+            deploymentSecrets = CreateSecretEditor(model.DeploymentSecretFile);
         }
+
+        private static SecretFileEditorViewModel? CreateSecretEditor(SecretFileHolder? secretFile) => 
+            secretFile==null?null: new SecretFileEditorViewModel(secretFile);
 
         public void UpdateWebConfig() => WebConfig = Model.ComputeWebConfig();
 
@@ -53,7 +54,7 @@ namespace WebDashboard.Views
         }
 
         public IFile ProjectFile() => Model.ProjectFile.File;
-        public IFile PublishFile() => Model.PublishFile.File;
+        public IFile? PublishFile() => Model.PublishFile?.File;
 
         public void Deploy([FromServices] Func<RootViewModel, IHasPassword, DeploymentViewModel> createDeployment,
             INavigationWindow navigationWindow, IHasPassword password) =>

@@ -7,16 +7,16 @@ namespace WebDashboard.Models
 {
     public class RootModel
     {
-        public PublishFileHolder PublishFile { get; }
+        public PublishFileHolder? PublishFile { get; }
         public ProjectFileHolder ProjectFile { get; }
-        public SecretFileHolder RootSecretFile { get; }
-        public SecretFileHolder DeploymentSecretFile { get; }
+        public SecretFileHolder? RootSecretFile { get; }
+        public SecretFileHolder? DeploymentSecretFile { get; }
 
         public bool SuppressWebDavModule { get; set; } = true;
         public bool DevelopmentMode { get; set; } 
 
-        public RootModel(PublishFileHolder publishFile, ProjectFileHolder projectFile, SecretFileHolder rootSecretFile, 
-            SecretFileHolder deploymentSecretFile)
+        public RootModel(PublishFileHolder? publishFile, ProjectFileHolder projectFile, SecretFileHolder? rootSecretFile, 
+            SecretFileHolder? deploymentSecretFile)
         {
             PublishFile = publishFile;
             ProjectFile = projectFile;
@@ -62,8 +62,8 @@ namespace WebDashboard.Models
         private IEnumerable<XElement> SecretsToEnviornment()
         {
             var dict = new Dictionary<string, string>();
-            RootSecretFile.AddSecrets(dict);
-            DeploymentSecretFile.AddSecrets(dict);
+            RootSecretFile?.AddSecrets(dict);
+            DeploymentSecretFile?.AddSecrets(dict);
             AddDevelopmentIfRequested(dict);
             return FormatAsEnviornmentXmlElements(dict);
         }

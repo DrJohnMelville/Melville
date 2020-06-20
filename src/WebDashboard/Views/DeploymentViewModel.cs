@@ -54,7 +54,7 @@ namespace WebDashboard.Views
         }
 
         private string PublishSyntax() => 
-            $"publish {Model.ProjectFile().Path} /p:PublishProfile={Model.PublishFile().NameWithoutExtension()} /p:Password={password.Password()}";
+            $"publish {Model.ProjectFile().Path} /p:PublishProfile={Model?.PublishFile()?.NameWithoutExtension()} /p:Password={password.Password()}";
 
         private async Task PumpOutputStream(IProcessProxy process)
         {

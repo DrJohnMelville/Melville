@@ -8,6 +8,7 @@
              xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
              xmlns:viewFrames="clr-namespace:Melville.MVVM.Wpf.ViewFrames;assembly=Melville.MVVM.Wpf"
              xmlns:capLockIndicator="clr-namespace:Melville.WpfControls.CapLockIndicator;assembly=Melville.WpfControls"
+             xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:RootViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -29,19 +30,19 @@
         <TextBlock>Publication Secret Identifier</TextBlock>
         <TextBlock Text="{Binding Model.PublishFile.UserSecretId}"/>
         <TabControl Grid.ColumnSpan="2" SelectionChanged="{eventBindings:EventBinding UpdateWebConfig}">
-            <TabItem Header="Project Secrets">
+            <TabItem Header="Project Secrets" wpfHacks:VisibilityHack.CollapseIfNull="{Binding ProjectSecrets}">
                 <viewFrames:ViewFrame Content="{Binding ProjectSecrets}"/> 
             </TabItem>
-            <TabItem Header="Deployment Secrets">
+            <TabItem Header="Deployment Secrets" wpfHacks:VisibilityHack.CollapseIfNull="{Binding DeploymentSecrets}">
                 <viewFrames:ViewFrame Content="{Binding DeploymentSecrets}"/> 
             </TabItem>
-            <TabItem Header="Deployment Options">
+            <TabItem Header="Deployment Options" wpfHacks:VisibilityHack.CollapseIfNull="{Binding Model.PublishFile}">
                 <StackPanel Margin="20">
                     <CheckBox IsChecked="{Binding Model.SuppressWebDavModule}">Remove WebDav Handler</CheckBox>
                     <CheckBox IsChecked="{Binding Model.DevelopmentMode}">Web Server in Development Mode</CheckBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Header="Deployment">
+            <TabItem Header="Deployment" wpfHacks:VisibilityHack.CollapseIfNull="{Binding Model.PublishFile}">
                 <Grid Margin="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>

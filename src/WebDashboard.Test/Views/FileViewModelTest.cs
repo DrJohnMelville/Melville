@@ -40,7 +40,7 @@ namespace WebDashboard.Test.Views
         public async Task Setup(string? cmdLineFile, int loadDb)
         {
             Expression<Func<IOpenSaveFile, IFile>> loadFileExpr = 
-                i=>i.GetLoadFile(null, "pubxml", "Deploy File (*.pubxml)|*.pubxml", "Pick a Deploy file");
+                i=>i.GetLoadFile(null, "pubxml", "Project or Deploy File|*.pubxml;*.csproj", "Pick a Deploy file");
             modelFact.Setup(i => i.Create(It.IsAny<IFile>())).ReturnsAsync(
                 (IFile i) => new RootModel(new PublishFileHolder(i, new XElement("XElt")),
                     new ProjectFileHolder(i, new XElement("XElt")),

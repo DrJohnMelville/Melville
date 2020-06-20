@@ -8,7 +8,7 @@ namespace WebDashboard.Views
     public class SecretFileTextEditorViewModel:NotifyBase, ISecretFileEditorViewModel
     {
         private readonly SecretFileHolder secrets;
-        private string text;
+        private string text = "";
         public string Text
         {
             get => text;
