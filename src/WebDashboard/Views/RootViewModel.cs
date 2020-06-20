@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.ApplicationModel.Store;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.DiParameterSources;
@@ -13,24 +14,38 @@ namespace WebDashboard.Views
         IFile ProjectFile();
         IFile PublishFile();
     }
-    public class RootViewModel: NotifyBase, IRootViewModel
+
+    public class RootViewModel : NotifyBase, IRootViewModel
     {
-        public string UserName { get; set; } = "";
-        public string Password { get; set; } = "";
-        public SecretFileEditorViewModel ProjectSecrets { get; }
-        public SecretFileEditorViewModel DeploymentSecrets { get; }
+        private ISecretFileEditorViewModel projectSecrets;
+
+        public ISecretFileEditorViewModel ProjectSecrets
+        {
+            get => projectSecrets;
+            set => AssignAndNotify(ref projectSecrets, value);
+        }
+
+        private ISecretFileEditorViewModel deploymentSecrets;
+
+        public ISecretFileEditorViewModel DeploymentSecrets
+        {
+            get => deploymentSecrets;
+            set => AssignAndNotify(ref deploymentSecrets, value);
+        }
+
         public RootModel Model { get; }
 
         public RootViewModel(RootModel model)
         {
             Model = model;
-            ProjectSecrets = new SecretFileEditorViewModel(model.RootSecretFile);
-            DeploymentSecrets = new SecretFileEditorViewModel(model.DeploymentSecretFile);
+            projectSecrets = new SecretFileEditorViewModel(model.RootSecretFile);
+            deploymentSecrets = new SecretFileEditorViewModel(model.DeploymentSecretFile);
         }
 
         public void UpdateWebConfig() => WebConfig = Model.ComputeWebConfig();
 
         private string webConfig = "";
+
         public string WebConfig
         {
             get => webConfig;
@@ -40,10 +55,20 @@ namespace WebDashboard.Views
         public IFile ProjectFile() => Model.ProjectFile.File;
         public IFile PublishFile() => Model.PublishFile.File;
 
-        public void Deploy([FromServices]Func<RootViewModel, IHasPassword, DeploymentViewModel> createDeployment,
-            INavigationWindow navigationWindow, IHasPassword password)
-        {
+        public void Deploy([FromServices] Func<RootViewModel, IHasPassword, DeploymentViewModel> createDeployment,
+            INavigationWindow navigationWindow, IHasPassword password) =>
             navigationWindow.NavigateTo(createDeployment(this, password));
+
+        public void SwapView(ISecretFileEditorViewModel view)
+        {
+            if (ProjectSecrets == view)
+            {
+                ProjectSecrets = view.CreateSwappedView();
+            }
+            if (DeploymentSecrets == view)
+            {
+                DeploymentSecrets = view.CreateSwappedView();
+            }
         }
     }
 }

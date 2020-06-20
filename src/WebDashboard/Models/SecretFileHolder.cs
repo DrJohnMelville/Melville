@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.FileSystem;
@@ -14,27 +15,54 @@ namespace WebDashboard.Models
     public sealed class SecretFileHolder
     {
         private readonly IFile file;
-        public SecretNode Root { get; } = new SecretNode("");
+        public SecretNode Root { get; private set; }
 
         public SecretFileHolder(IFile file, JsonDocument data)
         {
             this.file = file;
-            ParseJsonObject(data);
+            Root = ParseJsonObject(data);
         }
 
-        private void ParseJsonObject(JsonDocument data)
+        public SecretNode ParseJsonObject(JsonDocument data)
         {
+            var ret = new SecretNode("");
             foreach (var property in data.RootElement.EnumerateObject())
             {
-                Root.AddChild(property.Name, new SecretValue("", property.Value.GetString()));
+                ret.AddChild(property.Name, new SecretValue("", property.Value.GetString()));
             }
             
-            Root.SortThisAndChildren();
+            ret.SortThisAndChildren();
+            Root = ret;
+            return ret;
         }
 
         public void AddSecrets(IDictionary<string, string> target) => Root.EnviornmentDeclarations(target, "");
+        private SemaphoreSlim semaphore = new SemaphoreSlim(1,1);
+        public async Task SaveFile()
+        {
+            await semaphore.WaitAsync();
+            {
+                await using (var output = await file.CreateWrite())
+                {
+                    await JsonSerializer.SerializeAsync(output, ToJsonObject());
+                }
+            }
+            semaphore.Release();
+        }
 
-        public Task<Stream> RewriteStream() => file.CreateWrite();
+        private Dictionary<string, string> ToJsonObject()
+        {
+            var dictionary = new Dictionary<string, string>();
+            Root.EnviornmentDeclarations(dictionary, "");
+            return dictionary;
+        }
+
+
+        public string AsString() =>
+            JsonSerializer.Serialize(ToJsonObject(), new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+            });
     }
 
     public interface ISecretFileValue

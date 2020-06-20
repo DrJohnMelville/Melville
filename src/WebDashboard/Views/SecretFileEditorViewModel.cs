@@ -9,7 +9,11 @@ using WebDashboard.Models;
 
 namespace WebDashboard.Views
 {
-    public class SecretFileEditorViewModel: NotifyBase
+    public interface ISecretFileEditorViewModel
+    {
+        ISecretFileEditorViewModel CreateSwappedView();
+    }
+    public class SecretFileEditorViewModel: NotifyBase, ISecretFileEditorViewModel
     {
         private readonly SecretFileHolder secrets;
         public SecretNode Root => secrets.Root;
@@ -27,26 +31,7 @@ namespace WebDashboard.Views
         }
 
         // clicking more than once corrupts the file, so serialize the writes.
-        private SemaphoreSlim semaphore = new SemaphoreSlim(1,1);
-        public async Task SaveFile()
-        {
-            await semaphore.WaitAsync();
-            {
-                await using (var output = await secrets.RewriteStream())
-                {
-                    await JsonSerializer.SerializeAsync(output, ToJsonObject());
-                }
-            }
-            semaphore.Release();
-        }
-
-        private Dictionary<string, string> ToJsonObject()
-        {
-            var dictionary = new Dictionary<string, string>();
-            Root.EnviornmentDeclarations(dictionary, "");
-            return dictionary;
-        }
-
+        public Task SaveFile() => secrets.SaveFile();
         public void NewNode() => InsertNewItem(new SecretNode("Name"));
         public void NewValue() => InsertNewItem(new SecretValue("ItemName","Value"));
         public void DeleteCurrentNode()
@@ -80,6 +65,11 @@ namespace WebDashboard.Views
                 .OfType<SecretNode>()    
                 .Select(child => SearchForParent(item, child))
                 .FirstOrDefault(i => i != null);
+        }
+
+        public ISecretFileEditorViewModel CreateSwappedView()
+        {
+            return new SecretFileTextEditorViewModel(secrets);
         }
     }
 }
