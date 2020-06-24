@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics.Tracing;
 using System.Windows;
 using Melville.Wpf.Samples.ApplicationBinding;
+using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.LinqPadGraph;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
+using Melville.Wpf.Samples.TranscriptionPedal;
 using Melville.Wpf.Samples.WebView2Integration;
 
 namespace Melville.Wpf.Samples
@@ -11,7 +13,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory: SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<WebView2ViewModel>();
+            SearchTreeForSample<ClipboardMonitorViewModel>();
         
         public SampleDirectory()
         {
@@ -23,6 +25,10 @@ namespace Melville.Wpf.Samples
 
         private ISampleTreeItem AppllicationIntegrationNode() =>
             Node("Root",
+            Node("Hardware",
+                Page<TranscriptionPedalViewModel>("Transcription Pedal"),            
+                Page<ClipboardMonitorViewModel>("Clipboard Monitor")
+            ),
             Node("Event Binding",
                 Page<CallMethodOnApplicationViewModel>("Call Method On Application"),
                 Page<ScopedMethodCallViewModel>("Call Methods in a scope"),

@@ -1,13 +1,14 @@
 ﻿using System;
-using System.Windows.Data;
+using System.Windows;
 using Melville.IOC.IocContainers;
-using Melville.Log.NamedPipeEventSink;
-using Melville.MVVM.AdvancedLists;
-using Melville.MVVM.Wpf.DiParameterSources;
+using Melville.MVVM.USB;
+using Melville.MVVM.USB.Pedal;
+using Melville.MVVM.Wpf.Clipboards;
+using Melville.MVVM.Wpf.RootWindows;
+using Melville.MVVM.Wpf.USB;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.WpfAppFramework.StartupBases;
-using Serilog;
 
 namespace Melville.Wpf.Samples.ApplicationRoot
 {
@@ -24,7 +25,21 @@ namespace Melville.Wpf.Samples.ApplicationRoot
         {
             service.AddLogging();
             service.RegisterHomeViewModel<SamplesTreeViewModel>();
+            service.Bind<IRootNavigationWindow>()
+                .And<Window>()
+                .To<RootNavigationWindow>()
+                .AsSingleton();
             service.Bind<DisposableDependency>().ToSelf().AsScoped();
+
+            // pedal reader
+            service.Bind<ITranscriptonPedal>().To<TranscriptonPedal>()
+                .FixResult((i, request) => 
+                    ((UsbDevice) i).MonitorForDeviceArrival(request.IocService.Get<Window>()))
+                .AsSingleton()
+                .DoNotDispose();
+            
+            // cliboard
+            service.Bind<IClipboardNotification>().To<ClipboardNotification>().AsSingleton();
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Melville.MVVM.Wpf.Clipboards
       clip.GetData(DataFormats.Bitmap) as BitmapSource;
 
   }
-  public class ClipboardBridge : IReadFromClipboard
+  public class ReadFromClipboard : IReadFromClipboard
   {
     public void Clear() => Clipboard.Clear();
     public bool ContainsData(string format) => Clipboard.ContainsData(format);

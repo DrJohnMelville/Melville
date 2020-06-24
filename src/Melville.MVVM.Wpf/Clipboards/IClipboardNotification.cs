@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Melville.MVVM.Wpf.USB;
 
 namespace Melville.MVVM.Wpf.Clipboards
 {
@@ -25,26 +26,15 @@ namespace Melville.MVVM.Wpf.Clipboards
     /// Raises the <see cref="ClipboardUpdate"/> event.
     /// </summary>
     /// <param name="e">Event arguments for the event.</param>
-    private void OnClipboardUpdate(EventArgs e) => ClipboardUpdate?.Invoke(null, e);
-
-    public void SetHook(Visual win)
+    private void OnClipboardUpdate() => ClipboardUpdate?.Invoke(null, EventArgs.Empty);
+    
+    public ClipboardNotification(Window win)
     {
       if (PresentationSource.FromVisual(win) is HwndSource src)
       {
-        src.AddHook(WindowProc);
+        win.AttachWindowHook(NativeMethods.WM_CLIPBOARDUPDATE, (_,__)=> OnClipboardUpdate());
         NativeMethods.AddClipboardFormatListener(src.Handle);
       }
-    }
-
-    private IntPtr WindowProc(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
-    {
-      if (msg == NativeMethods.WM_CLIPBOARDUPDATE)
-      {
-        OnClipboardUpdate(EventArgs.Empty);
-      }
-
-      return IntPtr.Zero;
-
     }
   }
 
