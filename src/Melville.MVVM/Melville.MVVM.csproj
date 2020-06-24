@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVVM</Title>
