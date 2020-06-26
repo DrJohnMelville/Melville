@@ -11,7 +11,7 @@ namespace Melville.IOC.IocContainers.BindingSources
     {
         public IActivationOptions<TSource> ToType(Type type, Func<IList<ConstructorInfo>, IActivationStrategy> picker) =>
             DoBinding(TypeActivatorFactory.CreateTypeActivator(type, picker));
-        public IActivationOptions<TSource> ToType(Type type, Func<IList<ConstructorInfo>, ConstructorInfo> picker) =>
+        public IActivationOptions<TSource> ToType(Type type, ConstructorSelector picker) =>
             ToType(type, i => picker(i).AsActivationStrategy());
         public IActivationOptions<TSource> ToType(Type type) => ToType(type, ConstructorSelectors.MaximumArgumentCount);
         public IActivationOptions<TSource> ToConstant(TSource targetObject) => 
@@ -19,7 +19,7 @@ namespace Melville.IOC.IocContainers.BindingSources
         public IActivationOptions<TSource> ToSelf() => To<TSource>();
         public IActivationOptions<TSource> ToSelf(Func<IList<ConstructorInfo>, IActivationStrategy> pickConstructor)
             => To<TSource>(pickConstructor);
-        public IActivationOptions<TSource> ToSelf(Func<IList<ConstructorInfo>, ConstructorInfo> pickConstructor)
+        public IActivationOptions<TSource> ToSelf(ConstructorSelector pickConstructor)
             => To<TSource>(pickConstructor);
         public IActivationOptions<TSource> ToMethod(Func<IIocService, IBindingRequest, TSource> method) =>
             DoBinding(new MethodActivationStrategy<TSource>(method));
@@ -38,8 +38,8 @@ namespace Melville.IOC.IocContainers.BindingSources
             DoBinding(TypeActivatorFactory.CreateTypeActivator(typeof(TDestination), pickConstructor));
         public IActivationOptions<TSource> To<TDestination>() where TDestination : TSource =>
             To<TDestination>(ConstructorSelectors.MaximumArgumentCount);// default policy is to pick the longest
-        public IActivationOptions<TSource> To<TDestination>(
-            Func<IList<ConstructorInfo>, ConstructorInfo> pickConstructor) where TDestination : TSource =>
+        public IActivationOptions<TSource> To<TDestination>(ConstructorSelector pickConstructor) 
+            where TDestination : TSource =>
             To<TDestination>(i => pickConstructor(i).AsActivationStrategy());
     }
 }
