@@ -145,5 +145,48 @@ namespace Melville.IOC.Test.IocContainers
             Assert.Throws<IocException>(()=>sut.Get(typeof(OpenGeneric<>)));
         }
 
+        public class PickConstructorClass
+        {
+            public int Which { get; }
+
+            public PickConstructorClass()
+            {
+                Which = 0;
+            }
+            public PickConstructorClass(ISimpleObject obj)
+            {
+                Which = 1;
+            }
+            public PickConstructorClass(ISimpleObject obj, ISimpleObject obj2)
+            {
+                Which = 2;
+            }
+        }
+
+        [Fact]
+        public void PickDefault()
+        {
+            sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+            sut.Bind<PickConstructorClass>().To<PickConstructorClass>(ConstructorSelectors.DefaultConstructor);
+            Assert.Equal(0, sut.Get<PickConstructorClass>().Which);
+        }
+        [Fact]
+        public void PickOne()
+        {
+            sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+            sut.Bind<PickConstructorClass>()
+                .To<PickConstructorClass>(ConstructorSelectors.WithArgumentTypes<ISimpleObject>);
+            Assert.Equal(1, sut.Get<PickConstructorClass>().Which);
+        }
+        [Fact]
+        public void PickTwo()
+        {
+            sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+            sut.Bind<PickConstructorClass>()
+                .To<PickConstructorClass>(ConstructorSelectors.WithArgumentTypes<ISimpleObject, ISimpleObject>);
+            Assert.Equal(2, sut.Get<PickConstructorClass>().Which);
+        }
+
+
     }
 }
