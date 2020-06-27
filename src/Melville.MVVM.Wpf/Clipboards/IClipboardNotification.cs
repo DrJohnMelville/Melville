@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Melville.MVVM.WindowMessages;
 using Melville.MVVM.Wpf.USB;
 
 namespace Melville.MVVM.Wpf.Clipboards
@@ -22,20 +23,14 @@ namespace Melville.MVVM.Wpf.Clipboards
     /// </summary>
     public event EventHandler? ClipboardUpdate;
 
-    /// <summary>
-    /// Raises the <see cref="ClipboardUpdate"/> event.
-    /// </summary>
-    /// <param name="e">Event arguments for the event.</param>
-    private void OnClipboardUpdate() => ClipboardUpdate?.Invoke(null, EventArgs.Empty);
-    
-    public ClipboardNotification(Window win)
+    public ClipboardNotification(IWindowMessageSource messageSource)
     {
-      if (PresentationSource.FromVisual(win) is HwndSource src)
-      {
-        win.AttachWindowHook(NativeMethods.WM_CLIPBOARDUPDATE, (_,__)=> OnClipboardUpdate());
-        NativeMethods.AddClipboardFormatListener(src.Handle);
-      }
+      NativeMethods.AddClipboardFormatListener(messageSource.SourceWindowHWnd);
+      messageSource.RegisterForMessage(NativeMethods.WM_CLIPBOARDUPDATE).MessageReceived += OnClipboardUpdate;
     }
+
+    private void OnClipboardUpdate(object? sender, WindowMessageEventArgs e) => 
+      ClipboardUpdate?.Invoke(this, EventArgs.Empty);
   }
 
   static class NativeMethods

@@ -5,6 +5,7 @@ using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.LinqPadGraph;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
+using Melville.Wpf.Samples.ThumbDrives;
 using Melville.Wpf.Samples.TranscriptionPedal;
 using Melville.Wpf.Samples.WebView2Integration;
 
@@ -13,7 +14,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory: SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<ClipboardMonitorViewModel>();
+            SearchTreeForSample<ThumbDriveViewModel>();
         
         public SampleDirectory()
         {
@@ -27,6 +28,7 @@ namespace Melville.Wpf.Samples
             Node("Root",
             Node("Hardware",
                 Page<TranscriptionPedalViewModel>("Transcription Pedal"),            
+                Page<ThumbDriveViewModel>("Transcription Pedal"),            
                 Page<ClipboardMonitorViewModel>("Clipboard Monitor")
             ),
             Node("Event Binding",

@@ -3,20 +3,28 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Melville.MVVM.WindowMessages;
 
 namespace Melville.MVVM.USB
 {
+
   public abstract class UsbDevice: IDisposable
   {
     private Stream? deviceStream;
     private int readBufferLength;
     private readonly string deviceId;
+    private readonly IMonitorForDeviceArrival newDeviceNodification;
 
     protected abstract void DeviceInputEvent(byte[] data);
-    protected UsbDevice(string deviceId)
+    protected UsbDevice(string deviceId, IMonitorForDeviceArrival newDeviceNodification)
     {
       this.deviceId = deviceId;
+      this.newDeviceNodification = newDeviceNodification;
+      newDeviceNodification.DeviceArrived += TryConnect;
+      TryConnect();
     }
+
+    private void TryConnect(object? sender, WindowMessageEventArgs e) => TryConnect();
 
     public void TryConnect()
     {
@@ -77,6 +85,7 @@ namespace Melville.MVVM.USB
       if (disposing && deviceStream != null)
       {
         deviceStream.Close();
+        newDeviceNodification.DeviceArrived -= TryConnect;
       }
     }
   }

@@ -3,9 +3,12 @@ using System.Windows;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.USB;
 using Melville.MVVM.USB.Pedal;
+using Melville.MVVM.USB.ThumbDrives;
+using Melville.MVVM.WindowMessages;
 using Melville.MVVM.Wpf.Clipboards;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.USB;
+using Melville.MVVM.Wpf.WindowMessages;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.WpfAppFramework.StartupBases;
@@ -30,16 +33,14 @@ namespace Melville.Wpf.Samples.ApplicationRoot
                 .To<RootNavigationWindow>()
                 .AsSingleton();
             service.Bind<DisposableDependency>().ToSelf().AsScoped();
+            service.Bind<IWindowMessageSource>().To<WindowMessageSource>().AsSingleton();
 
             // pedal reader
+            service.Bind<IMonitorForDeviceArrival>().To<MonitorForDeviceArrival>()
+                .AsSingleton().DoNotDispose();
             service.Bind<ITranscriptonPedal>().To<TranscriptonPedal>()
-                .FixResult((i, request) => 
-                    ((UsbDevice) i).MonitorForDeviceArrival(request.IocService.Get<Window>()))
-                .AsSingleton()
                 .DoNotDispose();
-            
-            // cliboard
-            service.Bind<IClipboardNotification>().To<ClipboardNotification>().AsSingleton();
+            service.Bind<IDetectThumbDrive>().To<DetectThumbDrive>().AsSingleton().DoNotDispose();
         }
     }
 }

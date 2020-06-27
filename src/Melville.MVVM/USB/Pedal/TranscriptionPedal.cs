@@ -27,8 +27,8 @@ namespace Melville.MVVM.USB.Pedal
     {
         private const string PedalId = "vid_05f3&pid_00ff";
 
-        public TranscriptonPedal()
-            : base(PedalId)
+        public TranscriptonPedal(IMonitorForDeviceArrival deviceNodificationArrival)
+            : base(PedalId, deviceNodificationArrival)
         {
         }
 

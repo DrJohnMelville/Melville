@@ -7,10 +7,6 @@ namespace Melville.MVVM.Wpf.USB
 {
     public static class WindowHookMessages
     {
-        public static void AttachWindowHook(this Visual vis, HwndSourceHook hook) =>
-            (PresentationSource.FromVisual(vis) as HwndSource)?.AddHook(hook);
-        public static void AttachWindowHook(this Visual vis, int msg, Func<IntPtr, IntPtr, bool> method) =>
-            (PresentationSource.FromVisual(vis) as HwndSource)?.AddHook(new HWndRegistration(msg, method).Method);
         public static void AttachWindowHook(this Visual vis, int msg, Action<IntPtr, IntPtr> method) =>
             (PresentationSource.FromVisual(vis) as HwndSource)?.AddHook(new HWndRegistration(msg, (a,b)=>
             {

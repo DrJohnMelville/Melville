@@ -18,6 +18,9 @@
       <Page Update="ApplicationBinding\ClipboardMonitor\ClipboardMonitorView.xaml">
         <Generator></Generator>
       </Page>
+      <Page Update="ThumbDrives\ThumbDriveView.xaml">
+        <Generator></Generator>
+      </Page>
     </ItemGroup>
 
     <ItemGroup>
@@ -39,6 +42,12 @@
       </Compile>
       <Compile Update="ApplicationBinding\ClipboardMonitor\ClipboardMonitorView.xaml.cs">
         <DependentUpon>ClipboardMonitorView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="ThumbDrives\ThumbDriveView.xaml.cs">
+        <DependentUpon>ThumbdriveView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="ThumbDrives\ThumbDriveView.xaml.cs">
+        <DependentUpon>ThumbDriveView.xaml</DependentUpon>
       </Compile>
     </ItemGroup>
 
