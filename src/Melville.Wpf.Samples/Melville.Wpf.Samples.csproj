@@ -21,6 +21,15 @@
       <Page Update="ThumbDrives\ThumbDriveView.xaml">
         <Generator></Generator>
       </Page>
+      <Page Update="HIDExplore\HidDeviceEnumerationView.xaml">
+        <Generator></Generator>
+      </Page>
+      <Page Update="HIDExplore\HIDMonitorView.xaml">
+        <Generator></Generator>
+      </Page>
+      <Page Update="TranscriptionPedal\JoystickView.xaml">
+        <Generator></Generator>
+      </Page>
     </ItemGroup>
 
     <ItemGroup>
@@ -48,6 +57,15 @@
       </Compile>
       <Compile Update="ThumbDrives\ThumbDriveView.xaml.cs">
         <DependentUpon>ThumbDriveView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="HIDExplore\HidDeviceEnumerationView.xaml.cs">
+        <DependentUpon>HidDeviceEnumerationView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="HIDExplore\HIDMonitorView.xaml.cs">
+        <DependentUpon>HIDMonitorView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="TranscriptionPedal\JoystickView.xaml.cs">
+        <DependentUpon>JoystickView.xaml</DependentUpon>
       </Compile>
     </ItemGroup>
 

@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.TranscriptionPedal.JoystickView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.TranscriptionPedal"
+             d:DataContext="{d:DesignInstance {x:Type local:JoystickViewModel}}"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="{x:Type ProgressBar}">
+                <Setter Property="Orientation" Value="Vertical" />
+                <Setter Property="Maximum" Value="255" />
+                <Setter Property="Grid.Row" Value="2"/>
+                <Setter Property="Grid.RowSpan" Value="5"/>
+                <Setter Property="Width" Value="10"/>
+                <Setter Property="HorizontalAlignment" Value="Center"/>
+            </Style>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+            </Style>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock FontSize="18" Grid.ColumnSpan="7" HorizontalAlignment="Center">Joystick Test</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0">X</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="1">Y</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="2">Rot</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="3">Throttle</TextBlock>
+        <ProgressBar Value="{Binding Stick.XAxis, Mode=OneWay}" Grid.Column="0" />
+        <ProgressBar Value="{Binding Stick.YAxis, Mode=OneWay}" Grid.Column="1" />
+        <ProgressBar Value="{Binding Stick.ZAxis, Mode=OneWay}" Grid.Column="2" />
+        <ProgressBar Value="{Binding Stick.Throttle, Mode=OneWay}" Grid.Column="3" />
+
+        <ToggleButton Grid.Column="4" Grid.Row="2" IsChecked="{Binding Stick.HatUp, Mode=OneWay}">Hat Up</ToggleButton>
+        <ToggleButton Grid.Column="4" Grid.Row="3" IsChecked="{Binding Stick.HatDown, Mode=OneWay}">Hat Down</ToggleButton>
+        <ToggleButton Grid.Column="4" Grid.Row="4" IsChecked="{Binding Stick.HatLeft, Mode=OneWay}">Hat Left</ToggleButton>
+        <ToggleButton Grid.Column="4" Grid.Row="5" IsChecked="{Binding Stick.HatRight, Mode=OneWay}">Hat Right</ToggleButton>
+        
+        <ToggleButton Grid.Column="5" Grid.Row="1" IsChecked="{Binding Stick.Button1, Mode=OneWay}">Button 1</ToggleButton>
+        <ToggleButton Grid.Column="5" Grid.Row="2" IsChecked="{Binding Stick.Button2, Mode=OneWay}">Button 2</ToggleButton>
+        <ToggleButton Grid.Column="5" Grid.Row="3" IsChecked="{Binding Stick.Button3, Mode=OneWay}">Button 3</ToggleButton>
+        <ToggleButton Grid.Column="5" Grid.Row="4" IsChecked="{Binding Stick.Button4, Mode=OneWay}">Button 4</ToggleButton>
+        <ToggleButton Grid.Column="5" Grid.Row="5" IsChecked="{Binding Stick.Button5, Mode=OneWay}">Button 5</ToggleButton>
+        <ToggleButton Grid.Column="5" Grid.Row="6" IsChecked="{Binding Stick.Button6, Mode=OneWay}">Button 6</ToggleButton>
+        <ToggleButton Grid.Column="6" Grid.Row="1" IsChecked="{Binding Stick.Button7, Mode=OneWay}">Button 7</ToggleButton>
+        <ToggleButton Grid.Column="6" Grid.Row="2" IsChecked="{Binding Stick.Button8, Mode=OneWay}">Button 8</ToggleButton>
+        <ToggleButton Grid.Column="6" Grid.Row="3" IsChecked="{Binding Stick.Button9, Mode=OneWay}">Button 9</ToggleButton>
+        <ToggleButton Grid.Column="6" Grid.Row="4" IsChecked="{Binding Stick.Button10, Mode=OneWay}">Button 10</ToggleButton>
+        <ToggleButton Grid.Column="6" Grid.Row="5" IsChecked="{Binding Stick.Button11, Mode=OneWay}">Button 11</ToggleButton>
+        <ToggleButton Grid.Column="6" Grid.Row="6" IsChecked="{Binding Stick.Button12, Mode=OneWay}">Button 12</ToggleButton>
+    </Grid>
+</UserControl>

@@ -1,12 +1,26 @@
-﻿using System.Windows.Data;
+﻿using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB.Pedal;
+using Melville.MVVM.Wpf.ViewFrames;
 using Melville.WpfControls.Bindings;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Melville.Wpf.Samples.TranscriptionPedal
 {
+    public class JoystickTranscriptionPedalViewModel: TranscriptionPedalViewModel, ICreateView
+    {
+        public JoystickTranscriptionPedalViewModel(JoystickPedal pedal) : base(pedal)
+        {
+        }
+
+        public UIElement View()
+        {
+            return new TranscriptionPedalView();
+        }
+    }
+
     public class TranscriptionPedalViewModel: NotifyBase
     {
         public ITranscriptonPedal Pedal { get; }

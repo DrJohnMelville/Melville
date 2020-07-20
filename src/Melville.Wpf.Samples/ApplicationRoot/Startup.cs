@@ -5,9 +5,7 @@ using Melville.MVVM.USB;
 using Melville.MVVM.USB.Pedal;
 using Melville.MVVM.USB.ThumbDrives;
 using Melville.MVVM.WindowMessages;
-using Melville.MVVM.Wpf.Clipboards;
 using Melville.MVVM.Wpf.RootWindows;
-using Melville.MVVM.Wpf.USB;
 using Melville.MVVM.Wpf.WindowMessages;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
@@ -27,6 +25,7 @@ namespace Melville.Wpf.Samples.ApplicationRoot
         protected override void RegisterWithIocContainer(IBindableIocService service)
         {
             service.AddLogging();
+            service.Bind<SamplesTreeViewModel>().ToSelf().AsSingleton();
             service.RegisterHomeViewModel<SamplesTreeViewModel>();
             service.Bind<IRootNavigationWindow>()
                 .And<Window>()

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Melville.MVVM.WindowMessages;
+using Microsoft.Win32.SafeHandles;
 
 namespace Melville.MVVM.USB
 {
@@ -29,25 +30,35 @@ namespace Melville.MVVM.USB
     public void TryConnect()
     {
       if (IsConnected) return;
-      var devices = EnumDevices.Enum().ToArray();
-      var devicePath = devices.FirstOrDefault(i => i.Contains(deviceId));
+      
+      var devicePath = EnumDevices.Enum().FirstOrDefault(i => i.Contains(deviceId));
       if (devicePath == null) return;
-      var fileHandle = NativeMethods.CreateFile(devicePath,
-        NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
-        NativeMethods.FILE_SHARE_READ | NativeMethods.FILE_SHARE_WRITE, 
-        IntPtr.Zero, NativeMethods.OPEN_EXISTING, NativeMethods.FILE_FLAG_OVERLAPPED, IntPtr.Zero);
-      if (fileHandle == NativeMethods.InvalidHandleValue)
-      {
-        return;
-      }
-      IntPtr deviceData;
-      if (!NativeMethods.HidD_GetPreparsedData(fileHandle, out deviceData)) return;
-      NativeMethods.HidCaps caps;
-      NativeMethods.HidP_GetCaps(deviceData, out caps);
-      readBufferLength = caps.InputReportByteLength;
+      
+      var fileHandle = OpenDeviceAsFile(devicePath);
+      if (fileHandle == NativeMethods.InvalidHandleValue) return;
+      
+      if (!TryGetReadBufferLength(fileHandle)) return;
       deviceStream = new FileStream(fileHandle, FileAccess.ReadWrite, readBufferLength,true);
       ReadDevice();
     }
+
+    private bool TryGetReadBufferLength(SafeFileHandle fileHandle)
+    {
+      if (!NativeMethods.HidD_GetPreparsedData(fileHandle, out var deviceData)) return false;
+      NativeMethods.HidP_GetCaps(deviceData, out var caps);
+      readBufferLength = caps.InputReportByteLength;
+      return true;
+    }
+
+    private static SafeFileHandle OpenDeviceAsFile(string devicePath)
+    {
+      var fileHandle = NativeMethods.CreateFile(devicePath,
+        NativeMethods.GENERIC_READ | NativeMethods.GENERIC_WRITE,
+        NativeMethods.FILE_SHARE_READ | NativeMethods.FILE_SHARE_WRITE,
+        IntPtr.Zero, NativeMethods.OPEN_EXISTING, NativeMethods.FILE_FLAG_OVERLAPPED, IntPtr.Zero);
+      return fileHandle;
+    }
+
     private bool IsConnected => deviceStream != null;
 
     private async void ReadDevice()

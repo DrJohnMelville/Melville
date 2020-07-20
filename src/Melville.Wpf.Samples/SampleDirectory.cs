@@ -1,7 +1,6 @@
-﻿using System.Diagnostics.Tracing;
-using System.Windows;
-using Melville.Wpf.Samples.ApplicationBinding;
+﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
+using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
@@ -14,7 +13,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory: SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<ThumbDriveViewModel>();
+            SearchTreeForSample<JoystickTranscriptionPedalViewModel>();
         
         public SampleDirectory()
         {
@@ -28,8 +27,11 @@ namespace Melville.Wpf.Samples
             Node("Root",
             Node("Hardware",
                 Page<TranscriptionPedalViewModel>("Transcription Pedal"),            
-                Page<ThumbDriveViewModel>("Transcription Pedal"),            
-                Page<ClipboardMonitorViewModel>("Clipboard Monitor")
+                Page<JoystickTranscriptionPedalViewModel>("Joystick emulating Transcription Pedal"),            
+                Page<JoystickViewModel>("Joystick"),            
+                Page<ThumbDriveViewModel>("Detect Thumb Drive Arrival"),            
+                Page<ClipboardMonitorViewModel>("Clipboard Monitor"),
+                Page<HidDeviceEnumerationViewModel>("ListHIDDevice")
             ),
             Node("Event Binding",
                 Page<CallMethodOnApplicationViewModel>("Call Method On Application"),
