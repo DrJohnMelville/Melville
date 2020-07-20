@@ -21,6 +21,11 @@ namespace Melville.Mvvm.Test.Functional
       Assert.Equal(new[] {"Data", "Message"}, GetNames((Exception e)=>e.Data + e.Message));
     }
     [Fact]
+    public void ExtractChain()
+    {
+      Assert.Equal(new[] {"Count", "Keys", "Data"}, GetNames((Exception e)=>e.Data.Keys.Count));
+    }
+    [Fact]
     public void EliminateDuplicates()
     {
       Assert.Equal(new[] {"Message"}, GetNames((Exception e)=>e.Message + e.Message));

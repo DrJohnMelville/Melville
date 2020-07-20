@@ -34,6 +34,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj" />
+      <ProjectReference Include="..\Melville.Mvvm.CsXaml\Melville.Mvvm.CsXaml.csproj" />
       <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
       <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
     </ItemGroup>
