@@ -16,10 +16,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Melville.Log.NamedPipeEventSink\Melville.Log.NamedPipeEventSink.csproj" />
-    <ProjectReference Include="..\src\Melville.IOC\Melville.IOC.csproj" />
-    <ProjectReference Include="..\src\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
-    <ProjectReference Include="..\src\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
-    <ProjectReference Include="..\src\Melville.WpfControls\Melville.WpfControls.csproj" />
+    <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
+    <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
+    <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
+    <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.5" />
