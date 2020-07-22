@@ -18,19 +18,4 @@ namespace Melville.Mvvm.CsXaml
             return target;
         }
     }
-
-    public static class GridBindings
-    {
-        public static void WithRows<TDataContext>(
-            this XamlBuilder<Grid, TDataContext> target,
-            string RowDeclarations)
-        {
-            
-        }
-
-        public static TChild NextChild<TDataContext, TChild>(
-            this XamlBuilder<DockPanel, TDataContext> target,
-            TChild child) where TChild : DependencyObject =>
-            AssignDockProperty(child, Dock.Top);
-    }
 }
