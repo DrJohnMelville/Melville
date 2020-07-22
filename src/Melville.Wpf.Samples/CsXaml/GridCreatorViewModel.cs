@@ -43,6 +43,18 @@ namespace Melville.Wpf.Samples.CsXaml
                             .AddToGrid(GridBlock(j, "5", Brushes.Orange));
 
                     });
+                    i.ChildTextBlock("Additional Grid");
+                    i.Child<Grid>(j =>
+                    {
+                        j.SetColumns("* * *");
+                        j.SetRows("auto auto");
+                        j.RowMajorChildren()
+                            .AddToGrid(GridBlock(j, "1", Brushes.Red))
+                            .AddToGrid(GridBlock(j, "2 and 3", Brushes.LightBlue), 2)
+                            .AddToGrid(GridBlock(j, "4", Brushes.Green))
+                            .AddToGrid(GridBlock(j, "5", Brushes.Yellow))
+                            .AddToGrid(GridBlock(j, "6", Brushes.Orange));
+                    });
                 }));
         }
 
