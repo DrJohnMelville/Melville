@@ -27,4 +27,10 @@
   <ItemGroup>
     <Folder Include="SearchTree" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Binding\LambdaConverter.cs">
+      <DependentUpon>LambdaConverter.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
  </Project>
