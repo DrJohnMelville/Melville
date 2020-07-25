@@ -24,6 +24,15 @@ namespace Melville.IOC.Test.IocContainers
             Assert.True(factory("1") is BO1);
             Assert.True(factory("2") is BO2);
         }
+
+        [Fact]
+        public void ResolveByCaseInvariantStringValue()
+        {
+            sut.Bind<IBO>().To<BO1>().WhenParameterHasValue("x", StringComparison.OrdinalIgnoreCase);
+            var factory = sut.Get<Func<string, IBO>>();
+            Assert.True(factory("x") is BO1);
+            Assert.True(factory("X") is BO1);
+        }
         
         private interface IVM { IBO Item { get; } }
         private class VM1:IVM

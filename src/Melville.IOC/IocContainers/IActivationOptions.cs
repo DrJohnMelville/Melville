@@ -40,6 +40,11 @@ namespace Melville.IOC.IocContainers
         IActivationOptions<T> WhenNotConstructingType<TTarget>() => WhenNotConstructingType(typeof(TTarget));
         IActivationOptions<T> BlockSelfInjection() => WhenNotConstructingType(typeof(T));
         IActivationOptions<T> WhenParameterHasValue(object value) => When(i => i.ArgumentsFormChild.Contains(value));
+        IActivationOptions<T> WhenParameterHasValue(string value, StringComparison compareType) =>
+            When(i => 
+                i.ArgumentsFormChild
+                    .OfType<string>()
+                    .Any(j => j.Equals(value, compareType)));
         IActivationOptions<T> WhenParameterHasType<TParameter>() => WhenParameterHasType(typeof(TParameter));
 
         IActivationOptions<T> WhenParameterHasType(Type parameterType) =>
