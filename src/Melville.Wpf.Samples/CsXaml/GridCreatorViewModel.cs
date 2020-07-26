@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using Melville.Mvvm.CsXaml;
+using Melville.Mvvm.CsXaml.XamlBuilders;
 
 namespace Melville.Wpf.Samples.CsXaml
 {
@@ -12,60 +13,52 @@ namespace Melville.Wpf.Samples.CsXaml
 
     public class GridCreatorView : UserControl
     {
+        private static TextBlock GridBlock(string text, SolidColorBrush color) =>
+            new TextBlock()
+            {
+                Text = text, Padding = new Thickness(15), Background = color
+            };
         public GridCreatorView()
         {
             AddChild(
-                BuildXaml.Create<StackPanel, GridCreatorViewModel>(i =>
+                BuildXaml.Create<StackPanel, GridCreatorViewModel>((i,context) =>
                 {
-                    i.ChildTextBlock("Grid Examples -- Row Major Order");
-                    i.Child<Grid>(j =>
-                    {
-                        j.SetColumns("auto, 2*, *");
-                        j.SetRows("auto, auto");
-                        j.RowMajorChildren()
-                            .AddToGrid(GridBlock(j, "1", Brushes.Red))
-                            .AddToGrid(GridBlock(j, "2", Brushes.Green), 1, 2)
-                            .AddToGrid(GridBlock(j, "3", Brushes.Blue))
-                            .AddToGrid(GridBlock(j, "4", Brushes.Purple))
-                            .AddToGrid(GridBlock(j, "5", Brushes.Orange));
+                    i.WithChild(Create.TextBlock("Grid Examples -- Row Major Order"));
+                    i.WithChild( new Grid()
+                        .SetColumns("auto, 2*, *")
+                        .SetRows("auto, auto")
+                        .RowMajorChildren()
+                            .WithChild(GridBlock("1", Brushes.Red))
+                            .WithChild(1, 2, GridBlock("2", Brushes.Green))
+                            .WithChild(GridBlock("3", Brushes.Blue))
+                            .WithChild(GridBlock("4", Brushes.Purple))
+                            .WithChild(GridBlock("5", Brushes.Orange))
 
-                    });
-                    i.ChildTextBlock("Grid Examples -- Column Major Order");
-                    i.Child<Grid>(j =>
-                    {
-                        j.SetRows("auto, 2*, *");
-                        j.SetColumns("auto, auto");
-                        j.ColumnMajorChildren()
-                            .AddToGrid(GridBlock(j, "1", Brushes.Red))
-                            .AddToGrid(GridBlock(j, "2", Brushes.Green), 1, 2)
-                            .AddToGrid(GridBlock(j, "3", Brushes.Blue))
-                            .AddToGrid(GridBlock(j, "4", Brushes.Purple))
-                            .AddToGrid(GridBlock(j, "5", Brushes.Orange));
+                    );
+                    i.WithChild(Create.TextBlock("Grid Examples -- Column Major Order"));
+                    i.WithChild(new Grid()
+                        .SetRows("auto, 2*, *")
+                        .SetColumns("auto, auto")
+                        .ColumnMajorChildren()
+                            .WithChild(GridBlock("1", Brushes.Red))
+                            .WithChild(1,2, GridBlock("2", Brushes.Green))
+                            .WithChild(GridBlock("3", Brushes.Blue))
+                            .WithChild(GridBlock("4", Brushes.Purple))
+                            .WithChild(GridBlock("5", Brushes.Orange))
 
-                    });
-                    i.ChildTextBlock("Additional Grid");
-                    i.Child<Grid>(j =>
-                    {
-                        j.SetColumns("* * *");
-                        j.SetRows("auto auto");
-                        j.RowMajorChildren()
-                            .AddToGrid(GridBlock(j, "1", Brushes.Red))
-                            .AddToGrid(GridBlock(j, "2 and 3", Brushes.LightBlue), 2)
-                            .AddToGrid(GridBlock(j, "4", Brushes.Green))
-                            .AddToGrid(GridBlock(j, "5", Brushes.Yellow))
-                            .AddToGrid(GridBlock(j, "6", Brushes.Orange));
-                    });
+                    );
+                    i.WithChild(Create.TextBlock("Additional Grid"));
+                    i.WithChild(new Grid()
+                        .SetColumns("* * *")
+                        .SetRows("auto auto")
+                        .RowMajorChildren()
+                            .WithChild(GridBlock("1", Brushes.Red))
+                            .WithChild(2, GridBlock("2 and 3", Brushes.LightBlue))
+                            .WithChild(GridBlock("4", Brushes.Green))
+                            .WithChild(GridBlock("5", Brushes.Yellow))
+                            .WithChild(GridBlock("6", Brushes.Orange))
+                    );
                 }));
         }
-
-        private static TextBlock GridBlock(XamlBuilder<Grid, GridCreatorViewModel> j, string text, SolidColorBrush color)
-        {
-            var childTextBlock = j.ChildTextBlock(text);
-            childTextBlock.Background = color;
-            childTextBlock.Padding = new Thickness(15);
-            return childTextBlock;
-        }
     }
-
-
 }

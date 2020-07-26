@@ -7,6 +7,7 @@ using System.Windows.Media;
 using Accord;
 using Melville.MVVM.BusinessObjects;
 using Melville.Mvvm.CsXaml;
+using Melville.Mvvm.CsXaml.XamlBuilders;
 
 namespace Melville.Wpf.Samples.CsXaml
 {
@@ -26,16 +27,15 @@ namespace Melville.Wpf.Samples.CsXaml
     {
         public CounterView()
         {
-            AddChild(BuildXaml.Create<StackPanel, CounterViewModel>(i =>
+            AddChild(BuildXaml.Create<StackPanel, CounterViewModel>((i, dc) =>
             {
-                i.ChildTextBlock("Simple Counter Test", 18, HorizontalAlignment.Center);
-                i.Child<TextBlock>(k =>
-                {
-                    k.ChildTextBlock("The current count is: ");
-                    k.ChildTextBlock(i.Bind(j =>j.Counter).As<string>());
-                });
-                i.ChildTextBlock(i.Bind(j => j.Counter, ToRoman));
-                i.ChildButton("Increment Counter", nameof(CounterViewModel.IncrementCounter))
+                i.WithChild(Create.TextBlock("Simple Counter Test", 18, HorizontalAlignment.Center));
+                i.WithChild(new TextBlock()
+                    .WithChild(Create.TextBlock("The current count is: "))
+                    .WithChild(Create.TextBlock(dc.Bind(j=>j.Counter).As<string>()))
+                );
+                i.WithChild(Create.TextBlock(dc.Bind(i => i.Counter, ToRoman)));
+                i.WithChild(Create.Button("Increment Counter", nameof(CounterViewModel.IncrementCounter)))
                     .HorizontalAlignment = HorizontalAlignment.Center;
             }));
         }

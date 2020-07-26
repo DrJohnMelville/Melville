@@ -4,39 +4,37 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Markup;
 using Melville.MVVM.CSharpHacks;
+using Melville.Mvvm.CsXaml.XamlBuilders;
 using Melville.MVVM.Functional;
 
 namespace Melville.Mvvm.CsXaml
 {
     public static class GridBindings
     {
-        public static RowDefinitionCollection SetRows<TDataContext>(
-            this XamlBuilder<Grid, TDataContext> target,
-            string rowDeclarations) 
+        public static Grid SetRows(this Grid target, string rowDeclarations) 
         {
-            target.Target.RowDefinitions.AddRange(
+            target.RowDefinitions.AddRange(
                GridDimensionParser.ParseGridDimensions(rowDeclarations)
                     .Select(i => new RowDefinition() {Height = i}));
-            return target.Target.RowDefinitions;
+            return target;
         }
-        public static ColumnDefinitionCollection SetColumns<TDataContext>(
-            this XamlBuilder<Grid, TDataContext> target,
-            string columnDefinitions)
+        public static Grid SetColumns(this Grid target, string columnDefinitions)
         {
-            target.Target.ColumnDefinitions.AddRange(
+            target.ColumnDefinitions.AddRange(
                 GridDimensionParser.ParseGridDimensions(columnDefinitions)
                     .Select(i => new ColumnDefinition() {Width = i}));
-            return target.Target.ColumnDefinitions;
+            return target;
         }
-        public static GridPlacement RowMajorChildren<TDataContext>(
-            this XamlBuilder<Grid, TDataContext> target) =>
-            new GridPlacement(target.Target.ColumnDefinitions.Count,
+        public static GridPlacement RowMajorChildren(
+            this Grid target) =>
+            new GridPlacement(target, target.ColumnDefinitions.Count,
                 Grid.RowProperty, Grid.ColumnProperty, 
                 Grid.ColumnSpanProperty, Grid.RowSpanProperty);
-        public static GridPlacement ColumnMajorChildren<TDataContext>(
-            this XamlBuilder<Grid, TDataContext> target) =>
-            new GridPlacement(target.Target.RowDefinitions.Count,
+        public static GridPlacement ColumnMajorChildren(
+            this Grid target) =>
+            new GridPlacement(target, target.RowDefinitions.Count,
                 Grid.ColumnProperty, Grid.RowProperty,  
                 Grid.RowSpanProperty, Grid.ColumnSpanProperty);
 
@@ -44,16 +42,18 @@ namespace Melville.Mvvm.CsXaml
 
     public class GridPlacement
     {
+        private readonly Grid grid;
         private readonly DependencyProperty primaryPositionProp;
         private readonly DependencyProperty secondaryPositionProp;
         private readonly DependencyProperty primarySpanProp;
         private readonly DependencyProperty secondarySpanProp;
         private GridPositioner positioner;
 
-        public GridPlacement(int width, 
+        public GridPlacement(Grid grid, int width, 
             DependencyProperty primaryPositionProp, DependencyProperty secondaryPositionProp,
             DependencyProperty primarySpanProp, DependencyProperty secondarySpanProp)
         {
+            this.grid = grid;
             this.primaryPositionProp = primaryPositionProp;
             this.secondaryPositionProp = secondaryPositionProp;
             this.primarySpanProp = primarySpanProp;
@@ -61,20 +61,25 @@ namespace Melville.Mvvm.CsXaml
             positioner = new GridPositioner(width);
         }
 
-        public GridPlacement AddToGrid(DependencyObject elt, int primaryAxisSpan = 1, int secondaryAxisSpan = 1)
+        public GridPlacement WithChild(UIElement elt) => WithChild(1, 1, elt);
+        public GridPlacement WithChild(int primaryAxisSpan, UIElement elt) => WithChild(primaryAxisSpan, 1, elt);
+        public GridPlacement WithChild(int primaryAxisSpan, int secondaryAxisSpan, UIElement elt)
         {
             SetDimension(elt, primaryAxisSpan, primarySpanProp);
             SetDimension(elt, secondaryAxisSpan, secondarySpanProp);
             var (primaryValue, secondaryValue) = positioner.NextPlaceAsRowCol(secondaryAxisSpan, primaryAxisSpan);
             elt.SetValue(primaryPositionProp, primaryValue);
             elt.SetValue(secondaryPositionProp, secondaryValue);
+            ((IAddChild)grid).AddChild(elt);
             return this;
         }
 
-        private void SetDimension(DependencyObject elt, int rowSpan, DependencyProperty targetProp)
+        private void SetDimension(DependencyObject elt, int span, DependencyProperty targetProp)
         {
-            if (rowSpan > 1) elt.SetValue(targetProp, rowSpan);
+            if (span > 1) elt.SetValue(targetProp, span);
         }
+
+        public static implicit operator Grid(GridPlacement gp) => gp.grid;
     }
     
     
