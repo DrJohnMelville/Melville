@@ -22,10 +22,11 @@ namespace Melville.Mvvm.CsXaml
             ValueProxy<double>? fontSize = null,
             ValueProxy<HorizontalAlignment>? horizontalAlignment = null)
         {
-            var ret = new TextBlock().WithText(text).WithTextBlock_FontSize(fontSize);
-            horizontalAlignment?.SetValue(ret, FrameworkElement.HorizontalAlignmentProperty);
-            return ret;
+            var ret = new TextBlock()
+                .WithText(text).WithStyle(new Style())
+                .WithHorizontalAlignment(horizontalAlignment)
+                .WithTextBlock_FontSize(fontSize);
+            return (TextBlock)ret;
         }
-
     }
 }

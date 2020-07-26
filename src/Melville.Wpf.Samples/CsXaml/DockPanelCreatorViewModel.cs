@@ -17,16 +17,16 @@ namespace Melville.Wpf.Samples.CsXaml
         {
             AddChild(BuildXaml.Create<DockPanel, DockPanelCreatorViewModel>((i, context) =>
             {
-                i.WithChild(Dock.Top, Create.TextBlock("Top")).Background = Brushes.Blue;
-                i.WithChild(Dock.Bottom, Create.TextBlock("Bottom")).Background = Brushes.Blue;
-                i.WithChild(Dock.Left, Create.TextBlock("Left")).Background = Brushes.Green;
-                i.WithChild(Dock.Right, Create.TextBlock("Right")).Background = Brushes.Green;
-                i.WithChild(new TextBlock
-                {
-                    Background = Brushes.Red,
-                    TextAlignment = TextAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center
-                });
+                i.WithChild(Dock.Top, Create.TextBlock("Top").WithBackground(Brushes.Blue));
+                i.WithChild(Dock.Bottom, Create.TextBlock("Bottom")
+                    .WithBackground(Brushes.Blue));
+                i.WithChild(Dock.Left, Create.TextBlock("Left").WithBackground(Brushes.Green));
+                i.WithChild(Dock.Right, Create.TextBlock("Right").WithBackground(Brushes.Green));
+                i.WithChild(new TextBlock()
+                    .WithText("Center")
+                    .WithBackground(Brushes.Red)
+                    .WithVerticalAlignment(VerticalAlignment.Center)
+                    .WithTextBlock_TextAlignment(TextAlignment.Center));
                i.LastChildFill = true;
             }));
         }
