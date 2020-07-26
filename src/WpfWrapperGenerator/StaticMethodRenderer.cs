@@ -31,8 +31,8 @@ namespace WpfWrapperGenerator
                 .FirstOrDefault()?
                 .ParameterType ?? typeof(DependencyObject);
 
-        private static MethodInfo? FindSetMethod(string name, Type type) =>
-            type.GetMethod(PropNameToSetterName(name),
+        private static MethodInfo? FindSetMethod(string name, Type? type) =>
+            type?.GetMethod(PropNameToSetterName(name),
                 BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.Public);
 
 

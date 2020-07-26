@@ -14,7 +14,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<GridCreatorViewModel>();
+            SearchTreeForSample<ListBoxViewModel>();
 
         public SampleDirectory()
         {
@@ -27,6 +27,7 @@ namespace Melville.Wpf.Samples
         private ISampleTreeItem AppllicationIntegrationNode() =>
             Node("Root",
                 Node("CsXaml",
+                    Page<ListBoxViewModel>("List Binding"),
                     Page<CounterViewModel>("Counter View"),
                     Page<GridCreatorViewModel>("Grid View"),
                     Page<DockPanelCreatorViewModel>("DockPanel View")

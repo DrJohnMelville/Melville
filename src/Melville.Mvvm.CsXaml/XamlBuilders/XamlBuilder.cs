@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Windows;
@@ -14,9 +15,8 @@ namespace Melville.Mvvm.CsXaml.XamlBuilders
 {
     public readonly struct BindingContext<TDataContext>
     {
-      
         public ValueProxy<T> Bind<T>(Expression<Func<TDataContext, T>> bindingFunc,
-            BindingMode mode = BindingMode.TwoWay,
+            BindingMode mode = BindingMode.Default,
             UpdateSourceTrigger update = UpdateSourceTrigger.PropertyChanged) =>
             Bind<T>(bindingFunc, null, mode, update);
 
@@ -27,9 +27,10 @@ namespace Melville.Mvvm.CsXaml.XamlBuilders
             CreateBinding<T>(ExpressionToBindingString(bindingFunc), LambdaConverter.Create(converter),
                 mode, update);
 
+
         public ValueProxy<T> Bind<T>(Expression<Func<TDataContext, T>> bindingFunc,
             IValueConverter? converter,
-            BindingMode mode = BindingMode.TwoWay,
+            BindingMode mode = BindingMode.Default,
             UpdateSourceTrigger update = UpdateSourceTrigger.PropertyChanged) =>
             CreateBinding<T>(ExpressionToBindingString(bindingFunc), converter, mode, update);
 
@@ -44,7 +45,7 @@ namespace Melville.Mvvm.CsXaml.XamlBuilders
 
         private static string ExpressionToBindingString<T>(Expression<Func<TDataContext, T>> bindingFunc)
         {
-            return String.Join(", ", GetPropertyNames.FromExpression(bindingFunc).Reverse());
+            return String.Join(".", GetPropertyNames.FromExpression(bindingFunc).Reverse());
         }
     }
 
@@ -54,6 +55,13 @@ namespace Melville.Mvvm.CsXaml.XamlBuilders
         {
             parent.AddChild(child);
             return parent;
+        }
+
+        public static T Bind<T>(this T source, RoutedEvent routedEvent, EventBinder? binding)
+          where T:UIElement
+        {
+            binding?.Bind(source, routedEvent);
+            return source;
         }
     }
 

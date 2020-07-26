@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Markup;
 using System.Windows.Media;
@@ -35,8 +36,14 @@ namespace Melville.Wpf.Samples.CsXaml
                     .WithChild(Create.TextBlock(dc.Bind(j=>j.Counter).As<string>()))
                 );
                 i.WithChild(Create.TextBlock(dc.Bind(i => i.Counter, ToRoman)));
-                i.WithChild(Create.Button("Increment Counter", nameof(CounterViewModel.IncrementCounter)))
-                    .HorizontalAlignment = HorizontalAlignment.Center;
+                i.WithChild(new UniformGrid()
+                    .WithColumns(3)
+                    .WithChild(Create.Button("Odd Increments", nameof(CounterViewModel.IncrementCounter), 
+                        dc.Bind(j=>j.Counter, j=>j % 2 == 1)))
+                    .WithChild(Create.Button("Increment Counter", nameof(CounterViewModel.IncrementCounter)))
+                    .WithChild(Create.Button("Even Increments", nameof(CounterViewModel.IncrementCounter),
+                        dc.Bind(j=>j.Counter, j=>j %2 == 0)))
+                );
             }));
         }
         

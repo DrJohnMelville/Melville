@@ -13,12 +13,11 @@ namespace WpfWrapperGenerator
         private readonly CodeWriter writer = new CodeWriter();
         public string Main()
         {
-            var type = typeof(TextBlock);
-            RenderAssembly(type.Assembly);
+            RenderAssembly(typeof(TextBlock).Assembly, typeof(UIElement).Assembly);
             return writer.ToString();
         }
 
-        void RenderAssembly(Assembly asm)
+        void RenderAssembly(params Assembly[] asm)
         {
             writer.RenderFileHeadder();
             foreach (var propGroup in AllFields(asm).GroupBy(i=>i.Name))
@@ -28,7 +27,6 @@ namespace WpfWrapperGenerator
                 {
                     RenderUniqueMethod(prop);
                 }
-                //RenderNameGroup(prop.ToList());
             }
             writer.RenderFileFooter();
         }
@@ -68,9 +66,8 @@ namespace WpfWrapperGenerator
             InstanceMethodRenderer.TryRender(first, dp, writer );
         }
 
-        public IEnumerable<FieldInfo> AllFields(Assembly asm) =>
-            asm
-                .GetTypes().Where(i => i.IsPublic)
+        public IEnumerable<FieldInfo> AllFields(Assembly[] asm) =>
+            asm.SelectMany(i=>i.GetTypes()).Where(i => i.IsPublic)
                 .SelectMany(PublicStaticFields)
                 .Where(f => f.FieldType == typeof(DependencyProperty));
 
