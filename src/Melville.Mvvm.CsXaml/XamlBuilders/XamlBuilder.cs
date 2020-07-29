@@ -15,6 +15,10 @@ namespace Melville.Mvvm.CsXaml.XamlBuilders
 {
     public readonly struct BindingContext<TDataContext>
     {
+        public ValueProxy<IEnumerable<T>> BindList<T>(Expression<Func<TDataContext, IEnumerable<T>>> bindingFunc,
+            BindingMode mode = BindingMode.Default,
+            UpdateSourceTrigger update = UpdateSourceTrigger.PropertyChanged) =>
+            Bind<IEnumerable<T>>(bindingFunc, null, mode, update);
         public ValueProxy<T> Bind<T>(Expression<Func<TDataContext, T>> bindingFunc,
             BindingMode mode = BindingMode.Default,
             UpdateSourceTrigger update = UpdateSourceTrigger.PropertyChanged) =>
