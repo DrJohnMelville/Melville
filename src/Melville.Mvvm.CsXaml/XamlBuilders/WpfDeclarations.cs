@@ -120,10 +120,10 @@ public static TChild WithFlowDirection<TChild>(this TChild target, ValueProxy<Sy
 public static TChild WithFlowDirection<TChild>(this TChild target, ValueProxy<System.Windows.FlowDirection>? value, Disambigator<System.Windows.Documents.TableCell, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TableCell{value?.SetValue(target, System.Windows.Documents.TableCell.FlowDirectionProperty); return target;}
 
 //MarginProperty
-public static TChild WithMargin<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.FrameworkElement, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElement{value?.SetValue(target, System.Windows.FrameworkElement.MarginProperty); return target;}
-public static TChild WithMargin<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.MarginProperty); return target;}
-public static TChild WithMargin<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.Block, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Block{value?.SetValue(target, System.Windows.Documents.Block.MarginProperty); return target;}
-public static TChild WithMargin<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.ListItem, TChild>? doNotUse = null) where TChild: System.Windows.Documents.ListItem{value?.SetValue(target, System.Windows.Documents.ListItem.MarginProperty); return target;}
+public static TChild WithMargin<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.FrameworkElement, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElement{value?.SetValue(target, System.Windows.FrameworkElement.MarginProperty); return target;}
+public static TChild WithMargin<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.MarginProperty); return target;}
+public static TChild WithMargin<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.Block, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Block{value?.SetValue(target, System.Windows.Documents.Block.MarginProperty); return target;}
+public static TChild WithMargin<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.ListItem, TChild>? doNotUse = null) where TChild: System.Windows.Documents.ListItem{value?.SetValue(target, System.Windows.Documents.ListItem.MarginProperty); return target;}
 
 //HorizontalAlignmentProperty
 public static TChild WithHorizontalAlignment<TChild>(this TChild target, ValueProxy<System.Windows.HorizontalAlignment>? value, Disambigator<System.Windows.FrameworkElement, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElement{value?.SetValue(target, System.Windows.FrameworkElement.HorizontalAlignmentProperty); return target;}
@@ -277,10 +277,10 @@ public static TChild WithWindowChrome_ResizeGripDirection<TChild>(this TChild ta
 public static TChild WithCaptionHeight<TChild>(this TChild target, ValueProxy<System.Double>? value, Disambigator<System.Windows.Shell.WindowChrome, TChild>? doNotUse = null) where TChild: System.Windows.Shell.WindowChrome{value?.SetValue(target, System.Windows.Shell.WindowChrome.CaptionHeightProperty); return target;}
 
 //ResizeBorderThicknessProperty
-public static TChild WithResizeBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Shell.WindowChrome, TChild>? doNotUse = null) where TChild: System.Windows.Shell.WindowChrome{value?.SetValue(target, System.Windows.Shell.WindowChrome.ResizeBorderThicknessProperty); return target;}
+public static TChild WithResizeBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Shell.WindowChrome, TChild>? doNotUse = null) where TChild: System.Windows.Shell.WindowChrome{value?.SetValue(target, System.Windows.Shell.WindowChrome.ResizeBorderThicknessProperty); return target;}
 
 //GlassFrameThicknessProperty
-public static TChild WithGlassFrameThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Shell.WindowChrome, TChild>? doNotUse = null) where TChild: System.Windows.Shell.WindowChrome{value?.SetValue(target, System.Windows.Shell.WindowChrome.GlassFrameThicknessProperty); return target;}
+public static TChild WithGlassFrameThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Shell.WindowChrome, TChild>? doNotUse = null) where TChild: System.Windows.Shell.WindowChrome{value?.SetValue(target, System.Windows.Shell.WindowChrome.GlassFrameThicknessProperty); return target;}
 
 //UseAeroCaptionButtonsProperty
 public static TChild WithUseAeroCaptionButtons<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Shell.WindowChrome, TChild>? doNotUse = null) where TChild: System.Windows.Shell.WindowChrome{value?.SetValue(target, System.Windows.Shell.WindowChrome.UseAeroCaptionButtonsProperty); return target;}
@@ -467,7 +467,7 @@ public static TChild WithKeyTime<TChild>(this TChild target, ValueProxy<System.W
 public static TChild WithKeyTime<TChild>(this TChild target, ValueProxy<System.Windows.Media.Animation.KeyTime>? value, Disambigator<System.Windows.Media.Animation.Vector3DKeyFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Vector3DKeyFrame{value?.SetValue(target, System.Windows.Media.Animation.Vector3DKeyFrame.KeyTimeProperty); return target;}
 
 //ValueProperty
-public static TChild WithValue<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Media.Animation.ThicknessKeyFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessKeyFrame{value?.SetValue(target, System.Windows.Media.Animation.ThicknessKeyFrame.ValueProperty); return target;}
+public static TChild WithValue<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Media.Animation.ThicknessKeyFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessKeyFrame{value?.SetValue(target, System.Windows.Media.Animation.ThicknessKeyFrame.ValueProperty); return target;}
 public static TChild WithValue<TChild>(this TChild target, ValueProxy<System.Double>? value, Disambigator<System.Windows.Controls.Primitives.RangeBase, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.RangeBase{value?.SetValue(target, System.Windows.Controls.Primitives.RangeBase.ValueProperty); return target;}
 public static TChild WithValue<TChild>(this TChild target, ValueProxy<System.Double>? value, Disambigator<System.Windows.Controls.Primitives.Track, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.Track{value?.SetValue(target, System.Windows.Controls.Primitives.Track.ValueProperty); return target;}
 public static TChild WithValue<TChild>(this TChild target, ValueProxy<System.Windows.Media.Media3D.Quaternion>? value, Disambigator<System.Windows.Media.Animation.QuaternionKeyFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.QuaternionKeyFrame{value?.SetValue(target, System.Windows.Media.Animation.QuaternionKeyFrame.ValueProperty); return target;}
@@ -681,21 +681,21 @@ public static TChild WithCanGoForward<TChild>(this TChild target, ValueProxy<Sys
 public static TChild WithCanGoForward<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Controls.Frame, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Frame{value?.SetValue(target, System.Windows.Controls.Frame.CanGoForwardProperty); return target;}
 
 //PaddingProperty
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.PaddingProperty); return target;}
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.Block, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Block{value?.SetValue(target, System.Windows.Documents.Block.PaddingProperty); return target;}
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.ListItem, TChild>? doNotUse = null) where TChild: System.Windows.Documents.ListItem{value?.SetValue(target, System.Windows.Documents.ListItem.PaddingProperty); return target;}
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.TableCell, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TableCell{value?.SetValue(target, System.Windows.Documents.TableCell.PaddingProperty); return target;}
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Controls.Border, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Border{value?.SetValue(target, System.Windows.Controls.Border.PaddingProperty); return target;}
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Controls.Control, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Control{value?.SetValue(target, System.Windows.Controls.Control.PaddingProperty); return target;}
-public static TChild WithPadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Controls.TextBlock, TChild>? doNotUse = null) where TChild: System.Windows.Controls.TextBlock{value?.SetValue(target, System.Windows.Controls.TextBlock.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.Block, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Block{value?.SetValue(target, System.Windows.Documents.Block.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.ListItem, TChild>? doNotUse = null) where TChild: System.Windows.Documents.ListItem{value?.SetValue(target, System.Windows.Documents.ListItem.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.TableCell, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TableCell{value?.SetValue(target, System.Windows.Documents.TableCell.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Controls.Border, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Border{value?.SetValue(target, System.Windows.Controls.Border.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Controls.Control, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Control{value?.SetValue(target, System.Windows.Controls.Control.PaddingProperty); return target;}
+public static TChild WithPadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Controls.TextBlock, TChild>? doNotUse = null) where TChild: System.Windows.Controls.TextBlock{value?.SetValue(target, System.Windows.Controls.TextBlock.PaddingProperty); return target;}
 
 //BorderThicknessProperty
-public static TChild WithBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.BorderThicknessProperty); return target;}
-public static TChild WithBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.Block, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Block{value?.SetValue(target, System.Windows.Documents.Block.BorderThicknessProperty); return target;}
-public static TChild WithBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.ListItem, TChild>? doNotUse = null) where TChild: System.Windows.Documents.ListItem{value?.SetValue(target, System.Windows.Documents.ListItem.BorderThicknessProperty); return target;}
-public static TChild WithBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.TableCell, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TableCell{value?.SetValue(target, System.Windows.Documents.TableCell.BorderThicknessProperty); return target;}
-public static TChild WithBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Controls.Border, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Border{value?.SetValue(target, System.Windows.Controls.Border.BorderThicknessProperty); return target;}
-public static TChild WithBorderThickness<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Controls.Control, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Control{value?.SetValue(target, System.Windows.Controls.Control.BorderThicknessProperty); return target;}
+public static TChild WithBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.BorderThicknessProperty); return target;}
+public static TChild WithBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.Block, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Block{value?.SetValue(target, System.Windows.Documents.Block.BorderThicknessProperty); return target;}
+public static TChild WithBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.ListItem, TChild>? doNotUse = null) where TChild: System.Windows.Documents.ListItem{value?.SetValue(target, System.Windows.Documents.ListItem.BorderThicknessProperty); return target;}
+public static TChild WithBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.TableCell, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TableCell{value?.SetValue(target, System.Windows.Documents.TableCell.BorderThicknessProperty); return target;}
+public static TChild WithBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Controls.Border, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Border{value?.SetValue(target, System.Windows.Controls.Border.BorderThicknessProperty); return target;}
+public static TChild WithBorderThickness<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Controls.Control, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Control{value?.SetValue(target, System.Windows.Controls.Control.BorderThicknessProperty); return target;}
 
 //BorderBrushProperty
 public static TChild WithBorderBrush<TChild>(this TChild target, ValueProxy<System.Windows.Media.Brush>? value, Disambigator<System.Windows.Documents.AnchoredBlock, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AnchoredBlock{value?.SetValue(target, System.Windows.Documents.AnchoredBlock.BorderBrushProperty); return target;}
@@ -879,8 +879,8 @@ public static TChild WithFontSize<TChild>(this TChild target, ValueProxy<System.
 
 //ForegroundProperty
 public static TChild WithForeground<TChild>(this TChild target, ValueProxy<System.Windows.Media.Brush>? value, Disambigator<System.Windows.Documents.FlowDocument, TChild>? doNotUse = null) where TChild: System.Windows.Documents.FlowDocument{value?.SetValue(target, System.Windows.Documents.FlowDocument.ForegroundProperty); return target;}
-
 public static TChild WithTextElement_Foreground<TChild>(this TChild target, ValueProxy<System.Windows.Media.Brush>? value, Disambigator<System.Windows.DependencyObject, TChild>? doNotUse = null) where TChild: System.Windows.DependencyObject{value?.SetValue(target, System.Windows.Documents.TextElement.ForegroundProperty); return target;}
+
 public static TChild WithForeground<TChild>(this TChild target, ValueProxy<System.Windows.Media.Brush>? value, Disambigator<System.Windows.Documents.TextElement, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TextElement{value?.SetValue(target, System.Windows.Documents.TextElement.ForegroundProperty); return target;}
 public static TChild WithForeground<TChild>(this TChild target, ValueProxy<System.Windows.Media.Brush>? value, Disambigator<System.Windows.Controls.AccessText, TChild>? doNotUse = null) where TChild: System.Windows.Controls.AccessText{value?.SetValue(target, System.Windows.Controls.AccessText.ForegroundProperty); return target;}
 public static TChild WithForeground<TChild>(this TChild target, ValueProxy<System.Windows.Media.Brush>? value, Disambigator<System.Windows.Controls.Control, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Control{value?.SetValue(target, System.Windows.Controls.Control.ForegroundProperty); return target;}
@@ -934,7 +934,7 @@ public static TChild WithMinPageHeight<TChild>(this TChild target, ValueProxy<Sy
 public static TChild WithMaxPageHeight<TChild>(this TChild target, ValueProxy<System.Double>? value, Disambigator<System.Windows.Documents.FlowDocument, TChild>? doNotUse = null) where TChild: System.Windows.Documents.FlowDocument{value?.SetValue(target, System.Windows.Documents.FlowDocument.MaxPageHeightProperty); return target;}
 
 //PagePaddingProperty
-public static TChild WithPagePadding<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Documents.FlowDocument, TChild>? doNotUse = null) where TChild: System.Windows.Documents.FlowDocument{value?.SetValue(target, System.Windows.Documents.FlowDocument.PagePaddingProperty); return target;}
+public static TChild WithPagePadding<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Documents.FlowDocument, TChild>? doNotUse = null) where TChild: System.Windows.Documents.FlowDocument{value?.SetValue(target, System.Windows.Documents.FlowDocument.PagePaddingProperty); return target;}
 
 //IndicesProperty
 public static System.Windows.Documents.Glyphs WithIndices(this System.Windows.Documents.Glyphs target, ValueProxy<System.String>? value) {value?.SetValue(target, System.Windows.Documents.Glyphs.IndicesProperty); return target;}
@@ -1486,7 +1486,7 @@ public static TChild WithRowDetailsTemplateSelector<TChild>(this TChild target, 
 public static TChild WithCanUserResizeRows<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.CanUserResizeRowsProperty); return target;}
 
 //NewItemMarginProperty
-public static TChild WithNewItemMargin<TChild>(this TChild target, ValueProxy<System.Windows.Thickness>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.NewItemMarginProperty); return target;}
+public static TChild WithNewItemMargin<TChild>(this TChild target, ThicknessValueProxy? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.NewItemMarginProperty); return target;}
 
 //SelectionUnitProperty
 public static TChild WithSelectionUnit<TChild>(this TChild target, ValueProxy<System.Windows.Controls.DataGridSelectionUnit>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.SelectionUnitProperty); return target;}
@@ -1495,11 +1495,11 @@ public static TChild WithSelectionUnit<TChild>(this TChild target, ValueProxy<Sy
 public static TChild WithCanUserSortColumns<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.CanUserSortColumnsProperty); return target;}
 
 //AutoGenerateColumnsProperty
-
 public static TChild WithAutoGenerateColumns<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.AutoGenerateColumnsProperty); return target;}
 
 //FrozenColumnCountProperty
 public static TChild WithFrozenColumnCount<TChild>(this TChild target, ValueProxy<System.Int32>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.FrozenColumnCountProperty); return target;}
+
 
 //NonFrozenColumnsViewportHorizontalOffsetProperty
 public static TChild WithNonFrozenColumnsViewportHorizontalOffset<TChild>(this TChild target, ValueProxy<System.Double>? value, Disambigator<System.Windows.Controls.DataGrid, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGrid{value?.SetValue(target, System.Windows.Controls.DataGrid.NonFrozenColumnsViewportHorizontalOffsetProperty); return target;}
@@ -2048,11 +2048,11 @@ public static System.Windows.Controls.ScrollContentPresenter WithCanContentScrol
 public static TChild WithScrollViewer_CanContentScroll<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.DependencyObject, TChild>? doNotUse = null) where TChild: System.Windows.DependencyObject{value?.SetValue(target, System.Windows.Controls.ScrollViewer.CanContentScrollProperty); return target;}
 public static TChild WithCanContentScroll<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Controls.ScrollViewer, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ScrollViewer{value?.SetValue(target, System.Windows.Controls.ScrollViewer.CanContentScrollProperty); return target;}
 
-
 //IsIndeterminateProperty
 public static TChild WithIsIndeterminate<TChild>(this TChild target, ValueProxy<System.Boolean>? value, Disambigator<System.Windows.Controls.ProgressBar, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ProgressBar{value?.SetValue(target, System.Windows.Controls.ProgressBar.IsIndeterminateProperty); return target;}
 
 //OrientationProperty
+
 public static TChild WithOrientation<TChild>(this TChild target, ValueProxy<System.Windows.Controls.Orientation>? value, Disambigator<System.Windows.Controls.ProgressBar, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ProgressBar{value?.SetValue(target, System.Windows.Controls.ProgressBar.OrientationProperty); return target;}
 public static TChild WithOrientation<TChild>(this TChild target, ValueProxy<System.Windows.Controls.Orientation>? value, Disambigator<System.Windows.Controls.Slider, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Slider{value?.SetValue(target, System.Windows.Controls.Slider.OrientationProperty); return target;}
 public static TChild WithOrientation<TChild>(this TChild target, ValueProxy<System.Windows.Controls.Orientation>? value, Disambigator<System.Windows.Controls.StackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.StackPanel{value?.SetValue(target, System.Windows.Controls.StackPanel.OrientationProperty); return target;}
@@ -2647,8 +2647,8 @@ public static System.Windows.Media.Pen WithBrush(this System.Windows.Media.Pen t
 public static System.Windows.Media.GeometryDrawing WithBrush(this System.Windows.Media.GeometryDrawing target, ValueProxy<System.Windows.Media.Brush>? value) {value?.SetValue(target, System.Windows.Media.GeometryDrawing.BrushProperty); return target;}
 public static System.Windows.Media.Media3D.DiffuseMaterial WithBrush(this System.Windows.Media.Media3D.DiffuseMaterial target, ValueProxy<System.Windows.Media.Brush>? value) {value?.SetValue(target, System.Windows.Media.Media3D.DiffuseMaterial.BrushProperty); return target;}
 public static System.Windows.Media.Media3D.EmissiveMaterial WithBrush(this System.Windows.Media.Media3D.EmissiveMaterial target, ValueProxy<System.Windows.Media.Brush>? value) {value?.SetValue(target, System.Windows.Media.Media3D.EmissiveMaterial.BrushProperty); return target;}
-
 public static System.Windows.Media.Media3D.SpecularMaterial WithBrush(this System.Windows.Media.Media3D.SpecularMaterial target, ValueProxy<System.Windows.Media.Brush>? value) {value?.SetValue(target, System.Windows.Media.Media3D.SpecularMaterial.BrushProperty); return target;}
+
 
 //ThicknessProperty
 public static System.Windows.Media.Pen WithThickness(this System.Windows.Media.Pen target, ValueProxy<System.Double>? value) {value?.SetValue(target, System.Windows.Media.Pen.ThicknessProperty); return target;}

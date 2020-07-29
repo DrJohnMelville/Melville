@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -50,11 +51,16 @@ namespace WpfWrapperGenerator
             string typeName = targetType.CSharpName();
             string dpType = dp.PropertyType.CSharpName();
             writer.Append($"public static TChild With{methodName}<TChild>(this TChild target, " +
-                          $"ValueProxy<{dpType}>? value, " +
+                          S(dp.PropertyType)+"? value, " +
                           $"Disambigator<{typeName}, TChild>? doNotUse = null) where TChild: {typeName}");
             WriteBody(field);
         }
 
+        private static string S(Type dpType)
+        {
+            if (dpType == typeof(Thickness)) return "ThicknessValueProxy";
+            return $"ValueProxy<{dpType.CSharpName()}>";
+        }
 
 
         public void WriteInstanceMethod(FieldInfo field, DependencyProperty dp, string methodName, 

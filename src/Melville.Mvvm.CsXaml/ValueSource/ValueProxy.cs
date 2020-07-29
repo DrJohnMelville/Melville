@@ -44,7 +44,7 @@ namespace Melville.Mvvm.CsXaml.ValueSource
 
     public struct ValueProxy<T> : IValueProxy
     {
-        private object? otherValue;
+        internal readonly object? otherValue;
 
         public ValueProxy(object? otherValue) : this()
         {
@@ -57,7 +57,30 @@ namespace Melville.Mvvm.CsXaml.ValueSource
         }
         
         public static implicit operator ValueProxy<T>(T source) => new ValueProxy<T>(source);
-   
+        public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(otherValue);
+    }
+
+    public struct ThicknessValueProxy : IValueProxy
+    {
+        internal readonly object? otherValue;
+
+        public ThicknessValueProxy(object? otherValue) : this()
+        {
+            this.otherValue = otherValue;
+        }
+
+        public void SetValue(DependencyObject obj, DependencyProperty prop)
+        {
+            ValueProxyOperations.SetValue(obj, prop, otherValue);
+        }
+        
+        public static implicit operator ThicknessValueProxy(Thickness source) => new ThicknessValueProxy(source);
+        public static implicit operator ThicknessValueProxy(ValueProxy<Thickness> source) => new ThicknessValueProxy(source);
+        public static implicit operator ThicknessValueProxy(double d) => new ThicknessValueProxy(new Thickness(d));
+        public static implicit operator ThicknessValueProxy((double lr, double tb) input) => 
+            new ThicknessValueProxy(new Thickness(input.lr, input.tb, input.lr, input.tb));
+        public static implicit operator ThicknessValueProxy((double l, double t, double r, double b) input) => 
+            new ThicknessValueProxy(new Thickness(input.l, input.t, input.r, input.b));
         public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(otherValue);
     }
 }

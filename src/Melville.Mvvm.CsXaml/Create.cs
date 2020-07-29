@@ -10,7 +10,8 @@ using Melville.Mvvm.CsXaml.XamlBuilders;
 
 namespace Melville.Mvvm.CsXaml
 {
-    public static class Create
+    public static class 
+        Create
     {
         public static Button Button(
             ValueProxy<object> content,
@@ -39,13 +40,14 @@ namespace Melville.Mvvm.CsXaml
             var ret = new ListBox()
                 .WithItemsSource(source.As<IEnumerable>())
                 .WithSelectedItem(selectedItem?.As<Object>())
-                .WithItemTemplate(dataTemplate == null ? null : 
-                    new ValueProxy<DataTemplate>(DataTemplate<T>(dataTemplate)));
+                .WithItemTemplate(dataTemplate == null ? 
+                    (ValueProxy<DataTemplate>?)null : 
+                    new ValueProxy<DataTemplate>(DataTemplate(dataTemplate)));
             return ret;
         }
 
         public static Border Border(
-            ValueProxy<Thickness>? thickness = null,
+            ThicknessValueProxy? thickness = null,
             ValueProxy<Brush>? borderColor = null,
             ValueProxy<Brush>? backgroundBrush = null) =>
             new Border()

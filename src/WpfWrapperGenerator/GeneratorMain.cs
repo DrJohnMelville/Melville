@@ -31,34 +31,6 @@ namespace WpfWrapperGenerator
             writer.RenderFileFooter();
         }
 
-
-        /*
-        private void RenderNameGroup(List<FieldInfo> props)
-        {
-            var first = props.First();
-            writer.SectionComment(first.Name);
-            if (props.Count == 1)
-            {
-                RenderUniqueMethod(first);
-                return;
-            }
-
-            var inheritenceGroups = props.GroupBy(i => i.GetValue(null));
-            if (inheritenceGroups.Count() > 1)
-            {
-                RenderAllAsInstance(props);
-            }
-        }
-
-        private void RenderAllAsInstance(List<FieldInfo> props)
-        {
-            foreach (var prop in props)
-            {
-                if ((prop.GetValue(null) is DependencyProperty dp)) 
-                    InstanceMethodRenderer.TryRender(prop, dp, writer, true);
-            }
-        }
-*/
         private void RenderUniqueMethod(FieldInfo first)
         {
             if (!(first.GetValue(null) is DependencyProperty dp)) return;

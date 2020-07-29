@@ -56,12 +56,12 @@ namespace Melville.Wpf.Samples.CsXaml
         {
             AddChild(BuildXaml.Create<StackPanel, ListBoxViewModel>((e, b) =>
                 e   .WithChild(Create.TextBlock("List Box Demo", 18, HorizontalAlignment.Center))
-                    .WithChild(Create.ListBox(b.BindList(i=>i.Source, BindingMode.OneWay), b.Bind(i=>i.Current), 
+                    .WithChild(Create.ListBox(b.BindList(i=>i.Source, BindingMode.OneWay), b.Bind(i=>i.Current!), 
                         CreateListView))
                     .WithChild(Create.TextBlock("The Text is:").WithChild(Create.TextBlock(b.Bind(i=>i.Current!.Word))))
                     .WithChild(Create.TextBlock("The Number is:").WithChild(Create.TextBlock(
                         b.Bind(i=>i.Current!.Number).As<string>())))
-                    .WithChild(Create.TextBlock("Multi types").WithMargin(new Thickness(0,20,0,0)))
+                    .WithChild(Create.TextBlock("Multi types").WithMargin(30))
                     .WithResource(Create.DataTemplate<A>(f=>Create.TextBlock("This is the A").WithForeground(Brushes.Red)))
                     .WithResource(Create.DataTemplate<B>(f=>Create.TextBlock("This is the B").WithForeground(Brushes.Blue)))
                     .WithResource(Create.DataTemplate<ListBoxElt>(CreateListView2))
@@ -77,7 +77,7 @@ namespace Melville.Wpf.Samples.CsXaml
                 ).WithChild(Create.TextBlock(dc.Bind(i => i.Number).As<string>()));
 
         private object CreateListView2(BindingContext<ListBoxElt> dc) =>
-            Create.Border(new Thickness(2,2,1,1), Brushes.Gold)
+            Create.Border((2,2,1,1), Brushes.Gold)
                 .WithChild(
                     new StackPanel()
                         .WithOrientation(Orientation.Horizontal)
