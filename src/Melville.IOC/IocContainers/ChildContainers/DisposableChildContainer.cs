@@ -11,6 +11,10 @@ namespace Melville.IOC.IocContainers.ChildContainers
 
         public ValueTask DisposeAsync() => innerService.DisposeAsync();
         public void Dispose() => innerService.Dispose();
-        public void RegisterForDispose(object obj) => innerService.RegisterForDispose(obj);
+        public void RegisterForDispose(object obj)
+        {
+            if (obj == this) return;
+            innerService.RegisterForDispose(obj);
+        }
     }
 }

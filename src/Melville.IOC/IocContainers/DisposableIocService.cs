@@ -21,6 +21,8 @@ namespace Melville.IOC.IocContainers
 
         public void RegisterForDispose(object ret)
         {
+            if (ret == this) return;
+            if (itemsToDispose.Contains(ret)) return;
             itemsToDispose.Add(ret);
         }
 
@@ -37,9 +39,7 @@ namespace Melville.IOC.IocContainers
             //We dispose in reverse order.  Since most objects are created after their dependencies that means
             // that most objects will be disposed before their dependencies are disposed.
             //
-            //We call distinct so that if the user accidentally got the class registered twice, ike because it
-            // called registerWrapperForDisposal without a wrapper. it does not get disposed twice
-            var finalDisposalList = Enumerable.Reverse(itemsToDispose).Distinct().ToList();
+            var finalDisposalList = Enumerable.Reverse(itemsToDispose).ToList();
             
             // We clear the list before we dispose because this scope might get registered in itself, either
             // directly or indirectly.  so we want to be sure that we do no dispose recursively.
@@ -48,17 +48,18 @@ namespace Melville.IOC.IocContainers
             return finalDisposalList;
         }
 
-        private static async Task DisposeSingleItem(object item)
-        {
-            switch (item)
+        private static ValueTask DisposeSingleItem(object item) =>
+            item switch
             {
-                case IAsyncDisposable ad:
-                    await ad.DisposeAsync();
-                    break;
-                case IDisposable d:
-                    d.Dispose();
-                    break;
-            }
+                IAsyncDisposable ad => ad.DisposeAsync(),
+                IDisposable d => SynchronousDisposeAsValueTask(d),
+                _ => new ValueTask()
+            };
+
+        private static ValueTask SynchronousDisposeAsValueTask(IDisposable d)
+        {
+            d.Dispose();
+            return new ValueTask();
         }
 
         public void Dispose()
@@ -80,6 +81,10 @@ namespace Melville.IOC.IocContainers
 
         public ValueTask DisposeAsync() => register.DisposeAsync();
         public void Dispose() => register.Dispose();
-        public void RegisterForDispose(object obj) => register.RegisterForDispose(obj);
+        public void RegisterForDispose(object obj)
+        {
+            if (obj == this) return;
+            register.RegisterForDispose(obj);
+        }
     }
 }
