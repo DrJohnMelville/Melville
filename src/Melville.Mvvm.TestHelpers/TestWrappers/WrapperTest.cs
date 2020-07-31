@@ -142,6 +142,7 @@ namespace Melville.Mvvm.TestHelpers.TestWrappers
         var t when IsGenericTask(t) => CreateDefaultCompletedTask(t.GenericTypeArguments[0]),
         var t when IsGeericEnumerable(t) => CreateArray(t.GenericTypeArguments[0]),
         var t when t.IsInterface => CreateMock(t),
+        var t when t == typeof(ValueTask) => new ValueTask(),
         _ => throw new InvalidOperationException($"Could not create type {type.Name}")
       };
 

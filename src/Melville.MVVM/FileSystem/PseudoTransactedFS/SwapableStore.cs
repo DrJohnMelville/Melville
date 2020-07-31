@@ -23,10 +23,7 @@ namespace Melville.MVVM.FileSystem.PseudoTransactedFS
     public bool IsLocalStore => innerStore.IsLocalStore;
     public IDownloadProgressStore? ProgressStore => innerStore.ProgressStore;
 
-    public Task DisposeAsync()
-    {
-      return innerStore.DisposeAsync();
-    }
+    public ValueTask DisposeAsync() => innerStore.DisposeAsync();
 
     public Task<bool> RenewLease()
     {

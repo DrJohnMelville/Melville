@@ -24,16 +24,17 @@ namespace Melville.MVVM.FileSystem.PseudoTransactedFS
   }
 
 
-  public interface ITransactableStore
+  public interface ITransactableStore: IAsyncDisposable
   {
     IDisposable? WriteToken();
     IDirectory UntransactedRoot { get; }
     ITransactedDirectory BeginTransaction();
     bool IsLocalStore { get; }
     IDownloadProgressStore? ProgressStore { get; }
-    // we need to let the web know that we are done, so dispose has to be async
-    Task DisposeAsync();
+
     Task<bool> RenewLease();
+    //The DisposeAsync method inherited from IAsycDisposable ia used to
+    // surrender the lease in some of the web file store decendents.
   }
 
   public class TransactionStoreBase 
@@ -48,7 +49,7 @@ namespace Melville.MVVM.FileSystem.PseudoTransactedFS
     public IDisposable? WriteToken() => innerFileSystem.AudioSubDirectory().WriteToken();
     public bool IsLocalStore => true;
     public IDownloadProgressStore? ProgressStore => null;
-    public Task DisposeAsync() => Task.FromResult(1);
+    public ValueTask DisposeAsync() => new ValueTask();
     public Task<bool> RenewLease() => Task.FromResult(true);
   }
 
@@ -78,7 +79,7 @@ namespace Melville.MVVM.FileSystem.PseudoTransactedFS
       if (!innerFileSystem.Exists())
       {
         isRepaired = true;
-        return Task<int>.FromResult(1);
+        return Task.FromResult(1);
       }
       var list = new Dictionary<int, TransactedDirectory.TransactedFile.RepairTransaction>();
       var dirs = new[] {innerFileSystem}.SelectRecursive(i => i.AllSubDirectories());
