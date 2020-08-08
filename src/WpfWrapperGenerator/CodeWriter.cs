@@ -79,5 +79,28 @@ namespace WpfWrapperGenerator
         }
         private static string StaticFieldCSharpName(FieldInfo field) => 
             $"{field.DeclaringType.CSharpName()}.{field.Name}";
+
+        public void WriteRegularProperty(PropertyInfo prop)
+        {
+            writer.AppendLine($"// {prop.DeclaringType} / {prop.Name}");
+            string typeName = prop.DeclaringType.CSharpName();
+            if (prop.PropertyType?.FullName == null) return;
+            string dpType = prop.PropertyType.CSharpName();
+            dpType += dpType.StartsWith("System.Nullable<") ? "" : "?";
+            if (prop.DeclaringType?.IsSealed ?? true)
+            {
+                writer.AppendLine($"public static {typeName} With{prop.Name}<TChild>(this {typeName} target, " +
+                                  dpType + " value) ");
+            }
+            else
+            {
+                writer.AppendLine($"public static TChild With{prop.Name}<TChild>(this TChild target, " +
+                                  dpType + " value, " +
+                                  $"Disambigator<{typeName}, TChild>? doNotUse = null) where TChild: {typeName}");
+            }
+
+            writer.AppendLine($"{{if (value != null) target.{prop.Name} = value ?? default; return target; }}");
+
+        }
     }
 }

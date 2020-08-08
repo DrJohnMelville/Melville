@@ -64,6 +64,18 @@ namespace Melville.Mvvm.Test.AdvancedLists.Caches
       Assert.NotEqual(a, cache.Get(1));
       Assert.Equal(b, cache.Get(2));
     }
+    [Fact]
+    public void Clear()
+    {
+      var cache = new SimpleCache<int, IntHolder>(10, i => new IntHolder { Int = i });
+      var a = cache.Get(1);
+      var b = cache.Get(2);
+      Assert.Equal(a, cache.Get(1));
+      Assert.Equal(b, cache.Get(2));
+      cache.Clear();
+      Assert.NotEqual(a, cache.Get(1));
+      Assert.NotEqual(b, cache.Get(2));
+    }
 
     [Fact]
     public void Rekey()

@@ -1,23 +1,29 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Data;
+using System.Windows.Forms.VisualStyles;
 
 namespace Melville.Mvvm.CsXaml.ValueSource
 {
     public interface IValueProxy
     {
-        void SetValue(DependencyObject obj, DependencyProperty prop);
+        public object Value { get; }
     }
 
     public static class ValueProxyOperations
     {
-        public static void SetValue(DependencyObject obj, DependencyProperty prop, object? value)
+        public static object InnermostValue(this IValueProxy prox)
         {
+            object ret = prox.Value;
+            while (ret is IValueProxy inner) ret = inner.Value;
+            return ret;
+        }
+        public static void SetValue(this IValueProxy prox, DependencyObject obj, DependencyProperty prop)
+        {
+            object value = prox.InnermostValue();
             switch (value)
             {
-                case IValueProxy ivp:
-                    ivp.SetValue(obj, prop);
-                    break;
-                case Binding b:
+                case BindingBase b:
                     SetBinding(obj, prop, b);
                     break;
                 default:
@@ -26,53 +32,58 @@ namespace Melville.Mvvm.CsXaml.ValueSource
             }
         }
 
-        private static void SetBinding(DependencyObject obj, DependencyProperty prop, Binding b)
+        private static void SetBinding(DependencyObject obj, DependencyProperty prop, BindingBase b)
         {
-            CheckBindingMode(prop, b);
+            ProhibitWriteBindingToReadOnlyProperties(prop, b);
             BindingOperations.SetBinding(obj, prop, b);
         }
 
-        private static void CheckBindingMode(DependencyProperty prop, Binding b)
+        private static void ProhibitWriteBindingToReadOnlyProperties(DependencyProperty prop, BindingBase bb)
         {
+            if (!(bb is Binding b)) return;
             if (prop.ReadOnly && (b.Mode == BindingMode.TwoWay || b.Mode == BindingMode.OneWayToSource))
             {
                 b.Mode = BindingMode.OneWay;
             }
         }
-        
+
+        public static T ForceValue<T>(this IValueProxy prox) => (T) prox.InnermostValue();
+        public static BindingBase ForceBindingBase(this IValueProxy prox)
+        {
+            var value = prox.InnermostValue();
+            return value is BindingBase bb ? bb : new Binding() {Source = value};
+        }
+
+        public static T WithTracing<T>(this T binding, PresentationTraceLevel level = PresentationTraceLevel.High) 
+            where T : IValueProxy
+        {
+            PresentationTraceSources.SetTraceLevel(binding, level);
+            return binding;
+        }
     }
 
     public struct ValueProxy<T> : IValueProxy
     {
-        internal readonly object? otherValue;
+        public object Value { get; }
 
-        public ValueProxy(object? otherValue) : this()
+        public ValueProxy(object otherValue) : this()
         {
-            this.otherValue = otherValue;
-        }
-
-        public void SetValue(DependencyObject obj, DependencyProperty prop)
-        {
-            ValueProxyOperations.SetValue(obj, prop, otherValue);
+            Value = otherValue;
         }
         
         public static implicit operator ValueProxy<T>(T source) => new ValueProxy<T>(source);
-        public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(otherValue);
+        public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(Value);
     }
 
     public struct ThicknessValueProxy : IValueProxy
     {
-        internal readonly object? otherValue;
+        public object Value { get; }
 
-        public ThicknessValueProxy(object? otherValue) : this()
+        public ThicknessValueProxy(object otherValue) : this()
         {
-            this.otherValue = otherValue;
+            Value = otherValue;
         }
 
-        public void SetValue(DependencyObject obj, DependencyProperty prop)
-        {
-            ValueProxyOperations.SetValue(obj, prop, otherValue);
-        }
         
         public static implicit operator ThicknessValueProxy(Thickness source) => new ThicknessValueProxy(source);
         public static implicit operator ThicknessValueProxy(ValueProxy<Thickness> source) => new ThicknessValueProxy(source);
@@ -81,6 +92,6 @@ namespace Melville.Mvvm.CsXaml.ValueSource
             new ThicknessValueProxy(new Thickness(input.lr, input.tb, input.lr, input.tb));
         public static implicit operator ThicknessValueProxy((double l, double t, double r, double b) input) => 
             new ThicknessValueProxy(new Thickness(input.l, input.t, input.r, input.b));
-        public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(otherValue);
+        public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(Value);
     }
 }

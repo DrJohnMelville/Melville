@@ -3212,6 +3212,2254 @@ public static System.Windows.Media.Effects.OuterGlowBitmapEffect WithGlowSize(th
 
 //ShaderRenderModeProperty
 public static System.Windows.Media.Effects.PixelShader WithShaderRenderMode(this System.Windows.Media.Effects.PixelShader target, ValueProxy<System.Windows.Media.Effects.ShaderRenderMode>? value) {value?.SetValue(target, System.Windows.Media.Effects.PixelShader.ShaderRenderModeProperty); return target;}
+// Microsoft.Win32.CommonDialog / Tag
+public static TChild WithTag<TChild>(this TChild target, System.Object? value, Disambigator<Microsoft.Win32.CommonDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.CommonDialog
+{if (value != null) target.Tag = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / AddExtension
+public static TChild WithAddExtension<TChild>(this TChild target, System.Boolean? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.AddExtension = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / CheckFileExists
+public static TChild WithCheckFileExists<TChild>(this TChild target, System.Boolean? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.CheckFileExists = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / CheckPathExists
+public static TChild WithCheckPathExists<TChild>(this TChild target, System.Boolean? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.CheckPathExists = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / DefaultExt
+public static TChild WithDefaultExt<TChild>(this TChild target, System.String? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.DefaultExt = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / DereferenceLinks
+public static TChild WithDereferenceLinks<TChild>(this TChild target, System.Boolean? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.DereferenceLinks = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / FileName
+public static TChild WithFileName<TChild>(this TChild target, System.String? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.FileName = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / Filter
+public static TChild WithFilter<TChild>(this TChild target, System.String? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.Filter = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / FilterIndex
+public static TChild WithFilterIndex<TChild>(this TChild target, System.Int32? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.FilterIndex = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / InitialDirectory
+public static TChild WithInitialDirectory<TChild>(this TChild target, System.String? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.InitialDirectory = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / RestoreDirectory
+public static TChild WithRestoreDirectory<TChild>(this TChild target, System.Boolean? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.RestoreDirectory = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / Title
+public static TChild WithTitle<TChild>(this TChild target, System.String? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.Title = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / ValidateNames
+public static TChild WithValidateNames<TChild>(this TChild target, System.Boolean? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.ValidateNames = value ?? default; return target; }
+// Microsoft.Win32.FileDialog / CustomPlaces
+public static TChild WithCustomPlaces<TChild>(this TChild target, System.Collections.Generic.IList<Microsoft.Win32.FileDialogCustomPlace>? value, Disambigator<Microsoft.Win32.FileDialog, TChild>? doNotUse = null) where TChild: Microsoft.Win32.FileDialog
+{if (value != null) target.CustomPlaces = value ?? default; return target; }
+// Microsoft.Win32.OpenFileDialog / Multiselect
+public static Microsoft.Win32.OpenFileDialog WithMultiselect<TChild>(this Microsoft.Win32.OpenFileDialog target, System.Boolean? value) 
+{if (value != null) target.Multiselect = value ?? default; return target; }
+// Microsoft.Win32.OpenFileDialog / ReadOnlyChecked
+public static Microsoft.Win32.OpenFileDialog WithReadOnlyChecked<TChild>(this Microsoft.Win32.OpenFileDialog target, System.Boolean? value) 
+{if (value != null) target.ReadOnlyChecked = value ?? default; return target; }
+// Microsoft.Win32.OpenFileDialog / ShowReadOnly
+public static Microsoft.Win32.OpenFileDialog WithShowReadOnly<TChild>(this Microsoft.Win32.OpenFileDialog target, System.Boolean? value) 
+{if (value != null) target.ShowReadOnly = value ?? default; return target; }
+// Microsoft.Win32.SaveFileDialog / CreatePrompt
+public static Microsoft.Win32.SaveFileDialog WithCreatePrompt<TChild>(this Microsoft.Win32.SaveFileDialog target, System.Boolean? value) 
+{if (value != null) target.CreatePrompt = value ?? default; return target; }
+// Microsoft.Win32.SaveFileDialog / OverwritePrompt
+public static Microsoft.Win32.SaveFileDialog WithOverwritePrompt<TChild>(this Microsoft.Win32.SaveFileDialog target, System.Boolean? value) 
+{if (value != null) target.OverwritePrompt = value ?? default; return target; }
+// System.Windows.Application / MainWindow
+public static TChild WithMainWindow<TChild>(this TChild target, System.Windows.Window? value, Disambigator<System.Windows.Application, TChild>? doNotUse = null) where TChild: System.Windows.Application
+{if (value != null) target.MainWindow = value ?? default; return target; }
+// System.Windows.Application / ShutdownMode
+public static TChild WithShutdownMode<TChild>(this TChild target, System.Windows.ShutdownMode? value, Disambigator<System.Windows.Application, TChild>? doNotUse = null) where TChild: System.Windows.Application
+{if (value != null) target.ShutdownMode = value ?? default; return target; }
+// System.Windows.Application / Resources
+public static TChild WithResources<TChild>(this TChild target, System.Windows.ResourceDictionary? value, Disambigator<System.Windows.Application, TChild>? doNotUse = null) where TChild: System.Windows.Application
+{if (value != null) target.Resources = value ?? default; return target; }
+// System.Windows.Application / StartupUri
+public static TChild WithStartupUri<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Application, TChild>? doNotUse = null) where TChild: System.Windows.Application
+{if (value != null) target.StartupUri = value ?? default; return target; }
+// System.Windows.AttachedPropertyBrowsableForChildrenAttribute / IncludeDescendants
+public static System.Windows.AttachedPropertyBrowsableForChildrenAttribute WithIncludeDescendants<TChild>(this System.Windows.AttachedPropertyBrowsableForChildrenAttribute target, System.Boolean? value) 
+{if (value != null) target.IncludeDescendants = value ?? default; return target; }
+// System.Windows.ComponentResourceKey / TypeInTargetAssembly
+public static TChild WithTypeInTargetAssembly<TChild>(this TChild target, System.Type? value, Disambigator<System.Windows.ComponentResourceKey, TChild>? doNotUse = null) where TChild: System.Windows.ComponentResourceKey
+{if (value != null) target.TypeInTargetAssembly = value ?? default; return target; }
+// System.Windows.ComponentResourceKey / ResourceId
+public static TChild WithResourceId<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.ComponentResourceKey, TChild>? doNotUse = null) where TChild: System.Windows.ComponentResourceKey
+{if (value != null) target.ResourceId = value ?? default; return target; }
+// System.Windows.Condition / Property
+public static System.Windows.Condition WithProperty<TChild>(this System.Windows.Condition target, System.Windows.DependencyProperty? value) 
+{if (value != null) target.Property = value ?? default; return target; }
+// System.Windows.Condition / Binding
+public static System.Windows.Condition WithBinding<TChild>(this System.Windows.Condition target, System.Windows.Data.BindingBase? value) 
+{if (value != null) target.Binding = value ?? default; return target; }
+// System.Windows.Condition / Value
+public static System.Windows.Condition WithValue<TChild>(this System.Windows.Condition target, System.Object? value) 
+{if (value != null) target.Value = value ?? default; return target; }
+// System.Windows.Condition / SourceName
+public static System.Windows.Condition WithSourceName<TChild>(this System.Windows.Condition target, System.String? value) 
+{if (value != null) target.SourceName = value ?? default; return target; }
+// System.Windows.CornerRadius / TopLeft
+public static System.Windows.CornerRadius WithTopLeft<TChild>(this System.Windows.CornerRadius target, System.Double? value) 
+{if (value != null) target.TopLeft = value ?? default; return target; }
+// System.Windows.CornerRadius / TopRight
+public static System.Windows.CornerRadius WithTopRight<TChild>(this System.Windows.CornerRadius target, System.Double? value) 
+{if (value != null) target.TopRight = value ?? default; return target; }
+// System.Windows.CornerRadius / BottomRight
+public static System.Windows.CornerRadius WithBottomRight<TChild>(this System.Windows.CornerRadius target, System.Double? value) 
+{if (value != null) target.BottomRight = value ?? default; return target; }
+// System.Windows.CornerRadius / BottomLeft
+public static System.Windows.CornerRadius WithBottomLeft<TChild>(this System.Windows.CornerRadius target, System.Double? value) 
+{if (value != null) target.BottomLeft = value ?? default; return target; }
+// System.Windows.DataTemplate / DataType
+public static TChild WithDataType<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.DataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.DataTemplate
+{if (value != null) target.DataType = value ?? default; return target; }
+// System.Windows.DataTrigger / Binding
+public static TChild WithBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.DataTrigger, TChild>? doNotUse = null) where TChild: System.Windows.DataTrigger
+{if (value != null) target.Binding = value ?? default; return target; }
+// System.Windows.DataTrigger / Value
+public static TChild WithValue<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.DataTrigger, TChild>? doNotUse = null) where TChild: System.Windows.DataTrigger
+{if (value != null) target.Value = value ?? default; return target; }
+// System.Windows.DynamicResourceExtension / ResourceKey
+public static TChild WithResourceKey<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.DynamicResourceExtension, TChild>? doNotUse = null) where TChild: System.Windows.DynamicResourceExtension
+{if (value != null) target.ResourceKey = value ?? default; return target; }
+// System.Windows.EventSetter / Event
+public static TChild WithEvent<TChild>(this TChild target, System.Windows.RoutedEvent? value, Disambigator<System.Windows.EventSetter, TChild>? doNotUse = null) where TChild: System.Windows.EventSetter
+{if (value != null) target.Event = value ?? default; return target; }
+// System.Windows.EventSetter / Handler
+public static TChild WithHandler<TChild>(this TChild target, System.Delegate? value, Disambigator<System.Windows.EventSetter, TChild>? doNotUse = null) where TChild: System.Windows.EventSetter
+{if (value != null) target.Handler = value ?? default; return target; }
+// System.Windows.EventSetter / HandledEventsToo
+public static TChild WithHandledEventsToo<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.EventSetter, TChild>? doNotUse = null) where TChild: System.Windows.EventSetter
+{if (value != null) target.HandledEventsToo = value ?? default; return target; }
+// System.Windows.EventTrigger / RoutedEvent
+public static TChild WithRoutedEvent<TChild>(this TChild target, System.Windows.RoutedEvent? value, Disambigator<System.Windows.EventTrigger, TChild>? doNotUse = null) where TChild: System.Windows.EventTrigger
+{if (value != null) target.RoutedEvent = value ?? default; return target; }
+// System.Windows.EventTrigger / SourceName
+public static TChild WithSourceName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.EventTrigger, TChild>? doNotUse = null) where TChild: System.Windows.EventTrigger
+{if (value != null) target.SourceName = value ?? default; return target; }
+// System.Windows.ExitEventArgs / ApplicationExitCode
+public static TChild WithApplicationExitCode<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.ExitEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.ExitEventArgs
+{if (value != null) target.ApplicationExitCode = value ?? default; return target; }
+// System.Windows.FrameworkContentElement / Resources
+public static TChild WithResources<TChild>(this TChild target, System.Windows.ResourceDictionary? value, Disambigator<System.Windows.FrameworkContentElement, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkContentElement
+{if (value != null) target.Resources = value ?? default; return target; }
+// System.Windows.FrameworkElement / Resources
+public static TChild WithResources<TChild>(this TChild target, System.Windows.ResourceDictionary? value, Disambigator<System.Windows.FrameworkElement, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElement
+{if (value != null) target.Resources = value ?? default; return target; }
+// System.Windows.FrameworkElementFactory / Type
+public static TChild WithType<TChild>(this TChild target, System.Type? value, Disambigator<System.Windows.FrameworkElementFactory, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElementFactory
+{if (value != null) target.Type = value ?? default; return target; }
+// System.Windows.FrameworkElementFactory / Text
+public static TChild WithText<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.FrameworkElementFactory, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElementFactory
+{if (value != null) target.Text = value ?? default; return target; }
+// System.Windows.FrameworkElementFactory / Name
+public static TChild WithName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.FrameworkElementFactory, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkElementFactory
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / AffectsMeasure
+public static TChild WithAffectsMeasure<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.AffectsMeasure = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / AffectsArrange
+public static TChild WithAffectsArrange<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.AffectsArrange = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / AffectsParentMeasure
+public static TChild WithAffectsParentMeasure<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.AffectsParentMeasure = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / AffectsParentArrange
+public static TChild WithAffectsParentArrange<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.AffectsParentArrange = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / AffectsRender
+public static TChild WithAffectsRender<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.AffectsRender = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / Inherits
+public static TChild WithInherits<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.Inherits = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / OverridesInheritanceBehavior
+public static TChild WithOverridesInheritanceBehavior<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.OverridesInheritanceBehavior = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / IsNotDataBindable
+public static TChild WithIsNotDataBindable<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.IsNotDataBindable = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / BindsTwoWayByDefault
+public static TChild WithBindsTwoWayByDefault<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.BindsTwoWayByDefault = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / DefaultUpdateSourceTrigger
+public static TChild WithDefaultUpdateSourceTrigger<TChild>(this TChild target, System.Windows.Data.UpdateSourceTrigger? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.DefaultUpdateSourceTrigger = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / Journal
+public static TChild WithJournal<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.Journal = value ?? default; return target; }
+// System.Windows.FrameworkPropertyMetadata / SubPropertiesDoNotAffectRender
+public static TChild WithSubPropertiesDoNotAffectRender<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.FrameworkPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkPropertyMetadata
+{if (value != null) target.SubPropertiesDoNotAffectRender = value ?? default; return target; }
+// System.Windows.FrameworkTemplate / VisualTree
+public static TChild WithVisualTree<TChild>(this TChild target, System.Windows.FrameworkElementFactory? value, Disambigator<System.Windows.FrameworkTemplate, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkTemplate
+{if (value != null) target.VisualTree = value ?? default; return target; }
+// System.Windows.FrameworkTemplate / Template
+public static TChild WithTemplate<TChild>(this TChild target, System.Windows.TemplateContent? value, Disambigator<System.Windows.FrameworkTemplate, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkTemplate
+{if (value != null) target.Template = value ?? default; return target; }
+// System.Windows.FrameworkTemplate / Resources
+public static TChild WithResources<TChild>(this TChild target, System.Windows.ResourceDictionary? value, Disambigator<System.Windows.FrameworkTemplate, TChild>? doNotUse = null) where TChild: System.Windows.FrameworkTemplate
+{if (value != null) target.Resources = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemsSource
+public static TChild WithItemsSource<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemsSource = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemTemplate
+public static TChild WithItemTemplate<TChild>(this TChild target, System.Windows.DataTemplate? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemTemplate = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemTemplateSelector
+public static TChild WithItemTemplateSelector<TChild>(this TChild target, System.Windows.Controls.DataTemplateSelector? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemTemplateSelector = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemContainerStyle
+public static TChild WithItemContainerStyle<TChild>(this TChild target, System.Windows.Style? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemContainerStyle = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemContainerStyleSelector
+public static TChild WithItemContainerStyleSelector<TChild>(this TChild target, System.Windows.Controls.StyleSelector? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemContainerStyleSelector = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemStringFormat
+public static TChild WithItemStringFormat<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemStringFormat = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / AlternationCount
+public static TChild WithAlternationCount<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.AlternationCount = value ?? default; return target; }
+// System.Windows.HierarchicalDataTemplate / ItemBindingGroup
+public static TChild WithItemBindingGroup<TChild>(this TChild target, System.Windows.Data.BindingGroup? value, Disambigator<System.Windows.HierarchicalDataTemplate, TChild>? doNotUse = null) where TChild: System.Windows.HierarchicalDataTemplate
+{if (value != null) target.ItemBindingGroup = value ?? default; return target; }
+// System.Windows.IFrameworkInputElement / Name
+public static TChild WithName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.IFrameworkInputElement, TChild>? doNotUse = null) where TChild: System.Windows.IFrameworkInputElement
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.PropertyPath / Path
+public static System.Windows.PropertyPath WithPath<TChild>(this System.Windows.PropertyPath target, System.String? value) 
+{if (value != null) target.Path = value ?? default; return target; }
+// System.Windows.ResourceDictionary / Source
+public static TChild WithSource<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.ResourceDictionary, TChild>? doNotUse = null) where TChild: System.Windows.ResourceDictionary
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.ResourceDictionary / InvalidatesImplicitDataTemplateResources
+public static TChild WithInvalidatesImplicitDataTemplateResources<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.ResourceDictionary, TChild>? doNotUse = null) where TChild: System.Windows.ResourceDictionary
+{if (value != null) target.InvalidatesImplicitDataTemplateResources = value ?? default; return target; }
+// System.Windows.ResourceDictionary / DeferrableContent
+public static TChild WithDeferrableContent<TChild>(this TChild target, System.Windows.DeferrableContent? value, Disambigator<System.Windows.ResourceDictionary, TChild>? doNotUse = null) where TChild: System.Windows.ResourceDictionary
+
+{if (value != null) target.DeferrableContent = value ?? default; return target; }
+// System.Windows.Setter / Property
+public static TChild WithProperty<TChild>(this TChild target, System.Windows.DependencyProperty? value, Disambigator<System.Windows.Setter, TChild>? doNotUse = null) where TChild: System.Windows.Setter
+{if (value != null) target.Property = value ?? default; return target; }
+// System.Windows.Setter / Value
+public static TChild WithValue<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Setter, TChild>? doNotUse = null) where TChild: System.Windows.Setter
+{if (value != null) target.Value = value ?? default; return target; }
+// System.Windows.Setter / TargetName
+public static TChild WithTargetName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Setter, TChild>? doNotUse = null) where TChild: System.Windows.Setter
+{if (value != null) target.TargetName = value ?? default; return target; }
+// System.Windows.StaticResourceExtension / ResourceKey
+public static TChild WithResourceKey<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.StaticResourceExtension, TChild>? doNotUse = null) where TChild: System.Windows.StaticResourceExtension
+{if (value != null) target.ResourceKey = value ?? default; return target; }
+// System.Windows.Style / TargetType
+public static TChild WithTargetType<TChild>(this TChild target, System.Type? value, Disambigator<System.Windows.Style, TChild>? doNotUse = null) where TChild: System.Windows.Style
+{if (value != null) target.TargetType = value ?? default; return target; }
+// System.Windows.Style / BasedOn
+public static TChild WithBasedOn<TChild>(this TChild target, System.Windows.Style? value, Disambigator<System.Windows.Style, TChild>? doNotUse = null) where TChild: System.Windows.Style
+{if (value != null) target.BasedOn = value ?? default; return target; }
+// System.Windows.Style / Resources
+public static TChild WithResources<TChild>(this TChild target, System.Windows.ResourceDictionary? value, Disambigator<System.Windows.Style, TChild>? doNotUse = null) where TChild: System.Windows.Style
+{if (value != null) target.Resources = value ?? default; return target; }
+// System.Windows.StyleTypedPropertyAttribute / Property
+public static System.Windows.StyleTypedPropertyAttribute WithProperty<TChild>(this System.Windows.StyleTypedPropertyAttribute target, System.String? value) 
+{if (value != null) target.Property = value ?? default; return target; }
+// System.Windows.StyleTypedPropertyAttribute / StyleTargetType
+public static System.Windows.StyleTypedPropertyAttribute WithStyleTargetType<TChild>(this System.Windows.StyleTypedPropertyAttribute target, System.Type? value) 
+{if (value != null) target.StyleTargetType = value ?? default; return target; }
+// System.Windows.TemplateBindingExtension / Property
+public static TChild WithProperty<TChild>(this TChild target, System.Windows.DependencyProperty? value, Disambigator<System.Windows.TemplateBindingExtension, TChild>? doNotUse = null) where TChild: System.Windows.TemplateBindingExtension
+{if (value != null) target.Property = value ?? default; return target; }
+// System.Windows.TemplateBindingExtension / Converter
+public static TChild WithConverter<TChild>(this TChild target, System.Windows.Data.IValueConverter? value, Disambigator<System.Windows.TemplateBindingExtension, TChild>? doNotUse = null) where TChild: System.Windows.TemplateBindingExtension
+{if (value != null) target.Converter = value ?? default; return target; }
+// System.Windows.TemplateBindingExtension / ConverterParameter
+public static TChild WithConverterParameter<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.TemplateBindingExtension, TChild>? doNotUse = null) where TChild: System.Windows.TemplateBindingExtension
+{if (value != null) target.ConverterParameter = value ?? default; return target; }
+// System.Windows.TemplateKey / DataType
+public static TChild WithDataType<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.TemplateKey, TChild>? doNotUse = null) where TChild: System.Windows.TemplateKey
+{if (value != null) target.DataType = value ?? default; return target; }
+// System.Windows.TemplatePartAttribute / Name
+public static System.Windows.TemplatePartAttribute WithName<TChild>(this System.Windows.TemplatePartAttribute target, System.String? value) 
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.TemplatePartAttribute / Type
+public static System.Windows.TemplatePartAttribute WithType<TChild>(this System.Windows.TemplatePartAttribute target, System.Type? value) 
+{if (value != null) target.Type = value ?? default; return target; }
+// System.Windows.TemplateVisualStateAttribute / Name
+public static System.Windows.TemplateVisualStateAttribute WithName<TChild>(this System.Windows.TemplateVisualStateAttribute target, System.String? value) 
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.TemplateVisualStateAttribute / GroupName
+public static System.Windows.TemplateVisualStateAttribute WithGroupName<TChild>(this System.Windows.TemplateVisualStateAttribute target, System.String? value) 
+{if (value != null) target.GroupName = value ?? default; return target; }
+// System.Windows.ThemeDictionaryExtension / AssemblyName
+public static TChild WithAssemblyName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.ThemeDictionaryExtension, TChild>? doNotUse = null) where TChild: System.Windows.ThemeDictionaryExtension
+{if (value != null) target.AssemblyName = value ?? default; return target; }
+// System.Windows.Thickness / Left
+public static System.Windows.Thickness WithLeft<TChild>(this System.Windows.Thickness target, System.Double? value) 
+{if (value != null) target.Left = value ?? default; return target; }
+// System.Windows.Thickness / Top
+public static System.Windows.Thickness WithTop<TChild>(this System.Windows.Thickness target, System.Double? value) 
+{if (value != null) target.Top = value ?? default; return target; }
+// System.Windows.Thickness / Right
+public static System.Windows.Thickness WithRight<TChild>(this System.Windows.Thickness target, System.Double? value) 
+{if (value != null) target.Right = value ?? default; return target; }
+// System.Windows.Thickness / Bottom
+public static System.Windows.Thickness WithBottom<TChild>(this System.Windows.Thickness target, System.Double? value) 
+{if (value != null) target.Bottom = value ?? default; return target; }
+// System.Windows.Trigger / Property
+public static TChild WithProperty<TChild>(this TChild target, System.Windows.DependencyProperty? value, Disambigator<System.Windows.Trigger, TChild>? doNotUse = null) where TChild: System.Windows.Trigger
+{if (value != null) target.Property = value ?? default; return target; }
+// System.Windows.Trigger / Value
+public static TChild WithValue<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Trigger, TChild>? doNotUse = null) where TChild: System.Windows.Trigger
+{if (value != null) target.Value = value ?? default; return target; }
+// System.Windows.Trigger / SourceName
+public static TChild WithSourceName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Trigger, TChild>? doNotUse = null) where TChild: System.Windows.Trigger
+{if (value != null) target.SourceName = value ?? default; return target; }
+// System.Windows.VisualState / Name
+public static TChild WithName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.VisualState, TChild>? doNotUse = null) where TChild: System.Windows.VisualState
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.VisualState / Storyboard
+public static TChild WithStoryboard<TChild>(this TChild target, System.Windows.Media.Animation.Storyboard? value, Disambigator<System.Windows.VisualState, TChild>? doNotUse = null) where TChild: System.Windows.VisualState
+{if (value != null) target.Storyboard = value ?? default; return target; }
+// System.Windows.VisualStateGroup / Name
+public static TChild WithName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.VisualStateGroup, TChild>? doNotUse = null) where TChild: System.Windows.VisualStateGroup
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.VisualTransition / From
+public static TChild WithFrom<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.VisualTransition, TChild>? doNotUse = null) where TChild: System.Windows.VisualTransition
+{if (value != null) target.From = value ?? default; return target; }
+// System.Windows.VisualTransition / To
+public static TChild WithTo<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.VisualTransition, TChild>? doNotUse = null) where TChild: System.Windows.VisualTransition
+{if (value != null) target.To = value ?? default; return target; }
+// System.Windows.VisualTransition / Storyboard
+public static TChild WithStoryboard<TChild>(this TChild target, System.Windows.Media.Animation.Storyboard? value, Disambigator<System.Windows.VisualTransition, TChild>? doNotUse = null) where TChild: System.Windows.VisualTransition
+{if (value != null) target.Storyboard = value ?? default; return target; }
+// System.Windows.VisualTransition / GeneratedDuration
+public static TChild WithGeneratedDuration<TChild>(this TChild target, System.Windows.Duration? value, Disambigator<System.Windows.VisualTransition, TChild>? doNotUse = null) where TChild: System.Windows.VisualTransition
+{if (value != null) target.GeneratedDuration = value ?? default; return target; }
+// System.Windows.VisualTransition / GeneratedEasingFunction
+public static TChild WithGeneratedEasingFunction<TChild>(this TChild target, System.Windows.Media.Animation.IEasingFunction? value, Disambigator<System.Windows.VisualTransition, TChild>? doNotUse = null) where TChild: System.Windows.VisualTransition
+{if (value != null) target.GeneratedEasingFunction = value ?? default; return target; }
+// System.Windows.Window / WindowStartupLocation
+public static TChild WithWindowStartupLocation<TChild>(this TChild target, System.Windows.WindowStartupLocation? value, Disambigator<System.Windows.Window, TChild>? doNotUse = null) where TChild: System.Windows.Window
+{if (value != null) target.WindowStartupLocation = value ?? default; return target; }
+// System.Windows.Window / Owner
+public static TChild WithOwner<TChild>(this TChild target, System.Windows.Window? value, Disambigator<System.Windows.Window, TChild>? doNotUse = null) where TChild: System.Windows.Window
+{if (value != null) target.Owner = value ?? default; return target; }
+// System.Windows.Window / DialogResult
+public static TChild WithDialogResult<TChild>(this TChild target, System.Nullable<System.Boolean> value, Disambigator<System.Windows.Window, TChild>? doNotUse = null) where TChild: System.Windows.Window
+{if (value != null) target.DialogResult = value ?? default; return target; }
+// System.Windows.Shell.JumpItem / CustomCategory
+public static TChild WithCustomCategory<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpItem, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpItem
+{if (value != null) target.CustomCategory = value ?? default; return target; }
+// System.Windows.Shell.JumpList / ShowFrequentCategory
+public static System.Windows.Shell.JumpList WithShowFrequentCategory<TChild>(this System.Windows.Shell.JumpList target, System.Boolean? value) 
+{if (value != null) target.ShowFrequentCategory = value ?? default; return target; }
+// System.Windows.Shell.JumpList / ShowRecentCategory
+public static System.Windows.Shell.JumpList WithShowRecentCategory<TChild>(this System.Windows.Shell.JumpList target, System.Boolean? value) 
+{if (value != null) target.ShowRecentCategory = value ?? default; return target; }
+// System.Windows.Shell.JumpPath / Path
+public static TChild WithPath<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpPath, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpPath
+{if (value != null) target.Path = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / Title
+public static TChild WithTitle<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.Title = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / Description
+public static TChild WithDescription<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.Description = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / ApplicationPath
+public static TChild WithApplicationPath<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.ApplicationPath = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / Arguments
+public static TChild WithArguments<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.Arguments = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / WorkingDirectory
+public static TChild WithWorkingDirectory<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.WorkingDirectory = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / IconResourcePath
+public static TChild WithIconResourcePath<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.IconResourcePath = value ?? default; return target; }
+// System.Windows.Shell.JumpTask / IconResourceIndex
+public static TChild WithIconResourceIndex<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Shell.JumpTask, TChild>? doNotUse = null) where TChild: System.Windows.Shell.JumpTask
+{if (value != null) target.IconResourceIndex = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / DeploymentPath
+public static TChild WithDeploymentPath<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.DeploymentPath = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / ErrorTitle
+public static TChild WithErrorTitle<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.ErrorTitle = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / ErrorText
+public static TChild WithErrorText<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.ErrorText = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / ErrorFlag
+public static TChild WithErrorFlag<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.ErrorFlag = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / LogFilePath
+public static TChild WithLogFilePath<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.LogFilePath = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / SupportUri
+public static TChild WithSupportUri<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.SupportUri = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / RefreshCallback
+public static TChild WithRefreshCallback<TChild>(this TChild target, System.Windows.Threading.DispatcherOperationCallback? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.RefreshCallback = value ?? default; return target; }
+// System.Windows.Interop.IErrorPage / GetWinFxCallback
+public static TChild WithGetWinFxCallback<TChild>(this TChild target, System.Windows.Threading.DispatcherOperationCallback? value, Disambigator<System.Windows.Interop.IErrorPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IErrorPage
+{if (value != null) target.GetWinFxCallback = value ?? default; return target; }
+// System.Windows.Interop.IProgressPage / DeploymentPath
+public static TChild WithDeploymentPath<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Interop.IProgressPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IProgressPage
+{if (value != null) target.DeploymentPath = value ?? default; return target; }
+// System.Windows.Interop.IProgressPage / StopCallback
+public static TChild WithStopCallback<TChild>(this TChild target, System.Windows.Threading.DispatcherOperationCallback? value, Disambigator<System.Windows.Interop.IProgressPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IProgressPage
+{if (value != null) target.StopCallback = value ?? default; return target; }
+// System.Windows.Interop.IProgressPage / RefreshCallback
+public static TChild WithRefreshCallback<TChild>(this TChild target, System.Windows.Threading.DispatcherOperationCallback? value, Disambigator<System.Windows.Interop.IProgressPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IProgressPage
+{if (value != null) target.RefreshCallback = value ?? default; return target; }
+// System.Windows.Interop.IProgressPage / ApplicationName
+public static TChild WithApplicationName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Interop.IProgressPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IProgressPage
+{if (value != null) target.ApplicationName = value ?? default; return target; }
+// System.Windows.Interop.IProgressPage / PublisherName
+public static TChild WithPublisherName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Interop.IProgressPage, TChild>? doNotUse = null) where TChild: System.Windows.Interop.IProgressPage
+{if (value != null) target.PublisherName = value ?? default; return target; }
+// System.Windows.Interop.WindowInteropHelper / Owner
+public static System.Windows.Interop.WindowInteropHelper WithOwner<TChild>(this System.Windows.Interop.WindowInteropHelper target, System.IntPtr? value) 
+{if (value != null) target.Owner = value ?? default; return target; }
+// System.Windows.Media.Animation.BeginStoryboard / HandoffBehavior
+public static System.Windows.Media.Animation.BeginStoryboard WithHandoffBehavior<TChild>(this System.Windows.Media.Animation.BeginStoryboard target, System.Windows.Media.Animation.HandoffBehavior? value) 
+{if (value != null) target.HandoffBehavior = value ?? default; return target; }
+// System.Windows.Media.Animation.BeginStoryboard / Name
+public static System.Windows.Media.Animation.BeginStoryboard WithName<TChild>(this System.Windows.Media.Animation.BeginStoryboard target, System.String? value) 
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.Media.Animation.ControllableStoryboardAction / BeginStoryboardName
+public static TChild WithBeginStoryboardName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Animation.ControllableStoryboardAction, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ControllableStoryboardAction
+{if (value != null) target.BeginStoryboardName = value ?? default; return target; }
+// System.Windows.Media.Animation.ThicknessAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ThicknessAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.ThicknessAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ThicknessAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.ThicknessKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ThicknessAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.SeekStoryboard / Offset
+public static System.Windows.Media.Animation.SeekStoryboard WithOffset<TChild>(this System.Windows.Media.Animation.SeekStoryboard target, System.TimeSpan? value) 
+{if (value != null) target.Offset = value ?? default; return target; }
+// System.Windows.Media.Animation.SeekStoryboard / Origin
+public static System.Windows.Media.Animation.SeekStoryboard WithOrigin<TChild>(this System.Windows.Media.Animation.SeekStoryboard target, System.Windows.Media.Animation.TimeSeekOrigin? value) 
+{if (value != null) target.Origin = value ?? default; return target; }
+// System.Windows.Media.Animation.SetStoryboardSpeedRatio / SpeedRatio
+public static System.Windows.Media.Animation.SetStoryboardSpeedRatio WithSpeedRatio<TChild>(this System.Windows.Media.Animation.SetStoryboardSpeedRatio target, System.Double? value) 
+{if (value != null) target.SpeedRatio = value ?? default; return target; }
+// System.Windows.Data.Binding / ValidatesOnExceptions
+public static TChild WithValidatesOnExceptions<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.ValidatesOnExceptions = value ?? default; return target; }
+// System.Windows.Data.Binding / ValidatesOnDataErrors
+public static TChild WithValidatesOnDataErrors<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.ValidatesOnDataErrors = value ?? default; return target; }
+// System.Windows.Data.Binding / ValidatesOnNotifyDataErrors
+public static TChild WithValidatesOnNotifyDataErrors<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.ValidatesOnNotifyDataErrors = value ?? default; return target; }
+// System.Windows.Data.Binding / Path
+public static TChild WithPath<TChild>(this TChild target, System.Windows.PropertyPath? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.Path = value ?? default; return target; }
+// System.Windows.Data.Binding / XPath
+public static TChild WithXPath<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.XPath = value ?? default; return target; }
+// System.Windows.Data.Binding / Mode
+public static TChild WithMode<TChild>(this TChild target, System.Windows.Data.BindingMode? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.Mode = value ?? default; return target; }
+// System.Windows.Data.Binding / UpdateSourceTrigger
+public static TChild WithUpdateSourceTrigger<TChild>(this TChild target, System.Windows.Data.UpdateSourceTrigger? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.UpdateSourceTrigger = value ?? default; return target; }
+// System.Windows.Data.Binding / NotifyOnSourceUpdated
+public static TChild WithNotifyOnSourceUpdated<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.NotifyOnSourceUpdated = value ?? default; return target; }
+// System.Windows.Data.Binding / NotifyOnTargetUpdated
+public static TChild WithNotifyOnTargetUpdated<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.NotifyOnTargetUpdated = value ?? default; return target; }
+// System.Windows.Data.Binding / NotifyOnValidationError
+public static TChild WithNotifyOnValidationError<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.NotifyOnValidationError = value ?? default; return target; }
+// System.Windows.Data.Binding / Converter
+public static TChild WithConverter<TChild>(this TChild target, System.Windows.Data.IValueConverter? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.Converter = value ?? default; return target; }
+// System.Windows.Data.Binding / ConverterParameter
+public static TChild WithConverterParameter<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.ConverterParameter = value ?? default; return target; }
+// System.Windows.Data.Binding / ConverterCulture
+public static TChild WithConverterCulture<TChild>(this TChild target, System.Globalization.CultureInfo? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.ConverterCulture = value ?? default; return target; }
+// System.Windows.Data.Binding / Source
+public static TChild WithSource<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.Data.Binding / RelativeSource
+public static TChild WithRelativeSource<TChild>(this TChild target, System.Windows.Data.RelativeSource? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.RelativeSource = value ?? default; return target; }
+// System.Windows.Data.Binding / ElementName
+public static TChild WithElementName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.ElementName = value ?? default; return target; }
+// System.Windows.Data.Binding / IsAsync
+public static TChild WithIsAsync<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.IsAsync = value ?? default; return target; }
+// System.Windows.Data.Binding / AsyncState
+public static TChild WithAsyncState<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.AsyncState = value ?? default; return target; }
+// System.Windows.Data.Binding / BindsDirectlyToSource
+public static TChild WithBindsDirectlyToSource<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.BindsDirectlyToSource = value ?? default; return target; }
+// System.Windows.Data.Binding / UpdateSourceExceptionFilter
+public static TChild WithUpdateSourceExceptionFilter<TChild>(this TChild target, System.Windows.Data.UpdateSourceExceptionFilterCallback? value, Disambigator<System.Windows.Data.Binding, TChild>? doNotUse = null) where TChild: System.Windows.Data.Binding
+{if (value != null) target.UpdateSourceExceptionFilter = value ?? default; return target; }
+// System.Windows.Data.BindingBase / FallbackValue
+public static TChild WithFallbackValue<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.BindingBase, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingBase
+{if (value != null) target.FallbackValue = value ?? default; return target; }
+// System.Windows.Data.BindingBase / StringFormat
+public static TChild WithStringFormat<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.BindingBase, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingBase
+{if (value != null) target.StringFormat = value ?? default; return target; }
+// System.Windows.Data.BindingBase / TargetNullValue
+public static TChild WithTargetNullValue<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.BindingBase, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingBase
+{if (value != null) target.TargetNullValue = value ?? default; return target; }
+// System.Windows.Data.BindingBase / BindingGroupName
+public static TChild WithBindingGroupName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.BindingBase, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingBase
+{if (value != null) target.BindingGroupName = value ?? default; return target; }
+// System.Windows.Data.BindingBase / Delay
+public static TChild WithDelay<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Data.BindingBase, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingBase
+{if (value != null) target.Delay = value ?? default; return target; }
+// System.Windows.Data.BindingGroup / Name
+public static TChild WithName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.BindingGroup, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingGroup
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.Data.BindingGroup / NotifyOnValidationError
+public static TChild WithNotifyOnValidationError<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.BindingGroup, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingGroup
+{if (value != null) target.NotifyOnValidationError = value ?? default; return target; }
+// System.Windows.Data.BindingGroup / ValidatesOnNotifyDataError
+public static TChild WithValidatesOnNotifyDataError<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.BindingGroup, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingGroup
+{if (value != null) target.ValidatesOnNotifyDataError = value ?? default; return target; }
+// System.Windows.Data.BindingGroup / SharesProposedValues
+public static TChild WithSharesProposedValues<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.BindingGroup, TChild>? doNotUse = null) where TChild: System.Windows.Data.BindingGroup
+{if (value != null) target.SharesProposedValues = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / CustomFilter
+public static System.Windows.Data.BindingListCollectionView WithCustomFilter<TChild>(this System.Windows.Data.BindingListCollectionView target, System.String? value) 
+{if (value != null) target.CustomFilter = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / GroupBySelector
+public static System.Windows.Data.BindingListCollectionView WithGroupBySelector<TChild>(this System.Windows.Data.BindingListCollectionView target, System.Windows.Data.GroupDescriptionSelectorCallback? value) 
+{if (value != null) target.GroupBySelector = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / IsDataInGroupOrder
+public static System.Windows.Data.BindingListCollectionView WithIsDataInGroupOrder<TChild>(this System.Windows.Data.BindingListCollectionView target, System.Boolean? value) 
+{if (value != null) target.IsDataInGroupOrder = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / NewItemPlaceholderPosition
+public static System.Windows.Data.BindingListCollectionView WithNewItemPlaceholderPosition<TChild>(this System.Windows.Data.BindingListCollectionView target, System.ComponentModel.NewItemPlaceholderPosition? value) 
+{if (value != null) target.NewItemPlaceholderPosition = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / IsLiveSorting
+public static System.Windows.Data.BindingListCollectionView WithIsLiveSorting<TChild>(this System.Windows.Data.BindingListCollectionView target, System.Nullable<System.Boolean> value) 
+{if (value != null) target.IsLiveSorting = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / IsLiveFiltering
+public static System.Windows.Data.BindingListCollectionView WithIsLiveFiltering<TChild>(this System.Windows.Data.BindingListCollectionView target, System.Nullable<System.Boolean> value) 
+{if (value != null) target.IsLiveFiltering = value ?? default; return target; }
+// System.Windows.Data.BindingListCollectionView / IsLiveGrouping
+public static System.Windows.Data.BindingListCollectionView WithIsLiveGrouping<TChild>(this System.Windows.Data.BindingListCollectionView target, System.Nullable<System.Boolean> value) 
+{if (value != null) target.IsLiveGrouping = value ?? default; return target; }
+// System.Windows.Data.CollectionView / Culture
+public static TChild WithCulture<TChild>(this TChild target, System.Globalization.CultureInfo? value, Disambigator<System.Windows.Data.CollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.CollectionView
+{if (value != null) target.Culture = value ?? default; return target; }
+// System.Windows.Data.CollectionView / Filter
+public static TChild WithFilter<TChild>(this TChild target, System.Predicate<System.Object>? value, Disambigator<System.Windows.Data.CollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.CollectionView
+{if (value != null) target.Filter = value ?? default; return target; }
+// System.Windows.Data.CollectionViewSource / Culture
+public static TChild WithCulture<TChild>(this TChild target, System.Globalization.CultureInfo? value, Disambigator<System.Windows.Data.CollectionViewSource, TChild>? doNotUse = null) where TChild: System.Windows.Data.CollectionViewSource
+{if (value != null) target.Culture = value ?? default; return target; }
+// System.Windows.Data.FilterEventArgs / Accepted
+public static TChild WithAccepted<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.FilterEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Data.FilterEventArgs
+{if (value != null) target.Accepted = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / Filter
+public static TChild WithFilter<TChild>(this TChild target, System.Predicate<System.Object>? value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.Filter = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / CustomSort
+public static TChild WithCustomSort<TChild>(this TChild target, System.Collections.IComparer? value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.CustomSort = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / GroupBySelector
+public static TChild WithGroupBySelector<TChild>(this TChild target, System.Windows.Data.GroupDescriptionSelectorCallback? value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.GroupBySelector = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / IsDataInGroupOrder
+public static TChild WithIsDataInGroupOrder<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.IsDataInGroupOrder = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / NewItemPlaceholderPosition
+public static TChild WithNewItemPlaceholderPosition<TChild>(this TChild target, System.ComponentModel.NewItemPlaceholderPosition? value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.NewItemPlaceholderPosition = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / IsLiveSorting
+public static TChild WithIsLiveSorting<TChild>(this TChild target, System.Nullable<System.Boolean> value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.IsLiveSorting = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / IsLiveFiltering
+public static TChild WithIsLiveFiltering<TChild>(this TChild target, System.Nullable<System.Boolean> value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.IsLiveFiltering = value ?? default; return target; }
+// System.Windows.Data.ListCollectionView / IsLiveGrouping
+public static TChild WithIsLiveGrouping<TChild>(this TChild target, System.Nullable<System.Boolean> value, Disambigator<System.Windows.Data.ListCollectionView, TChild>? doNotUse = null) where TChild: System.Windows.Data.ListCollectionView
+{if (value != null) target.IsLiveGrouping = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / Mode
+public static TChild WithMode<TChild>(this TChild target, System.Windows.Data.BindingMode? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.Mode = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / UpdateSourceTrigger
+public static TChild WithUpdateSourceTrigger<TChild>(this TChild target, System.Windows.Data.UpdateSourceTrigger? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.UpdateSourceTrigger = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / NotifyOnSourceUpdated
+public static TChild WithNotifyOnSourceUpdated<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.NotifyOnSourceUpdated = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / NotifyOnTargetUpdated
+public static TChild WithNotifyOnTargetUpdated<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.NotifyOnTargetUpdated = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / NotifyOnValidationError
+public static TChild WithNotifyOnValidationError<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.NotifyOnValidationError = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / Converter
+public static TChild WithConverter<TChild>(this TChild target, System.Windows.Data.IMultiValueConverter? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.Converter = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / ConverterParameter
+public static TChild WithConverterParameter<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.ConverterParameter = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / ConverterCulture
+public static TChild WithConverterCulture<TChild>(this TChild target, System.Globalization.CultureInfo? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.ConverterCulture = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / UpdateSourceExceptionFilter
+public static TChild WithUpdateSourceExceptionFilter<TChild>(this TChild target, System.Windows.Data.UpdateSourceExceptionFilterCallback? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.UpdateSourceExceptionFilter = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / ValidatesOnExceptions
+public static TChild WithValidatesOnExceptions<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.ValidatesOnExceptions = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / ValidatesOnDataErrors
+public static TChild WithValidatesOnDataErrors<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.ValidatesOnDataErrors = value ?? default; return target; }
+// System.Windows.Data.MultiBinding / ValidatesOnNotifyDataErrors
+public static TChild WithValidatesOnNotifyDataErrors<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.MultiBinding, TChild>? doNotUse = null) where TChild: System.Windows.Data.MultiBinding
+{if (value != null) target.ValidatesOnNotifyDataErrors = value ?? default; return target; }
+// System.Windows.Data.ObjectDataProvider / ObjectType
+public static TChild WithObjectType<TChild>(this TChild target, System.Type? value, Disambigator<System.Windows.Data.ObjectDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.ObjectDataProvider
+{if (value != null) target.ObjectType = value ?? default; return target; }
+// System.Windows.Data.ObjectDataProvider / ObjectInstance
+public static TChild WithObjectInstance<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Data.ObjectDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.ObjectDataProvider
+{if (value != null) target.ObjectInstance = value ?? default; return target; }
+// System.Windows.Data.ObjectDataProvider / MethodName
+public static TChild WithMethodName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.ObjectDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.ObjectDataProvider
+{if (value != null) target.MethodName = value ?? default; return target; }
+// System.Windows.Data.ObjectDataProvider / IsAsynchronous
+public static TChild WithIsAsynchronous<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.ObjectDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.ObjectDataProvider
+{if (value != null) target.IsAsynchronous = value ?? default; return target; }
+// System.Windows.Data.PropertyGroupDescription / PropertyName
+public static TChild WithPropertyName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.PropertyGroupDescription, TChild>? doNotUse = null) where TChild: System.Windows.Data.PropertyGroupDescription
+{if (value != null) target.PropertyName = value ?? default; return target; }
+// System.Windows.Data.PropertyGroupDescription / Converter
+public static TChild WithConverter<TChild>(this TChild target, System.Windows.Data.IValueConverter? value, Disambigator<System.Windows.Data.PropertyGroupDescription, TChild>? doNotUse = null) where TChild: System.Windows.Data.PropertyGroupDescription
+{if (value != null) target.Converter = value ?? default; return target; }
+// System.Windows.Data.PropertyGroupDescription / StringComparison
+public static TChild WithStringComparison<TChild>(this TChild target, System.StringComparison? value, Disambigator<System.Windows.Data.PropertyGroupDescription, TChild>? doNotUse = null) where TChild: System.Windows.Data.PropertyGroupDescription
+{if (value != null) target.StringComparison = value ?? default; return target; }
+// System.Windows.Data.RelativeSource / Mode
+public static TChild WithMode<TChild>(this TChild target, System.Windows.Data.RelativeSourceMode? value, Disambigator<System.Windows.Data.RelativeSource, TChild>? doNotUse = null) where TChild: System.Windows.Data.RelativeSource
+{if (value != null) target.Mode = value ?? default; return target; }
+// System.Windows.Data.RelativeSource / AncestorType
+public static TChild WithAncestorType<TChild>(this TChild target, System.Type? value, Disambigator<System.Windows.Data.RelativeSource, TChild>? doNotUse = null) where TChild: System.Windows.Data.RelativeSource
+{if (value != null) target.AncestorType = value ?? default; return target; }
+// System.Windows.Data.RelativeSource / AncestorLevel
+public static TChild WithAncestorLevel<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Data.RelativeSource, TChild>? doNotUse = null) where TChild: System.Windows.Data.RelativeSource
+{if (value != null) target.AncestorLevel = value ?? default; return target; }
+// System.Windows.Data.ValueConversionAttribute / ParameterType
+public static System.Windows.Data.ValueConversionAttribute WithParameterType<TChild>(this System.Windows.Data.ValueConversionAttribute target, System.Type? value) 
+{if (value != null) target.ParameterType = value ?? default; return target; }
+// System.Windows.Data.XmlDataProvider / Source
+public static TChild WithSource<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Data.XmlDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlDataProvider
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.Data.XmlDataProvider / Document
+public static TChild WithDocument<TChild>(this TChild target, System.Xml.XmlDocument? value, Disambigator<System.Windows.Data.XmlDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlDataProvider
+{if (value != null) target.Document = value ?? default; return target; }
+// System.Windows.Data.XmlDataProvider / XPath
+public static TChild WithXPath<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.XmlDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlDataProvider
+{if (value != null) target.XPath = value ?? default; return target; }
+// System.Windows.Data.XmlDataProvider / XmlNamespaceManager
+public static TChild WithXmlNamespaceManager<TChild>(this TChild target, System.Xml.XmlNamespaceManager? value, Disambigator<System.Windows.Data.XmlDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlDataProvider
+{if (value != null) target.XmlNamespaceManager = value ?? default; return target; }
+// System.Windows.Data.XmlDataProvider / IsAsynchronous
+public static TChild WithIsAsynchronous<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Data.XmlDataProvider, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlDataProvider
+{if (value != null) target.IsAsynchronous = value ?? default; return target; }
+// System.Windows.Data.XmlNamespaceMapping / Prefix
+public static TChild WithPrefix<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Data.XmlNamespaceMapping, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlNamespaceMapping
+{if (value != null) target.Prefix = value ?? default; return target; }
+// System.Windows.Data.XmlNamespaceMapping / Uri
+public static TChild WithUri<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Data.XmlNamespaceMapping, TChild>? doNotUse = null) where TChild: System.Windows.Data.XmlNamespaceMapping
+{if (value != null) target.Uri = value ?? default; return target; }
+// System.Windows.Markup.ParserContext / XmlLang
+public static TChild WithXmlLang<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.ParserContext, TChild>? doNotUse = null) where TChild: System.Windows.Markup.ParserContext
+{if (value != null) target.XmlLang = value ?? default; return target; }
+// System.Windows.Markup.ParserContext / XmlSpace
+public static TChild WithXmlSpace<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.ParserContext, TChild>? doNotUse = null) where TChild: System.Windows.Markup.ParserContext
+{if (value != null) target.XmlSpace = value ?? default; return target; }
+// System.Windows.Markup.ParserContext / XamlTypeMapper
+public static TChild WithXamlTypeMapper<TChild>(this TChild target, System.Windows.Markup.XamlTypeMapper? value, Disambigator<System.Windows.Markup.ParserContext, TChild>? doNotUse = null) where TChild: System.Windows.Markup.ParserContext
+{if (value != null) target.XamlTypeMapper = value ?? default; return target; }
+// System.Windows.Markup.ParserContext / BaseUri
+public static TChild WithBaseUri<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Markup.ParserContext, TChild>? doNotUse = null) where TChild: System.Windows.Markup.ParserContext
+{if (value != null) target.BaseUri = value ?? default; return target; }
+// System.Windows.Markup.XamlDesignerSerializationManager / XamlWriterMode
+public static TChild WithXamlWriterMode<TChild>(this TChild target, System.Windows.Markup.XamlWriterMode? value, Disambigator<System.Windows.Markup.XamlDesignerSerializationManager, TChild>? doNotUse = null) where TChild: System.Windows.Markup.XamlDesignerSerializationManager
+{if (value != null) target.XamlWriterMode = value ?? default; return target; }
+// System.Windows.Markup.NamespaceMapEntry / XmlNamespace
+public static TChild WithXmlNamespace<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.NamespaceMapEntry, TChild>? doNotUse = null) where TChild: System.Windows.Markup.NamespaceMapEntry
+{if (value != null) target.XmlNamespace = value ?? default; return target; }
+// System.Windows.Markup.NamespaceMapEntry / AssemblyName
+public static TChild WithAssemblyName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.NamespaceMapEntry, TChild>? doNotUse = null) where TChild: System.Windows.Markup.NamespaceMapEntry
+{if (value != null) target.AssemblyName = value ?? default; return target; }
+// System.Windows.Markup.NamespaceMapEntry / ClrNamespace
+public static TChild WithClrNamespace<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.NamespaceMapEntry, TChild>? doNotUse = null) where TChild: System.Windows.Markup.NamespaceMapEntry
+{if (value != null) target.ClrNamespace = value ?? default; return target; }
+// System.Windows.Markup.Localizer.ElementLocalizability / FormattingTag
+public static TChild WithFormattingTag<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.Localizer.ElementLocalizability, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.ElementLocalizability
+{if (value != null) target.FormattingTag = value ?? default; return target; }
+// System.Windows.Markup.Localizer.ElementLocalizability / Attribute
+public static TChild WithAttribute<TChild>(this TChild target, System.Windows.LocalizabilityAttribute? value, Disambigator<System.Windows.Markup.Localizer.ElementLocalizability, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.ElementLocalizability
+{if (value != null) target.Attribute = value ?? default; return target; }
+// System.Windows.Markup.Localizer.BamlLocalizableResource / Content
+public static TChild WithContent<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.Localizer.BamlLocalizableResource, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.BamlLocalizableResource
+{if (value != null) target.Content = value ?? default; return target; }
+// System.Windows.Markup.Localizer.BamlLocalizableResource / Comments
+public static TChild WithComments<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Markup.Localizer.BamlLocalizableResource, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.BamlLocalizableResource
+{if (value != null) target.Comments = value ?? default; return target; }
+// System.Windows.Markup.Localizer.BamlLocalizableResource / Modifiable
+public static TChild WithModifiable<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Markup.Localizer.BamlLocalizableResource, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.BamlLocalizableResource
+{if (value != null) target.Modifiable = value ?? default; return target; }
+// System.Windows.Markup.Localizer.BamlLocalizableResource / Readable
+public static TChild WithReadable<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Markup.Localizer.BamlLocalizableResource, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.BamlLocalizableResource
+{if (value != null) target.Readable = value ?? default; return target; }
+// System.Windows.Markup.Localizer.BamlLocalizableResource / Category
+public static TChild WithCategory<TChild>(this TChild target, System.Windows.LocalizationCategory? value, Disambigator<System.Windows.Markup.Localizer.BamlLocalizableResource, TChild>? doNotUse = null) where TChild: System.Windows.Markup.Localizer.BamlLocalizableResource
+{if (value != null) target.Category = value ?? default; return target; }
+// System.Windows.Navigation.FragmentNavigationEventArgs / Handled
+public static TChild WithHandled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Navigation.FragmentNavigationEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Navigation.FragmentNavigationEventArgs
+{if (value != null) target.Handled = value ?? default; return target; }
+// System.Windows.Navigation.JournalEntry / Source
+public static TChild WithSource<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Navigation.JournalEntry, TChild>? doNotUse = null) where TChild: System.Windows.Navigation.JournalEntry
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.Navigation.NavigatingCancelEventArgs / ContentStateToSave
+public static TChild WithContentStateToSave<TChild>(this TChild target, System.Windows.Navigation.CustomContentState? value, Disambigator<System.Windows.Navigation.NavigatingCancelEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Navigation.NavigatingCancelEventArgs
+{if (value != null) target.ContentStateToSave = value ?? default; return target; }
+// System.Windows.Navigation.NavigationFailedEventArgs / Handled
+public static TChild WithHandled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Navigation.NavigationFailedEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Navigation.NavigationFailedEventArgs
+{if (value != null) target.Handled = value ?? default; return target; }
+// System.Windows.Navigation.NavigationService / Source
+public static System.Windows.Navigation.NavigationService WithSource<TChild>(this System.Windows.Navigation.NavigationService target, System.Uri? value) 
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.Navigation.NavigationService / Content
+public static System.Windows.Navigation.NavigationService WithContent<TChild>(this System.Windows.Navigation.NavigationService target, System.Object? value) 
+{if (value != null) target.Content = value ?? default; return target; }
+// System.Windows.Navigation.PageFunctionBase / RemoveFromJournal
+public static TChild WithRemoveFromJournal<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Navigation.PageFunctionBase, TChild>? doNotUse = null) where TChild: System.Windows.Navigation.PageFunctionBase
+{if (value != null) target.RemoveFromJournal = value ?? default; return target; }
+// System.Windows.Navigation.ReturnEventArgs`1[T] / Result
+// System.Windows.Documents.Adorner / IsClipEnabled
+public static TChild WithIsClipEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Documents.Adorner, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Adorner
+{if (value != null) target.IsClipEnabled = value ?? default; return target; }
+// System.Windows.Documents.AdornerDecorator / Child
+public static TChild WithChild<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Documents.AdornerDecorator, TChild>? doNotUse = null) where TChild: System.Windows.Documents.AdornerDecorator
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Documents.BlockUIContainer / Child
+public static TChild WithChild<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Documents.BlockUIContainer, TChild>? doNotUse = null) where TChild: System.Windows.Documents.BlockUIContainer
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Documents.InlineUIContainer / Child
+public static TChild WithChild<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Documents.InlineUIContainer, TChild>? doNotUse = null) where TChild: System.Windows.Documents.InlineUIContainer
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Documents.LinkTarget / Name
+public static System.Windows.Documents.LinkTarget WithName<TChild>(this System.Windows.Documents.LinkTarget target, System.String? value) 
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.Documents.PageContent / Child
+public static System.Windows.Documents.PageContent WithChild<TChild>(this System.Windows.Documents.PageContent target, System.Windows.Documents.FixedPage? value) 
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Documents.Section / HasTrailingParagraphBreakOnPaste
+public static TChild WithHasTrailingParagraphBreakOnPaste<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Documents.Section, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Section
+{if (value != null) target.HasTrailingParagraphBreakOnPaste = value ?? default; return target; }
+// System.Windows.Documents.TableCellCollection / Capacity
+public static System.Windows.Documents.TableCellCollection WithCapacity<TChild>(this System.Windows.Documents.TableCellCollection target, System.Int32? value) 
+{if (value != null) target.Capacity = value ?? default; return target; }
+// System.Windows.Documents.TableColumnCollection / Capacity
+public static System.Windows.Documents.TableColumnCollection WithCapacity<TChild>(this System.Windows.Documents.TableColumnCollection target, System.Int32? value) 
+{if (value != null) target.Capacity = value ?? default; return target; }
+// System.Windows.Documents.TableRowCollection / Capacity
+public static System.Windows.Documents.TableRowCollection WithCapacity<TChild>(this System.Windows.Documents.TableRowCollection target, System.Int32? value) 
+{if (value != null) target.Capacity = value ?? default; return target; }
+// System.Windows.Documents.TableRowGroupCollection / Capacity
+public static System.Windows.Documents.TableRowGroupCollection WithCapacity<TChild>(this System.Windows.Documents.TableRowGroupCollection target, System.Int32? value) 
+{if (value != null) target.Capacity = value ?? default; return target; }
+// System.Windows.Documents.TextElementEditingBehaviorAttribute / IsMergeable
+public static System.Windows.Documents.TextElementEditingBehaviorAttribute WithIsMergeable<TChild>(this System.Windows.Documents.TextElementEditingBehaviorAttribute target, System.Boolean? value) 
+{if (value != null) target.IsMergeable = value ?? default; return target; }
+// System.Windows.Documents.TextElementEditingBehaviorAttribute / IsTypographicOnly
+public static System.Windows.Documents.TextElementEditingBehaviorAttribute WithIsTypographicOnly<TChild>(this System.Windows.Documents.TextElementEditingBehaviorAttribute target, System.Boolean? value) 
+{if (value != null) target.IsTypographicOnly = value ?? default; return target; }
+// System.Windows.Documents.TextRange / Text
+public static TChild WithText<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Documents.TextRange, TChild>? doNotUse = null) where TChild: System.Windows.Documents.TextRange
+{if (value != null) target.Text = value ?? default; return target; }
+// System.Windows.Documents.Serialization.WritingPrintTicketRequiredEventArgs / CurrentPrintTicket
+public static TChild WithCurrentPrintTicket<TChild>(this TChild target, System.Printing.PrintTicket? value, Disambigator<System.Windows.Documents.Serialization.WritingPrintTicketRequiredEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Documents.Serialization.WritingPrintTicketRequiredEventArgs
+{if (value != null) target.CurrentPrintTicket = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.NamedElement / NameReference
+public static TChild WithNameReference<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Documents.DocumentStructures.NamedElement, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.NamedElement
+{if (value != null) target.NameReference = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.ListItemStructure / Marker
+public static TChild WithMarker<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Documents.DocumentStructures.ListItemStructure, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.ListItemStructure
+{if (value != null) target.Marker = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.TableCellStructure / RowSpan
+public static TChild WithRowSpan<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Documents.DocumentStructures.TableCellStructure, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.TableCellStructure
+{if (value != null) target.RowSpan = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.TableCellStructure / ColumnSpan
+public static TChild WithColumnSpan<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Documents.DocumentStructures.TableCellStructure, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.TableCellStructure
+{if (value != null) target.ColumnSpan = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.StoryFragment / StoryName
+public static TChild WithStoryName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Documents.DocumentStructures.StoryFragment, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.StoryFragment
+{if (value != null) target.StoryName = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.StoryFragment / FragmentName
+public static TChild WithFragmentName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Documents.DocumentStructures.StoryFragment, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.StoryFragment
+{if (value != null) target.FragmentName = value ?? default; return target; }
+// System.Windows.Documents.DocumentStructures.StoryFragment / FragmentType
+public static TChild WithFragmentType<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Documents.DocumentStructures.StoryFragment, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentStructures.StoryFragment
+{if (value != null) target.FragmentType = value ?? default; return target; }
+// System.Windows.Controls.AddingNewItemEventArgs / NewItem
+public static TChild WithNewItem<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Controls.AddingNewItemEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.AddingNewItemEventArgs
+{if (value != null) target.NewItem = value ?? default; return target; }
+// System.Windows.Controls.AdornedElementPlaceholder / Child
+public static TChild WithChild<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Controls.AdornedElementPlaceholder, TChild>? doNotUse = null) where TChild: System.Windows.Controls.AdornedElementPlaceholder
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Controls.CalendarDateRange / End
+public static System.Windows.Controls.CalendarDateRange WithEnd<TChild>(this System.Windows.Controls.CalendarDateRange target, System.DateTime? value) 
+{if (value != null) target.End = value ?? default; return target; }
+// System.Windows.Controls.CalendarDateRange / Start
+public static System.Windows.Controls.CalendarDateRange WithStart<TChild>(this System.Windows.Controls.CalendarDateRange target, System.DateTime? value) 
+{if (value != null) target.Start = value ?? default; return target; }
+// System.Windows.Controls.CleanUpVirtualizedItemEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.CleanUpVirtualizedItemEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.CleanUpVirtualizedItemEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs / Column
+public static TChild WithColumn<TChild>(this TChild target, System.Windows.Controls.DataGridColumn? value, Disambigator<System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs
+{if (value != null) target.Column = value ?? default; return target; }
+// System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridAutoGeneratingColumnEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.DataGridBeginningEditEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DataGridBeginningEditEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridBeginningEditEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.DataGridBoundColumn / Binding
+public static TChild WithBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridBoundColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridBoundColumn
+{if (value != null) target.Binding = value ?? default; return target; }
+// System.Windows.Controls.DataGridBoundColumn / ClipboardContentBinding
+public static TChild WithClipboardContentBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridBoundColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridBoundColumn
+{if (value != null) target.ClipboardContentBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridCellClipboardEventArgs / Content
+public static TChild WithContent<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Controls.DataGridCellClipboardEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridCellClipboardEventArgs
+{if (value != null) target.Content = value ?? default; return target; }
+// System.Windows.Controls.DataGridCellEditEndingEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DataGridCellEditEndingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridCellEditEndingEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.DataGridColumn / ClipboardContentBinding
+public static TChild WithClipboardContentBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridColumn
+{if (value != null) target.ClipboardContentBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridColumnReorderingEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DataGridColumnReorderingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridColumnReorderingEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.DataGridColumnReorderingEventArgs / DropLocationIndicator
+public static TChild WithDropLocationIndicator<TChild>(this TChild target, System.Windows.Controls.Control? value, Disambigator<System.Windows.Controls.DataGridColumnReorderingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridColumnReorderingEventArgs
+{if (value != null) target.DropLocationIndicator = value ?? default; return target; }
+// System.Windows.Controls.DataGridColumnReorderingEventArgs / DragIndicator
+public static TChild WithDragIndicator<TChild>(this TChild target, System.Windows.Controls.Control? value, Disambigator<System.Windows.Controls.DataGridColumnReorderingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridColumnReorderingEventArgs
+{if (value != null) target.DragIndicator = value ?? default; return target; }
+// System.Windows.Controls.DataGridComboBoxColumn / SelectedValueBinding
+public static TChild WithSelectedValueBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridComboBoxColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridComboBoxColumn
+{if (value != null) target.SelectedValueBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridComboBoxColumn / SelectedItemBinding
+public static TChild WithSelectedItemBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridComboBoxColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridComboBoxColumn
+{if (value != null) target.SelectedItemBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridComboBoxColumn / TextBinding
+public static TChild WithTextBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridComboBoxColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridComboBoxColumn
+{if (value != null) target.TextBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridComboBoxColumn / ClipboardContentBinding
+public static TChild WithClipboardContentBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridComboBoxColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridComboBoxColumn
+{if (value != null) target.ClipboardContentBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridHyperlinkColumn / ContentBinding
+public static TChild WithContentBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.DataGridHyperlinkColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridHyperlinkColumn
+{if (value != null) target.ContentBinding = value ?? default; return target; }
+// System.Windows.Controls.DataGridRowEditEndingEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DataGridRowEditEndingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridRowEditEndingEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.DataGridSortingEventArgs / Handled
+public static TChild WithHandled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DataGridSortingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DataGridSortingEventArgs
+{if (value != null) target.Handled = value ?? default; return target; }
+// System.Windows.Controls.DatePickerDateValidationErrorEventArgs / ThrowException
+public static TChild WithThrowException<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.DatePickerDateValidationErrorEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.DatePickerDateValidationErrorEventArgs
+{if (value != null) target.ThrowException = value ?? default; return target; }
+// System.Windows.Controls.Decorator / Child
+public static TChild WithChild<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Controls.Decorator, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Decorator
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Controls.GridViewColumn / DisplayMemberBinding
+public static TChild WithDisplayMemberBinding<TChild>(this TChild target, System.Windows.Data.BindingBase? value, Disambigator<System.Windows.Controls.GridViewColumn, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GridViewColumn
+{if (value != null) target.DisplayMemberBinding = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / Panel
+public static TChild WithPanel<TChild>(this TChild target, System.Windows.Controls.ItemsPanelTemplate? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.Panel = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / ContainerStyle
+public static TChild WithContainerStyle<TChild>(this TChild target, System.Windows.Style? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.ContainerStyle = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / ContainerStyleSelector
+public static TChild WithContainerStyleSelector<TChild>(this TChild target, System.Windows.Controls.StyleSelector? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.ContainerStyleSelector = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / HeaderTemplate
+public static TChild WithHeaderTemplate<TChild>(this TChild target, System.Windows.DataTemplate? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.HeaderTemplate = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / HeaderTemplateSelector
+public static TChild WithHeaderTemplateSelector<TChild>(this TChild target, System.Windows.Controls.DataTemplateSelector? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.HeaderTemplateSelector = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / HeaderStringFormat
+public static TChild WithHeaderStringFormat<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.HeaderStringFormat = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / HidesIfEmpty
+public static TChild WithHidesIfEmpty<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.HidesIfEmpty = value ?? default; return target; }
+// System.Windows.Controls.GroupStyle / AlternationCount
+public static TChild WithAlternationCount<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Controls.GroupStyle, TChild>? doNotUse = null) where TChild: System.Windows.Controls.GroupStyle
+{if (value != null) target.AlternationCount = value ?? default; return target; }
+// System.Windows.Controls.InkCanvas / EraserShape
+public static TChild WithEraserShape<TChild>(this TChild target, System.Windows.Ink.StylusShape? value, Disambigator<System.Windows.Controls.InkCanvas, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvas
+{if (value != null) target.EraserShape = value ?? default; return target; }
+// System.Windows.Controls.InkCanvas / UseCustomCursor
+public static TChild WithUseCustomCursor<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.InkCanvas, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvas
+{if (value != null) target.UseCustomCursor = value ?? default; return target; }
+// System.Windows.Controls.InkCanvas / MoveEnabled
+public static TChild WithMoveEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.InkCanvas, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvas
+{if (value != null) target.MoveEnabled = value ?? default; return target; }
+// System.Windows.Controls.InkCanvas / ResizeEnabled
+public static TChild WithResizeEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.InkCanvas, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvas
+{if (value != null) target.ResizeEnabled = value ?? default; return target; }
+// System.Windows.Controls.InkCanvas / DefaultStylusPointDescription
+public static TChild WithDefaultStylusPointDescription<TChild>(this TChild target, System.Windows.Input.StylusPointDescription? value, Disambigator<System.Windows.Controls.InkCanvas, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvas
+{if (value != null) target.DefaultStylusPointDescription = value ?? default; return target; }
+// System.Windows.Controls.InkCanvas / PreferredPasteFormats
+public static TChild WithPreferredPasteFormats<TChild>(this TChild target, System.Collections.Generic.IEnumerable<System.Windows.Controls.InkCanvasClipboardFormat>? value, Disambigator<System.Windows.Controls.InkCanvas, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvas
+{if (value != null) target.PreferredPasteFormats = value ?? default; return target; }
+// System.Windows.Controls.ItemCollection / Filter
+public static System.Windows.Controls.ItemCollection WithFilter<TChild>(this System.Windows.Controls.ItemCollection target, System.Predicate<System.Object>? value) 
+{if (value != null) target.Filter = value ?? default; return target; }
+// System.Windows.Controls.ItemCollection / IsLiveSorting
+public static System.Windows.Controls.ItemCollection WithIsLiveSorting<TChild>(this System.Windows.Controls.ItemCollection target, System.Nullable<System.Boolean> value) 
+{if (value != null) target.IsLiveSorting = value ?? default; return target; }
+// System.Windows.Controls.ItemCollection / IsLiveFiltering
+public static System.Windows.Controls.ItemCollection WithIsLiveFiltering<TChild>(this System.Windows.Controls.ItemCollection target, System.Nullable<System.Boolean> value) 
+{if (value != null) target.IsLiveFiltering = value ?? default; return target; }
+// System.Windows.Controls.ItemCollection / IsLiveGrouping
+public static System.Windows.Controls.ItemCollection WithIsLiveGrouping<TChild>(this System.Windows.Controls.ItemCollection target, System.Nullable<System.Boolean> value) 
+{if (value != null) target.IsLiveGrouping = value ?? default; return target; }
+// System.Windows.Controls.MediaElement / Clock
+public static TChild WithClock<TChild>(this TChild target, System.Windows.Media.MediaClock? value, Disambigator<System.Windows.Controls.MediaElement, TChild>? doNotUse = null) where TChild: System.Windows.Controls.MediaElement
+{if (value != null) target.Clock = value ?? default; return target; }
+// System.Windows.Controls.MediaElement / Position
+public static TChild WithPosition<TChild>(this TChild target, System.TimeSpan? value, Disambigator<System.Windows.Controls.MediaElement, TChild>? doNotUse = null) where TChild: System.Windows.Controls.MediaElement
+{if (value != null) target.Position = value ?? default; return target; }
+// System.Windows.Controls.MediaElement / SpeedRatio
+public static TChild WithSpeedRatio<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Controls.MediaElement, TChild>? doNotUse = null) where TChild: System.Windows.Controls.MediaElement
+{if (value != null) target.SpeedRatio = value ?? default; return target; }
+// System.Windows.Controls.Page / WindowTitle
+public static TChild WithWindowTitle<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Controls.Page, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Page
+{if (value != null) target.WindowTitle = value ?? default; return target; }
+// System.Windows.Controls.Page / WindowHeight
+public static TChild WithWindowHeight<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Controls.Page, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Page
+{if (value != null) target.WindowHeight = value ?? default; return target; }
+// System.Windows.Controls.Page / WindowWidth
+public static TChild WithWindowWidth<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Controls.Page, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Page
+{if (value != null) target.WindowWidth = value ?? default; return target; }
+// System.Windows.Controls.Page / ShowsNavigationUI
+public static TChild WithShowsNavigationUI<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.Page, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Page
+{if (value != null) target.ShowsNavigationUI = value ?? default; return target; }
+// System.Windows.Controls.PageRange / PageFrom
+public static System.Windows.Controls.PageRange WithPageFrom<TChild>(this System.Windows.Controls.PageRange target, System.Int32? value) 
+{if (value != null) target.PageFrom = value ?? default; return target; }
+// System.Windows.Controls.PageRange / PageTo
+public static System.Windows.Controls.PageRange WithPageTo<TChild>(this System.Windows.Controls.PageRange target, System.Int32? value) 
+{if (value != null) target.PageTo = value ?? default; return target; }
+// System.Windows.Controls.PasswordBox / Password
+public static System.Windows.Controls.PasswordBox WithPassword<TChild>(this System.Windows.Controls.PasswordBox target, System.String? value) 
+{if (value != null) target.Password = value ?? default; return target; }
+// System.Windows.Controls.ScrollContentPresenter / CanHorizontallyScroll
+public static System.Windows.Controls.ScrollContentPresenter WithCanHorizontallyScroll<TChild>(this System.Windows.Controls.ScrollContentPresenter target, System.Boolean? value) 
+{if (value != null) target.CanHorizontallyScroll = value ?? default; return target; }
+// System.Windows.Controls.ScrollContentPresenter / CanVerticallyScroll
+public static System.Windows.Controls.ScrollContentPresenter WithCanVerticallyScroll<TChild>(this System.Windows.Controls.ScrollContentPresenter target, System.Boolean? value) 
+{if (value != null) target.CanVerticallyScroll = value ?? default; return target; }
+// System.Windows.Controls.ScrollContentPresenter / ScrollOwner
+public static System.Windows.Controls.ScrollContentPresenter WithScrollOwner<TChild>(this System.Windows.Controls.ScrollContentPresenter target, System.Windows.Controls.ScrollViewer? value) 
+{if (value != null) target.ScrollOwner = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / PageRangeSelection
+public static TChild WithPageRangeSelection<TChild>(this TChild target, System.Windows.Controls.PageRangeSelection? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.PageRangeSelection = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / PageRange
+public static TChild WithPageRange<TChild>(this TChild target, System.Windows.Controls.PageRange? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.PageRange = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / UserPageRangeEnabled
+public static TChild WithUserPageRangeEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.UserPageRangeEnabled = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / SelectedPagesEnabled
+public static TChild WithSelectedPagesEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.SelectedPagesEnabled = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / CurrentPageEnabled
+public static TChild WithCurrentPageEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.CurrentPageEnabled = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / MinPage
+public static TChild WithMinPage<TChild>(this TChild target, System.UInt32? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.MinPage = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / MaxPage
+public static TChild WithMaxPage<TChild>(this TChild target, System.UInt32? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.MaxPage = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / PrintQueue
+public static TChild WithPrintQueue<TChild>(this TChild target, System.Printing.PrintQueue? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.PrintQueue = value ?? default; return target; }
+// System.Windows.Controls.PrintDialog / PrintTicket
+public static TChild WithPrintTicket<TChild>(this TChild target, System.Printing.PrintTicket? value, Disambigator<System.Windows.Controls.PrintDialog, TChild>? doNotUse = null) where TChild: System.Windows.Controls.PrintDialog
+{if (value != null) target.PrintTicket = value ?? default; return target; }
+// System.Windows.Controls.RichTextBox / Document
+public static TChild WithDocument<TChild>(this TChild target, System.Windows.Documents.FlowDocument? value, Disambigator<System.Windows.Controls.RichTextBox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.RichTextBox
+{if (value != null) target.Document = value ?? default; return target; }
+// System.Windows.Controls.RichTextBox / CaretPosition
+public static TChild WithCaretPosition<TChild>(this TChild target, System.Windows.Documents.TextPointer? value, Disambigator<System.Windows.Controls.RichTextBox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.RichTextBox
+{if (value != null) target.CaretPosition = value ?? default; return target; }
+// System.Windows.Controls.StackPanel / CanHorizontallyScroll
+public static TChild WithCanHorizontallyScroll<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.StackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.StackPanel
+{if (value != null) target.CanHorizontallyScroll = value ?? default; return target; }
+// System.Windows.Controls.StackPanel / CanVerticallyScroll
+public static TChild WithCanVerticallyScroll<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.StackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.StackPanel
+{if (value != null) target.CanVerticallyScroll = value ?? default; return target; }
+// System.Windows.Controls.StackPanel / ScrollOwner
+public static TChild WithScrollOwner<TChild>(this TChild target, System.Windows.Controls.ScrollViewer? value, Disambigator<System.Windows.Controls.StackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.StackPanel
+{if (value != null) target.ScrollOwner = value ?? default; return target; }
+// System.Windows.Controls.TextBox / SelectedText
+public static TChild WithSelectedText<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Controls.TextBox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.TextBox
+
+{if (value != null) target.SelectedText = value ?? default; return target; }
+// System.Windows.Controls.TextBox / SelectionLength
+public static TChild WithSelectionLength<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Controls.TextBox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.TextBox
+{if (value != null) target.SelectionLength = value ?? default; return target; }
+// System.Windows.Controls.TextBox / SelectionStart
+public static TChild WithSelectionStart<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Controls.TextBox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.TextBox
+{if (value != null) target.SelectionStart = value ?? default; return target; }
+// System.Windows.Controls.TextBox / CaretIndex
+public static TChild WithCaretIndex<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Controls.TextBox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.TextBox
+{if (value != null) target.CaretIndex = value ?? default; return target; }
+// System.Windows.Controls.UIElementCollection / Capacity
+public static TChild WithCapacity<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Controls.UIElementCollection, TChild>? doNotUse = null) where TChild: System.Windows.Controls.UIElementCollection
+{if (value != null) target.Capacity = value ?? default; return target; }
+// System.Windows.Controls.ValidationError / RuleInError
+public static TChild WithRuleInError<TChild>(this TChild target, System.Windows.Controls.ValidationRule? value, Disambigator<System.Windows.Controls.ValidationError, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ValidationError
+{if (value != null) target.RuleInError = value ?? default; return target; }
+// System.Windows.Controls.ValidationError / ErrorContent
+public static TChild WithErrorContent<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Controls.ValidationError, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ValidationError
+{if (value != null) target.ErrorContent = value ?? default; return target; }
+// System.Windows.Controls.ValidationError / Exception
+public static TChild WithException<TChild>(this TChild target, System.Exception? value, Disambigator<System.Windows.Controls.ValidationError, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ValidationError
+{if (value != null) target.Exception = value ?? default; return target; }
+// System.Windows.Controls.ValidationRule / ValidationStep
+public static TChild WithValidationStep<TChild>(this TChild target, System.Windows.Controls.ValidationStep? value, Disambigator<System.Windows.Controls.ValidationRule, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ValidationRule
+{if (value != null) target.ValidationStep = value ?? default; return target; }
+// System.Windows.Controls.ValidationRule / ValidatesOnTargetUpdated
+public static TChild WithValidatesOnTargetUpdated<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.ValidationRule, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ValidationRule
+{if (value != null) target.ValidatesOnTargetUpdated = value ?? default; return target; }
+// System.Windows.Controls.Viewbox / Child
+public static TChild WithChild<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Controls.Viewbox, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Viewbox
+{if (value != null) target.Child = value ?? default; return target; }
+// System.Windows.Controls.VirtualizingStackPanel / CanHorizontallyScroll
+public static TChild WithCanHorizontallyScroll<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.VirtualizingStackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.VirtualizingStackPanel
+{if (value != null) target.CanHorizontallyScroll = value ?? default; return target; }
+// System.Windows.Controls.VirtualizingStackPanel / CanVerticallyScroll
+public static TChild WithCanVerticallyScroll<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.VirtualizingStackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.VirtualizingStackPanel
+{if (value != null) target.CanVerticallyScroll = value ?? default; return target; }
+// System.Windows.Controls.VirtualizingStackPanel / ScrollOwner
+public static TChild WithScrollOwner<TChild>(this TChild target, System.Windows.Controls.ScrollViewer? value, Disambigator<System.Windows.Controls.VirtualizingStackPanel, TChild>? doNotUse = null) where TChild: System.Windows.Controls.VirtualizingStackPanel
+{if (value != null) target.ScrollOwner = value ?? default; return target; }
+// System.Windows.Controls.WebBrowser / Source
+public static System.Windows.Controls.WebBrowser WithSource<TChild>(this System.Windows.Controls.WebBrowser target, System.Uri? value) 
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.Controls.WebBrowser / ObjectForScripting
+public static System.Windows.Controls.WebBrowser WithObjectForScripting<TChild>(this System.Windows.Controls.WebBrowser target, System.Object? value) 
+{if (value != null) target.ObjectForScripting = value ?? default; return target; }
+// System.Windows.Controls.ControlTemplate / TargetType
+public static TChild WithTargetType<TChild>(this TChild target, System.Type? value, Disambigator<System.Windows.Controls.ControlTemplate, TChild>? doNotUse = null) where TChild: System.Windows.Controls.ControlTemplate
+{if (value != null) target.TargetType = value ?? default; return target; }
+// System.Windows.Controls.InkCanvasSelectionEditingEventArgs / NewRectangle
+public static TChild WithNewRectangle<TChild>(this TChild target, System.Windows.Rect? value, Disambigator<System.Windows.Controls.InkCanvasSelectionEditingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvasSelectionEditingEventArgs
+{if (value != null) target.NewRectangle = value ?? default; return target; }
+// System.Windows.Controls.InkCanvasGestureEventArgs / Cancel
+public static TChild WithCancel<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.InkCanvasGestureEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Controls.InkCanvasGestureEventArgs
+{if (value != null) target.Cancel = value ?? default; return target; }
+// System.Windows.Controls.Primitives.BulletDecorator / Bullet
+public static TChild WithBullet<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Controls.Primitives.BulletDecorator, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.BulletDecorator
+{if (value != null) target.Bullet = value ?? default; return target; }
+// System.Windows.Controls.Primitives.CustomPopupPlacement / Point
+public static System.Windows.Controls.Primitives.CustomPopupPlacement WithPoint<TChild>(this System.Windows.Controls.Primitives.CustomPopupPlacement target, System.Windows.Point? value) 
+{if (value != null) target.Point = value ?? default; return target; }
+// System.Windows.Controls.Primitives.CustomPopupPlacement / PrimaryAxis
+public static System.Windows.Controls.Primitives.CustomPopupPlacement WithPrimaryAxis<TChild>(this System.Windows.Controls.Primitives.CustomPopupPlacement target, System.Windows.Controls.Primitives.PopupPrimaryAxis? value) 
+{if (value != null) target.PrimaryAxis = value ?? default; return target; }
+// System.Windows.Controls.Primitives.DocumentPageView / DocumentPaginator
+public static TChild WithDocumentPaginator<TChild>(this TChild target, System.Windows.Documents.DocumentPaginator? value, Disambigator<System.Windows.Controls.Primitives.DocumentPageView, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.DocumentPageView
+{if (value != null) target.DocumentPaginator = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo / Constraints
+public static TChild WithConstraints<TChild>(this TChild target, System.Windows.Controls.HierarchicalVirtualizationConstraints? value, Disambigator<System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo
+{if (value != null) target.Constraints = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo / ItemDesiredSizes
+public static TChild WithItemDesiredSizes<TChild>(this TChild target, System.Windows.Controls.HierarchicalVirtualizationItemDesiredSizes? value, Disambigator<System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo
+{if (value != null) target.ItemDesiredSizes = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo / MustDisableVirtualization
+public static TChild WithMustDisableVirtualization<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo
+{if (value != null) target.MustDisableVirtualization = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo / InBackgroundLayout
+public static TChild WithInBackgroundLayout<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IHierarchicalVirtualizationAndScrollInfo
+{if (value != null) target.InBackgroundLayout = value ?? default; return target; }
+// System.Windows.Controls.Primitives.GeneratorPosition / Index
+public static System.Windows.Controls.Primitives.GeneratorPosition WithIndex<TChild>(this System.Windows.Controls.Primitives.GeneratorPosition target, System.Int32? value) 
+{if (value != null) target.Index = value ?? default; return target; }
+// System.Windows.Controls.Primitives.GeneratorPosition / Offset
+public static System.Windows.Controls.Primitives.GeneratorPosition WithOffset<TChild>(this System.Windows.Controls.Primitives.GeneratorPosition target, System.Int32? value) 
+{if (value != null) target.Offset = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IScrollInfo / CanVerticallyScroll
+public static TChild WithCanVerticallyScroll<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.Primitives.IScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IScrollInfo
+{if (value != null) target.CanVerticallyScroll = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IScrollInfo / CanHorizontallyScroll
+public static TChild WithCanHorizontallyScroll<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Controls.Primitives.IScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IScrollInfo
+{if (value != null) target.CanHorizontallyScroll = value ?? default; return target; }
+// System.Windows.Controls.Primitives.IScrollInfo / ScrollOwner
+public static TChild WithScrollOwner<TChild>(this TChild target, System.Windows.Controls.ScrollViewer? value, Disambigator<System.Windows.Controls.Primitives.IScrollInfo, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.IScrollInfo
+{if (value != null) target.ScrollOwner = value ?? default; return target; }
+// System.Windows.Controls.Primitives.Track / DecreaseRepeatButton
+public static TChild WithDecreaseRepeatButton<TChild>(this TChild target, System.Windows.Controls.Primitives.RepeatButton? value, Disambigator<System.Windows.Controls.Primitives.Track, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.Track
+{if (value != null) target.DecreaseRepeatButton = value ?? default; return target; }
+// System.Windows.Controls.Primitives.Track / Thumb
+public static TChild WithThumb<TChild>(this TChild target, System.Windows.Controls.Primitives.Thumb? value, Disambigator<System.Windows.Controls.Primitives.Track, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.Track
+{if (value != null) target.Thumb = value ?? default; return target; }
+// System.Windows.Controls.Primitives.Track / IncreaseRepeatButton
+public static TChild WithIncreaseRepeatButton<TChild>(this TChild target, System.Windows.Controls.Primitives.RepeatButton? value, Disambigator<System.Windows.Controls.Primitives.Track, TChild>? doNotUse = null) where TChild: System.Windows.Controls.Primitives.Track
+{if (value != null) target.IncreaseRepeatButton = value ?? default; return target; }
+// System.Windows.Annotations.AnnotationDocumentPaginator / PageSize
+public static System.Windows.Annotations.AnnotationDocumentPaginator WithPageSize<TChild>(this System.Windows.Annotations.AnnotationDocumentPaginator target, System.Windows.Size? value) 
+{if (value != null) target.PageSize = value ?? default; return target; }
+// System.Windows.Annotations.AnnotationResource / Name
+public static System.Windows.Annotations.AnnotationResource WithName<TChild>(this System.Windows.Annotations.AnnotationResource target, System.String? value) 
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.Annotations.Storage.AnnotationStore / AutoFlush
+public static TChild WithAutoFlush<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Annotations.Storage.AnnotationStore, TChild>? doNotUse = null) where TChild: System.Windows.Annotations.Storage.AnnotationStore
+{if (value != null) target.AutoFlush = value ?? default; return target; }
+// System.Windows.Annotations.Storage.XmlStreamStore / AutoFlush
+public static System.Windows.Annotations.Storage.XmlStreamStore WithAutoFlush<TChild>(this System.Windows.Annotations.Storage.XmlStreamStore target, System.Boolean? value) 
+{if (value != null) target.AutoFlush = value ?? default; return target; }
+// System.Windows.PresentationSource / RootVisual
+public static TChild WithRootVisual<TChild>(this TChild target, System.Windows.Media.Visual? value, Disambigator<System.Windows.PresentationSource, TChild>? doNotUse = null) where TChild: System.Windows.PresentationSource
+{if (value != null) target.RootVisual = value ?? default; return target; }
+// System.Windows.Media.CompositionTarget / RootVisual
+public static TChild WithRootVisual<TChild>(this TChild target, System.Windows.Media.Visual? value, Disambigator<System.Windows.Media.CompositionTarget, TChild>? doNotUse = null) where TChild: System.Windows.Media.CompositionTarget
+{if (value != null) target.RootVisual = value ?? default; return target; }
+// System.Windows.Interop.HwndSource / RootVisual
+public static TChild WithRootVisual<TChild>(this TChild target, System.Windows.Media.Visual? value, Disambigator<System.Windows.Interop.HwndSource, TChild>? doNotUse = null) where TChild: System.Windows.Interop.HwndSource
+{if (value != null) target.RootVisual = value ?? default; return target; }
+// System.Windows.Interop.HwndSource / SizeToContent
+public static TChild WithSizeToContent<TChild>(this TChild target, System.Windows.SizeToContent? value, Disambigator<System.Windows.Interop.HwndSource, TChild>? doNotUse = null) where TChild: System.Windows.Interop.HwndSource
+{if (value != null) target.SizeToContent = value ?? default; return target; }
+// System.Windows.Input.RoutedUICommand / Text
+public static TChild WithText<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Input.RoutedUICommand, TChild>? doNotUse = null) where TChild: System.Windows.Input.RoutedUICommand
+{if (value != null) target.Text = value ?? default; return target; }
+// System.Windows.UIElement / RenderSize
+public static TChild WithRenderSize<TChild>(this TChild target, System.Windows.Size? value, Disambigator<System.Windows.UIElement, TChild>? doNotUse = null) where TChild: System.Windows.UIElement
+{if (value != null) target.RenderSize = value ?? default; return target; }
+// System.Windows.RoutedEventArgs / RoutedEvent
+public static TChild WithRoutedEvent<TChild>(this TChild target, System.Windows.RoutedEvent? value, Disambigator<System.Windows.RoutedEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.RoutedEventArgs
+{if (value != null) target.RoutedEvent = value ?? default; return target; }
+// System.Windows.RoutedEventArgs / Handled
+public static TChild WithHandled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.RoutedEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.RoutedEventArgs
+{if (value != null) target.Handled = value ?? default; return target; }
+// System.Windows.RoutedEventArgs / Source
+public static TChild WithSource<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.RoutedEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.RoutedEventArgs
+{if (value != null) target.Source = value ?? default; return target; }
+// System.Windows.Automation.Peers.AutomationPeer / EventsSource
+public static TChild WithEventsSource<TChild>(this TChild target, System.Windows.Automation.Peers.AutomationPeer? value, Disambigator<System.Windows.Automation.Peers.AutomationPeer, TChild>? doNotUse = null) where TChild: System.Windows.Automation.Peers.AutomationPeer
+{if (value != null) target.EventsSource = value ?? default; return target; }
+// System.Windows.IInputElement / Focusable
+public static TChild WithFocusable<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.IInputElement, TChild>? doNotUse = null) where TChild: System.Windows.IInputElement
+{if (value != null) target.Focusable = value ?? default; return target; }
+// System.Windows.Media.Color / A
+public static System.Windows.Media.Color WithA<TChild>(this System.Windows.Media.Color target, System.Byte? value) 
+{if (value != null) target.A = value ?? default; return target; }
+// System.Windows.Media.Color / R
+public static System.Windows.Media.Color WithR<TChild>(this System.Windows.Media.Color target, System.Byte? value) 
+{if (value != null) target.R = value ?? default; return target; }
+// System.Windows.Media.Color / G
+public static System.Windows.Media.Color WithG<TChild>(this System.Windows.Media.Color target, System.Byte? value) 
+{if (value != null) target.G = value ?? default; return target; }
+// System.Windows.Media.Color / B
+public static System.Windows.Media.Color WithB<TChild>(this System.Windows.Media.Color target, System.Byte? value) 
+{if (value != null) target.B = value ?? default; return target; }
+// System.Windows.Media.Color / ScA
+public static System.Windows.Media.Color WithScA<TChild>(this System.Windows.Media.Color target, System.Single? value) 
+{if (value != null) target.ScA = value ?? default; return target; }
+// System.Windows.Media.Color / ScR
+public static System.Windows.Media.Color WithScR<TChild>(this System.Windows.Media.Color target, System.Single? value) 
+{if (value != null) target.ScR = value ?? default; return target; }
+// System.Windows.Media.Color / ScG
+public static System.Windows.Media.Color WithScG<TChild>(this System.Windows.Media.Color target, System.Single? value) 
+{if (value != null) target.ScG = value ?? default; return target; }
+// System.Windows.Media.Color / ScB
+public static System.Windows.Media.Color WithScB<TChild>(this System.Windows.Media.Color target, System.Single? value) 
+{if (value != null) target.ScB = value ?? default; return target; }
+// System.Windows.Media.FontFamilyMap / Unicode
+public static TChild WithUnicode<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.FontFamilyMap, TChild>? doNotUse = null) where TChild: System.Windows.Media.FontFamilyMap
+{if (value != null) target.Unicode = value ?? default; return target; }
+// System.Windows.Media.FontFamilyMap / Target
+public static TChild WithTarget<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.FontFamilyMap, TChild>? doNotUse = null) where TChild: System.Windows.Media.FontFamilyMap
+{if (value != null) target.Target = value ?? default; return target; }
+// System.Windows.Media.FontFamilyMap / Scale
+public static TChild WithScale<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FontFamilyMap, TChild>? doNotUse = null) where TChild: System.Windows.Media.FontFamilyMap
+{if (value != null) target.Scale = value ?? default; return target; }
+// System.Windows.Media.FontFamilyMap / Language
+public static TChild WithLanguage<TChild>(this TChild target, System.Windows.Markup.XmlLanguage? value, Disambigator<System.Windows.Media.FontFamilyMap, TChild>? doNotUse = null) where TChild: System.Windows.Media.FontFamilyMap
+{if (value != null) target.Language = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / Style
+public static TChild WithStyle<TChild>(this TChild target, System.Windows.FontStyle? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.Style = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / Weight
+public static TChild WithWeight<TChild>(this TChild target, System.Windows.FontWeight? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.Weight = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / Stretch
+public static TChild WithStretch<TChild>(this TChild target, System.Windows.FontStretch? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.Stretch = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / UnderlinePosition
+public static TChild WithUnderlinePosition<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.UnderlinePosition = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / UnderlineThickness
+public static TChild WithUnderlineThickness<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.UnderlineThickness = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / StrikethroughPosition
+public static TChild WithStrikethroughPosition<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.StrikethroughPosition = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / StrikethroughThickness
+public static TChild WithStrikethroughThickness<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.StrikethroughThickness = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / CapsHeight
+public static TChild WithCapsHeight<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.CapsHeight = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / XHeight
+public static TChild WithXHeight<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.XHeight = value ?? default; return target; }
+// System.Windows.Media.FamilyTypeface / DeviceFontName
+public static TChild WithDeviceFontName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.FamilyTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.FamilyTypeface
+{if (value != null) target.DeviceFontName = value ?? default; return target; }
+// System.Windows.Media.FontFamily / Baseline
+public static TChild WithBaseline<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FontFamily, TChild>? doNotUse = null) where TChild: System.Windows.Media.FontFamily
+{if (value != null) target.Baseline = value ?? default; return target; }
+// System.Windows.Media.FontFamily / LineSpacing
+public static TChild WithLineSpacing<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FontFamily, TChild>? doNotUse = null) where TChild: System.Windows.Media.FontFamily
+{if (value != null) target.LineSpacing = value ?? default; return target; }
+// System.Windows.Media.TextFormatting.TextRunProperties / PixelsPerDip
+public static TChild WithPixelsPerDip<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.TextFormatting.TextRunProperties, TChild>? doNotUse = null) where TChild: System.Windows.Media.TextFormatting.TextRunProperties
+{if (value != null) target.PixelsPerDip = value ?? default; return target; }
+// System.Windows.Media.GlyphTypeface / FontUri
+public static TChild WithFontUri<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Media.GlyphTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphTypeface
+{if (value != null) target.FontUri = value ?? default; return target; }
+// System.Windows.Media.GlyphTypeface / StyleSimulations
+public static TChild WithStyleSimulations<TChild>(this TChild target, System.Windows.Media.StyleSimulations? value, Disambigator<System.Windows.Media.GlyphTypeface, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphTypeface
+{if (value != null) target.StyleSimulations = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point3D / X
+public static System.Windows.Media.Media3D.Point3D WithX<TChild>(this System.Windows.Media.Media3D.Point3D target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point3D / Y
+public static System.Windows.Media.Media3D.Point3D WithY<TChild>(this System.Windows.Media.Media3D.Point3D target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point3D / Z
+public static System.Windows.Media.Media3D.Point3D WithZ<TChild>(this System.Windows.Media.Media3D.Point3D target, System.Double? value) 
+{if (value != null) target.Z = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / Location
+public static System.Windows.Media.Media3D.Rect3D WithLocation<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Windows.Media.Media3D.Point3D? value) 
+{if (value != null) target.Location = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / Size
+public static System.Windows.Media.Media3D.Rect3D WithSize<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Windows.Media.Media3D.Size3D? value) 
+{if (value != null) target.Size = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / SizeX
+public static System.Windows.Media.Media3D.Rect3D WithSizeX<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Double? value) 
+{if (value != null) target.SizeX = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / SizeY
+public static System.Windows.Media.Media3D.Rect3D WithSizeY<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Double? value) 
+{if (value != null) target.SizeY = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / SizeZ
+public static System.Windows.Media.Media3D.Rect3D WithSizeZ<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Double? value) 
+{if (value != null) target.SizeZ = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / X
+public static System.Windows.Media.Media3D.Rect3D WithX<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / Y
+public static System.Windows.Media.Media3D.Rect3D WithY<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Media.Media3D.Rect3D / Z
+public static System.Windows.Media.Media3D.Rect3D WithZ<TChild>(this System.Windows.Media.Media3D.Rect3D target, System.Double? value) 
+{if (value != null) target.Z = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M11
+public static System.Windows.Media.Media3D.Matrix3D WithM11<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M11 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M12
+public static System.Windows.Media.Media3D.Matrix3D WithM12<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M12 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M13
+public static System.Windows.Media.Media3D.Matrix3D WithM13<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M13 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M14
+public static System.Windows.Media.Media3D.Matrix3D WithM14<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M14 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M21
+public static System.Windows.Media.Media3D.Matrix3D WithM21<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M21 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M22
+public static System.Windows.Media.Media3D.Matrix3D WithM22<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M22 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M23
+public static System.Windows.Media.Media3D.Matrix3D WithM23<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M23 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M24
+public static System.Windows.Media.Media3D.Matrix3D WithM24<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M24 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M31
+public static System.Windows.Media.Media3D.Matrix3D WithM31<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M31 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M32
+public static System.Windows.Media.Media3D.Matrix3D WithM32<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M32 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M33
+public static System.Windows.Media.Media3D.Matrix3D WithM33<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M33 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M34
+public static System.Windows.Media.Media3D.Matrix3D WithM34<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M34 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / OffsetX
+public static System.Windows.Media.Media3D.Matrix3D WithOffsetX<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.OffsetX = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / OffsetY
+public static System.Windows.Media.Media3D.Matrix3D WithOffsetY<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.OffsetY = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / OffsetZ
+public static System.Windows.Media.Media3D.Matrix3D WithOffsetZ<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.OffsetZ = value ?? default; return target; }
+// System.Windows.Media.Media3D.Matrix3D / M44
+public static System.Windows.Media.Media3D.Matrix3D WithM44<TChild>(this System.Windows.Media.Media3D.Matrix3D target, System.Double? value) 
+{if (value != null) target.M44 = value ?? default; return target; }
+// System.Windows.Media.Media3D.Viewport3DVisual / Clip
+public static System.Windows.Media.Media3D.Viewport3DVisual WithClip<TChild>(this System.Windows.Media.Media3D.Viewport3DVisual target, System.Windows.Media.Geometry? value) 
+{if (value != null) target.Clip = value ?? default; return target; }
+// System.Windows.Media.Media3D.Viewport3DVisual / Opacity
+public static System.Windows.Media.Media3D.Viewport3DVisual WithOpacity<TChild>(this System.Windows.Media.Media3D.Viewport3DVisual target, System.Double? value) 
+{if (value != null) target.Opacity = value ?? default; return target; }
+// System.Windows.Media.Media3D.Viewport3DVisual / OpacityMask
+public static System.Windows.Media.Media3D.Viewport3DVisual WithOpacityMask<TChild>(this System.Windows.Media.Media3D.Viewport3DVisual target, System.Windows.Media.Brush? value) 
+{if (value != null) target.OpacityMask = value ?? default; return target; }
+// System.Windows.Media.Media3D.Viewport3DVisual / Transform
+public static System.Windows.Media.Media3D.Viewport3DVisual WithTransform<TChild>(this System.Windows.Media.Media3D.Viewport3DVisual target, System.Windows.Media.Transform? value) 
+{if (value != null) target.Transform = value ?? default; return target; }
+// System.Windows.Media.Media3D.Viewport3DVisual / Offset
+public static System.Windows.Media.Media3D.Viewport3DVisual WithOffset<TChild>(this System.Windows.Media.Media3D.Viewport3DVisual target, System.Windows.Vector? value) 
+{if (value != null) target.Offset = value ?? default; return target; }
+// System.Windows.Media.Media3D.Vector3D / X
+public static System.Windows.Media.Media3D.Vector3D WithX<TChild>(this System.Windows.Media.Media3D.Vector3D target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Media.Media3D.Vector3D / Y
+public static System.Windows.Media.Media3D.Vector3D WithY<TChild>(this System.Windows.Media.Media3D.Vector3D target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Media.Media3D.Vector3D / Z
+public static System.Windows.Media.Media3D.Vector3D WithZ<TChild>(this System.Windows.Media.Media3D.Vector3D target, System.Double? value) 
+{if (value != null) target.Z = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point4D / X
+public static System.Windows.Media.Media3D.Point4D WithX<TChild>(this System.Windows.Media.Media3D.Point4D target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point4D / Y
+public static System.Windows.Media.Media3D.Point4D WithY<TChild>(this System.Windows.Media.Media3D.Point4D target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point4D / Z
+public static System.Windows.Media.Media3D.Point4D WithZ<TChild>(this System.Windows.Media.Media3D.Point4D target, System.Double? value) 
+{if (value != null) target.Z = value ?? default; return target; }
+// System.Windows.Media.Media3D.Point4D / W
+public static System.Windows.Media.Media3D.Point4D WithW<TChild>(this System.Windows.Media.Media3D.Point4D target, System.Double? value) 
+{if (value != null) target.W = value ?? default; return target; }
+// System.Windows.UIPropertyMetadata / IsAnimationProhibited
+public static TChild WithIsAnimationProhibited<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.UIPropertyMetadata, TChild>? doNotUse = null) where TChild: System.Windows.UIPropertyMetadata
+{if (value != null) target.IsAnimationProhibited = value ?? default; return target; }
+// System.Windows.Media.TextFormatting.TextLine / PixelsPerDip
+public static TChild WithPixelsPerDip<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.TextFormatting.TextLine, TChild>? doNotUse = null) where TChild: System.Windows.Media.TextFormatting.TextLine
+{if (value != null) target.PixelsPerDip = value ?? default; return target; }
+// System.Windows.Media.TextFormatting.TextSource / PixelsPerDip
+public static TChild WithPixelsPerDip<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.TextFormatting.TextSource, TChild>? doNotUse = null) where TChild: System.Windows.Media.TextFormatting.TextSource
+{if (value != null) target.PixelsPerDip = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / PixelsPerDip
+public static TChild WithPixelsPerDip<TChild>(this TChild target, System.Single? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.PixelsPerDip = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / BaselineOrigin
+public static TChild WithBaselineOrigin<TChild>(this TChild target, System.Windows.Point? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.BaselineOrigin = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / FontRenderingEmSize
+public static TChild WithFontRenderingEmSize<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.FontRenderingEmSize = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / GlyphTypeface
+public static TChild WithGlyphTypeface<TChild>(this TChild target, System.Windows.Media.GlyphTypeface? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.GlyphTypeface = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / BidiLevel
+public static TChild WithBidiLevel<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.BidiLevel = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / IsSideways
+public static TChild WithIsSideways<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.IsSideways = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / CaretStops
+public static TChild WithCaretStops<TChild>(this TChild target, System.Collections.Generic.IList<System.Boolean>? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.CaretStops = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / ClusterMap
+public static TChild WithClusterMap<TChild>(this TChild target, System.Collections.Generic.IList<System.UInt16>? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.ClusterMap = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / Characters
+public static TChild WithCharacters<TChild>(this TChild target, System.Collections.Generic.IList<System.Char>? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.Characters = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / GlyphIndices
+public static TChild WithGlyphIndices<TChild>(this TChild target, System.Collections.Generic.IList<System.UInt16>? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.GlyphIndices = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / AdvanceWidths
+public static TChild WithAdvanceWidths<TChild>(this TChild target, System.Collections.Generic.IList<System.Double>? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.AdvanceWidths = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / GlyphOffsets
+public static TChild WithGlyphOffsets<TChild>(this TChild target, System.Collections.Generic.IList<System.Windows.Point>? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.GlyphOffsets = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / Language
+public static TChild WithLanguage<TChild>(this TChild target, System.Windows.Markup.XmlLanguage? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.Language = value ?? default; return target; }
+// System.Windows.Media.GlyphRun / DeviceFontName
+public static TChild WithDeviceFontName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.GlyphRun, TChild>? doNotUse = null) where TChild: System.Windows.Media.GlyphRun
+{if (value != null) target.DeviceFontName = value ?? default; return target; }
+// System.Windows.Media.CharacterMetrics / Metrics
+public static TChild WithMetrics<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.CharacterMetrics, TChild>? doNotUse = null) where TChild: System.Windows.Media.CharacterMetrics
+{if (value != null) target.Metrics = value ?? default; return target; }
+// System.Windows.Input.StylusPoint / X
+public static System.Windows.Input.StylusPoint WithX<TChild>(this System.Windows.Input.StylusPoint target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Input.StylusPoint / Y
+public static System.Windows.Input.StylusPoint WithY<TChild>(this System.Windows.Input.StylusPoint target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Input.StylusPoint / PressureFactor
+public static System.Windows.Input.StylusPoint WithPressureFactor<TChild>(this System.Windows.Input.StylusPoint target, System.Single? value) 
+{if (value != null) target.PressureFactor = value ?? default; return target; }
+// System.Windows.Ink.Stroke / DrawingAttributes
+public static TChild WithDrawingAttributes<TChild>(this TChild target, System.Windows.Ink.DrawingAttributes? value, Disambigator<System.Windows.Ink.Stroke, TChild>? doNotUse = null) where TChild: System.Windows.Ink.Stroke
+{if (value != null) target.DrawingAttributes = value ?? default; return target; }
+// System.Windows.Ink.Stroke / StylusPoints
+public static TChild WithStylusPoints<TChild>(this TChild target, System.Windows.Input.StylusPointCollection? value, Disambigator<System.Windows.Ink.Stroke, TChild>? doNotUse = null) where TChild: System.Windows.Ink.Stroke
+{if (value != null) target.StylusPoints = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / Color
+public static TChild WithColor<TChild>(this TChild target, System.Windows.Media.Color? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.Color = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / StylusTip
+public static TChild WithStylusTip<TChild>(this TChild target, System.Windows.Ink.StylusTip? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.StylusTip = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / StylusTipTransform
+public static TChild WithStylusTipTransform<TChild>(this TChild target, System.Windows.Media.Matrix? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.StylusTipTransform = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / Height
+public static TChild WithHeight<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.Height = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / Width
+public static TChild WithWidth<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.Width = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / FitToCurve
+public static TChild WithFitToCurve<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.FitToCurve = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / IgnorePressure
+public static TChild WithIgnorePressure<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.IgnorePressure = value ?? default; return target; }
+// System.Windows.Ink.DrawingAttributes / IsHighlighter
+public static TChild WithIsHighlighter<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Ink.DrawingAttributes, TChild>? doNotUse = null) where TChild: System.Windows.Ink.DrawingAttributes
+{if (value != null) target.IsHighlighter = value ?? default; return target; }
+// System.Windows.Media.Media3D.Quaternion / X
+public static System.Windows.Media.Media3D.Quaternion WithX<TChild>(this System.Windows.Media.Media3D.Quaternion target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Media.Media3D.Quaternion / Y
+public static System.Windows.Media.Media3D.Quaternion WithY<TChild>(this System.Windows.Media.Media3D.Quaternion target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Media.Media3D.Quaternion / Z
+public static System.Windows.Media.Media3D.Quaternion WithZ<TChild>(this System.Windows.Media.Media3D.Quaternion target, System.Double? value) 
+{if (value != null) target.Z = value ?? default; return target; }
+// System.Windows.Media.Media3D.Quaternion / W
+public static System.Windows.Media.Media3D.Quaternion WithW<TChild>(this System.Windows.Media.Media3D.Quaternion target, System.Double? value) 
+{if (value != null) target.W = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / CachePolicy
+public static System.IO.Packaging.PackWebRequest WithCachePolicy<TChild>(this System.IO.Packaging.PackWebRequest target, System.Net.Cache.RequestCachePolicy? value) 
+{if (value != null) target.CachePolicy = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / ConnectionGroupName
+public static System.IO.Packaging.PackWebRequest WithConnectionGroupName<TChild>(this System.IO.Packaging.PackWebRequest target, System.String? value) 
+{if (value != null) target.ConnectionGroupName = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / ContentLength
+public static System.IO.Packaging.PackWebRequest WithContentLength<TChild>(this System.IO.Packaging.PackWebRequest target, System.Int64? value) 
+{if (value != null) target.ContentLength = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / ContentType
+public static System.IO.Packaging.PackWebRequest WithContentType<TChild>(this System.IO.Packaging.PackWebRequest target, System.String? value) 
+{if (value != null) target.ContentType = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / Credentials
+public static System.IO.Packaging.PackWebRequest WithCredentials<TChild>(this System.IO.Packaging.PackWebRequest target, System.Net.ICredentials? value) 
+{if (value != null) target.Credentials = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / Headers
+public static System.IO.Packaging.PackWebRequest WithHeaders<TChild>(this System.IO.Packaging.PackWebRequest target, System.Net.WebHeaderCollection? value) 
+{if (value != null) target.Headers = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / Method
+public static System.IO.Packaging.PackWebRequest WithMethod<TChild>(this System.IO.Packaging.PackWebRequest target, System.String? value) 
+{if (value != null) target.Method = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / PreAuthenticate
+public static System.IO.Packaging.PackWebRequest WithPreAuthenticate<TChild>(this System.IO.Packaging.PackWebRequest target, System.Boolean? value) 
+{if (value != null) target.PreAuthenticate = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / Proxy
+public static System.IO.Packaging.PackWebRequest WithProxy<TChild>(this System.IO.Packaging.PackWebRequest target, System.Net.IWebProxy? value) 
+{if (value != null) target.Proxy = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / Timeout
+public static System.IO.Packaging.PackWebRequest WithTimeout<TChild>(this System.IO.Packaging.PackWebRequest target, System.Int32? value) 
+{if (value != null) target.Timeout = value ?? default; return target; }
+// System.IO.Packaging.PackWebRequest / UseDefaultCredentials
+public static System.IO.Packaging.PackWebRequest WithUseDefaultCredentials<TChild>(this System.IO.Packaging.PackWebRequest target, System.Boolean? value) 
+{if (value != null) target.UseDefaultCredentials = value ?? default; return target; }
+// System.Windows.Input.QueryCursorEventArgs / Cursor
+public static TChild WithCursor<TChild>(this TChild target, System.Windows.Input.Cursor? value, Disambigator<System.Windows.Input.QueryCursorEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Input.QueryCursorEventArgs
+{if (value != null) target.Cursor = value ?? default; return target; }
+// System.Windows.QueryContinueDragEventArgs / Action
+public static System.Windows.QueryContinueDragEventArgs WithAction<TChild>(this System.Windows.QueryContinueDragEventArgs target, System.Windows.DragAction? value) 
+{if (value != null) target.Action = value ?? default; return target; }
+// System.Windows.GiveFeedbackEventArgs / UseDefaultCursors
+public static System.Windows.GiveFeedbackEventArgs WithUseDefaultCursors<TChild>(this System.Windows.GiveFeedbackEventArgs target, System.Boolean? value) 
+{if (value != null) target.UseDefaultCursors = value ?? default; return target; }
+// System.Windows.DragEventArgs / Effects
+public static System.Windows.DragEventArgs WithEffects<TChild>(this System.Windows.DragEventArgs target, System.Windows.DragDropEffects? value) 
+{if (value != null) target.Effects = value ?? default; return target; }
+// System.Windows.Input.KeyboardDevice / DefaultRestoreFocusMode
+public static TChild WithDefaultRestoreFocusMode<TChild>(this TChild target, System.Windows.Input.RestoreFocusMode? value, Disambigator<System.Windows.Input.KeyboardDevice, TChild>? doNotUse = null) where TChild: System.Windows.Input.KeyboardDevice
+{if (value != null) target.DefaultRestoreFocusMode = value ?? default; return target; }
+// System.Windows.Input.MouseDevice / OverrideCursor
+public static TChild WithOverrideCursor<TChild>(this TChild target, System.Windows.Input.Cursor? value, Disambigator<System.Windows.Input.MouseDevice, TChild>? doNotUse = null) where TChild: System.Windows.Input.MouseDevice
+{if (value != null) target.OverrideCursor = value ?? default; return target; }
+// System.Windows.Input.InputMethod / ImeState
+public static TChild WithImeState<TChild>(this TChild target, System.Windows.Input.InputMethodState? value, Disambigator<System.Windows.Input.InputMethod, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputMethod
+{if (value != null) target.ImeState = value ?? default; return target; }
+// System.Windows.Input.InputMethod / MicrophoneState
+public static TChild WithMicrophoneState<TChild>(this TChild target, System.Windows.Input.InputMethodState? value, Disambigator<System.Windows.Input.InputMethod, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputMethod
+{if (value != null) target.MicrophoneState = value ?? default; return target; }
+// System.Windows.Input.InputMethod / HandwritingState
+public static TChild WithHandwritingState<TChild>(this TChild target, System.Windows.Input.InputMethodState? value, Disambigator<System.Windows.Input.InputMethod, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputMethod
+{if (value != null) target.HandwritingState = value ?? default; return target; }
+// System.Windows.Input.InputMethod / SpeechMode
+public static TChild WithSpeechMode<TChild>(this TChild target, System.Windows.Input.SpeechMode? value, Disambigator<System.Windows.Input.InputMethod, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputMethod
+{if (value != null) target.SpeechMode = value ?? default; return target; }
+// System.Windows.Input.InputMethod / ImeConversionMode
+public static TChild WithImeConversionMode<TChild>(this TChild target, System.Windows.Input.ImeConversionModeValues? value, Disambigator<System.Windows.Input.InputMethod, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputMethod
+{if (value != null) target.ImeConversionMode = value ?? default; return target; }
+// System.Windows.Input.InputMethod / ImeSentenceMode
+public static TChild WithImeSentenceMode<TChild>(this TChild target, System.Windows.Input.ImeSentenceModeValues? value, Disambigator<System.Windows.Input.InputMethod, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputMethod
+{if (value != null) target.ImeSentenceMode = value ?? default; return target; }
+// System.Windows.LocalizabilityAttribute / Readability
+public static System.Windows.LocalizabilityAttribute WithReadability<TChild>(this System.Windows.LocalizabilityAttribute target, System.Windows.Readability? value) 
+{if (value != null) target.Readability = value ?? default; return target; }
+// System.Windows.LocalizabilityAttribute / Modifiability
+public static System.Windows.LocalizabilityAttribute WithModifiability<TChild>(this System.Windows.LocalizabilityAttribute target, System.Windows.Modifiability? value) 
+{if (value != null) target.Modifiability = value ?? default; return target; }
+// System.Windows.Input.CanExecuteRoutedEventArgs / CanExecute
+public static System.Windows.Input.CanExecuteRoutedEventArgs WithCanExecute<TChild>(this System.Windows.Input.CanExecuteRoutedEventArgs target, System.Boolean? value) 
+{if (value != null) target.CanExecute = value ?? default; return target; }
+// System.Windows.Input.CanExecuteRoutedEventArgs / ContinueRouting
+public static System.Windows.Input.CanExecuteRoutedEventArgs WithContinueRouting<TChild>(this System.Windows.Input.CanExecuteRoutedEventArgs target, System.Boolean? value) 
+{if (value != null) target.ContinueRouting = value ?? default; return target; }
+// System.Windows.Input.ManipulationStartingEventArgs / Mode
+public static System.Windows.Input.ManipulationStartingEventArgs WithMode<TChild>(this System.Windows.Input.ManipulationStartingEventArgs target, System.Windows.Input.ManipulationModes? value) 
+{if (value != null) target.Mode = value ?? default; return target; }
+// System.Windows.Input.ManipulationStartingEventArgs / ManipulationContainer
+public static System.Windows.Input.ManipulationStartingEventArgs WithManipulationContainer<TChild>(this System.Windows.Input.ManipulationStartingEventArgs target, System.Windows.IInputElement? value) 
+{if (value != null) target.ManipulationContainer = value ?? default; return target; }
+// System.Windows.Input.ManipulationStartingEventArgs / Pivot
+public static System.Windows.Input.ManipulationStartingEventArgs WithPivot<TChild>(this System.Windows.Input.ManipulationStartingEventArgs target, System.Windows.Input.ManipulationPivot? value) 
+{if (value != null) target.Pivot = value ?? default; return target; }
+// System.Windows.Input.ManipulationStartingEventArgs / IsSingleTouchEnabled
+public static System.Windows.Input.ManipulationStartingEventArgs WithIsSingleTouchEnabled<TChild>(this System.Windows.Input.ManipulationStartingEventArgs target, System.Boolean? value) 
+{if (value != null) target.IsSingleTouchEnabled = value ?? default; return target; }
+// System.Windows.Input.ManipulationInertiaStartingEventArgs / ManipulationOrigin
+public static System.Windows.Input.ManipulationInertiaStartingEventArgs WithManipulationOrigin<TChild>(this System.Windows.Input.ManipulationInertiaStartingEventArgs target, System.Windows.Point? value) 
+{if (value != null) target.ManipulationOrigin = value ?? default; return target; }
+// System.Windows.Input.ManipulationInertiaStartingEventArgs / TranslationBehavior
+public static System.Windows.Input.ManipulationInertiaStartingEventArgs WithTranslationBehavior<TChild>(this System.Windows.Input.ManipulationInertiaStartingEventArgs target, System.Windows.Input.InertiaTranslationBehavior? value) 
+{if (value != null) target.TranslationBehavior = value ?? default; return target; }
+// System.Windows.Input.ManipulationInertiaStartingEventArgs / RotationBehavior
+public static System.Windows.Input.ManipulationInertiaStartingEventArgs WithRotationBehavior<TChild>(this System.Windows.Input.ManipulationInertiaStartingEventArgs target, System.Windows.Input.InertiaRotationBehavior? value) 
+{if (value != null) target.RotationBehavior = value ?? default; return target; }
+// System.Windows.Input.ManipulationInertiaStartingEventArgs / ExpansionBehavior
+public static System.Windows.Input.ManipulationInertiaStartingEventArgs WithExpansionBehavior<TChild>(this System.Windows.Input.ManipulationInertiaStartingEventArgs target, System.Windows.Input.InertiaExpansionBehavior? value) 
+{if (value != null) target.ExpansionBehavior = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapFrame / BaseUri
+public static TChild WithBaseUri<TChild>(this TChild target, System.Uri? value, Disambigator<System.Windows.Media.Imaging.BitmapFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapFrame
+{if (value != null) target.BaseUri = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapEncoder / ColorContexts
+public static TChild WithColorContexts<TChild>(this TChild target, System.Collections.ObjectModel.ReadOnlyCollection<System.Windows.Media.ColorContext>? value, Disambigator<System.Windows.Media.Imaging.BitmapEncoder, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapEncoder
+{if (value != null) target.ColorContexts = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapEncoder / Thumbnail
+public static TChild WithThumbnail<TChild>(this TChild target, System.Windows.Media.Imaging.BitmapSource? value, Disambigator<System.Windows.Media.Imaging.BitmapEncoder, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapEncoder
+{if (value != null) target.Thumbnail = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapEncoder / Metadata
+public static TChild WithMetadata<TChild>(this TChild target, System.Windows.Media.Imaging.BitmapMetadata? value, Disambigator<System.Windows.Media.Imaging.BitmapEncoder, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapEncoder
+{if (value != null) target.Metadata = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapEncoder / Preview
+public static TChild WithPreview<TChild>(this TChild target, System.Windows.Media.Imaging.BitmapSource? value, Disambigator<System.Windows.Media.Imaging.BitmapEncoder, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapEncoder
+{if (value != null) target.Preview = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapEncoder / Palette
+public static TChild WithPalette<TChild>(this TChild target, System.Windows.Media.Imaging.BitmapPalette? value, Disambigator<System.Windows.Media.Imaging.BitmapEncoder, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapEncoder
+{if (value != null) target.Palette = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapEncoder / Frames
+public static TChild WithFrames<TChild>(this TChild target, System.Collections.Generic.IList<System.Windows.Media.Imaging.BitmapFrame>? value, Disambigator<System.Windows.Media.Imaging.BitmapEncoder, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapEncoder
+{if (value != null) target.Frames = value ?? default; return target; }
+// System.Windows.DataObjectPastingEventArgs / DataObject
+public static System.Windows.DataObjectPastingEventArgs WithDataObject<TChild>(this System.Windows.DataObjectPastingEventArgs target, System.Windows.IDataObject? value) 
+{if (value != null) target.DataObject = value ?? default; return target; }
+// System.Windows.DataObjectPastingEventArgs / FormatToApply
+public static System.Windows.DataObjectPastingEventArgs WithFormatToApply<TChild>(this System.Windows.DataObjectPastingEventArgs target, System.String? value) 
+{if (value != null) target.FormatToApply = value ?? default; return target; }
+// System.Windows.Media.Animation.KeySpline / ControlPoint1
+public static TChild WithControlPoint1<TChild>(this TChild target, System.Windows.Point? value, Disambigator<System.Windows.Media.Animation.KeySpline, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.KeySpline
+{if (value != null) target.ControlPoint1 = value ?? default; return target; }
+// System.Windows.Media.Animation.KeySpline / ControlPoint2
+public static TChild WithControlPoint2<TChild>(this TChild target, System.Windows.Point? value, Disambigator<System.Windows.Media.Animation.KeySpline, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.KeySpline
+{if (value != null) target.ControlPoint2 = value ?? default; return target; }
+// System.Windows.Input.AccessKeyPressedEventArgs / Scope
+public static TChild WithScope<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Input.AccessKeyPressedEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Input.AccessKeyPressedEventArgs
+{if (value != null) target.Scope = value ?? default; return target; }
+// System.Windows.Input.AccessKeyPressedEventArgs / Target
+public static TChild WithTarget<TChild>(this TChild target, System.Windows.UIElement? value, Disambigator<System.Windows.Input.AccessKeyPressedEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Input.AccessKeyPressedEventArgs
+{if (value != null) target.Target = value ?? default; return target; }
+// System.Windows.Input.IInputLanguageSource / CurrentInputLanguage
+public static TChild WithCurrentInputLanguage<TChild>(this TChild target, System.Globalization.CultureInfo? value, Disambigator<System.Windows.Input.IInputLanguageSource, TChild>? doNotUse = null) where TChild: System.Windows.Input.IInputLanguageSource
+{if (value != null) target.CurrentInputLanguage = value ?? default; return target; }
+// System.Windows.Input.InertiaExpansionBehavior / InitialVelocity
+public static TChild WithInitialVelocity<TChild>(this TChild target, System.Windows.Vector? value, Disambigator<System.Windows.Input.InertiaExpansionBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaExpansionBehavior
+{if (value != null) target.InitialVelocity = value ?? default; return target; }
+// System.Windows.Input.InertiaExpansionBehavior / DesiredDeceleration
+public static TChild WithDesiredDeceleration<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaExpansionBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaExpansionBehavior
+{if (value != null) target.DesiredDeceleration = value ?? default; return target; }
+// System.Windows.Input.InertiaExpansionBehavior / DesiredExpansion
+public static TChild WithDesiredExpansion<TChild>(this TChild target, System.Windows.Vector? value, Disambigator<System.Windows.Input.InertiaExpansionBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaExpansionBehavior
+{if (value != null) target.DesiredExpansion = value ?? default; return target; }
+// System.Windows.Input.InertiaExpansionBehavior / InitialRadius
+public static TChild WithInitialRadius<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaExpansionBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaExpansionBehavior
+{if (value != null) target.InitialRadius = value ?? default; return target; }
+// System.Windows.Input.InertiaRotationBehavior / InitialVelocity
+public static TChild WithInitialVelocity<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaRotationBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaRotationBehavior
+{if (value != null) target.InitialVelocity = value ?? default; return target; }
+// System.Windows.Input.InertiaRotationBehavior / DesiredDeceleration
+public static TChild WithDesiredDeceleration<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaRotationBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaRotationBehavior
+{if (value != null) target.DesiredDeceleration = value ?? default; return target; }
+// System.Windows.Input.InertiaRotationBehavior / DesiredRotation
+public static TChild WithDesiredRotation<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaRotationBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaRotationBehavior
+{if (value != null) target.DesiredRotation = value ?? default; return target; }
+// System.Windows.Input.InertiaTranslationBehavior / InitialVelocity
+public static TChild WithInitialVelocity<TChild>(this TChild target, System.Windows.Vector? value, Disambigator<System.Windows.Input.InertiaTranslationBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaTranslationBehavior
+{if (value != null) target.InitialVelocity = value ?? default; return target; }
+// System.Windows.Input.InertiaTranslationBehavior / DesiredDeceleration
+public static TChild WithDesiredDeceleration<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaTranslationBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaTranslationBehavior
+{if (value != null) target.DesiredDeceleration = value ?? default; return target; }
+// System.Windows.Input.InertiaTranslationBehavior / DesiredDisplacement
+public static TChild WithDesiredDisplacement<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.InertiaTranslationBehavior, TChild>? doNotUse = null) where TChild: System.Windows.Input.InertiaTranslationBehavior
+{if (value != null) target.DesiredDisplacement = value ?? default; return target; }
+// System.Windows.Interop.HwndTarget / RenderMode
+public static TChild WithRenderMode<TChild>(this TChild target, System.Windows.Interop.RenderMode? value, Disambigator<System.Windows.Interop.HwndTarget, TChild>? doNotUse = null) where TChild: System.Windows.Interop.HwndTarget
+{if (value != null) target.RenderMode = value ?? default; return target; }
+// System.Windows.Interop.HwndTarget / RootVisual
+public static TChild WithRootVisual<TChild>(this TChild target, System.Windows.Media.Visual? value, Disambigator<System.Windows.Interop.HwndTarget, TChild>? doNotUse = null) where TChild: System.Windows.Interop.HwndTarget
+{if (value != null) target.RootVisual = value ?? default; return target; }
+// System.Windows.Interop.HwndTarget / BackgroundColor
+public static TChild WithBackgroundColor<TChild>(this TChild target, System.Windows.Media.Color? value, Disambigator<System.Windows.Interop.HwndTarget, TChild>? doNotUse = null) where TChild: System.Windows.Interop.HwndTarget
+{if (value != null) target.BackgroundColor = value ?? default; return target; }
+// System.Windows.Input.InputLanguageChangingEventArgs / Rejected
+public static TChild WithRejected<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Input.InputLanguageChangingEventArgs, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputLanguageChangingEventArgs
+{if (value != null) target.Rejected = value ?? default; return target; }
+// System.Windows.Input.InputLanguageManager / CurrentInputLanguage
+public static System.Windows.Input.InputLanguageManager WithCurrentInputLanguage<TChild>(this System.Windows.Input.InputLanguageManager target, System.Globalization.CultureInfo? value) 
+{if (value != null) target.CurrentInputLanguage = value ?? default; return target; }
+// System.Windows.Input.InputScope / SrgsMarkup
+public static TChild WithSrgsMarkup<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Input.InputScope, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputScope
+{if (value != null) target.SrgsMarkup = value ?? default; return target; }
+// System.Windows.Input.InputScope / RegularExpression
+public static TChild WithRegularExpression<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Input.InputScope, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputScope
+{if (value != null) target.RegularExpression = value ?? default; return target; }
+// System.Windows.Input.InputScopeName / NameValue
+public static TChild WithNameValue<TChild>(this TChild target, System.Windows.Input.InputScopeNameValue? value, Disambigator<System.Windows.Input.InputScopeName, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputScopeName
+{if (value != null) target.NameValue = value ?? default; return target; }
+// System.Windows.Input.InputScopePhrase / Name
+public static TChild WithName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Input.InputScopePhrase, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputScopePhrase
+{if (value != null) target.Name = value ?? default; return target; }
+// System.Windows.Input.ManipulationPivot / Center
+public static TChild WithCenter<TChild>(this TChild target, System.Windows.Point? value, Disambigator<System.Windows.Input.ManipulationPivot, TChild>? doNotUse = null) where TChild: System.Windows.Input.ManipulationPivot
+{if (value != null) target.Center = value ?? default; return target; }
+// System.Windows.Input.ManipulationPivot / Radius
+public static TChild WithRadius<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Input.ManipulationPivot, TChild>? doNotUse = null) where TChild: System.Windows.Input.ManipulationPivot
+{if (value != null) target.Radius = value ?? default; return target; }
+// System.Windows.Input.CommandBinding / Command
+public static TChild WithCommand<TChild>(this TChild target, System.Windows.Input.ICommand? value, Disambigator<System.Windows.Input.CommandBinding, TChild>? doNotUse = null) where TChild: System.Windows.Input.CommandBinding
+{if (value != null) target.Command = value ?? default; return target; }
+// System.Windows.Input.InputBinding / Gesture
+public static TChild WithGesture<TChild>(this TChild target, System.Windows.Input.InputGesture? value, Disambigator<System.Windows.Input.InputBinding, TChild>? doNotUse = null) where TChild: System.Windows.Input.InputBinding
+{if (value != null) target.Gesture = value ?? default; return target; }
+// System.Windows.Input.KeyBinding / Gesture
+public static TChild WithGesture<TChild>(this TChild target, System.Windows.Input.InputGesture? value, Disambigator<System.Windows.Input.KeyBinding, TChild>? doNotUse = null) where TChild: System.Windows.Input.KeyBinding
+{if (value != null) target.Gesture = value ?? default; return target; }
+// System.Windows.Input.MouseBinding / Gesture
+public static TChild WithGesture<TChild>(this TChild target, System.Windows.Input.InputGesture? value, Disambigator<System.Windows.Input.MouseBinding, TChild>? doNotUse = null) where TChild: System.Windows.Input.MouseBinding
+{if (value != null) target.Gesture = value ?? default; return target; }
+// System.Windows.Input.MouseGesture / MouseAction
+public static TChild WithMouseAction<TChild>(this TChild target, System.Windows.Input.MouseAction? value, Disambigator<System.Windows.Input.MouseGesture, TChild>? doNotUse = null) where TChild: System.Windows.Input.MouseGesture
+{if (value != null) target.MouseAction = value ?? default; return target; }
+// System.Windows.Input.MouseGesture / Modifiers
+public static TChild WithModifiers<TChild>(this TChild target, System.Windows.Input.ModifierKeys? value, Disambigator<System.Windows.Input.MouseGesture, TChild>? doNotUse = null) where TChild: System.Windows.Input.MouseGesture
+{if (value != null) target.Modifiers = value ?? default; return target; }
+// System.Windows.Input.StylusPlugIns.StylusPlugIn / Enabled
+public static TChild WithEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Input.StylusPlugIns.StylusPlugIn, TChild>? doNotUse = null) where TChild: System.Windows.Input.StylusPlugIns.StylusPlugIn
+{if (value != null) target.Enabled = value ?? default; return target; }
+// System.Windows.Input.StylusPlugIns.DynamicRenderer / DrawingAttributes
+public static TChild WithDrawingAttributes<TChild>(this TChild target, System.Windows.Ink.DrawingAttributes? value, Disambigator<System.Windows.Input.StylusPlugIns.DynamicRenderer, TChild>? doNotUse = null) where TChild: System.Windows.Input.StylusPlugIns.DynamicRenderer
+{if (value != null) target.DrawingAttributes = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / Clip
+public static TChild WithClip<TChild>(this TChild target, System.Windows.Media.Geometry? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.Clip = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / Opacity
+public static TChild WithOpacity<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.Opacity = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / OpacityMask
+public static TChild WithOpacityMask<TChild>(this TChild target, System.Windows.Media.Brush? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.OpacityMask = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / CacheMode
+public static TChild WithCacheMode<TChild>(this TChild target, System.Windows.Media.CacheMode? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.CacheMode = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / Effect
+public static TChild WithEffect<TChild>(this TChild target, System.Windows.Media.Effects.Effect? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.Effect = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / XSnappingGuidelines
+public static TChild WithXSnappingGuidelines<TChild>(this TChild target, System.Windows.Media.DoubleCollection? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.XSnappingGuidelines = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / YSnappingGuidelines
+public static TChild WithYSnappingGuidelines<TChild>(this TChild target, System.Windows.Media.DoubleCollection? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.YSnappingGuidelines = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / Transform
+public static TChild WithTransform<TChild>(this TChild target, System.Windows.Media.Transform? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.Transform = value ?? default; return target; }
+// System.Windows.Media.ContainerVisual / Offset
+public static TChild WithOffset<TChild>(this TChild target, System.Windows.Vector? value, Disambigator<System.Windows.Media.ContainerVisual, TChild>? doNotUse = null) where TChild: System.Windows.Media.ContainerVisual
+{if (value != null) target.Offset = value ?? default; return target; }
+// System.Windows.Media.VisualCollection / Capacity
+public static System.Windows.Media.VisualCollection WithCapacity<TChild>(this System.Windows.Media.VisualCollection target, System.Int32? value) 
+{if (value != null) target.Capacity = value ?? default; return target; }
+// System.Windows.Documents.DocumentPaginator / PageSize
+public static TChild WithPageSize<TChild>(this TChild target, System.Windows.Size? value, Disambigator<System.Windows.Documents.DocumentPaginator, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DocumentPaginator
+{if (value != null) target.PageSize = value ?? default; return target; }
+// System.Windows.Documents.DynamicDocumentPaginator / IsBackgroundPaginationEnabled
+public static TChild WithIsBackgroundPaginationEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Documents.DynamicDocumentPaginator, TChild>? doNotUse = null) where TChild: System.Windows.Documents.DynamicDocumentPaginator
+{if (value != null) target.IsBackgroundPaginationEnabled = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / WindowClassStyle
+public static System.Windows.Interop.HwndSourceParameters WithWindowClassStyle<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.WindowClassStyle = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / WindowStyle
+public static System.Windows.Interop.HwndSourceParameters WithWindowStyle<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.WindowStyle = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / ExtendedWindowStyle
+public static System.Windows.Interop.HwndSourceParameters WithExtendedWindowStyle<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.ExtendedWindowStyle = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / PositionX
+public static System.Windows.Interop.HwndSourceParameters WithPositionX<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.PositionX = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / PositionY
+public static System.Windows.Interop.HwndSourceParameters WithPositionY<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.PositionY = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / Width
+public static System.Windows.Interop.HwndSourceParameters WithWidth<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.Width = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / Height
+public static System.Windows.Interop.HwndSourceParameters WithHeight<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Int32? value) 
+{if (value != null) target.Height = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / WindowName
+public static System.Windows.Interop.HwndSourceParameters WithWindowName<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.String? value) 
+{if (value != null) target.WindowName = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / ParentWindow
+public static System.Windows.Interop.HwndSourceParameters WithParentWindow<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.IntPtr? value) 
+{if (value != null) target.ParentWindow = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / HwndSourceHook
+public static System.Windows.Interop.HwndSourceParameters WithHwndSourceHook<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Windows.Interop.HwndSourceHook? value) 
+{if (value != null) target.HwndSourceHook = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / AdjustSizingForNonClientArea
+public static System.Windows.Interop.HwndSourceParameters WithAdjustSizingForNonClientArea<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Boolean? value) 
+{if (value != null) target.AdjustSizingForNonClientArea = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / TreatAncestorsAsNonClientArea
+public static System.Windows.Interop.HwndSourceParameters WithTreatAncestorsAsNonClientArea<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Boolean? value) 
+{if (value != null) target.TreatAncestorsAsNonClientArea = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / UsesPerPixelOpacity
+public static System.Windows.Interop.HwndSourceParameters WithUsesPerPixelOpacity<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Boolean? value) 
+{if (value != null) target.UsesPerPixelOpacity = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / UsesPerPixelTransparency
+public static System.Windows.Interop.HwndSourceParameters WithUsesPerPixelTransparency<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Boolean? value) 
+{if (value != null) target.UsesPerPixelTransparency = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / RestoreFocusMode
+public static System.Windows.Interop.HwndSourceParameters WithRestoreFocusMode<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Windows.Input.RestoreFocusMode? value) 
+{if (value != null) target.RestoreFocusMode = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / AcquireHwndFocusInMenuMode
+public static System.Windows.Interop.HwndSourceParameters WithAcquireHwndFocusInMenuMode<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Boolean? value) 
+{if (value != null) target.AcquireHwndFocusInMenuMode = value ?? default; return target; }
+// System.Windows.Interop.HwndSourceParameters / TreatAsInputRoot
+public static System.Windows.Interop.HwndSourceParameters WithTreatAsInputRoot<TChild>(this System.Windows.Interop.HwndSourceParameters target, System.Boolean? value) 
+{if (value != null) target.TreatAsInputRoot = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / Volume
+public static TChild WithVolume<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.Volume = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / Balance
+public static TChild WithBalance<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.Balance = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / ScrubbingEnabled
+public static TChild WithScrubbingEnabled<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.ScrubbingEnabled = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / IsMuted
+public static TChild WithIsMuted<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.IsMuted = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / Position
+public static TChild WithPosition<TChild>(this TChild target, System.TimeSpan? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.Position = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / SpeedRatio
+public static TChild WithSpeedRatio<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.SpeedRatio = value ?? default; return target; }
+// System.Windows.Media.MediaPlayer / Clock
+public static TChild WithClock<TChild>(this TChild target, System.Windows.Media.MediaClock? value, Disambigator<System.Windows.Media.MediaPlayer, TChild>? doNotUse = null) where TChild: System.Windows.Media.MediaPlayer
+{if (value != null) target.Clock = value ?? default; return target; }
+// System.Windows.Media.FormattedText / PixelsPerDip
+public static TChild WithPixelsPerDip<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.PixelsPerDip = value ?? default; return target; }
+// System.Windows.Media.FormattedText / FlowDirection
+public static TChild WithFlowDirection<TChild>(this TChild target, System.Windows.FlowDirection? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.FlowDirection = value ?? default; return target; }
+// System.Windows.Media.FormattedText / TextAlignment
+public static TChild WithTextAlignment<TChild>(this TChild target, System.Windows.TextAlignment? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.TextAlignment = value ?? default; return target; }
+// System.Windows.Media.FormattedText / LineHeight
+public static TChild WithLineHeight<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.LineHeight = value ?? default; return target; }
+// System.Windows.Media.FormattedText / MaxTextWidth
+public static TChild WithMaxTextWidth<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.MaxTextWidth = value ?? default; return target; }
+// System.Windows.Media.FormattedText / MaxTextHeight
+public static TChild WithMaxTextHeight<TChild>(this TChild target, System.Double? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.MaxTextHeight = value ?? default; return target; }
+// System.Windows.Media.FormattedText / MaxLineCount
+public static TChild WithMaxLineCount<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.MaxLineCount = value ?? default; return target; }
+// System.Windows.Media.FormattedText / Trimming
+public static TChild WithTrimming<TChild>(this TChild target, System.Windows.TextTrimming? value, Disambigator<System.Windows.Media.FormattedText, TChild>? doNotUse = null) where TChild: System.Windows.Media.FormattedText
+{if (value != null) target.Trimming = value ?? default; return target; }
+// System.Windows.Media.Media3D.Size3D / X
+public static System.Windows.Media.Media3D.Size3D WithX<TChild>(this System.Windows.Media.Media3D.Size3D target, System.Double? value) 
+{if (value != null) target.X = value ?? default; return target; }
+// System.Windows.Media.Media3D.Size3D / Y
+public static System.Windows.Media.Media3D.Size3D WithY<TChild>(this System.Windows.Media.Media3D.Size3D target, System.Double? value) 
+{if (value != null) target.Y = value ?? default; return target; }
+// System.Windows.Media.Media3D.Size3D / Z
+public static System.Windows.Media.Media3D.Size3D WithZ<TChild>(this System.Windows.Media.Media3D.Size3D target, System.Double? value) 
+{if (value != null) target.Z = value ?? default; return target; }
+// System.Windows.Media.Animation.ClockController / SpeedRatio
+public static System.Windows.Media.Animation.ClockController WithSpeedRatio<TChild>(this System.Windows.Media.Animation.ClockController target, System.Double? value) 
+{if (value != null) target.SpeedRatio = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimationUsingPath / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DoubleAnimationUsingPath, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimationUsingPath
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimationUsingPath / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DoubleAnimationUsingPath, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimationUsingPath
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.IKeyFrame / KeyTime
+public static TChild WithKeyTime<TChild>(this TChild target, System.Windows.Media.Animation.KeyTime? value, Disambigator<System.Windows.Media.Animation.IKeyFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.IKeyFrame
+{if (value != null) target.KeyTime = value ?? default; return target; }
+// System.Windows.Media.Animation.IKeyFrame / Value
+public static TChild WithValue<TChild>(this TChild target, System.Object? value, Disambigator<System.Windows.Media.Animation.IKeyFrame, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.IKeyFrame
+{if (value != null) target.Value = value ?? default; return target; }
+// System.Windows.Media.Animation.IKeyFrameAnimation / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Collections.IList? value, Disambigator<System.Windows.Media.Animation.IKeyFrameAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.IKeyFrameAnimation
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+
+// System.Windows.Media.Animation.MatrixAnimationUsingPath / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.MatrixAnimationUsingPath, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.MatrixAnimationUsingPath
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimationUsingPath / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.PointAnimationUsingPath, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimationUsingPath
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimationUsingPath / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.PointAnimationUsingPath, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimationUsingPath
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.QuaternionAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.QuaternionAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.QuaternionAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.QuaternionAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.QuaternionAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.QuaternionAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.BooleanAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.BooleanKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.BooleanAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.BooleanAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.ByteAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ByteAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ByteAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.ByteAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ByteAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ByteAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.ByteAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.ByteKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.ByteAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ByteAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.ByteAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ByteAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ByteAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.ByteAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ByteAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ByteAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.CharAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.CharKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.CharAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.CharAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.ColorAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ColorAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ColorAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.ColorAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ColorAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ColorAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.ColorAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.ColorKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.ColorAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ColorAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.ColorAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ColorAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ColorAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.ColorAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.ColorAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ColorAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.DecimalAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DecimalAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DecimalAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.DecimalAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DecimalAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DecimalAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.DecimalKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DecimalAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DoubleAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DoubleAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.DoubleKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.DoubleAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Int16Animation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int16Animation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int16Animation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Int16Animation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int16Animation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int16Animation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Int16AnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.Int16KeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.Int16AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int16AnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Int16AnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int16AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int16AnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Int16AnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int16AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int16AnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Int32Animation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int32Animation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int32Animation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Int32Animation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int32Animation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int32Animation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Int32AnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.Int32KeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.Int32AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int32AnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Int32AnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int32AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int32AnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Int32AnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int32AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int32AnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Int64Animation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int64Animation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int64Animation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Int64Animation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int64Animation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int64Animation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Int64AnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.Int64KeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.Int64AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int64AnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Int64AnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int64AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int64AnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Int64AnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Int64AnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Int64AnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.MatrixAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.MatrixKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.MatrixAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.MatrixAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.ObjectAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.ObjectKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.ObjectAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.ObjectAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Point3DAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Point3DAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Point3DAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Point3DAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Point3DAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Point3DAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.Point3DKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Point3DAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.PointAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.PointAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.PointKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.PointAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.PointAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.PointAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.PointAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.PointAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.QuaternionKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.QuaternionAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.RectAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.RectAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.RectAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.RectAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.RectAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.RectAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.RectAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.RectKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.RectAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.RectAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.RectAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.RectAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.RectAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.RectAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.RectAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.RectAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Rotation3DAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Rotation3DAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Rotation3DAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Rotation3DAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Rotation3DAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Rotation3DAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.Rotation3DKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Rotation3DAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.SingleAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SingleAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SingleAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.SingleAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SingleAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SingleAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.SingleAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.SingleKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.SingleAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SingleAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.SingleAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SingleAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SingleAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.SingleAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SingleAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SingleAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.SizeAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SizeAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SizeAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.SizeAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SizeAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SizeAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.SizeAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.SizeKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.SizeAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SizeAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.SizeAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SizeAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SizeAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.SizeAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.SizeAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.SizeAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.StringAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.StringKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.StringAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.StringAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Vector3DAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Vector3DAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Vector3DAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Vector3DAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Vector3DAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Vector3DAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.Vector3DKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.Vector3DAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.VectorAnimation / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.VectorAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.VectorAnimation
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.VectorAnimation / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.VectorAnimation, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.VectorAnimation
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Animation.VectorAnimationUsingKeyFrames / KeyFrames
+public static TChild WithKeyFrames<TChild>(this TChild target, System.Windows.Media.Animation.VectorKeyFrameCollection? value, Disambigator<System.Windows.Media.Animation.VectorAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.VectorAnimationUsingKeyFrames
+{if (value != null) target.KeyFrames = value ?? default; return target; }
+// System.Windows.Media.Animation.VectorAnimationUsingKeyFrames / IsAdditive
+public static TChild WithIsAdditive<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.VectorAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.VectorAnimationUsingKeyFrames
+{if (value != null) target.IsAdditive = value ?? default; return target; }
+// System.Windows.Media.Animation.VectorAnimationUsingKeyFrames / IsCumulative
+public static TChild WithIsCumulative<TChild>(this TChild target, System.Boolean? value, Disambigator<System.Windows.Media.Animation.VectorAnimationUsingKeyFrames, TChild>? doNotUse = null) where TChild: System.Windows.Media.Animation.VectorAnimationUsingKeyFrames
+{if (value != null) target.IsCumulative = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Author
+public static TChild WithAuthor<TChild>(this TChild target, System.Collections.ObjectModel.ReadOnlyCollection<System.String>? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Author = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Title
+public static TChild WithTitle<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Title = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Rating
+public static TChild WithRating<TChild>(this TChild target, System.Int32? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Rating = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Subject
+public static TChild WithSubject<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Subject = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Comment
+public static TChild WithComment<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Comment = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / DateTaken
+public static TChild WithDateTaken<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.DateTaken = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / ApplicationName
+public static TChild WithApplicationName<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.ApplicationName = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Copyright
+public static TChild WithCopyright<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Copyright = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / CameraManufacturer
+public static TChild WithCameraManufacturer<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.CameraManufacturer = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / CameraModel
+public static TChild WithCameraModel<TChild>(this TChild target, System.String? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.CameraModel = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapMetadata / Keywords
+public static TChild WithKeywords<TChild>(this TChild target, System.Collections.ObjectModel.ReadOnlyCollection<System.String>? value, Disambigator<System.Windows.Media.Imaging.BitmapMetadata, TChild>? doNotUse = null) where TChild: System.Windows.Media.Imaging.BitmapMetadata
+{if (value != null) target.Keywords = value ?? default; return target; }
+// System.Windows.Media.Imaging.JpegBitmapEncoder / QualityLevel
+public static System.Windows.Media.Imaging.JpegBitmapEncoder WithQualityLevel<TChild>(this System.Windows.Media.Imaging.JpegBitmapEncoder target, System.Int32? value) 
+{if (value != null) target.QualityLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.JpegBitmapEncoder / Rotation
+public static System.Windows.Media.Imaging.JpegBitmapEncoder WithRotation<TChild>(this System.Windows.Media.Imaging.JpegBitmapEncoder target, System.Windows.Media.Imaging.Rotation? value) 
+{if (value != null) target.Rotation = value ?? default; return target; }
+// System.Windows.Media.Imaging.JpegBitmapEncoder / FlipHorizontal
+public static System.Windows.Media.Imaging.JpegBitmapEncoder WithFlipHorizontal<TChild>(this System.Windows.Media.Imaging.JpegBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.FlipHorizontal = value ?? default; return target; }
+// System.Windows.Media.Imaging.JpegBitmapEncoder / FlipVertical
+public static System.Windows.Media.Imaging.JpegBitmapEncoder WithFlipVertical<TChild>(this System.Windows.Media.Imaging.JpegBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.FlipVertical = value ?? default; return target; }
+// System.Windows.Media.Imaging.PngBitmapEncoder / Interlace
+public static System.Windows.Media.Imaging.PngBitmapEncoder WithInterlace<TChild>(this System.Windows.Media.Imaging.PngBitmapEncoder target, System.Windows.Media.Imaging.PngInterlaceOption? value) 
+{if (value != null) target.Interlace = value ?? default; return target; }
+// System.Windows.Media.Imaging.TiffBitmapEncoder / Compression
+public static System.Windows.Media.Imaging.TiffBitmapEncoder WithCompression<TChild>(this System.Windows.Media.Imaging.TiffBitmapEncoder target, System.Windows.Media.Imaging.TiffCompressOption? value) 
+{if (value != null) target.Compression = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / ImageQualityLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithImageQualityLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Single? value) 
+{if (value != null) target.ImageQualityLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / Lossless
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithLossless<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.Lossless = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / Rotation
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithRotation<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Windows.Media.Imaging.Rotation? value) 
+{if (value != null) target.Rotation = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / FlipHorizontal
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithFlipHorizontal<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.FlipHorizontal = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / FlipVertical
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithFlipVertical<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.FlipVertical = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / UseCodecOptions
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithUseCodecOptions<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.UseCodecOptions = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / QualityLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithQualityLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Byte? value) 
+{if (value != null) target.QualityLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / SubsamplingLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithSubsamplingLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Byte? value) 
+{if (value != null) target.SubsamplingLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / OverlapLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithOverlapLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Byte? value) 
+{if (value != null) target.OverlapLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / HorizontalTileSlices
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithHorizontalTileSlices<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Int16? value) 
+{if (value != null) target.HorizontalTileSlices = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / VerticalTileSlices
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithVerticalTileSlices<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Int16? value) 
+{if (value != null) target.VerticalTileSlices = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / FrequencyOrder
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithFrequencyOrder<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.FrequencyOrder = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / InterleavedAlpha
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithInterleavedAlpha<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.InterleavedAlpha = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / AlphaQualityLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithAlphaQualityLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Byte? value) 
+{if (value != null) target.AlphaQualityLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / CompressedDomainTranscode
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithCompressedDomainTranscode<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.CompressedDomainTranscode = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / ImageDataDiscardLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithImageDataDiscardLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Byte? value) 
+{if (value != null) target.ImageDataDiscardLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / AlphaDataDiscardLevel
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithAlphaDataDiscardLevel<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Byte? value) 
+{if (value != null) target.AlphaDataDiscardLevel = value ?? default; return target; }
+// System.Windows.Media.Imaging.WmpBitmapEncoder / IgnoreOverlap
+public static System.Windows.Media.Imaging.WmpBitmapEncoder WithIgnoreOverlap<TChild>(this System.Windows.Media.Imaging.WmpBitmapEncoder target, System.Boolean? value) 
+{if (value != null) target.IgnoreOverlap = value ?? default; return target; }
+// System.Windows.Media.Imaging.BitmapImage / BaseUri
+public static System.Windows.Media.Imaging.BitmapImage WithBaseUri<TChild>(this System.Windows.Media.Imaging.BitmapImage target, System.Uri? value) 
+{if (value != null) target.BaseUri = value ?? default; return target; }
 }
 }
 

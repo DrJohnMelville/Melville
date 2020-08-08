@@ -65,7 +65,7 @@ namespace Melville.Wpf.Samples.CsXaml
                     .WithResource(Create.DataTemplate<A>(f=>Create.TextBlock("This is the A").WithForeground(Brushes.Red)))
                     .WithResource(Create.DataTemplate<B>(f=>Create.TextBlock("This is the B").WithForeground(Brushes.Blue)))
                     .WithResource(Create.DataTemplate<ListBoxElt>(CreateListView2))
-                    .WithChild(Create.ListBox(b.BindList(i=>i.AllTypes)))
+                    .WithChild(Create.ItemsControl(b.BindList(i=>i.AllTypes)))
                 )
             );
         }

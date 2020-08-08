@@ -14,7 +14,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<ListBoxViewModel>();
+            SearchTreeForSample<DataGridViewModel>();
 
         public SampleDirectory()
         {
@@ -30,7 +30,8 @@ namespace Melville.Wpf.Samples
                     Page<ListBoxViewModel>("List Binding"),
                     Page<CounterViewModel>("Counter View"),
                     Page<GridCreatorViewModel>("Grid View"),
-                    Page<DockPanelCreatorViewModel>("DockPanel View")
+                    Page<DockPanelCreatorViewModel>("DockPanel View"),
+                    Page<DataGridViewModel>("Data Grid")
                 ),
                 Node("Hardware",
                     Page<TranscriptionPedalViewModel>("Transcription Pedal"),
