@@ -59,7 +59,7 @@ namespace Melville.MVVM.BusinessObjects
       return true;
     }
 
-    public IDisposable DelegatePropertyChangeFrom(INotifyPropertyChanged foreignObject,
+    public IDisposable DelegatePropertyChangeFrom(INotifyPropertyChanged? foreignObject,
       string foreignProperty, params string[] localProperties)
     {
       if (foreignObject == null) return new ActionOnDispose(() => { });
