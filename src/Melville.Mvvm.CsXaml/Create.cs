@@ -90,5 +90,9 @@ namespace Melville.Mvvm.CsXaml
             dataTemplate.DataType = typeof(T);
             return dataTemplate;
         }
+        
+        public static Style Style<T>()=>new Style(typeof(T));
+        public static Style Style<T>(Style basedOn)=>new Style(typeof(T), basedOn);
+
     }
 }
