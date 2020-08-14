@@ -44,9 +44,9 @@ namespace Melville.TestHelpers.InpcTesting
         #endregion
 
         public static INPCCounter VerifyInpcFired<TTarget>(TTarget target,
-          params Expression<Func<TTarget, object>>[] otherProperties) where TTarget : INotifyPropertyChanged
+          params Expression<Func<TTarget, object>>[] otherProperties) 
         {
-            return new INPCCounter(target,
+            return new INPCCounter((INotifyPropertyChanged)target,
               otherProperties.Select(accessor => accessor.Body.GetAccessedMemberName()).ToArray());
         }
     }
