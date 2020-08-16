@@ -105,12 +105,12 @@ namespace Melville.TestHelpers.Test.InpcTesting
     [Fact]
     public void MultiPropFail()
     {
-      Assert.Throws<TargetInvocationException>(()=>BusinessObjectTester.Create(() => new DependantProp()).DoTests());
+      Assert.Throws<EqualException>(()=>BusinessObjectTester.Create(() => new DependantProp()).DoTests());
     }
     [Fact]
     public void MultiPropFail2()
     {
-      Assert.Throws<TargetInvocationException>(()=>BusinessObjectTester.Create(() => new DependantProp())
+      Assert.Throws<EqualException>(()=>BusinessObjectTester.Create(() => new DependantProp())
         .Property(i=>i.Prop1, 1, i=>i.Prop2)
         .DoTests());
     }

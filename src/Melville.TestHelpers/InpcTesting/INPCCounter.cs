@@ -1,4 +1,5 @@
 ﻿using  System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -11,7 +12,7 @@ namespace Melville.TestHelpers.InpcTesting
     {
         private INotifyPropertyChanged target;
         private string[] propertySequence;
-        private int propChangedCount;
+        private List<string> calls = new List<string>();
         private TaskCompletionSource<int> notificationDone;
         public Task NotificationsDone { get { return notificationDone.Task; } }
 
@@ -26,10 +27,8 @@ namespace Melville.TestHelpers.InpcTesting
 
         private void InpcCalled(object sender, PropertyChangedEventArgs e)
         {
-            Assert.True(propChangedCount < propertySequence.Length, "Unexpected Property: " + e.PropertyName);
-            Assert.Equal(propertySequence[propChangedCount], e.PropertyName); // assert the right name
-            propChangedCount++; // count the invocations
-            if (propChangedCount >= propertySequence.Length)
+            calls.Add(e.PropertyName);
+            if (calls.Count >= propertySequence.Length)
             {
                 notificationDone.SetResult(0);
             }
@@ -38,9 +37,13 @@ namespace Melville.TestHelpers.InpcTesting
         #region Implementation of IDisposable
         public void Dispose()
         {
-            Assert.Equal(propertySequence.Length, propChangedCount);
+            Assert.Equal(FormatCalls(propertySequence), FormatCalls(calls));
+            
             target.PropertyChanged -= InpcCalled;
         }
+
+        private string FormatCalls(IEnumerable<string> elts) => string.Join(", ", elts);
+
         #endregion
 
         public static INPCCounter VerifyInpcFired<TTarget>(TTarget target,
