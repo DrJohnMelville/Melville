@@ -28,7 +28,7 @@ namespace Melville.Mvvm.CsXaml
             ValueProxy<double>? fontSize = null,
             ValueProxy<HorizontalAlignment>? horizontalAlignment = null) =>
             new TextBlock()
-                .WithText(text).WithStyle(new Style())
+                .WithText(text)
                 .WithHorizontalAlignment(horizontalAlignment)
                 .WithTextBlock_FontSize(fontSize);
         public static TextBox TextBox(
@@ -36,7 +36,7 @@ namespace Melville.Mvvm.CsXaml
             ValueProxy<double>? fontSize = null,
             ValueProxy<bool>? isReadOnly = null) =>
             new TextBox()
-                .WithText(text).WithStyle(new Style())
+                .WithText(text)
                 .WithTextBlock_FontSize(fontSize)
                 .WithIsReadOnly(isReadOnly);
 
@@ -91,8 +91,8 @@ namespace Melville.Mvvm.CsXaml
             return dataTemplate;
         }
         
-        public static Style Style<T>()=>new Style(typeof(T));
-        public static Style Style<T>(Style basedOn)=>new Style(typeof(T), basedOn);
+        public static Style<T> Style<T>()=>new Style<T>(typeof(T));
+        public static Style<T> Style<T>(Style basedOn)=>new Style<T>(typeof(T), basedOn);
 
     }
 }

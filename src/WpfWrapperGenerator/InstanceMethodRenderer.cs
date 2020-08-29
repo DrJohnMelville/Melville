@@ -12,15 +12,8 @@ namespace WpfWrapperGenerator
             if (!(ClassHasGetterForThisValue(field, dp) &&
                   field.DeclaringType is {} propertyHostType &&
                   IsADependencyObject(propertyHostType))) return;
-            if (propertyHostType.IsSealed)
-            {
-                writer.WriteInstanceMethod(field, dp, dp.Name, propertyHostType);
-            }
-            else
-            {
-                writer.WriteGenericMethod(field, dp, dp.Name, propertyHostType);
-                
-            }
+                writer.RenderMethod(field, dp, dp.Name, propertyHostType);
+           
         }
 
         private static bool IsADependencyObject(Type propertyHostType)

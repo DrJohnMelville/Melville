@@ -13,7 +13,7 @@ namespace WpfWrapperGenerator
             CodeWriter writer)
         {
             if (!(FindSetMethod(dp.Name, field.DeclaringType) is {} method)) return;
-            writer.WriteGenericMethod(field, dp, $"{field.DeclaringType?.Name}_{dp.Name}", 
+            writer.RenderMethod(field, dp, $"{field.DeclaringType?.Name}_{dp.Name}", 
                 AttachedPropertyTargetType(method));
         }
 

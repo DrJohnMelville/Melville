@@ -12,11 +12,9 @@ namespace WpfWrapperGenerator
     {
         void SectionComment(string comment);
 
-        void WriteGenericMethod(FieldInfo field, DependencyProperty dp,
+        void RenderMethod(FieldInfo field, DependencyProperty dp,
             string methodName, Type targetType);
 
-        void WriteInstanceMethod(FieldInfo field, DependencyProperty dp, string methodName, 
-            Type targetType);
     }
 
     public class CodeWriter : IRenderMethods
@@ -44,49 +42,54 @@ namespace WpfWrapperGenerator
             writer.Append("//");
             writer.AppendLine(comment);
         }
-        
-        public void WriteGenericMethod(FieldInfo field, DependencyProperty dp,
+
+        public void RenderMethod(FieldInfo field, DependencyProperty dp,
             string methodName, Type targetType)
         {
             string typeName = targetType.CSharpName();
-            string dpType = dp.PropertyType.CSharpName();
-            writer.Append($"public static TChild With{methodName}<TChild>(this TChild target, " +
-                          S(dp.PropertyType)+"? value, " +
-                          $"Disambigator<{typeName}, TChild>? doNotUse = null) where TChild: {typeName}");
+            WriteMethodDeclaration(dp, methodName, targetType, typeName, "{0}");
             WriteBody(field);
+            WriteMethodDeclaration(dp, methodName, targetType, typeName, "Style<{0}>");
+            WriteStyleBody(field);
         }
 
-        private static string S(Type dpType)
+        private void WriteMethodDeclaration(DependencyProperty dp, string methodName, Type targetType, string typeName, string formatStr)
+        {
+            if (targetType.IsSealed)
+            {
+                var finalTypeName = string.Format(formatStr, typeName);
+                string dpType = dp.PropertyType.CSharpName();
+                writer.Append($"public static {finalTypeName} With{methodName}(this {finalTypeName} target, " +
+                              $"ValueProxy<{dpType}>? value) ");
+            }
+            else
+            {
+                var finalTypeName = string.Format(formatStr, "TChild");
+                writer.Append($"public static {finalTypeName} With{methodName}<TChild>(this {finalTypeName} target, " +
+                              CreateValueProxy(dp.PropertyType) + "? value, " +
+                              $"Disambigator<{typeName}, TChild>? doNotUse = null) where TChild: {typeName}");
+            }
+        }
+
+        private static string CreateValueProxy(Type dpType)
         {
             if (dpType == typeof(Thickness)) return "ThicknessValueProxy";
             return $"ValueProxy<{dpType.CSharpName()}>";
         }
 
 
-        public void WriteInstanceMethod(FieldInfo field, DependencyProperty dp, string methodName, 
-            Type targetType)
-        {
-            string typeName = targetType.CSharpName();
-            string dpType = dp.PropertyType.CSharpName();
-            writer.Append($"public static {typeName} With{methodName}(this {typeName} target, " +
-                          $"ValueProxy<{dpType}>? value) ");
-            WriteBody(field);
-        }
+        private void WriteBody(FieldInfo field) => writer.AppendLine($"{{value?.SetValue(target, {StaticFieldCSharpName(field)}); return target;}}");
+        private void WriteStyleBody(FieldInfo field) => writer.AppendLine($"{{value?.StyleSetter(target, {StaticFieldCSharpName(field)}); return target;}}");
 
-        private void WriteBody(FieldInfo field)
-        {
-            writer.AppendLine($"{{value?.SetValue(target, {StaticFieldCSharpName(field)}); return target;}}");
-        }
         private static string StaticFieldCSharpName(FieldInfo field) => 
             $"{field.DeclaringType.CSharpName()}.{field.Name}";
 
-        public void WriteRegularProperty(PropertyInfo prop)
+        public void WriteNonDependencyProperty(PropertyInfo prop)
         {
             writer.AppendLine($"// {prop.DeclaringType} / {prop.Name}");
             string typeName = prop.DeclaringType.CSharpName();
             if (prop.PropertyType?.FullName == null) return;
-            string dpType = prop.PropertyType.CSharpName();
-            dpType += dpType.StartsWith("System.Nullable<") ? "" : "?";
+            var dpType = PropertyTypeString(prop);
             if (prop.DeclaringType?.IsSealed ?? true)
             {
                 writer.AppendLine($"public static {typeName} With{prop.Name}<TChild>(this {typeName} target, " +
@@ -101,6 +104,13 @@ namespace WpfWrapperGenerator
 
             writer.AppendLine($"{{if (value != null) target.{prop.Name} = value ?? default; return target; }}");
 
+        }
+
+        private static string PropertyTypeString(PropertyInfo prop)
+        {
+            string dpType = prop.PropertyType.CSharpName();
+            dpType += dpType.StartsWith("System.Nullable<") ? "" : "?";
+            return dpType;
         }
     }
 }

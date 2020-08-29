@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
+using System.Windows.Threading;
 
 namespace Melville.Mvvm.CsXaml.ValueSource
 {
@@ -31,12 +32,18 @@ namespace Melville.Mvvm.CsXaml.ValueSource
                     break;
             }
         }
-
+        
         private static void SetBinding(DependencyObject obj, DependencyProperty prop, BindingBase b)
         {
             ProhibitWriteBindingToReadOnlyProperties(prop, b);
             BindingOperations.SetBinding(obj, prop, b);
         }
+
+        public static void StyleSetter(this IValueProxy prox, Style style, DependencyProperty prop)
+        {
+            style.Setters.Add(new Setter(prop, prox.InnermostValue()));
+        }
+
 
         private static void ProhibitWriteBindingToReadOnlyProperties(DependencyProperty prop, BindingBase bb)
         {

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Melville.Mvvm.CsXaml.ValueSource;
 
 namespace Melville.Mvvm.CsXaml
@@ -11,6 +12,16 @@ namespace Melville.Mvvm.CsXaml
             style.Setters.Add(new Setter(prop, value.InnermostValue()));;
             return style;
         }
-        
+    }
+
+    public class Style<T> : Style
+    {
+        public Style(Type targetType) : base(targetType)
+        {
+        }
+
+        public Style(Type targetType, Style basedOn) : base(targetType, basedOn)
+        {
+        }
     }
 }

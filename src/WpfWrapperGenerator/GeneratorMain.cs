@@ -32,7 +32,7 @@ namespace WpfWrapperGenerator
         {
             foreach (var prop in RegularProperties(types))
             {
-                writer.WriteRegularProperty(prop);
+                writer.WriteNonDependencyProperty(prop);
             }
         }
 
