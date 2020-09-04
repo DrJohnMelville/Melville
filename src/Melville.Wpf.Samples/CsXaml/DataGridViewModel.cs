@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Media;
-using Melville.Linq.Statistics.Functional;
 using Melville.MVVM.BusinessObjects;
 using Melville.Mvvm.CsXaml;
 using Melville.Mvvm.CsXaml.ValueSource;
 using Melville.Mvvm.CsXaml.XamlBuilders;
-using HorizontalAlignment = System.Windows.HorizontalAlignment;
-using UserControl = System.Windows.Controls.UserControl;
+using Melville.Mvvm.CsXaml.FilteredDataGrids;
 
 namespace Melville.Wpf.Samples.CsXaml
 {
@@ -70,8 +64,7 @@ namespace Melville.Wpf.Samples.CsXaml
             AddChild(new StackPanel()
                 .WithChild(Create.TextBlock("Data Grid Demo", 18, HorizontalAlignment.Center).WithMargin(20))
                 .WithChild(Create.DataGrid(dc.BindList(i=>i.Data),
-                    DataGridRows))
-            );
+                    DataGridRows).AsFilteredDataGrid()));
         }
 
         private IEnumerable<DataGridColumn> DataGridRows(DataGridColumnGenerator<RowData> rgen)
@@ -81,7 +74,7 @@ namespace Melville.Wpf.Samples.CsXaml
                 rgen.Text(rgen.Bind(i => i.Name), "TextBox", true), 
                 rgen.Text("Foo", "Constant", true).WithForeground(Brushes.Blue), 
                 rgen.ComboBox<int>(rgen.Bind(i => i.SortOrder),
-                rgen.BindList(i => i.Choices).WithTracing(), "ComboBoxes"), 
+                rgen.BindList(i => i.Choices), "ComboBoxes"), 
                 rgen.CheckBox(rgen.Bind(i => i.IsOdd), "Checboxes"), 
                 rgen.Template("Template", DisplayTemplate, i=>Create.TextBox(i.Bind(j=>j.Name)))
             };  

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using Melville.Mvvm.CsXaml.FilteredDataGrids;
 using Melville.Mvvm.CsXaml.ValueSource;
 using Melville.Mvvm.CsXaml.XamlBuilders;
 using Melville.MVVM.Functional;
@@ -40,6 +41,13 @@ namespace Melville.Mvvm.CsXaml
                 .WithTextBlock_FontSize(fontSize)
                 .WithIsReadOnly(isReadOnly);
 
+        public static ToggleButton ToggleButton(
+            ValueProxy<bool?> isChecked,
+            ValueProxy<object>? content = null) =>
+            new ToggleButton()
+                .WithIsChecked(isChecked)
+                .WithContent(content);
+
 
         public static ListBox ListBox<T>(
             ValueProxy<IEnumerable<T>> source,
@@ -61,7 +69,7 @@ namespace Melville.Mvvm.CsXaml
                     (ValueProxy<DataTemplate>?)null : 
                     new ValueProxy<DataTemplate>(DataTemplate(dataTemplate)));
 
-        public static ItemsControl DataGrid<T>(
+        public static DataGrid DataGrid<T>(
             ValueProxy<IEnumerable<T>> source,
             Func<DataGridColumnGenerator<T>, IEnumerable<DataGridColumn>>? columns = null)
         {
@@ -90,9 +98,38 @@ namespace Melville.Mvvm.CsXaml
             dataTemplate.DataType = typeof(T);
             return dataTemplate;
         }
+
+        public static ControlTemplate ControlTemplate<TControl>(
+            Func<TemplateBindingContext<TControl>, object> creator)
+        {
+            return TemplateGenerator.CreateControlTemplate(typeof(TControl),
+                () => creator(new TemplateBindingContext<TControl>()));
+        }
+        
+        public static SourcedBindingContext<T> TargetedBindingContext<T>(T target) => 
+          new SourcedBindingContext<T>(target);
+
         
         public static Style<T> Style<T>()=>new Style<T>(typeof(T));
         public static Style<T> Style<T>(Style basedOn)=>new Style<T>(typeof(T), basedOn);
+
+        public static Style<T> WithCodeStyle<T>(this Style<T> style, Action<T> code) where T : DependencyObject
+        {
+            style.Setters.Add(new Setter(CodeStyles.CodeStyleProperty, 
+                (Action<DependencyObject>)(d=>code((T)d))));
+            return style;
+        }
+
+        public static ContentPresenter ContentPresenter(
+            ValueProxy<object> content,
+            ValueProxy<DataTemplate>? contentTemplate = null,
+            ValueProxy<DataTemplateSelector>? selector = null,
+            ValueProxy<string>? stringFormat = null) =>
+            new ContentPresenter()
+                .WithContent(content)
+                .WithContentTemplate(contentTemplate)
+                .WithContentTemplateSelector(selector)
+                .WithContentStringFormat(stringFormat);
 
     }
 }

@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    x:Class="Melville.Mvvm.CsXaml.FilteredDataGrids.GridParts">
+    <ControlTemplate x:Key="GroupTemplate">
+        <Expander Header="{Binding Name}" IsExpanded="True">
+            <ItemsPresenter></ItemsPresenter>
+        </Expander>
+    </ControlTemplate>
+</ResourceDictionary>

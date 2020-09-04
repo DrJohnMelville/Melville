@@ -64,12 +64,12 @@ namespace Melville.Mvvm.CsXaml.ValueSource
         public static T WithTracing<T>(this T binding, PresentationTraceLevel level = PresentationTraceLevel.High) 
             where T : IValueProxy
         {
-            PresentationTraceSources.SetTraceLevel(binding, level);
+            PresentationTraceSources.SetTraceLevel(binding.InnermostValue(), level);
             return binding;
         }
     }
 
-    public struct ValueProxy<T> : IValueProxy
+    public readonly struct ValueProxy<T> : IValueProxy
     {
         public object Value { get; }
 

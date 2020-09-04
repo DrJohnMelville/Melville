@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Melville.Mvvm.CsXaml.ValueSource;
 using Melville.Mvvm.CsXaml.XamlBuilders;
 
@@ -10,9 +11,9 @@ namespace Melville.Mvvm.CsXaml
 {
     public struct DataGridColumnGenerator<T> : IBindingContext<T>
     {
-        public DataGridComboBoxColumn ComboBox<T>(
+        public DataGridComboBoxColumn ComboBox<TChoice>(
             ValueProxy<object>? value = null,
-            ValueProxy<IEnumerable<T>>? choices = null,
+            ValueProxy<IEnumerable<TChoice>>? choices = null,
             ValueProxy<object>? header = null,
             ValueProxy<string>? displayMemberPath = null) =>
             new DataGridComboBoxColumnWithBinding()
@@ -55,5 +56,7 @@ namespace Melville.Mvvm.CsXaml
             }
             return new ValueProxy<DataTemplate>(Create.DataTemplate<T>(i=>Create.TextBlock("No TemplateDefined")));
         }
+
+        public Binding FixBinding(Binding source) => source;
     }
 }

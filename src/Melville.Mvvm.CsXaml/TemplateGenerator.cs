@@ -7,6 +7,7 @@ using Melville.Mvvm.CsXaml.XamlBuilders;
 
 namespace Melville.Mvvm.CsXaml
 {
+    // stolen from:  https://www.codeproject.com/Tips/808808/Create-Data-and-Control-Templates-using-Delegates
     public static class TemplateGenerator
     {
         public static TPar WithResource<TPar>(this TPar elt, object key, object value) where TPar: FrameworkElement
@@ -18,11 +19,11 @@ namespace Melville.Mvvm.CsXaml
         {
             return WithResource(elt, value.DataTemplateKey, value);
         }
-
-        private sealed class TemplateGeneratorControl:
-            ContentControl
+        
+        private sealed class TemplateGeneratorControl: ContentControl
         {
-            internal static readonly DependencyProperty FactoryProperty = DependencyProperty.Register("Factory", typeof(Func<object>), typeof(TemplateGeneratorControl), new PropertyMetadata(null, _FactoryChanged));
+            internal static readonly DependencyProperty FactoryProperty = DependencyProperty.Register("Factory", 
+                typeof(Func<object>), typeof(TemplateGeneratorControl), new PropertyMetadata(null, _FactoryChanged));
 
             private static void _FactoryChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
             {
