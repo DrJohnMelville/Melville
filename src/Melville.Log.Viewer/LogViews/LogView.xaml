@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Melville.Log.Viewer.LogViews"
              xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
              xmlns:events="clr-namespace:Serilog.Events;assembly=Serilog"
+             xmlns:filteredDataGrids="clr-namespace:Melville.WpfControls.FilteredDataGrids;assembly=Melville.WpfControls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:LogViewModel}}">
     <Grid>
@@ -30,16 +31,17 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        <DataGrid Grid.Row="1" ItemsSource="{Binding Events}" IsReadOnly="True" AutoGenerateColumns="False">
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Events}" IsReadOnly="True" AutoGenerateColumns="False"
+                  filteredDataGrids:FilteredDataGrid.UseFilter="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="TimeStamp" SortMemberPath="TimeStamp">
+                <DataGridTemplateColumn Header="TimeStamp" SortMemberPath="TimeStamp" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:LogEntryViewModel">
                             <TextBlock Text="{Binding TimeStamp, StringFormat=MM/dd/yy HH:mm:ss}"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Level" SortMemberPath="Level">
+                <DataGridTemplateColumn Header="Level" SortMemberPath="Level" Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:LogEntryViewModel">
                             <TextBlock Text="{Binding Level}" Foreground="{Binding Level, 

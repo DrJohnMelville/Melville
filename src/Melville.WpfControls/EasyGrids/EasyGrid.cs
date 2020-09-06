@@ -75,6 +75,8 @@ namespace Melville.WpfControls.EasyGrids
       LayoutGrid();
       base.EndInit();
     }
+    
+    
 
     private void LayoutGrid()
     {

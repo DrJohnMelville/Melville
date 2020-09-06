@@ -1,4 +1,4 @@
-﻿namespace Melville.Mvvm.CsXaml.FilteredDataGrids
+﻿namespace Melville.WpfControls.FilteredDataGrids
 {
     public partial class GridParts
     {

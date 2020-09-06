@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Melville.Mvvm.CsXaml.FilteredDataGrids;
 using Melville.Mvvm.CsXaml.ValueSource;
 using Melville.Mvvm.CsXaml.XamlBuilders;
 using Melville.MVVM.Functional;
@@ -23,6 +22,14 @@ namespace Melville.Mvvm.CsXaml
                 .WithContent(content)
                 .WithIsEnabled(enabled)
                 .BindEvent(ButtonBase.ClickEvent, clickBinder);
+        public static MenuItem MenuItem(
+            ValueProxy<object> content,
+            EventBinder clickBinder,
+            ValueProxy<bool>? enabled = null) =>
+            new MenuItem()
+                .WithHeader(content)
+                .WithIsEnabled(enabled)
+                .BindEvent(System.Windows.Controls.MenuItem.ClickEvent, clickBinder);
 
         public static TextBlock TextBlock(
             ValueProxy<string> text, 

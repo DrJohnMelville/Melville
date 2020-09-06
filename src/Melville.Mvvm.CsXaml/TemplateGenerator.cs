@@ -15,11 +15,12 @@ namespace Melville.Mvvm.CsXaml
             elt.Resources.Add(key, value);
             return elt;
         }
-        public static TPar WithResource<TPar>(this TPar elt, DataTemplate value) where TPar : FrameworkElement
-        {
-            return WithResource(elt, value.DataTemplateKey, value);
-        }
-        
+        public static TPar WithResource<TPar>(this TPar elt, DataTemplate value) where TPar : FrameworkElement => 
+            WithResource(elt, value.DataTemplateKey, value);
+
+        public static TPar WithResource<TPar,TStyle>(this TPar elt, Style<TStyle> value) where TPar : FrameworkElement => 
+            WithResource(elt, typeof(TStyle), value);
+
         private sealed class TemplateGeneratorControl: ContentControl
         {
             internal static readonly DependencyProperty FactoryProperty = DependencyProperty.Register("Factory", 
@@ -28,7 +29,8 @@ namespace Melville.Mvvm.CsXaml
             private static void _FactoryChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
             {
                 var control = (TemplateGeneratorControl)instance;
-                var factory = (Func<object>)args.NewValue;
+                var factory = args.NewValue as Func<object>;
+                if (factory == null) return;
                 control.Content = factory();
             }
         }

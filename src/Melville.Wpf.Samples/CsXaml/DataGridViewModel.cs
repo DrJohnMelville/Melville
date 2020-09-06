@@ -5,9 +5,9 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using Melville.MVVM.BusinessObjects;
 using Melville.Mvvm.CsXaml;
-using Melville.Mvvm.CsXaml.ValueSource;
 using Melville.Mvvm.CsXaml.XamlBuilders;
-using Melville.Mvvm.CsXaml.FilteredDataGrids;
+using Melville.MVVM.Functional;
+using Melville.WpfControls.FilteredDataGrids;
 
 namespace Melville.Wpf.Samples.CsXaml
 {
@@ -39,7 +39,7 @@ namespace Melville.Wpf.Samples.CsXaml
             get => isOdd;
             set => AssignAndNotify(ref isOdd, value);
         }
-
+ 
         public RowData(string name, int sortOrder)
         {
             this.name = name;
@@ -63,8 +63,8 @@ namespace Melville.Wpf.Samples.CsXaml
             var dc = new BindingContext<DataGridViewModel>();
             AddChild(new StackPanel()
                 .WithChild(Create.TextBlock("Data Grid Demo", 18, HorizontalAlignment.Center).WithMargin(20))
-                .WithChild(Create.DataGrid(dc.BindList(i=>i.Data),
-                    DataGridRows).AsFilteredDataGrid()));
+                .WithChild(Create.DataGrid(dc.BindList(i=>i.Data),DataGridRows)
+                    .Fix(i=>FilteredDataGrid.SetUseFilter(i, true))));
         }
 
         private IEnumerable<DataGridColumn> DataGridRows(DataGridColumnGenerator<RowData> rgen)
@@ -74,7 +74,8 @@ namespace Melville.Wpf.Samples.CsXaml
                 rgen.Text(rgen.Bind(i => i.Name), "TextBox", true), 
                 rgen.Text("Foo", "Constant", true).WithForeground(Brushes.Blue), 
                 rgen.ComboBox<int>(rgen.Bind(i => i.SortOrder),
-                rgen.BindList(i => i.Choices), "ComboBoxes"), 
+                    rgen.BindList(i => i.Choices), "ComboBoxes")
+                    .WithWidth(new DataGridLength(1.0, DataGridLengthUnitType.Star)), 
                 rgen.CheckBox(rgen.Bind(i => i.IsOdd), "Checboxes"), 
                 rgen.Template("Template", DisplayTemplate, i=>Create.TextBox(i.Bind(j=>j.Name)))
             };  

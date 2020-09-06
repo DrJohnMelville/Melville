@@ -92,4 +92,15 @@ namespace Melville.Mvvm.CsXaml.XamlBuilders
             return source;
         }
     }
+
+    public class RelativeSourceBindingContext<T> : IBindingContext<T>
+    {
+        private RelativeSource relativeSource =
+            new RelativeSource(RelativeSourceMode.FindAncestor, typeof(T), 1); 
+        public Binding FixBinding(Binding source)
+        {
+            source.RelativeSource = relativeSource;
+            return source;
+        }
+    }
 }

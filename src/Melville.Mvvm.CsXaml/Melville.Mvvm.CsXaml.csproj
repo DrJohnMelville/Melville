@@ -17,12 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
       <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Page Update="FilteredDataGrids\GridParts.xaml">
-        <Generator></Generator>
-      </Page>
+      <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
     </ItemGroup>
 
 </Project>
