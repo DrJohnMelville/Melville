@@ -92,7 +92,7 @@ namespace Melville.WpfControls.FilteredDataGrids
         }
 
         #region Filtering
-        private string filterString;
+        private string filterString = "";
         public string FilterString
         {
             get => filterString;
@@ -109,15 +109,13 @@ namespace Melville.WpfControls.FilteredDataGrids
             if (filterStringValueFunc == null) return;
             CommitPendingEdits();
             dataGrid.Items.Filter =
-                ShouldFilter() ? (Predicate<object>) (AlwaysTruePredicate) : FilterFunc;
+                ShouldFilter() ? (Predicate<object>) (AlwaysTruePredicate) 
+                    : i => filterStringValueFunc(i).Contains(FilterString, StringComparison.CurrentCultureIgnoreCase);
         }
 
         private bool AlwaysTruePredicate(object i) => true;
 
         private bool ShouldFilter() => string.IsNullOrWhiteSpace(FilterString);
-
-        private bool FilterFunc(object i) =>
-            filterStringValueFunc(i).Contains(FilterString, StringComparison.CurrentCultureIgnoreCase);
 
         #endregion
     }
