@@ -9,22 +9,22 @@ namespace Melville.WpfControls.EasyGrids
 {
     public static class GridOperations
     {
-        public static readonly DependencyProperty RowsAndColsProperty = DependencyProperty.RegisterAttached(
-            "RowsAndCols", typeof(string), typeof(GridOperations),
-            new FrameworkPropertyMetadata(null, SetRowsAndCols));
+        public static readonly DependencyProperty ColsAndRowsProperty = DependencyProperty.RegisterAttached(
+            "ColsAndRows", typeof(string), typeof(GridOperations),
+            new FrameworkPropertyMetadata(null, SetColsAndRows));
 
-        public static string GetRowsAndCols(DependencyObject obj) => (string) obj.GetValue(RowsAndColsProperty);
+        public static string GetColsAndRows(DependencyObject obj) => (string) obj.GetValue(ColsAndRowsProperty);
 
-        public static void SetRowsAndCols(DependencyObject obj, string value) =>
-            obj.SetValue(RowsAndColsProperty, value);
+        public static void SetColsAndRows(DependencyObject obj, string value) =>
+            obj.SetValue(ColsAndRowsProperty, value);
 
-        private static void SetRowsAndCols(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void SetColsAndRows(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is Grid g && e.NewValue is string s)
-                AssignRowsAndCols(g, s);
+                AssignColsAndRows(g, s);
         }
 
-        private static void AssignRowsAndCols(Grid grid, string data)
+        private static void AssignColsAndRows(Grid grid, string data)
         {
             var split = data.Split('/');
             if (split.Length > 0)

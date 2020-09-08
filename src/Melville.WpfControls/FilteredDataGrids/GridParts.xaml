@@ -24,12 +24,9 @@
     
     <Style x:Key="ColumnHeaderGripperStyle"
            TargetType="{x:Type Thumb}">
-        <Setter Property="Width"
-                Value="8" />
-        <Setter Property="Background"
-                Value="Transparent" />
-        <Setter Property="Cursor"
-                Value="SizeWE" />
+        <Setter Property="Width" Value="8" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Cursor" Value="SizeWE" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Thumb}">
@@ -41,7 +38,7 @@
     </Style>
     
     <ControlTemplate x:Key="ColHeadTemplate" TargetType="{x:Type DataGridColumnHeader}">
-            <Grid x:Name="HeaderPanel" easyGrids:GridOperations.RowsAndCols="*,auto/auto" Background="White"
+            <Grid x:Name="HeaderPanel" easyGrids:GridOperations.ColsAndRows="*,auto/auto" Background="White"
                 DataContext="{bindings:MultiBind {x:Static filteredDataGrids:ColumnDriver.Creator},
           {Binding RelativeSource={x:Static RelativeSource.TemplatedParent}},
           {Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}
@@ -54,7 +51,7 @@
                               Grid.Column="1" Margin="5 0 3 0"
                               Visibility="{bindings:MultiBind {x:Static filteredDataGrids:ColumnDriver.OrConv},
                               {Binding Header.Column.SortMemberPath},
-                              {Binding Header.Content}, FallbackValue=Visibility.Collapsed}"/>
+                              {Binding Header.Content}, FallbackValue=2}"/>
                 <Thumb x:Name="PART_LeftHeaderGripper"
                        HorizontalAlignment="Left"
                        Style="{StaticResource ColumnHeaderGripperStyle}" />
@@ -71,7 +68,14 @@
                             <MenuItem Header="Group / Ungroup" Click="{eventBindings:EventBinding GroupBy}"/>
                             <Rectangle Height="1" Fill="Black"/>
                             <TextBlock>Filter:</TextBlock>
-                            <TextBox Text="{Binding FilterString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <easyGrids:EasyGrid easyGrids:GridOperations.ColsAndRows="*,auto/auto">
+                                <TextBox Text="{Binding FilterString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <ToggleButton ToolTip="Interpret Filter as a Regular Expression"
+                                              IsChecked="{Binding FilterByRegex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              >R</ToggleButton>
+                            </easyGrids:EasyGrid>
+                            <MenuItem wpfHacks:VisibilityHack.CollapseUnless="{Binding FilterByRegex}"
+                                      Click="{eventBindings:EventBinding GroupByRegexCapture}" Header="Group by Last Capture"/>
                         </StackPanel>
                     </Border>
                 </Popup>

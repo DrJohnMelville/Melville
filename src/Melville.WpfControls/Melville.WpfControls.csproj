@@ -8,13 +8,13 @@
 
 
   <PropertyGroup>
-    <Version>0.2.4</Version>
+    <Version>0.2.5</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPFControls</Title>
     <PackageDescription>John Melville's favorite WPF controls</PackageDescription>
     <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <generatepackageonbuild>true</generatepackageonbuild>
   </PropertyGroup>
 
   <ItemGroup>
