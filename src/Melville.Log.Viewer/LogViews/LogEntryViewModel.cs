@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Data;
 using System.Windows.Media;
-using Melville.WpfControls.Bindings;
+using Melville.MVVM.Wpf.Bindings;
 using Serilog.Events;
 
 namespace Melville.Log.Viewer.LogViews

@@ -3,9 +3,8 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB.Pedal;
+using Melville.MVVM.Wpf.Bindings;
 using Melville.MVVM.Wpf.ViewFrames;
-using Melville.WpfControls.Bindings;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace Melville.Wpf.Samples.TranscriptionPedal
 {
@@ -59,4 +58,4 @@ namespace Melville.Wpf.Samples.TranscriptionPedal
         public static readonly IValueConverter FillConverter = LambdaConverter.Create(
             (bool down) => down ? Brushes.Green:Brushes.Red);
     }
-}
+} 

@@ -1,5 +1,11 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
+using Melville.MVVM.Wpf.Bindings;
+using Melville.MVVM.Wpf.EventBindings;
+using Melville.MVVM.Wpf.WpfHacks;
+using Melville.WpfControls.EasyGrids;
 
 namespace Melville.WpfControls.FilteredDataGrids
 {
