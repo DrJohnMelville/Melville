@@ -27,7 +27,7 @@ namespace Melville.Mvvm.CsXaml
             ValueProxy<object>? header = null,
             ValueProxy<bool>? isReadOnly = null) =>
             new DataGridCheckBoxColumn()
-                .WithBinding(value.ForceBindingBase())
+                .WithBinding(value?.ForceBindingBase())
                 .WithHeader(header)
                 .WithIsReadOnly(isReadOnly);
         public DataGridTextColumn Text(
