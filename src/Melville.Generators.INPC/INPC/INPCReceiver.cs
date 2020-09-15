@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.INPC
         public Dictionary<ClassDeclarationSyntax, ClassFieldRecord> ClassesToAugment { get; } =
             new Dictionary<ClassDeclarationSyntax, ClassFieldRecord>();
         private SearchForAttribute autoNotifyAttributeSearcher = 
-            new SearchForAttribute("Melville.Generated.AutoNotifyAttribute");
+            new SearchForAttribute("Melville.INPC.AutoNotifyAttribute");
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {

@@ -1,6 +1,6 @@
 ﻿using Melville.TestHelpers.InpcTesting;
 using Xunit;
-using Melville.Generated;
+using Melville.INPC;
 
 namespace Melville.Generators.INPC.Test.IntegrationTests
 {

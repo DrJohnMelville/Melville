@@ -39,7 +39,7 @@ namespace Melville.Generators.INPC.INPC
         {
             var generatedRoot = MostGeneralAncestorThatWillBeGenerated(target) ?? target;
             var intName = ExplicitlyDeclaredInterfaceName(generatedRoot)??
-                          "Melville.Generated.IExternalNotifyPropertyChanged";
+                          "Melville.INPC.IExternalNotifyPropertyChanged";
             return NeedToImplementINPC(target, generatedRoot, intName)
                 ? new DeclareInterfaceStrategy(intName)
                 : new UseInterfaceStrategy(intName);

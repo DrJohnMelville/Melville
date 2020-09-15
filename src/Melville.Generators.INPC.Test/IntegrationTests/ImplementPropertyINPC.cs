@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
-using Melville.Generated;
+using Melville.INPC;
 
 namespace Melville.Generators.INPC.Test.IntegrationTests
 {
@@ -109,7 +109,7 @@ namespace Melville.Generators.INPC.Test.IntegrationTests
         [Fact]
         public void NotUsingBuiltInInerface()
         {
-            Assert.False(this is Melville.Generated.IExternalNotifyPropertyChanged);
+            Assert.False(this is Melville.INPC.IExternalNotifyPropertyChanged);
         }
     }
     public partial class DoNotOverrideCustomImplementation : ICustomImplementationInterface

@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.Test.UnitTests
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
 namespace Outer{
 namespace NM
 {
@@ -29,7 +29,7 @@ namespace NM
         public void MultipleWrappingClasses()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
-                @"using Melville.Generated;
+                @"using Melville.INPC;
   public partial class C
   {
     public partial class D{ 
@@ -38,7 +38,7 @@ namespace NM
             tb.AssertNoDiagnostics();
             tb.FileContains("D.GeneratedINPC.cs", "public partial class C");
             tb.FileContains("D.GeneratedINPC.cs",
-                "public partial class D : Melville.Generated.IExternalNotifyPropertyChanged");
+                "public partial class D : Melville.INPC.IExternalNotifyPropertyChanged");
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace NM
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
   public partial class C
   { 
     [AutoNotify] private int intProp,ip2;
@@ -62,7 +62,7 @@ using Melville.Generated;
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
   public partial class C
   { 
      private int intProp,ip2;
@@ -92,7 +92,7 @@ using Melville.Generated;
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
   public partial class C
   { 
      private int intProp;
@@ -108,11 +108,11 @@ using Melville.Generated;
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
   public partial class C
   { 
      private int intProp;
-     [Melville.Generated.AutoNotify] private int ip2;
+     [Melville.INPC.AutoNotify] private int ip2;
   }");
             tb.AssertNoDiagnostics();
             tb.FileContains("C.GeneratedINPC.cs", "public System.Int32 Ip2");
@@ -126,7 +126,7 @@ using Melville.Generated;
   public partial class C
   { 
      private int intProp;
-     [Melville.Generated.AutoNotify] private int ip2;
+     [Melville.INPC.AutoNotify] private int ip2;
   }");
             tb.AssertNoDiagnostics();
             tb.FileContains("C.GeneratedINPC.cs", "public System.Int32 Ip2");
@@ -141,7 +141,7 @@ using Melville.Generated;
   public partial class C
   { 
      private int intProp;
-     [Melville.Generated.AutoNotifyAttribute] private int ip2;
+     [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }");
             tb.AssertNoDiagnostics();
             tb.FileContains("C.GeneratedINPC.cs", "public System.Int32 Ip2");
@@ -157,7 +157,7 @@ using Melville.Generated;
   { 
      public void OnPropertyChanged(string name){}
      private int intProp;
-     [Melville.Generated.AutoNotifyAttribute] private int ip2;
+     [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }");
             tb.AssertNoDiagnostics();
             tb.FileDoesNotContain("C.GeneratedINPC.cs", "IExternalNotifyPropertyChange");
@@ -174,7 +174,7 @@ using Melville.Generated;
   public partial class C:INot
   {{ 
      private int intProp;
-     [Melville.Generated.AutoNotifyAttribute] private int ip2;
+     [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}");
             tb.AssertNoDiagnostics();
             tb.FileContains("C.GeneratedINPC.cs", "void INot.OnPropertyChanged(string");
@@ -193,7 +193,7 @@ using Melville.Generated;
   {{ 
      void INot.OnPropertyChanged(string name){{}}
      private int intProp;
-     [Melville.Generated.AutoNotifyAttribute] private int ip2;
+     [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}}}");
             tb.AssertNoDiagnostics();
             tb.FileContains("C.GeneratedINPC.cs", "((NS.INot)this).OnPropertyChanged(\"Ip2\")");
@@ -212,7 +212,7 @@ using Melville.Generated;
   public partial class C: A
   {{ 
      private int intProp;
-     [Melville.Generated.AutoNotifyAttribute] private int ip2;
+     [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}}}");
             tb.AssertNoDiagnostics();
             tb.FileDoesNotContain("C.GeneratedINPC.cs", "IExternalNotifyPropertyChange");
@@ -223,7 +223,7 @@ using Melville.Generated;
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
   public partial class C
   { 
     [AutoNotify] private int ip2;
@@ -231,10 +231,10 @@ using Melville.Generated;
 ");
             tb.AssertNoDiagnostics();
             tb.FileEqual("C.GeneratedINPC.cs",
-                @"public partial class C : Melville.Generated.IExternalNotifyPropertyChanged
+                @"public partial class C : Melville.INPC.IExternalNotifyPropertyChanged
 {
     public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-    void Melville.Generated.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)
+    void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)
     {
         this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
     }
@@ -246,7 +246,7 @@ using Melville.Generated;
             var ___LocalOld = this.ip2;
             this.ip2 = value;
             WhenIp2Changes(___LocalOld, value);
-            ((Melville.Generated.IExternalNotifyPropertyChanged)this).OnPropertyChanged(""Ip2"");
+            ((Melville.INPC.IExternalNotifyPropertyChanged)this).OnPropertyChanged(""Ip2"");
         }
     }
     partial void WhenIp2Changes(System.Int32 oldValue, System.Int32 newValue);
@@ -259,7 +259,7 @@ using Melville.Generated;
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"
-using Melville.Generated;
+using Melville.INPC;
 namespace NM
 {
   public class C
@@ -274,7 +274,7 @@ namespace NM
         public void InheritsFromAnotherGeneratedType()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
-                @"using Melville.Generated;
+                @"using Melville.INPC;
     public partial class ParentINPC
     {
         [AutoNotify] private int x;
@@ -291,7 +291,7 @@ namespace NM
         public void AncestorImplementsOnPropertyChanged()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
-                @" using Melville.Generated;  
+                @" using Melville.INPC;  
   public partial class ParentINPC
     {
         protected void OnPropertyChanged(string property) {}
@@ -308,7 +308,7 @@ namespace NM
         public void ClassImplementsOnPropertyChanged()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
-                @"using Melville.Generated;
+                @"using Melville.INPC;
   public partial class ImplementInheritedINPC
     {
         protected void OnPropertyChanged(string property) {}
@@ -322,7 +322,7 @@ namespace NM
         public void PropegateToReadOnlyPropertyImpl()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
-                @"using Melville.Generated;
+                @"using Melville.INPC;
   public partial class ImplementInheritedINPC
     {
         protected void OnPropertyChanged(string property) {}
@@ -337,7 +337,7 @@ namespace NM
         public void DoNotPropegateOtherCalls()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
-                @"using Melville.Generated;
+                @"using Melville.INPC;
   public partial class ImplementInheritedINPC
     {
         protected void OnPropertyChanged(string property) {}
