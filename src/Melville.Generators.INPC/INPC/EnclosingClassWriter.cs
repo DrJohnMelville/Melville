@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Melville.Generators.INPC.Common.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -8,6 +9,7 @@ namespace Melville.Generators.INPC.INPC
 {
     public static class EnclosingClassWriter
     {
+
         public static IDisposable GenerateEnclosingClasses(this CodeWriter writer, SyntaxNode node,
             string innermostSuffix) =>
             writer.EnclosingBlockWriter<ClassDeclarationSyntax>(node, 
@@ -24,8 +26,10 @@ namespace Melville.Generators.INPC.INPC
         private static void CopyClassDeclarationBeforeOpeningBrace(CodeWriter writer, 
             ClassDeclarationSyntax classDecl, string suffix)
         {
+            const int CSharpAttributeListKind = 8847;
             foreach (var token in classDecl.ChildNodesAndTokens())
             {
+                if (token.RawKind == CSharpAttributeListKind) continue;
                 if (token == classDecl.BaseList) continue;
                 if (token == classDecl.OpenBraceToken) break;
                 writer.Append(token.ToString());

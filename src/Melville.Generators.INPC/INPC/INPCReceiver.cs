@@ -24,6 +24,10 @@ namespace Melville.Generators.INPC.INPC
                       autoNotifyAttributeSearcher.HasAttribute(prop))
             {
                 GetOrCreateImplementer(cds2).AddProperty(prop);
+            }else if (syntaxNode is ClassDeclarationSyntax declClass &&
+                      autoNotifyAttributeSearcher.HasAttribute(declClass))
+            {
+                GetOrCreateImplementer(declClass);
             }
         }
 

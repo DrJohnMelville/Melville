@@ -70,6 +70,22 @@ using Melville.INPC;
             tb.AssertNoDiagnostics();
             tb.NoSuchFile("C.GeneratedINPC.cs");
         }
+        [Fact]
+        public void ElaborateMarkedClass()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                @"
+using Melville.INPC;
+  [AutoNotify]
+  public partial class C
+  { 
+     private int intProp,ip2;
+  }");
+            tb.AssertNoDiagnostics();
+            tb.FileDoesNotContain("C.GeneratedINPC.cs", "AutoNotify");
+            tb.FileContains("C.GeneratedINPC.cs", 
+                "void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)");
+        }
 
         [Fact]
         public void DoNotTouchClassWithWrongAttribute()
