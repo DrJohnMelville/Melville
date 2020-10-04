@@ -66,29 +66,17 @@ namespace Melville.MVVM.Wpf.ViewFrames
 
     private static UIElement CreateFromConvention(object model, DependencyObject frame)
     {
-      var viewTypeName = ViewTypeNameFromModel(model);
-      if (viewTypeName == null) return DisplayMessage($"{model.GetType()} does not contain \"ViewModel\".");
-      var targetType = model.GetType().Assembly.GetType(viewTypeName);
-      if (targetType == null) return DisplayMessage($"Could Not Find Type {viewTypeName}.");
-      if (!typeof(UIElement).IsAssignableFrom(targetType)) return DisplayMessage($"{viewTypeName} is not a UIElement.");
-      return CreateView(targetType, frame);
+      var container = DiIntegration.SearchForContainer(frame);
+      return (GetMappingConvention(container) is {} convention)?
+        convention.ViewFromViewModel(model, container) :
+        DisplayMessage("Could not find view mapping convention");
     }
 
-    private static UIElement CreateView(Type targetType, DependencyObject frame)
-    {
-      return (UIElement) (DiIntegration.SearchForContainer(frame).Get(targetType) ??
-        DisplayMessage("DI container failed to create type "+ targetType.Name));
-    }
+    private static IViewMappingConvention? GetMappingConvention(IDIIntegration container) => 
+      container.Get(typeof(IViewMappingConvention)) as IViewMappingConvention;
+
 
     private static TextBlock DisplayMessage(string message, Brush? foreground = null) =>
       new TextBlock {Text = message, Foreground = foreground ?? Brushes.Red};
-
-    private static string? ViewTypeNameFromModel(object model)
-    {
-      var modelName = model.GetType().ToString();
-      var nonGeneric = Regex.Match(modelName, @"^([A-Za-z\.0-9_\+]+)").Groups[1].Value;
-      var viewTypeName = nonGeneric.Replace("ViewModel", "View");
-      return modelName.Equals(viewTypeName, StringComparison.Ordinal) ? null : viewTypeName;
-    }
   }
 }

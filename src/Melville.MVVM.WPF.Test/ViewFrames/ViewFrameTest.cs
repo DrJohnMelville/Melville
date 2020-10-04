@@ -11,10 +11,21 @@ namespace Melville.MVVM.WPF.Test.ViewFrames
 {
   public sealed class ViewFrameTest
   {
+    private readonly Mock<IDIIntegration> creator = new Mock<IDIIntegration>();
+    private readonly ViewFrame sut;
+    
+
+    public ViewFrameTest()
+    {
+      sut = new ViewFrame();
+      creator.Setup(i => i.Get(typeof(IViewMappingConvention))).Returns(new ViewMappingConvention());
+      DiIntegration.SetContainer(sut, creator.Object);
+
+    }
+
     [StaFact]
     public void GenerateChildNull()
     {
-      var sut = new ViewFrame();
 #if DEBUG
       AssertTextBox(sut, "Content Never Set");
 #else
@@ -48,11 +59,8 @@ namespace Melville.MVVM.WPF.Test.ViewFrames
     public void FindViewModel()
     {
       var data = new AViewModel();
-      var sut = new ViewFrame();
 
-      var creator = new Mock<IDIIntegration>();
       creator.Setup(i => i.Get(typeof(AView))).Returns(new AView());
-      DiIntegration.SetContainer(sut, creator.Object);
 
       sut.Content = data;
       
@@ -65,7 +73,7 @@ namespace Melville.MVVM.WPF.Test.ViewFrames
     [StaFact]
     public void CannotFindClass()
     {
-      var sut = new ViewFrame {Content = new BViewModel()};
+      sut.Content = new BViewModel();
       AssertTextBox(sut, "Could Not Find Type Melville.MVVM.WPF.Test.ViewFrames.ViewFrameTest+BView.");
     }
   }
