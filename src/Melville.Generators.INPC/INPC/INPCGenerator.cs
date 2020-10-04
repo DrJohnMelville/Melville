@@ -9,12 +9,12 @@ namespace Melville.Generators.INPC.INPC
     [Generator]
     public class INPCGenerator : ISourceGenerator
     {
-        public void Initialize(InitializationContext context)
+        public void Initialize(GeneratorInitializationContext context)
         {
             context.RegisterForSyntaxNotifications(() => new INPCReceiver());
         }
 
-        public void Execute(SourceGeneratorContext context)
+        public void Execute(GeneratorExecutionContext context)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        private void InjectINPCProperties(SourceGeneratorContext context)
+        private void InjectINPCProperties(GeneratorExecutionContext context)
         {
             if (!(context.SyntaxReceiver is INPCReceiver receiver))
                 throw new InvalidProgramException("Receiver is the wrong type");

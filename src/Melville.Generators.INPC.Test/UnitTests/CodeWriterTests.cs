@@ -6,7 +6,7 @@ namespace Melville.Generators.INPC.Test.UnitTests
 {
     public class CodeWriterTests
     {
-        private readonly CodeWriter sut = new CodeWriter(new SourceGeneratorContext());
+        private readonly CodeWriter sut = new CodeWriter(new GeneratorExecutionContext());
         [Fact]
         public void TestName()
         {

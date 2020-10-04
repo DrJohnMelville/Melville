@@ -7,9 +7,9 @@ namespace Melville.Generators.INPC.Common.CodeWriters
 {
     public class CodeWriter
     {
-        private readonly SourceGeneratorContext context;
+        private readonly GeneratorExecutionContext context;
         private readonly IndentedStringBuilder target = new IndentedStringBuilder();
-        public CodeWriter(SourceGeneratorContext context)
+        public CodeWriter(GeneratorExecutionContext context)
         {
             this.context = context;
         }
