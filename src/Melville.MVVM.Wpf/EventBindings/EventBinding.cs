@@ -59,11 +59,11 @@ namespace Melville.MVVM.Wpf.EventBindings
         MethodInfo m => new SearchTreeEventTarget(MethodName, Parameters, MaxCalls).CreateDelegate(m.GetParameters()[1]
           .ParameterType),
         
-        PropertyInfo pr when pr.PropertyType.IsAssignableFrom(typeof(ICommand)) => new SearchTreeCommandTarget(
-          (DependencyObject)targetInfo.TargetObject, MethodName, Parameters, MaxCalls),
+        PropertyInfo pr when pr.PropertyType.IsAssignableFrom(typeof(ICommand)) => 
+          new SearchTreeCommandTarget((DependencyObject)targetInfo.TargetObject, MethodName, Parameters, MaxCalls),
 
-        DependencyProperty dp when dp.PropertyType.IsAssignableFrom(typeof(ICommand)) => new SearchTreeCommandTarget(
-          (DependencyObject)targetInfo.TargetObject, MethodName, Parameters, MaxCalls),
+        DependencyProperty dp when dp.PropertyType.IsAssignableFrom(typeof(ICommand)) => 
+          new SearchTreeCommandTarget((DependencyObject)targetInfo.TargetObject, MethodName, Parameters, MaxCalls),
         _ => throw new InvalidDataException("Must bind to a routedEvent or command property")
       };
     }

@@ -1,6 +1,7 @@
 ﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.CsXaml;
+using Melville.Wpf.Samples.DiBinding;
 using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
@@ -14,7 +15,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<DataGridViewModel>();
+            SearchTreeForSample<DiBindingViewModel>();
 
         public SampleDirectory()
         {
@@ -44,7 +45,8 @@ namespace Melville.Wpf.Samples
                 Node("Event Binding",
                     Page<CallMethodOnApplicationViewModel>("Call Method On Application"),
                     Page<ScopedMethodCallViewModel>("Call Methods in a scope"),
-                    Page<WebView2ViewModel>("WebView2 Events")
+                    Page<WebView2ViewModel>("WebView2 Events"),
+                    Page<DiBindingViewModel>("DI Binding")
                 ),
                 Node("Statistics",
                     Page<LinqGraphViewModel>("LinqPad Graphics Module"))
