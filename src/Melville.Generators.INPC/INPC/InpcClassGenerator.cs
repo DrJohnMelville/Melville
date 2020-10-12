@@ -16,7 +16,7 @@ namespace Melville.Generators.INPC.INPC
         public InpcClassGenerator(
             ClassToImplement target, 
             INotifyImplementationStategy notifyStrategy, 
-            SourceGeneratorContext context)
+            GeneratorExecutionContext context)
         {
             Target = target;
             this.notifyStrategy = notifyStrategy;

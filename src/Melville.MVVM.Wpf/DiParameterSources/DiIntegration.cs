@@ -15,10 +15,11 @@ namespace Melville.MVVM.Wpf.DiParameterSources
         public static void SetContainer(DependencyObject obj, IDIIntegration value) =>
             obj.SetValue(CoontainerProperty, value);
         
-        public static IDIIntegration SearchForContainer(DependencyObject obj)
+        public static IDIIntegration SearchForContainer(DependencyObject? obj)
         {
-            var ret = GetContainer(obj);
-            return ret is EmptyScopeFactory ? SearchApplicationRoot(Application.Current) : ret;
+            if (obj != null && GetContainer(obj) is {} cont && !(cont is EmptyScopeFactory))
+                return cont;
+            return SearchApplicationRoot(Application.Current);
         }
 
         public static void AttachDiRoot(this Application app, IDIIntegration value) => 

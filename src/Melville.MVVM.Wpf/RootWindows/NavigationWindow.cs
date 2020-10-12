@@ -7,6 +7,12 @@ namespace Melville.MVVM.Wpf.RootWindows
         void NavigateTo(object content);
     }
 
+    public interface IAcceptNavigationNotifications
+    {
+        void NavigatedTo();
+        void NavigatedAwayFrom();
+    }
+
     public class NavigationWindow : NotifyBase, INavigationWindow
     {
         private object content = "No Content";
@@ -18,7 +24,9 @@ namespace Melville.MVVM.Wpf.RootWindows
 
         public void NavigateTo(object target)
         {
+            (Content as IAcceptNavigationNotifications)?.NavigatedAwayFrom();
             Content = target;
+            (Content as IAcceptNavigationNotifications)?.NavigatedTo();
         }
     }
 }

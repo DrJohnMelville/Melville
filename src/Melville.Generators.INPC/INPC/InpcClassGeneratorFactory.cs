@@ -24,7 +24,7 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        public InpcClassGenerator CreateGenerator(ClassToImplement target, SourceGeneratorContext context) => 
+        public InpcClassGenerator CreateGenerator(ClassToImplement target, GeneratorExecutionContext context) => 
             new InpcClassGenerator(target, StrategyForClass(target.TypeInfo), context);
 
         private INotifyImplementationStategy StrategyForClass(INamedTypeSymbol target)
