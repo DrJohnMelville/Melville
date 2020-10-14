@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Melville.MVVM.AdvancedLists;
@@ -21,7 +22,18 @@ namespace Melville.MVVM.Wpf.RootWindows
             if (Dispatcher == null) throw new InvalidProgramException("Dispatcher should not be null");
             UiThreadBuilder.RunOnUiThread = Dispatcher.Invoke;
             DataContext = viewModel;
+            PreviewMouseDown += CheckForBackNavigateButton;
         }
+
+        private void CheckForBackNavigateButton(object sender, MouseButtonEventArgs e)
+        {
+            if (!(IsBackNavigationButton(e) && DataContext is INavigationWindow navWin)) return;
+            navWin.NavigateToPriorPage();
+            e.Handled = true;
+        }
+
+        private static bool IsBackNavigationButton(MouseButtonEventArgs e) => 
+            e.ChangedButton == MouseButton.XButton1 && e.ClickCount == 1;
 
         /// <summary>
         /// To set the window icon include an ICO file in the project as a RESOURCE.
