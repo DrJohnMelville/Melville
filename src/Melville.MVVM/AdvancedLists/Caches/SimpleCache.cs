@@ -29,13 +29,10 @@ namespace Melville.MVVM.AdvancedLists.Caches
 
     private bool TryGet(TKey key, out (TKey, TResult) result)
     {
-      foreach (var candidate in data)
+      foreach (var candidate in data.Where(candidate => candidate.Item1?.Equals(key) ?? false))
       {
-        if (candidate.Item1.Equals(key))
-        {
-          result = candidate;
-          return true;
-        }
+        result = candidate;
+        return true;
       }
       result = default;
       return false;
