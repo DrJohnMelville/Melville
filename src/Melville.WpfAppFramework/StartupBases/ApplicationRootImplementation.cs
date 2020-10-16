@@ -18,8 +18,7 @@ namespace Melville.WpfAppFramework.StartupBases
         /// <param name="startUp"></param>
         public static void Run(StartupBase startUp)
         {
-            var ioc = startUp.Create();
-            var app = Application(ioc);
+            var app = Application(startUp.Create());
             app.Run();
         }
         
