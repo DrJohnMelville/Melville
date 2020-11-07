@@ -23,7 +23,10 @@ namespace Melville.Generators.INPC.Test.IntegrationTests
         [Fact]
         public void TestName()
         {
-            Assert.Null(complexProp);
+            Assert.Null(ComplexProp);
+            Assert.Equal(ComplexProp, complexProp); // will always succeed, but if it compiles, they
+              // the two items are the same static type
+
         }
     }
 

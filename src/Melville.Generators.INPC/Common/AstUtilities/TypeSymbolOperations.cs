@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Text;
-using Melville.Generators.INPC.Common.CodeWriters;
+﻿using Melville.Generators.INPC.Common.CodeWriters;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.Common.AstUtilities
