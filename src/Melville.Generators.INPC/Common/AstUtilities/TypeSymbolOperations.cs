@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Melville.Generators.INPC.Common.CodeWriters;
@@ -24,8 +25,44 @@ namespace Melville.Generators.INPC.Common.AstUtilities
         private static void AppendSymbolName(ITypeSymbol symbol,
             Action<string> appender)
         {
-            WriteContainingSymbolNames(appender, symbol);
-            appender(symbol.Name);
+            appender(symbol.ToString());
+            // WriteContainingSymbolNames(appender, symbol);
+            // appender(symbol.Name);
+            // AppendTypeSuffixes(symbol as INamedTypeSymbol, appender);
+        }
+
+        private static void AppendTypeSuffixes(INamedTypeSymbol? symbol, Action<string> appender)
+        {
+            if (symbol == null) return;
+            TryAppendTypeArgumentList(symbol.TypeArguments, appender);
+            TryAppendNullableMark(symbol, appender);
+        }
+
+        private static void TryAppendNullableMark(INamedTypeSymbol symbol, Action<string> appender)
+        {
+            if (symbol.NullableAnnotation == NullableAnnotation.Annotated)
+            {
+                appender("?");
+            }
+        }
+
+        private static void TryAppendTypeArgumentList(
+            ImmutableArray<ITypeSymbol> arguments, Action<string> appender)
+        {
+            if (arguments.Length == 0) return;
+            appender("<");
+            CommaSeparatedSymbolList(arguments, appender);
+            appender(">");
+        }
+
+        private static void CommaSeparatedSymbolList(ImmutableArray<ITypeSymbol> arguments, Action<string> appender)
+        {
+            AppendSymbolName(arguments[0], appender);
+            foreach (var argument in arguments.Skip(1))
+            {
+                appender(",");
+                AppendSymbolName(argument, appender);
+            }
         }
 
         private static void WriteContainingSymbolNames(Action<string> appender, ITypeSymbol symbol)
