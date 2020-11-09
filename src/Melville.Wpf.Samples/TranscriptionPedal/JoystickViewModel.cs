@@ -10,7 +10,7 @@ namespace Melville.Wpf.Samples.TranscriptionPedal
         public JoystickViewModel(IJoystick stick)
         {
             Stick = stick;
-            Stick.StickChanged += (s, e) => OnPropertyChanged(nameof(Stick));
+            Stick.StateChanged += (s, e) => OnPropertyChanged(nameof(Stick));
         }
     }
 }
