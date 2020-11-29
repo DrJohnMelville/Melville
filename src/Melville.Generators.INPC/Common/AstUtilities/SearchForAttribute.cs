@@ -47,8 +47,7 @@ namespace Melville.Generators.INPC.Common.AstUtilities
             var oldList = new List<string> {attributeName};
             foreach (var usingList in UsingDeclarationListsForSurroundingScopes(context))
             {
-                IList<string> newList = usingList.Select(i => i.Name.ToString())
-                    .SelectMany(ns => oldList, (ns, item) => string.Concat(ns, ".", item))
+                IList<string> newList = Enumerable.SelectMany<string, string, string>(usingList.Select(i => i.Name.ToString()), ns => oldList, (ns, item) => string.Concat((string) ns, (string) ".", (string) item))
                     .ToList();
                 foreach (var item in newList)
                 {
