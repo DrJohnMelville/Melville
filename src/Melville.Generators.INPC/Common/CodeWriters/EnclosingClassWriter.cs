@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
-using Melville.Generators.INPC.Common.CodeWriters;
+using Melville.Generators.INPC.INPC;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.INPC
+namespace Melville.Generators.INPC.Common.CodeWriters
 {
     public static class EnclosingClassWriter
     {

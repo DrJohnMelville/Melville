@@ -8,7 +8,7 @@
 
 
   <PropertyGroup>
-    <Version>0.2.7</Version>
+    <Version>0.2.8</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPFControls</Title>
@@ -20,9 +20,6 @@
   <ItemGroup>
     <None Remove="Themes\Generic.xaml" />
     <None Remove="TimePickers\DateTimePicker.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Toolkit.Wpf.UI.Controls.WebView" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />

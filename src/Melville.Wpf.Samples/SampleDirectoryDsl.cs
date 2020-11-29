@@ -12,7 +12,7 @@ namespace Melville.Wpf.Samples
         protected ISampleTreeItem Node(string name, params ISampleTreeItem[] children) => 
             new SampleTreeNode(name, children);
         protected ISampleTreeItem Page<T>(string name) => new SampleTreeItemViewModel<T>(name);
-        protected ISampleTreeItem SearchTreeForSample<T>() =>
+        protected ISampleTreeItem? SearchTreeForSample<T>() =>
             Items.SelectRecursive(i => i.Children)
                 .OfType<SampleTreeItemViewModel<T>>()
                 .FirstOrDefault();

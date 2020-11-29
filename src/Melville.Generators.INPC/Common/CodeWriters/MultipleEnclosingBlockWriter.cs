@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Melville.Generators.INPC.Common.CodeWriters;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.INPC
+namespace Melville.Generators.INPC.Common.CodeWriters
 {
     public static class MultipleEnclosingBlockWriter
     {
@@ -14,7 +13,7 @@ namespace Melville.Generators.INPC.INPC
         public static IDisposable EnclosingBlockWriter<T>(this CodeWriter writer, SyntaxNode node,
             Action<CodeWriter, T> writeAncestorBlock, Action<CodeWriter, T> writeCurrentBlock) where T : SyntaxNode
         {
-            List<IDisposable> contexts = new List<IDisposable>();
+            List<IDisposable> contexts = new();
             foreach (var ns in node.Ancestors().OfType<T>().Reverse())
             {
                 writeAncestorBlock(writer,ns);
