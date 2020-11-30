@@ -64,18 +64,18 @@ namespace Melville.Generators.INPC.Test.UnitTests
 
         public void FileContains(string fileName, string fileContent)
         {
-            Assert.Contains(fileContent, TreeFromName(fileName).GetRoot().ToString());
+            Assert.Contains(fileContent, TreeFromName(fileName).ToString());
             
         }
         public void FileDoesNotContain(string fileName, string fileContent)
         {
-            Assert.DoesNotContain(fileContent, TreeFromName(fileName).GetRoot().ToString());
+            Assert.DoesNotContain(fileContent, TreeFromName(fileName).ToString());
             
         }
 
         public void FileEqual(string fileName, string fileContent)
         {
-            Assert.Equal(fileContent, TreeFromName(fileName).GetRoot().ToString());
+            Assert.Equal(fileContent, TreeFromName(fileName).ToString());
             
         }
 

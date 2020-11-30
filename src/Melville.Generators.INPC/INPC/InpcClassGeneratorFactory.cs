@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Melville.Generators.INPC.Common.AstUtilities;
+using Melville.Generators.Tools.AstUtilities;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.INPC

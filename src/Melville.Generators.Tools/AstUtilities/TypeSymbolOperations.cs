@@ -1,7 +1,7 @@
-﻿using Melville.Generators.INPC.Common.CodeWriters;
+﻿using Melville.Generators.Tools.CodeWriters;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.Common.AstUtilities
+namespace Melville.Generators.Tools.AstUtilities
 {
     public static class TypeSymbolOperations
     {

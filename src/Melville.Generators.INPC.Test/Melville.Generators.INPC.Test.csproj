@@ -8,7 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
-      <ProjectReference Include="..\Melville.Generators.Tools\Melville.Generators.Tools.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true"/>
+      <ProjectReference Include="..\Melville.Generators.Tools\Melville.Generators.Tools.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
       <ProjectReference Include="..\Melville.TestHelpers\Melville.TestHelpers.csproj" />
     </ItemGroup>
 
