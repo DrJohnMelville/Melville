@@ -7,13 +7,12 @@ namespace Melville.Generators.INPC.INPC
 {
     public class INPCReceiver : ISyntaxReceiver
     {
-        public Dictionary<ClassDeclarationSyntax, ClassFieldRecord> ClassesToAugment { get; } =
-            new Dictionary<ClassDeclarationSyntax, ClassFieldRecord>();
-        private SearchForAttribute autoNotifyAttributeSearcher = 
-            new SearchForAttribute("Melville.INPC.AutoNotifyAttribute");
+        public Dictionary<ClassDeclarationSyntax, ClassFieldRecord> ClassesToAugment { get; } = new();
+        private SearchForAttribute autoNotifyAttributeSearcher = new("Melville.INPC.AutoNotifyAttribute");
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
+            #warning make this a switch expression
             if (syntaxNode is FieldDeclarationSyntax field &&
                 field.Parent is ClassDeclarationSyntax cds &&
                 autoNotifyAttributeSearcher.HasAttribute(field))

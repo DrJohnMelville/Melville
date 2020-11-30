@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text;
-using Melville.Generators.Tools.CodeWriters;
 
-namespace Melville.Generators.INPC.Common.CodeWriters
+namespace Melville.Generators.Tools.CodeWriters
 {
     public class IndentedStringBuilder
     {
