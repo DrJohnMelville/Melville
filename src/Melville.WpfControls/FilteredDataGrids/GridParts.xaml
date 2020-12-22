@@ -20,6 +20,11 @@
                 </Setter>
             </Style>
         </GroupStyle.ContainerStyle>
+        <GroupStyle.Panel>
+            <ItemsPanelTemplate>
+                <DataGridRowsPresenter/>
+            </ItemsPanelTemplate>
+        </GroupStyle.Panel>
     </GroupStyle>
     
     <Style x:Key="ColumnHeaderGripperStyle"
@@ -90,6 +95,6 @@
         <Setter Property="CanUserReorderColumns" Value="True" />
         <Setter Property="CanUserResizeColumns" Value="True" />
         <Setter Property="filteredDataGrids:GroupStyleEx.Append" Value="{StaticResource GroupStyle}"></Setter>
-        <Setter Property="ColumnHeaderStyle" Value="{StaticResource ColHeadStyle}"></Setter>
+               <Setter Property="ColumnHeaderStyle" Value="{StaticResource ColHeadStyle}"></Setter>
     </Style>
 </ResourceDictionary>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Melville.Generators.INPC.Common.AstUtilities;
-using Melville.Generators.INPC.Common.CodeWriters;
+using Melville.Generators.Tools.AstUtilities;
+using Melville.Generators.Tools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -23,10 +23,11 @@ namespace Melville.Generators.INPC.INPC
             CodeWriter = new CodeWriter(context);
         }
 
-        public void Generate()
+        public void Generate(GeneratedFileUniqueNamer namer)
         {
+            CodeWriter.AppendLine("#nullable enable");
             GenerateCodeForClass();
-            CodeWriter.PublishCodeInFile($"{ClassName()}.GeneratedINPC.cs");
+            CodeWriter.PublishCodeInFile(namer.CreateFileName(ClassName()));
         }
         private string ClassName() => Target.ClassDeclaration.Identifier.ToString();
 

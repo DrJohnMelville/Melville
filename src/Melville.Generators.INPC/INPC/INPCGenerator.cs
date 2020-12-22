@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
+using Melville.Generators.Tools.CodeWriters;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Melville.Generators.INPC.INPC
 {
@@ -40,9 +40,11 @@ namespace Melville.Generators.INPC.INPC
             var factory = new InpcClassGeneratorFactory(elaboratedClasses,
                 context.Compilation.GetSpecialType(SpecialType.System_String));
 
+            var namer = new GeneratedFileUniqueNamer();
+
             foreach (var augmenter in elaboratedClasses)
             {
-                factory.CreateGenerator(augmenter, context).Generate();
+                factory.CreateGenerator(augmenter, context).Generate(namer);
             }
         }
     }

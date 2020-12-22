@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Melville.Generators.INPC.Common.CodeWriters
+namespace Melville.Generators.Tools.CodeWriters
 {
     public class CodeWriter
     {

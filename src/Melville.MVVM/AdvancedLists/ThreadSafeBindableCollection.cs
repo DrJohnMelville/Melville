@@ -39,7 +39,7 @@ namespace Melville.MVVM.AdvancedLists
     public static Action<Action> RunOnUiThread { get; set; } = a =>
     {
       a();
-      Debug.WriteLine("Melville.MVVM.AdvancedLists.UiThreadBuilder.RunOnUIThread Delegate not registered -- collections not being routed to UI thread");
+      Trace.WriteLine("Melville.MVVM.AdvancedLists.UiThreadBuilder.RunOnUIThread Delegate not registered -- collections not being routed to UI thread");
     };
   }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Melville.Generators.INPC.Common.CodeWriters
+namespace Melville.Generators.Tools.CodeWriters
 {
     public class CompositeDispose : IDisposable
     {

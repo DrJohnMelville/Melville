@@ -6,15 +6,15 @@ using System.Windows.Markup;
 
 namespace Melville.MVVM.Wpf.DiParameterSources
 {
-    public class DiIBinding: MarkupExtension
+    public class DIBinding: MarkupExtension
     {
         private readonly Type? desiredType;
 
-        public DiIBinding()
+        public DIBinding()
         {
         }
 
-        public DiIBinding(Type? desiredType)
+        public DIBinding(Type? desiredType)
         {
             this.desiredType = desiredType;
         }

@@ -17,7 +17,7 @@ namespace Melville.WpfAppFramework.StartupBases
         }
 
         protected string[] CommandLineParameters {get;}
-        public IocContainer Create()
+        public virtual IIocService Create()
         {
             var service = new IocContainer();
             RegisterWithIocContainer(service);

@@ -24,23 +24,15 @@ namespace Melville.MVVM.USB.Joysticks
         public bool HatRight { get; }
         public bool HatUp { get; }
         public bool HatDown { get; }
-        event EventHandler<EventArgs>? StickChanged;
+        event EventHandler<EventArgs>? StateChanged;
     }
-    public class Joystick: UsbDevice, IJoystick
-    {
-        private byte[] buffer = new byte[16];
-        public Joystick(IMonitorForDeviceArrival newDeviceNodification) : 
-            base("vid_044f&pid_b106", newDeviceNodification)
-        {
-        }
-        protected override void DeviceInputEvent(byte[] data)
-        {
-            buffer = data;
-            StickChanged?.Invoke(this, EventArgs.Empty);
-        }
 
-        private byte GetAxis(int position) => buffer[position];
-        private bool GetButton(int position, byte mask) => (buffer[position] & mask) == mask;
+    public class Joystick: JoystickBase, IJoystick
+    {
+        public Joystick(IMonitorForDeviceArrival newDeviceNodification) :
+            base("vid_044f&pid_b106", newDeviceNodification, 16)
+        {
+        }
 
         public byte XAxis => GetAxis(4);
         public byte YAxis => GetAxis(5);
@@ -62,6 +54,5 @@ namespace Melville.MVVM.USB.Joysticks
         public bool HatRight => GetButton(8, 0xFF);
         public bool HatUp    => GetButton(10, 0xFF);
         public bool HatDown  => GetButton(11, 0xFF);
-        public event EventHandler<EventArgs>? StickChanged;
     }
 }

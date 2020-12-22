@@ -1,9 +1,8 @@
 ﻿using System;
-using Melville.Generators.INPC.Common.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.INPC
+namespace Melville.Generators.Tools.CodeWriters
 {
     public static class NameSpaceBlockWriter
     {

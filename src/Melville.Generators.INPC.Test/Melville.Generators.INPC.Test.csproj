@@ -8,12 +8,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
-      <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
+      <ProjectReference Include="..\Melville.Generators.Tools\Melville.Generators.Tools.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
       <ProjectReference Include="..\Melville.TestHelpers\Melville.TestHelpers.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0-3.final" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.8.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
       <PackageReference Include="xunit" Version="2.4.1" />
       <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />

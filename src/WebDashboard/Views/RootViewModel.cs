@@ -1,5 +1,4 @@
 ﻿using System;
-using Windows.ApplicationModel.Store;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.DiParameterSources;

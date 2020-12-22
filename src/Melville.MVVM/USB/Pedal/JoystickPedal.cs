@@ -14,9 +14,9 @@ namespace Melville.MVVM.USB.Pedal
                 ()=>CenterUp, ()=>CenterDown);
             right = new ButtonMonitor(()=>joystick.Button10, "Right", OnPropertyChange, ()=>RightUp, ()=>RightDown);
 
-            joystick.StickChanged += left.StickChanged;
-            joystick.StickChanged += center.StickChanged;
-            joystick.StickChanged += right.StickChanged;
+            joystick.StateChanged += left.StateChanged;
+            joystick.StateChanged += center.StateChanged;
+            joystick.StateChanged += right.StateChanged;
         }
 
         private void OnPropertyChange(string property) => 
@@ -56,7 +56,7 @@ namespace Melville.MVVM.USB.Pedal
                 DownEvent = downEvent;
             }
 
-            public void StickChanged(object? stick, EventArgs ea)
+            public void StateChanged(object? stick, EventArgs ea)
             {
                 var newVaue = source();
                 if (Value == newVaue) return;

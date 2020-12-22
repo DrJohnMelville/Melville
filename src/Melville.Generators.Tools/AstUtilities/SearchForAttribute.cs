@@ -4,10 +4,9 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.Common.AstUtilities
+namespace Melville.Generators.Tools.AstUtilities
 {
- 
-        public class SearchForAttribute
+    public class SearchForAttribute
     {
         private string qualifiedAttributeName;
 
@@ -33,7 +32,8 @@ namespace Melville.Generators.INPC.Common.AstUtilities
             return CheckNameInContext(ExpandExplicitAttribute(arg.Name.ToString()), arg);
         }
 
-        private static string ExpandExplicitAttribute(string name) => name.EndsWith("Attribute")?name:name+"Attribute";
+        private static string ExpandExplicitAttribute(string name) =>
+            name.EndsWith("Attribute") ? name : name + "Attribute";
 
         private bool CheckNameInContext(string attributeName, SyntaxNode context)
         {
@@ -47,8 +47,9 @@ namespace Melville.Generators.INPC.Common.AstUtilities
             var oldList = new List<string> {attributeName};
             foreach (var usingList in UsingDeclarationListsForSurroundingScopes(context))
             {
-                IList<string> newList = usingList.Select(i => i.Name.ToString())
-                    .SelectMany(ns => oldList, (ns, item) => string.Concat(ns, ".", item))
+                IList<string> newList = Enumerable
+                    .SelectMany<string, string, string>(usingList.Select(i => i.Name.ToString()), ns => oldList,
+                        (ns, item) => string.Concat((string) ns, (string) ".", (string) item))
                     .ToList();
                 foreach (var item in newList)
                 {
@@ -61,7 +62,8 @@ namespace Melville.Generators.INPC.Common.AstUtilities
         }
 
 
-        private IEnumerable<SyntaxList<UsingDirectiveSyntax>> UsingDeclarationListsForSurroundingScopes(SyntaxNode context)
+        private IEnumerable<SyntaxList<UsingDirectiveSyntax>> UsingDeclarationListsForSurroundingScopes(
+            SyntaxNode context)
         {
             var currentNode = context.Parent;
             while (currentNode != null)
@@ -75,6 +77,7 @@ namespace Melville.Generators.INPC.Common.AstUtilities
                         yield return cus.Usings;
                         break;
                 }
+
                 currentNode = currentNode.Parent;
             }
         }

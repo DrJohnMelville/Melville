@@ -20,5 +20,6 @@
         <Button Click="{eventBindings:EventBinding RunTask}">Run Task</Button>
         <Button Click="{eventBindings:EventBinding RunTaskT}">Run Task of T</Button>
         <Button Click="{eventBindings:EventBinding Clear}" Margin="0 20 0 0">Clear</Button>
+        <TextBlock><Hyperlink Click="{eventBindings:EventBinding NotARealMethod}">Clear from Link</Hyperlink></TextBlock>
     </StackPanel>
 </UserControl>

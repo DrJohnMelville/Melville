@@ -15,8 +15,8 @@ namespace Melville.Wpf.Samples
 {
     public class SampleDirectory : SampleDirectoryDsl
     {
-        public ISampleTreeItem DefaultItem() =>
-            SearchTreeForSample<DefaultBrowserViewModel>();
+        public ISampleTreeItem? DefaultItem() =>
+            SearchTreeForSample<ChYokeViewModel>();
 
         public SampleDirectory()
         {
@@ -39,6 +39,7 @@ namespace Melville.Wpf.Samples
                     Page<TranscriptionPedalViewModel>("Transcription Pedal"),
                     Page<JoystickTranscriptionPedalViewModel>("Joystick emulating Transcription Pedal"),
                     Page<JoystickViewModel>("Joystick"),
+                    Page<ChYokeViewModel>("CH Yoke"),
                     Page<ThumbDriveViewModel>("Detect Thumb Drive Arrival"),
                     Page<ClipboardMonitorViewModel>("Clipboard Monitor"),
                     Page<HidDeviceEnumerationViewModel>("ListHIDDevice"),

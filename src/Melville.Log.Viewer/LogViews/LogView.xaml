@@ -34,14 +34,14 @@
         <DataGrid Grid.Row="1" ItemsSource="{Binding Events}" IsReadOnly="True" AutoGenerateColumns="False"
                   filteredDataGrids:FilteredDataGrid.UseFilter="True">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="TimeStamp" SortMemberPath="TimeStamp" Width="Auto">
+                <DataGridTemplateColumn Header="TimeStamp" SortMemberPath="TimeStamp" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:LogEntryViewModel">
                             <TextBlock Text="{Binding TimeStamp, StringFormat=MM/dd/yy HH:mm:ss}"></TextBlock>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Level" SortMemberPath="Level" Width="Auto">
+                <DataGridTemplateColumn Header="Level" SortMemberPath="Level">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:LogEntryViewModel">
                             <TextBlock Text="{Binding Level}" Foreground="{Binding Level, 

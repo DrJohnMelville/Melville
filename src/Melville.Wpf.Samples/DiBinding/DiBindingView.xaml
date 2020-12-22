@@ -8,7 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
-        <TextBlock Tag="{di:DiIBinding {x:Type local:IBoundInt}}"
+        <TextBlock Tag="{di:DIBinding {x:Type local:IBoundInt}}"
                    Text="{Binding Tag, RelativeSource={x:Static RelativeSource.Self}}"></TextBlock>
     </StackPanel>
 </UserControl>
