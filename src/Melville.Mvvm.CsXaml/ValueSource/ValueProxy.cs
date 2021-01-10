@@ -78,7 +78,7 @@ namespace Melville.Mvvm.CsXaml.ValueSource
             Value = otherValue;
         }
         
-        public static implicit operator ValueProxy<T>(T source) => new ValueProxy<T>(source);
+        public static implicit operator ValueProxy<T>(T source) => new ValueProxy<T>(source!);
         public ValueProxy<TNew> As<TNew>() => new ValueProxy<TNew>(Value);
     }
 

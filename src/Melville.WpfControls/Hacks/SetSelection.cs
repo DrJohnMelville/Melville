@@ -181,7 +181,7 @@ namespace Melville.WpfControls.Hacks
       }
     }
 
-    public static FrameworkElement FrameworkElementFromDataContext(FrameworkElement parent, object dataContext)
+    public static FrameworkElement? FrameworkElementFromDataContext(FrameworkElement parent, object dataContext)
     {
       var target = parent.Descendants().OfType<FrameworkElement>()
         .FirstOrDefault(i => i.DataContext == dataContext);
@@ -214,7 +214,7 @@ namespace Melville.WpfControls.Hacks
       }
     }
 
-    private static FrameworkElement GetElementToFocus(DependencyObject sender) =>
+    private static FrameworkElement? GetElementToFocus(DependencyObject sender) =>
       sender.Descendants().
         OfType<FrameworkElement>().
         FirstOrDefault(i => i.Focusable && i.IsEnabled && i.IsVisible);

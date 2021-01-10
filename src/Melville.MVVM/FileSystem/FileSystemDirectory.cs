@@ -123,6 +123,7 @@ namespace Melville.MVVM.FileSystem
     public byte FinalProgress => 255;
     public Task WaitForFinal => Task.FromResult(1);
     public long Size => info.Length;
-    public override IDirectory Directory => new FileSystemDirectory(info.Directory);
+    public override IDirectory Directory => new FileSystemDirectory(info.Directory ??
+         throw new InvalidOperationException("File does not have a directory."));
   }
 }

@@ -28,7 +28,7 @@ namespace WebDashboard.Models
             var ret = new SecretNode("");
             foreach (var property in data.RootElement.EnumerateObject())
             {
-                ret.AddChild(property.Name, new SecretValue("", property.Value.GetString()));
+                ret.AddChild(property.Name, new SecretValue("", property.Value.GetString() ?? ""));
             }
             
             ret.SortThisAndChildren();

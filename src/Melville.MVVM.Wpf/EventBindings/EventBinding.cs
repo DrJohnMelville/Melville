@@ -48,6 +48,7 @@ namespace Melville.MVVM.Wpf.EventBindings
     public override object ProvideValue(IServiceProvider serviceProvider)
     {
       var targetInfo = ProvideValueTargetInfo(serviceProvider);
+      if (targetInfo == null) return DependencyProperty.UnsetValue;
       if (targetInfo.TargetObject is Setter) return this;
       return targetInfo.TargetProperty switch
       {
@@ -68,9 +69,9 @@ namespace Melville.MVVM.Wpf.EventBindings
       };
     }
 
-    private static IProvideValueTarget ProvideValueTargetInfo(IServiceProvider serviceProvider)
+    private static IProvideValueTarget? ProvideValueTargetInfo(IServiceProvider serviceProvider)
     {
-      return (IProvideValueTarget)serviceProvider.GetService(typeof(IProvideValueTarget));
+      return (IProvideValueTarget?)serviceProvider.GetService(typeof(IProvideValueTarget));
     }
   }
 }

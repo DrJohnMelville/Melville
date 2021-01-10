@@ -70,8 +70,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     #region Cache
     private IDictionary<TSource, TDest> cache;
-    [return: MaybeNull]
-    public TDest Map(TSource input)
+    public TDest? Map(TSource input)
     {
       TDest ret;
       if (cache == null)
@@ -103,12 +102,12 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
     [return:MaybeNull]
     public TDest TryCache([AllowNull]TSource key) => 
       (!object.Equals(key, default(TSource)!)) && cache.TryGetValue(key!, out var ret) ? ret : default!;
-    private void RemoveItemsFromCache(IList items) => items.OfType<TSource>().ForEach(i => cache.Remove(i));
+    private void RemoveItemsFromCache(IList? items) => items?.OfType<TSource>().ForEach(i => cache.Remove(i));
     #endregion
 
     #region Implementation of IEnumerable
     public IEnumerator<TDest> GetEnumerator() => ConverterEnumerable().GetEnumerator();
-    private IEnumerable<TDest> ConverterEnumerable() => source.Select(Map);
+    private IEnumerable<TDest> ConverterEnumerable() => source.Select<TSource?,TDest>(i=>(i==null?default:Map(i))!);
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     #endregion
 
@@ -118,7 +117,12 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
     public bool Contains(TDest item) => ConverterEnumerable().Contains(item);
     public void CopyTo(TDest[] array, int arrayIndex) => ConverterEnumerable().ToArray().CopyTo(array, arrayIndex);
 
-    public bool Remove(TDest item) => source.Remove(cache.Where(i => Object.Equals(i.Value, item)).Select(i => i.Key).FirstOrDefault());
+    public bool Remove(TDest item)
+    {
+      var keyToRemove = cache.Where(i => Equals(i.Value, item)).Select(i => i.Key).FirstOrDefault();
+      return keyToRemove != null && source.Remove(keyToRemove);
+    }
+
     public int Count => source.Count;
     public bool IsReadOnly => true;
     #endregion
@@ -207,7 +211,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
     #region Implementation of INotifyCollectionChanged
     public event NotifyCollectionChangedEventHandler? CollectionChanged;
     private void FireCollectionChanged(NotifyCollectionChangedEventArgs args) => CollectionChanged?.Invoke(this, args);
-    private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => FireCollectionChanged(ConvertCollectionChangedArgs(e));
+    private void SourceCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => FireCollectionChanged(ConvertCollectionChangedArgs(e));
     private NotifyCollectionChangedEventArgs ConvertCollectionChangedArgs(NotifyCollectionChangedEventArgs e) =>
       e.Action switch
       {
@@ -221,14 +225,14 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     private NotifyCollectionChangedEventArgs HandleMoveEvent(NotifyCollectionChangedEventArgs e) =>
       new NotifyCollectionChangedEventArgs(e.Action,
-        e.OldItems.OfType<TSource>().Select(Map).ToArray(), e.NewStartingIndex,
+        e.OldItems?.OfType<TSource>().Select(Map).ToArray() ?? Array.Empty<TDest>(), e.NewStartingIndex,
         e.OldStartingIndex);
 
     private NotifyCollectionChangedEventArgs HandleReplaceEvent(NotifyCollectionChangedEventArgs e)
     {
-      IList itemsToDispose = e.OldItems.OfType<TSource>().Select(Map).ToArray();
+      IList itemsToDispose = e.OldItems?.OfType<TSource>().Select(Map).ToArray() ?? Array.Empty<TDest>();
       var ret = new NotifyCollectionChangedEventArgs(e.Action,
-        e.NewItems.OfType<TSource>().Select(Map).ToArray(),
+        e.NewItems?.OfType<TSource>().Select(Map).ToArray() ?? Array.Empty<TDest>(), 
         itemsToDispose);
       RemoveItemsFromCache(e.OldItems);
       DisposeList(itemsToDispose);
@@ -237,8 +241,8 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     private NotifyCollectionChangedEventArgs HandleRemoveEvent(NotifyCollectionChangedEventArgs e)
     {
-      IList itemsToDispose = e.OldItems.OfType<TSource>().Select(Map).ToArray();
-      MyDebug.Assert(itemsToDispose.Count == e.OldItems.Count);
+      IList itemsToDispose = e.OldItems?.OfType<TSource>().Select(Map).ToArray() ?? Array.Empty<TDest>();
+      MyDebug.Assert(itemsToDispose.Count == (e.OldItems?.Count ?? 0));
       var ret = new NotifyCollectionChangedEventArgs(e.Action,
         itemsToDispose, e.OldStartingIndex);
       RemoveItemsFromCache(e.OldItems);
@@ -248,8 +252,8 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     private NotifyCollectionChangedEventArgs HandleAddEvent(NotifyCollectionChangedEventArgs e)
     {
-      var itemsToAdd = e.NewItems.OfType<TSource>().Select(Map).ToArray();
-      MyDebug.Assert(itemsToAdd.Length == e.NewItems.Count);
+      var itemsToAdd = e.NewItems?.OfType<TSource>().Select(Map).ToArray() ?? Array.Empty<TDest>();
+      MyDebug.Assert(itemsToAdd.Length == (e.NewItems?.Count ?? 0));
       return new NotifyCollectionChangedEventArgs(e.Action,
         itemsToAdd, e.NewStartingIndex);
     }

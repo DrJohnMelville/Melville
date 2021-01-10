@@ -71,11 +71,12 @@ namespace Melville.MVVM.FileSystem
 
     protected virtual MemoryFile CreateFile(string name) => new MemoryFile(name, this);
 
-    public IFile FileRecord(string name)
-    {
-      var regEx = MatchGlob(name);
-      return files.Keys.Where(i => regEx.Match(i).Success).Select(i => files[i]).FirstOrDefault();
-    }
+    // not sure this is unused 1/10/2021 will see if anything breaks
+    // public IFile FileRecord(string name)
+    // {
+    //   var regEx = MatchGlob(name);
+    //   return files.Keys.Where(i => regEx.Match(i).Success).Select(i => files[i]).FirstOrDefault();
+    // }
 
     public IEnumerable<IFile> AllFiles()
     {

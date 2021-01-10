@@ -4,6 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>preview</LangVersion>
         <Nullable>enable</Nullable>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
     <PropertyGroup>
         <Version>0.1.7</Version>

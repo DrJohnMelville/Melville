@@ -9,7 +9,7 @@ namespace Melville.MVVM.AdvancedLists.ListMonitors
   {
     public EventHandler<PropertyChangedEventArgs>? SubPropertyChanged;
 
-    private void ItemPropertyChanged(object sender, PropertyChangedEventArgs args)
+    private void ItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
     {
       SubPropertyChanged?.Invoke(sender, args);
     }

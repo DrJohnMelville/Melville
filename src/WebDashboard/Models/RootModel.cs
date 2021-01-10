@@ -31,7 +31,7 @@ namespace WebDashboard.Models
                 new XAttribute("path", "."),
                 new XAttribute("inheritInChildApplications", false),
                 new XElement("system.webServer",
-                    WebDavSupression(),
+                    WebDavSupression()!, // this acutally works
                     new XElement("handlers",
                         new XElement("add",
                             new XAttribute("name", "aspNetCore"),

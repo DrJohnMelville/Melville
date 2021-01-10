@@ -15,7 +15,7 @@ namespace Melville.ExcelDataContext.FileReader
                 var rows = new List<IList<string>>();
                 while (!parser.EndOfData)
                 {
-                    rows.Add(parser.ReadFields().ToList());
+                    if (parser.ReadFields() is {} fields) rows.Add(fields.ToList());
                 }
                 InsertTable(Path.GetFileNameWithoutExtension(fileName), rows);
             }

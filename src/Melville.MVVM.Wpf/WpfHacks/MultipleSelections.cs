@@ -55,7 +55,7 @@ namespace Melville.MVVM.Wpf.WpfHacks
       /// </summary>
       /// <param name="sender">Object that sent this message, ignored</param>
       /// <param name="e">EventArgs describing the changes to the source collection</param>
-      private void ModelChanged(object sender, NotifyCollectionChangedEventArgs e)
+      private void ModelChanged(object? sender, NotifyCollectionChangedEventArgs e)
       {
         try
         {
@@ -88,7 +88,7 @@ namespace Melville.MVVM.Wpf.WpfHacks
 
         void AddItems()
         {
-          foreach (var item in e.NewItems)
+          foreach (var item in e.NewItems ?? Array.Empty<object>())
           {
             if (!selector.SelectedItems.Contains(item)) // this line prevents recursion
             {
@@ -98,7 +98,7 @@ namespace Melville.MVVM.Wpf.WpfHacks
         }
         void RemoveItems()
         {
-          foreach (var item in e.OldItems)
+          foreach (var item in e.OldItems ?? Array.Empty<object>())
           {
             selector.SelectedItems.Remove(item);
           }

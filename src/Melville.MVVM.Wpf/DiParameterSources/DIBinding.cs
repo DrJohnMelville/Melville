@@ -22,13 +22,15 @@ namespace Melville.MVVM.Wpf.DiParameterSources
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             var valueTarget = GetValueTarget(serviceProvider);
+            if (valueTarget == null) return DependencyProperty.UnsetValue;
             return DiIntegration
                 .SearchForContainer(valueTarget.TargetObject as DependencyObject)
                 .Get(FindType(valueTarget)) ??
                 throw new InvalidOperationException("Dependency Injection Failed");
         }
 
-        private static IProvideValueTarget GetValueTarget(IServiceProvider serviceProvider) => (IProvideValueTarget)serviceProvider.GetService(typeof(IProvideValueTarget));
+        private static IProvideValueTarget? GetValueTarget(IServiceProvider serviceProvider) => 
+            (IProvideValueTarget?)serviceProvider.GetService(typeof(IProvideValueTarget));
 
         private Type FindType(IProvideValueTarget serviceProvider) =>
             desiredType??

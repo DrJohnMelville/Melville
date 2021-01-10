@@ -67,7 +67,7 @@ namespace Melville.MVVM.BusinessObjects
 
       PropertyChangedEventHandler foreignObjectOnPropertyChanged = (s, e) =>
       {
-        if (e.PropertyName.Equals(foreignProperty, StringComparison.Ordinal))
+        if (e.PropertyName?.Equals(foreignProperty, StringComparison.Ordinal) ?? true)
         {
           localProperties.ForEach(OnPropertyChanged);
         }

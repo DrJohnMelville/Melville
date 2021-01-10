@@ -290,7 +290,7 @@ namespace Melville.MVVM.Functional
       return -1;
     }
     
-    public static T NextWithWrapping<T>(this IEnumerable<T> coll, T target)
+    public static T? NextWithWrapping<T>(this IEnumerable<T> coll, T target)
     {
       return coll.SkipOver(target).Concat(coll).FirstOrDefault();
     }
@@ -498,7 +498,7 @@ namespace Melville.MVVM.Functional
     /// <param name="strings">An enumerable of candidate strings, in preferred order</param>
     /// <returns></returns>
     public static string FirstVisible(this IEnumerable<string> strings) =>
-      strings.FirstOrDefault(i => !string.IsNullOrWhiteSpace(i));
+      strings.FirstOrDefault(i => !string.IsNullOrWhiteSpace(i))??"";
 
     /// <summary>
     /// Execute a side effect on each element of the enumerable as it is evaluated

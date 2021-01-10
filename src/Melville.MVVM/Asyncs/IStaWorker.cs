@@ -62,7 +62,7 @@ namespace Melville.MVVM.Asyncs
       {
         tcs.SetResult(await action());
       });
-      thread.SetApartmentState(ApartmentState.STA);
+      if (OperatingSystem.IsWindows()) thread.SetApartmentState(ApartmentState.STA);
       thread.Start();
       return tcs.Task;
     }

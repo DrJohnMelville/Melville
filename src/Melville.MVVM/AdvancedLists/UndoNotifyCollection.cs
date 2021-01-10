@@ -12,12 +12,12 @@ namespace Melville.MVVM.AdvancedLists
     {
     }
 
-    public event PropertyChangedEventHandler PropertyChanged
+    public event PropertyChangedEventHandler? PropertyChanged
     {
       add => ((INotifyPropertyChanged)Target).PropertyChanged += value;
       remove => ((INotifyPropertyChanged)Target).PropertyChanged -= value;
     }
-    public event NotifyCollectionChangedEventHandler CollectionChanged
+    public event NotifyCollectionChangedEventHandler? CollectionChanged
     {
       add => ((INotifyCollectionChanged)Target).CollectionChanged += value;
       remove => ((INotifyCollectionChanged)Target).CollectionChanged -= value;

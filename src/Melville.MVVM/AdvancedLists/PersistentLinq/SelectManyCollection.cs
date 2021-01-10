@@ -33,7 +33,7 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
       }
     }
     
-    private void ParentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void ParentCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
       // we need all the sublists to find new items when they show up.
       DoItemsAction(e.NewItems, i =>i.CollectionChanged += SubCollectionChanged);
@@ -47,8 +47,9 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
 
     private void RemoveSubCollectionChangedNotification(INotifyCollectionChanged i) => i.CollectionChanged -= SubCollectionChanged;
 
-    private void DoItemsAction(IList collection, Action<INotifyCollectionChanged> action) => collection?.OfType<TParent>().Select(subItems).OfType<INotifyCollectionChanged>().ForEach(action);
-    private void SubCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void DoItemsAction(IList? collection, Action<INotifyCollectionChanged> action) => 
+      collection?.OfType<TParent>().Select(subItems).OfType<INotifyCollectionChanged>().ForEach(action);
+    private void SubCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
       if (sender == null)
       {
@@ -85,13 +86,20 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
       return true;
     }
 
-    private object FindParentListForItem(NotifyCollectionChangedEventArgs e)
-    {
-      object sender;
-      sender = parentList.Select(i => subItems(i)).FirstOrDefault(i =>
-        i.Contains(e.NewItems.Cast<TItem>().Concat(e.OldItems.Cast<TItem>()).FirstOrDefault()));
-      return sender;
-    }
+    private object? FindParentListForItem(NotifyCollectionChangedEventArgs e) =>
+      ItemToSearchFor(e) is {} item 
+        ? parentList.Select(i => subItems(i)).FirstOrDefault(i =>
+          i.Contains(item)) 
+        : null;
+
+    private static TItem? ItemToSearchFor(NotifyCollectionChangedEventArgs e) =>
+      ((e.NewItems, e.OldItems) switch
+      {
+        (null, null) => Array.Empty<TItem>(),
+        (var a, null) => a.Cast<TItem>(),
+        (null, var b) => b.Cast<TItem>(),
+        var (a, b) => a.Cast<TItem>().Concat(b.Cast<TItem>())
+      }).FirstOrDefault();
 
     private NotifyCollectionChangedEventArgs CreateNewNotifier(NotifyCollectionChangedEventArgs args, int newBase)
     {
@@ -104,7 +112,8 @@ namespace Melville.MVVM.AdvancedLists.PersistentLinq
           OnPropertyChanged("Count");
           return new NotifyCollectionChangedEventArgs(args.Action, args.OldItems, args.OldStartingIndex + newBase);
         case NotifyCollectionChangedAction.Replace:
-          return new NotifyCollectionChangedEventArgs(args.Action, args.NewItems, args.OldItems,
+          return new NotifyCollectionChangedEventArgs(args.Action, args.NewItems ?? Array.Empty<object>(), 
+            args.OldItems ?? Array.Empty<object>(),
             args.NewStartingIndex + newBase);
         case NotifyCollectionChangedAction.Move:
           return new NotifyCollectionChangedEventArgs(args.Action, args.NewItems, args.NewStartingIndex + newBase,

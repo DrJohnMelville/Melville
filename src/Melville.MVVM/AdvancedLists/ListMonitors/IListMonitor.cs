@@ -19,7 +19,7 @@ namespace Melville.MVVM.AdvancedLists.ListMonitors
     public static Action AttachToList<T, TList>(this IListMonitor<T> monitor, TList list) where TList :
       ObservableCollectionWithProperClearMethod<T>, INotifyCollectionChanged
     {
-      void CollectionChanged(object s, NotifyCollectionChangedEventArgs e) => HandleCollectionChanged(list, monitor, e);
+      void CollectionChanged(object? s, NotifyCollectionChangedEventArgs e) => HandleCollectionChanged(list, monitor, e);
       list.CollectionChanged += CollectionChanged;
       monitor.Initalize(list);
       return () => list.CollectionChanged -= CollectionChanged;
@@ -41,19 +41,20 @@ namespace Melville.MVVM.AdvancedLists.ListMonitors
       {
         case NotifyCollectionChangedAction.Add:
           position = e.NewStartingIndex;
-          foreach (var item in e.NewItems.Cast<T>())
+          foreach (var item in e.NewItems?.Cast<T>() ?? Array.Empty<T>())
           {
             monitor.NewItem(item, position++);
           }
           break;
         case NotifyCollectionChangedAction.Remove:
           position = e.OldStartingIndex;
-          foreach (var item in e.OldItems.Cast<T>())
+          foreach (var item in e.OldItems?.Cast<T>() ?? Array.Empty<T>())
           {
             monitor.DestroyItem(item, position++);
           }
           break;
         case NotifyCollectionChangedAction.Replace:
+          if (e.NewItems == null || e.OldItems == null) break;
           for (int i = 0; i < e.NewItems.Count; i++)
           {
             if (e.OldItems[i] is T oldItem)
@@ -68,7 +69,7 @@ namespace Melville.MVVM.AdvancedLists.ListMonitors
           }
           break;
         case NotifyCollectionChangedAction.Move:
-          monitor.Move(e.OldStartingIndex, e.NewStartingIndex, e.NewItems.Count);
+          monitor.Move(e.OldStartingIndex, e.NewStartingIndex, e.NewItems?.Count ?? 0);
           break;
         case NotifyCollectionChangedAction.Reset:
           monitor.Reset();

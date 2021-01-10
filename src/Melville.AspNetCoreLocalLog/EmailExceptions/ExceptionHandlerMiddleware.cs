@@ -18,7 +18,7 @@ namespace AspNetCoreLocalLog.EmailExceptions
 
         public static IConfigureExceptionMiddleware UseExceptionLogger(this IApplicationBuilder builder)
         {
-            var exceptionLogger = builder.ApplicationServices.GetService<ExceptionHandlerMiddleware>();
+            var exceptionLogger = builder.ApplicationServices.GetRequiredService<ExceptionHandlerMiddleware>();
             builder.Use(exceptionLogger.Process);
             return exceptionLogger;
         }

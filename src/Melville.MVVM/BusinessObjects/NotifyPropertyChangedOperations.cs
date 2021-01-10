@@ -10,7 +10,7 @@ namespace Melville.MVVM.BusinessObjects
       VerifyPropertyExists.InDebugBuilds((object) target, member);
       PropertyChangedEventHandler method = (s, e) =>
       {
-        if (e.PropertyName.Equals(member, StringComparison.Ordinal))
+        if ( e.PropertyName == null || e.PropertyName.Equals(member, StringComparison.Ordinal))
         {
           action();
         }
@@ -22,9 +22,9 @@ namespace Melville.MVVM.BusinessObjects
     public static void WhenMemberChangesOnce(this INotifyPropertyChanged target, string member, Action action)
     {
       VerifyPropertyExists.InDebugBuilds((object) target, member);
-      void method(object s, PropertyChangedEventArgs e)
+      void method(object? s, PropertyChangedEventArgs e)
       {
-        if (e.PropertyName.Equals(member, StringComparison.Ordinal))
+        if ( e.PropertyName == null || e.PropertyName.Equals(member, StringComparison.Ordinal))
         {
           action();
           target.PropertyChanged -= method;

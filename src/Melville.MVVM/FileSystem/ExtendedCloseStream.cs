@@ -124,7 +124,7 @@ namespace Melville.MVVM.FileSystem
         readBufer = temp;
       } while (bytesToWrite > 0);
     }
-    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object? state)
+    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
     {
       return Inner.BeginRead(buffer, offset, count, callback, state);
     }
@@ -132,7 +132,7 @@ namespace Melville.MVVM.FileSystem
     {
       return Inner.EndRead(asyncResult);
     }
-    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback callback, object? state)
+    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
     {
       return Inner.BeginWrite(buffer, offset, count, callback, state);
     }

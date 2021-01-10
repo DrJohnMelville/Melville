@@ -18,7 +18,7 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
       this.callsRemaining = callsRemaining;
     }
 
-    protected void InvokeTarget(DependencyObject target, object ea)
+    protected void InvokeTarget(DependencyObject target, object? ea)
     {
       if (!DecrementAndQueryCallCount()) return;
       RunOnVisualTreeSearch.Run(target, Method, SearchTreeParameterParser.EvalParameters(Parameters, target, ea), out var _);
@@ -61,14 +61,14 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
       this.target = target;
     }
 
-    public bool CanExecute(object parameter) => true;
+    public bool CanExecute(object? parameter) => true;
 
-    public void Execute(object parameter)
+    public void Execute(object? parameter)
     {
       InvokeTarget(target, parameter);
     }
 
-    public event EventHandler CanExecuteChanged
+    public event EventHandler? CanExecuteChanged
     {
       add {}
       remove{}
