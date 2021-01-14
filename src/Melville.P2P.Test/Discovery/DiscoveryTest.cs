@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Melville.P2P.Raw.Discovery;
 using Melville.P2P.Raw.NetworkPrimatives;
@@ -12,16 +15,30 @@ namespace Melville.P2P.Test.Discovery
     public class DiscoveryTest
     {
         private readonly Mock<IUdpBroadcaster> broadcast = new();
-        private readonly Mock<IUdpReceiver> rec = new();
+        private readonly Mock<IUdpReceiver> rec1 = new();
+        private readonly Mock<IUdpReceiver> rec2 = new();
         private readonly DiscoveryServer server;
         private readonly DiscoveryClient client;
         private readonly byte[] targetAddress = {127,0,0,1,5,6};
+        private readonly Channel<byte[]> channel1 = Channel.CreateUnbounded<byte[]>();
+        private readonly Channel<byte[]> channel2 = Channel.CreateUnbounded<byte[]>();
 
         public DiscoveryTest()
         {
-            server = new DiscoveryServer(broadcast.Object, rec.Object,
+            rec1.Setup(i => i.WaitForReads()).Returns(ReadFromChannel(channel1));
+            rec2.Setup(i => i.WaitForReads()).Returns(ReadFromChannel(channel2));
+            server = new DiscoveryServer(broadcast.Object, rec1.Object,
                 targetAddress);
-            client = new DiscoveryClient(broadcast.Object, rec.Object);
+            client = new DiscoveryClient(broadcast.Object, rec2.Object);
+            
+        }
+
+        private async IAsyncEnumerable<UdpReceiveResult> ReadFromChannel(Channel<byte[]> channel)
+        {
+            while (await channel.Reader.ReadAsync() is {} addr)
+            {
+                yield return new UdpReceiveResult(addr, new IPEndPoint(1,1));
+            }
         }
 
         [Fact]
@@ -31,17 +48,19 @@ namespace Melville.P2P.Test.Discovery
             broadcast.Verify(i=>i.Send(targetAddress, -1), Times.Once);
         }
         [Fact]
-        public async Task ServerRespondsToRequestPacket()
+        public void ServerRespondsToRequestPacket()
         {
-            await server.AcceptConnections();
+            GC.KeepAlive(server.AcceptConnections());
             RaisePacketReceived(new byte[6]);
+            Thread.Sleep(20);
             broadcast.Verify(i=>i.Send(targetAddress, -1), Times.Exactly(2));
         }
+        
 
-        private void RaisePacketReceived(byte[] address)
+        private async void RaisePacketReceived(byte[] address)
         {
-            rec.Raise(i => i.ReceivedPacket += null, this,
-                new UdpArrivedEventArgs(new UdpReceiveResult(address, new IPEndPoint(100, 1))));
+            await channel1.Writer.WriteAsync(address);
+            await channel2.Writer.WriteAsync(address);
         }
 
         private void WireBroadcastToReceiver()
@@ -58,7 +77,7 @@ namespace Melville.P2P.Test.Discovery
         {
             WireBroadcastToReceiver();
             var task = client.Connect();
-            await server.AcceptConnections();
+            GC.KeepAlive(server.AcceptConnections());
             using var ret = await task;
             VerifyValidClient(ret);
         }
@@ -71,10 +90,9 @@ namespace Melville.P2P.Test.Discovery
         [Fact]
         public async Task ServerBeforeClient()
         {
-            WireBroadcastToReceiver();
-            await server.AcceptConnections();
-            var task = client.Connect();
-            using var ret = await task;
+            WireBroadcastToReceiver(); 
+            GC.KeepAlive(server.AcceptConnections());
+            using var ret = await client.Connect();
             VerifyValidClient(ret);
         }
     }

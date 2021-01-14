@@ -8,18 +8,26 @@ namespace Melville.P2P.Test.Discovery
 {
     public class UdpPortTest
     {
+        int received = 0;
         [Fact]
         public async Task SimpleSend()
         {
-            int received = 0;
             var data = new byte[10];
-            var port = MakePort();
-            port.ReceivedPacket += (s, e) => received++;
-            var done = port.WaitForReads();
+            using var port = MakePort();
+            var retLoop = ReadLoop(port);
             await new UdpBroadcaster(70).Send(data);
-            port.Dispose();
-            await done;
+            await retLoop;
             Assert.Equal(1, received);
+        }
+
+        private async Task ReadLoop(UdpReceiver port)
+        {
+            await foreach (var packed in port.WaitForReads())
+            {
+                received++;
+                break;
+            }
+
         }
 
         private UdpReceiver MakePort()
@@ -27,20 +35,4 @@ namespace Melville.P2P.Test.Discovery
             return new UdpReceiver(70);
         }
     }
-
-    public class TcpServerTest
-    {
-        private TcpServer server = new TcpServer();
-
-        [Fact]
-        public void Address()
-        {
-            var addr = server.AddressArray();
-            Assert.Equal(6, addr.Length);
-            Assert.Equal(192, addr[0]);
-            Assert.Equal(168, addr[1]);
-            Assert.Equal(0, addr[2]);
-        }
-    }
-
 }

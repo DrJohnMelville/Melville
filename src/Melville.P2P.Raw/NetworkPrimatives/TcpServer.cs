@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Melville.P2P.Raw.NetworkPrimatives
 {
@@ -16,9 +17,13 @@ namespace Melville.P2P.Raw.NetworkPrimatives
         public TcpServer()
         {
             listener = new TcpListener( MyIpAddress(), 0);
-            var ep = listener.LocalEndpoint;
-            listener.Start();
         }
+
+        // public async Task MonitorForConnection()
+        // {
+        //     listener.Start();
+        //     listener = 
+        // }
 
         private static IPAddress MyIpAddress()
         {

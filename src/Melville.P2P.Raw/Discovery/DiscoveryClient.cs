@@ -8,7 +8,7 @@ namespace Melville.P2P.Raw.Discovery
 {
     public interface IDiscoveryClient
     {
-        Task<TcpClient> Connect();
+        Task<TcpClient?> Connect();
     }
 
     public class DiscoveryClient : IDiscoveryClient
@@ -23,28 +23,26 @@ namespace Melville.P2P.Raw.Discovery
             this.receiver = receiver;
         }
 
-        public Task<TcpClient> Connect()
+        public async Task<TcpClient?> Connect()
         {
-            ListenForServerAddress();
-            RequestServerAddress();
-            return serverAddressReceived.Task;
+            var serverTask = ListenForServerAddress();
+            await RequestServerAddress();
+            return await serverTask;
         }
 
-        private void ListenForServerAddress()
+        private async Task<TcpClient?> ListenForServerAddress()
         {
-            receiver.ReceivedPacket += HandlePacket;
-            GC.KeepAlive(receiver.WaitForReads());
-        }
-
-        private void RequestServerAddress() => GC.KeepAlive(broadcast.Send(new byte[6]));
-
-        private void HandlePacket(object? sender, UdpArrivedEventArgs e)
-        {
-            if (!e.IsEmptyTargetAddress())
+            await foreach (var packet in receiver.WaitForReads())
             {
-                serverAddressReceived.SetResult(CreateTcpClient(e.Data.Buffer));
+                if (!packet.IsEmptyTargetAddress())
+                {
+                    return CreateTcpClient(packet.Buffer);
+                }
             }
+            return null;
         }
+
+        private Task RequestServerAddress() => broadcast.Send(new byte[6]);
 
         private static TcpClient CreateTcpClient(byte[] address) =>
             new(new IPEndPoint(new IPAddress(address.AsSpan()[..4]),

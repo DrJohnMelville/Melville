@@ -25,19 +25,15 @@ namespace Melville.P2P.Raw.Discovery
 
         public async Task AcceptConnections()
         {
-            receiver.ReceivedPacket += ReceivePacket;
-            GC.KeepAlive(receiver.WaitForReads());
             await SendServerAddress();
-        }
-
-        private void ReceivePacket(object? sender, UdpArrivedEventArgs e)
-        {
-            if (e.IsEmptyTargetAddress())
+            await foreach (var packet in receiver.WaitForReads())
             {
-                GC.KeepAlive(SendServerAddress());
+                if (packet.IsEmptyTargetAddress())
+                {
+                    await SendServerAddress();
+                }
             }
         }
-
         private Task<int> SendServerAddress() => broadcast.Send(targetAddress);
     }
 }
