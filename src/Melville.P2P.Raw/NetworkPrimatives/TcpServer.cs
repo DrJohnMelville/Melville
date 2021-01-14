@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -8,7 +9,8 @@ namespace Melville.P2P.Raw.NetworkPrimatives
 {
     public interface ITcpServer
     {
-        
+        public IAsyncEnumerable<TcpClient> MonitorForConnection();
+
     }
     public sealed class TcpServer: ITcpServer, IDisposable
     {
@@ -19,11 +21,14 @@ namespace Melville.P2P.Raw.NetworkPrimatives
             listener = new TcpListener( MyIpAddress(), 0);
         }
 
-        // public async Task MonitorForConnection()
-        // {
-        //     listener.Start();
-        //     listener = 
-        // }
+        public async IAsyncEnumerable<TcpClient> MonitorForConnection()
+        {
+            listener.Start();
+            while (await listener.AcceptTcpClientAsync() is { } client)
+            {
+                yield return client;
+            }
+        }
 
         private static IPAddress MyIpAddress()
         {

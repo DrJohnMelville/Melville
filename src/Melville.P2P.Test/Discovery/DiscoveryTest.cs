@@ -78,21 +78,18 @@ namespace Melville.P2P.Test.Discovery
             WireBroadcastToReceiver();
             var task = client.Connect();
             GC.KeepAlive(server.AcceptConnections());
-            using var ret = await task;
+            var ret = await task;
             VerifyValidClient(ret);
         }
 
-        private static void VerifyValidClient(TcpClient ret)
-        {
-            Assert.Equal(AddressFamily.InterNetwork ,ret.Client.AddressFamily);
-        }
+        private  void VerifyValidClient(byte[] ret) => Assert.Equal(targetAddress, ret);
 
         [Fact]
         public async Task ServerBeforeClient()
         {
             WireBroadcastToReceiver(); 
             GC.KeepAlive(server.AcceptConnections());
-            using var ret = await client.Connect();
+            var ret = await client.Connect();
             VerifyValidClient(ret);
         }
     }
