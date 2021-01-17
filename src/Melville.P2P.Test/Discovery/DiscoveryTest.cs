@@ -30,7 +30,6 @@ namespace Melville.P2P.Test.Discovery
             server = new DiscoveryServer(broadcast.Object, rec1.Object,
                 targetAddress);
             client = new DiscoveryClient(broadcast.Object, rec2.Object);
-            
         }
 
         private async IAsyncEnumerable<UdpReceiveResult> ReadFromChannel(Channel<byte[]> channel)

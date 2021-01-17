@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Melville.P2P.Raw.BinaryObjectPipes;
 using Melville.P2P.Raw.NetworkPrimatives;
 
 namespace Melville.P2P.Raw.Discovery
@@ -9,7 +11,7 @@ namespace Melville.P2P.Raw.Discovery
     {
         Task AcceptConnections();
     }
-
+    
     public class DiscoveryServer : IDiscoveryServer
     {
         private readonly IUdpBroadcaster broadcast;

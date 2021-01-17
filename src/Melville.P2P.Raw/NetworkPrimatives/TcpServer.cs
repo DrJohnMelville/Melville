@@ -19,11 +19,11 @@ namespace Melville.P2P.Raw.NetworkPrimatives
         public TcpServer()
         {
             listener = new TcpListener( MyIpAddress(), 0);
+            listener.Start();
         }
 
         public async IAsyncEnumerable<TcpClient> MonitorForConnection()
         {
-            listener.Start();
             while (await listener.AcceptTcpClientAsync() is { } client)
             {
                 yield return client;

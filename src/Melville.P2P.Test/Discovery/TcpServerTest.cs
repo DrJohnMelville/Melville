@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO.Pipelines;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using Melville.P2P.Raw.Discovery;
 using Melville.P2P.Raw.NetworkPrimatives;
