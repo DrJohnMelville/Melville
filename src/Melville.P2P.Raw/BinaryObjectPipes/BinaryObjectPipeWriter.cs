@@ -28,6 +28,5 @@ namespace Melville.P2P.Raw.BinaryObjectPipes
             value.WriteToPipe(writer);
             return writer.FlushAsync();
         }
-
     }
 }
