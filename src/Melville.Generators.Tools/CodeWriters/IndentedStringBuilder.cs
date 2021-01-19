@@ -25,7 +25,12 @@ namespace Melville.Generators.Tools.CodeWriters
         public void Append(string s)
         {
             AppendIndentIfNeeded();
-            target.Append(s);
+            target.Append(InsertInternalIndentStrings(s));
+        }
+
+        private string InsertInternalIndentStrings(string s)
+        {
+            return s.Replace(Environment.NewLine, Environment.NewLine+indentString);
         }
 
         private void AppendIndentIfNeeded()

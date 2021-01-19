@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Pipelines;
 using System.Text;
+using Melville.MacroGen;
 
 namespace Melville.P2P.Raw.BinaryObjectPipes
 {
@@ -28,7 +29,7 @@ namespace Melville.P2P.Raw.BinaryObjectPipes
             return true;
         }
     }
-    public ref struct SerialPipeWriter
+    public ref partial struct SerialPipeWriter
     {
         private readonly PipeWriter writer;
         private readonly Span<byte> buffer;
@@ -43,16 +44,13 @@ namespace Melville.P2P.Raw.BinaryObjectPipes
             position = 0;
         }
 
-        public void Write(ushort value)
-        {
-            BitConverter.TryWriteBytes(NextPosition(), value);
-            position += sizeof(ushort);
-        }
-        public void Write(short value)
-        {
-            BitConverter.TryWriteBytes(NextPosition(), value);
-            position += sizeof(short);
-        }
+        [MacroCode(@"public void Write(~0~ value)
+{
+    System.BitConverter.TryWriteBytes(NextPosition(), value);
+    position += sizeof(~0~);
+}")]
+        [MacroItem("ushort")]
+        [MacroItem("short")]
         public void Write(int value)
         {
             BitConverter.TryWriteBytes(NextPosition(), value);
