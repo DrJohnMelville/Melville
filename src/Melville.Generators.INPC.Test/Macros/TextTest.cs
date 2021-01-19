@@ -61,6 +61,7 @@ namespace Outer
 
     public partial class WithMacro
     {
+        [MacroCode("private int Number~1~() => ~0~;")]
         [MacroCode("// Code: ~0~/~1~", Prefix = "public static void FooGenerated() {", Postfix = "}")]
         [MacroItem(1, "One")]
         [MacroItem(2, "Two")]
@@ -68,6 +69,10 @@ namespace Outer
         public void Method()
         {
           FooGenerated();
+          Assert.Equal(1, NumberOne());
+          Assert.Equal(2, NumberTwo());
+          Assert.Equal(3, NumberThree());
+          
         }
     }
 }
