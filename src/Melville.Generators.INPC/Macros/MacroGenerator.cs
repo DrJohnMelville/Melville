@@ -10,24 +10,6 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Melville.Generators.INPC.Macros
 {
-    public class UdpConsole
-    {
-        private static UdpClient? client = null;
-        private static UdpClient Client
-        {
-            get
-            {
-                client ??= new UdpClient();
-                return client ;
-            }
-        }
-
-        public static void WriteLine(string str)
-        {
-            var bytes = Encoding.UTF8.GetBytes(str);
-            Client.Send(bytes, bytes.Length, "127.0.0.1", 15321);
-        }
-    }
     [Generator]
     public class MacroGenerator: ISourceGenerator
     {
@@ -38,7 +20,6 @@ namespace Melville.Generators.INPC.Macros
 
         public void Execute(GeneratorExecutionContext context)
         {
-            UdpConsole.WriteLine("Inside Generator");
             AddAttributes(context);
             if (context.SyntaxReceiver is MacroSyntaxReceiver msr)
                 Generate(msr.Requests, context);
@@ -58,7 +39,7 @@ namespace Melville.Generators.INPC.Macros
             context.AddSource("MacroAttributes.MacroGen.cs", @"
 using System;
 
-namespace Melville.MaroGen
+namespace Melville.MacroGen
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class |
                     AttributeTargets.Method | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Struct, 

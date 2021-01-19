@@ -1,6 +1,6 @@
 ﻿using Melville.Generators.INPC.Macros;
 using Melville.Generators.INPC.Test.UnitTests;
-using Melville.MaroGen;
+using Melville.MacroGen;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.Macros
@@ -65,9 +65,9 @@ namespace Outer
         [MacroItem(1, "One")]
         [MacroItem(2, "Two")]
         [MacroItem(3, "Three")]
-        private void Method()
+        public void Method()
         {
-          // this.Generated();
+          FooGenerated();
         }
     }
 }
