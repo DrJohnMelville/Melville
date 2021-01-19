@@ -24,10 +24,6 @@ namespace Melville.UdpConsoleViewer
             }
         }
 
-        public void ClearList()
-        {
-            List.Clear();
-            UdpConsole.UdpConsole.WriteLine("This is a line");            
-        }
+        public void ClearList() => List.Clear();
     }
 }
