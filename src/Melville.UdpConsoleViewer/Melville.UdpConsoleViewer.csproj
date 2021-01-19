@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Melville.P2P.Raw\Melville.P2P.Raw.csproj" />
+      <ProjectReference Include="..\Melville.UdpConsole\Melville.UdpConsole.csproj" />
+      <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
+      <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ApplicationDefinition Remove="App.xaml" />
+    </ItemGroup>
+
+</Project>
