@@ -10,11 +10,11 @@ namespace Melville.Generators.Tools.CodeWriters
 
         public static IDisposable GenerateEnclosingClasses(this CodeWriter writer, SyntaxNode node,
             string innermostSuffix) =>
-            writer.EnclosingBlockWriter<ClassDeclarationSyntax>(node, 
+            writer.EnclosingBlockWriter<TypeDeclarationSyntax>(node, 
                 (cw,cd)=>WriteSingleClassDecl(cw, cd, ""),
                 (cw,cd)=>WriteSingleClassDecl(cw,cd, innermostSuffix));
 
-        private static void WriteSingleClassDecl(CodeWriter writer, ClassDeclarationSyntax classDecl,
+        private static void WriteSingleClassDecl(CodeWriter writer, TypeDeclarationSyntax classDecl,
             string suffix)
         {
             CheckForPartialDeclaration(writer, classDecl);
@@ -22,7 +22,7 @@ namespace Melville.Generators.Tools.CodeWriters
         }
 
         private static void CopyClassDeclarationBeforeOpeningBrace(CodeWriter writer, 
-            ClassDeclarationSyntax classDecl, string suffix)
+            TypeDeclarationSyntax classDecl, string suffix)
         {
             const int CSharpAttributeListKind = 8847;
             foreach (var token in classDecl.ChildNodesAndTokens())
@@ -37,7 +37,7 @@ namespace Melville.Generators.Tools.CodeWriters
             writer.AppendLine();
         }
 
-        private static void CheckForPartialDeclaration(CodeWriter writer, ClassDeclarationSyntax classDeclaration)
+        private static void CheckForPartialDeclaration(CodeWriter writer, TypeDeclarationSyntax classDeclaration)
         {
             if (!classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword))
             {

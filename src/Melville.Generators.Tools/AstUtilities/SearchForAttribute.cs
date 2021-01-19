@@ -17,14 +17,18 @@ namespace Melville.Generators.Tools.AstUtilities
 
         public bool HasAttribute(SyntaxNode node) => null != FindAttribute(node);
 
-        public AttributeSyntax? FindAttribute(SyntaxNode node) =>
-            FindSymbbolAttributes(node).FirstOrDefault(IsRequestedAttribute);
+        public AttributeSyntax? FindAttribute(SyntaxNode node) =>FindAllAttributes(node).FirstOrDefault();
+
+        public IEnumerable<AttributeSyntax> FindAllAttributes(SyntaxNode node)
+        {
+            return FindSymbbolAttributes(node).Where(IsRequestedAttribute);
+        }
 
         private static IEnumerable<AttributeSyntax> FindSymbbolAttributes(SyntaxNode node) =>
             node switch
             {
                 MemberDeclarationSyntax mds => mds.AttributeLists.SelectMany(i => i.Attributes),
-                _ => Array.Empty<AttributeSyntax>()
+                _ => Array.Empty<AttributeSyntax>(),
             };
 
         private bool IsRequestedAttribute(AttributeSyntax arg)
