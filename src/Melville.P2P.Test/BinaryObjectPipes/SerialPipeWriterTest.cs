@@ -50,6 +50,130 @@ namespace Melville.P2P.Test.BinaryObjectPipes
         }
 
         [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(231)]
+        [InlineData(int.MinValue)]
+        [InlineData(int.MaxValue)]
+        public async Task WriteInt(int value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out int readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(int), nextPosition);
+        }
+        
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(231)]
+        [InlineData(uint.MinValue)]
+        [InlineData(uint.MaxValue)]
+        public async Task WriteUint(uint value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out uint readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(uint), nextPosition);
+        }
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(231)]
+        [InlineData(ulong.MinValue)]
+        [InlineData(ulong.MaxValue)]
+        public async Task WriteUlong(ulong value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out ulong readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(ulong), nextPosition);
+        }
+        
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(231)]
+        [InlineData(long.MinValue)]
+        [InlineData(long.MaxValue)]
+        public async Task WriteLong(long value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out long readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(long), nextPosition);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(double.Epsilon)]
+        [InlineData(double.MinValue)]
+        [InlineData(double.MaxValue)]
+        public async Task WriteDouble(double value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out double readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(double), nextPosition);
+        }
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(Single.Epsilon)]
+        [InlineData(Single.MinValue)]
+        [InlineData(Single.MaxValue)]
+        public async Task WriteSingle(Single value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out Single readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(Single), nextPosition);
+        }
+        [Theory]
+        [InlineData(1)]
+        [InlineData(0)]
+        [InlineData(115)]
+        [InlineData(byte.MinValue)]
+        [InlineData(byte.MaxValue)]
+        public async Task Writebyte(byte value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+         
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out byte readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(sizeof(byte), nextPosition);
+        }
+
+
+        [Theory]
         [InlineData(1,1,0)]
         [InlineData(2,2,0)]
         [InlineData(257,1,1)]
@@ -57,7 +181,7 @@ namespace Melville.P2P.Test.BinaryObjectPipes
         [InlineData(-1,255,255)]
         [InlineData(short.MaxValue, 255, 127)]
         public async Task WriteShort(short value, byte first, byte second)
-        {
+        { 
             var buff = new byte[20];
             await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
             Assert.Equal(first, buff[0]);
@@ -68,6 +192,21 @@ namespace Melville.P2P.Test.BinaryObjectPipes
             Assert.True(success);
             Assert.Equal(value, newValue);
             Assert.Equal(2, nextPosition);
+        }
+        
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public async Task WriteBool(bool value)
+        {
+            var buff = new byte[20];
+            await WriteToBuff(buff, (ref SerialPipeWriter spw) => spw.Write(value));
+        
+            var (success, newValue, nextPosition) = ReadFromBuff(buff, 
+                (ref SequenceReader<byte> sr, out bool readVal) => sr.TryReadLittleEndian(out readVal));
+            Assert.True(success);
+            Assert.Equal(value, newValue);
+            Assert.Equal(1, nextPosition);
         }
 
         [Fact]
