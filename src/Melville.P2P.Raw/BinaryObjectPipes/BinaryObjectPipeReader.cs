@@ -6,7 +6,12 @@ using System.IO.Pipelines;
 
 namespace Melville.P2P.Raw.BinaryObjectPipes
 {
-    public class BinaryObjectPipeReader
+    public interface IBinaryObjectPipeReader
+    {
+        IAsyncEnumerable<object> Read();
+    }
+
+    public class BinaryObjectPipeReader : IBinaryObjectPipeReader
     {
         private readonly PipeReader reader;
         private readonly BinaryObjectDictionary typeDictionary;

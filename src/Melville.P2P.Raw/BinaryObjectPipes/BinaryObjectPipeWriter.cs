@@ -5,8 +5,12 @@ using System.Threading.Tasks;
 
 namespace Melville.P2P.Raw.BinaryObjectPipes
 {
-    
-    public class BinaryObjectPipeWriter
+    public interface IBinaryObjectPipeWriter
+    {
+        ValueTask<FlushResult> Write(ICanWriteToPipe value);
+    }
+
+    public class BinaryObjectPipeWriter : IBinaryObjectPipeWriter
     {
         private readonly PipeWriter writer;
         private readonly BinaryObjectDictionary typeDictionary;
