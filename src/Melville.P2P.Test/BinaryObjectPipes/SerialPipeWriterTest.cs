@@ -236,6 +236,18 @@ namespace Melville.P2P.Test.BinaryObjectPipes
             Assert.Equal(2+value.Length, nextPosition);
         }
 
+        [Theory]
+        [InlineData("", 2)]
+        [InlineData("a", 3)]
+        [InlineData("ab", 4)]
+        [InlineData("\x1234", 5)]
+        public void SpaceForStringTest(string s, int length)
+        {
+            var buff = new byte[10];
+            var writer = PipeWriter.Create(new MemoryStream(buff));
+            var spw = new SerialPipeWriter(writer, buff.Length);
+            Assert.Equal(length, spw.SpaceForString(s));
 
+        }
     }
 }
