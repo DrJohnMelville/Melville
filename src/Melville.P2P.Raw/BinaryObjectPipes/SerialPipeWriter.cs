@@ -44,6 +44,6 @@ namespace Melville.P2P.Raw.BinaryObjectPipes
         }
         public void Dispose() => writer.Advance(position);
 
-        public int SpaceForString(string input) => 2 + Encoding.UTF8.GetByteCount(input);
+        public static int SpaceForString(string input) => 2 + Encoding.UTF8.GetByteCount(input);
     }
 }
