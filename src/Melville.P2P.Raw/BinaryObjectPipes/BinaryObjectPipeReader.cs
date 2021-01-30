@@ -44,8 +44,8 @@ namespace Melville.P2P.Raw.BinaryObjectPipes
                     {
                         yield return item;
                     }
-                    reader.AdvanceTo(finalPosition, buffer.End);
                 } while (item != null && ! finalPosition.Equals(buffer.End));
+                reader.AdvanceTo(finalPosition, buffer.End);
             } while (!(result.IsCompleted || result.IsCanceled));
         }
                 
