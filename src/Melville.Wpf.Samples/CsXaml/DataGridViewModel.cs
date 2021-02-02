@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Melville.INPC;
 using Melville.MVVM.BusinessObjects;
 using Melville.Mvvm.CsXaml;
 using Melville.Mvvm.CsXaml.XamlBuilders;
@@ -11,35 +12,20 @@ using Melville.WpfControls.FilteredDataGrids;
 
 namespace Melville.Wpf.Samples.CsXaml
 {
-    public class RowData: NotifyBase
+    public partial class RowData
     {
-        private string name;
-        public string Name
-        {
-            get => name;
-            set => AssignAndNotify(ref name, value);
-        }
+        [AutoNotify]private string name;
 
-        private int sortOrder;
-        public int SortOrder
+        [AutoNotify]private int sortOrder;
+
+        partial void WhenSortOrderChanges(int oldValue, int newValue)
         {
-            get => sortOrder;
-            set
-            {
-                IsOdd = value % 2 == 1;
-                AssignAndNotify(ref sortOrder, value);
-            }
+            IsOdd = newValue % 2 == 1;
         }
         
         public int[] Choices => Enumerable.Range(0,4).Select(i=>i + SortOrder).ToArray();
 
-        private bool isOdd;
-        public bool IsOdd
-        {
-            get => isOdd;
-            set => AssignAndNotify(ref isOdd, value);
-        }
- 
+        [AutoNotify] private bool isOdd;
         public RowData(string name, int sortOrder)
         {
             this.name = name;

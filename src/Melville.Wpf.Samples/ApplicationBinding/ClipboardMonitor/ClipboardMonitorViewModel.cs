@@ -1,25 +1,17 @@
 ﻿using System;
+using Melville.INPC;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.Wpf.Clipboards;
 
 namespace Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor
 {
-    public class ClipboardMonitorViewModel: NotifyBase
+    public partial class ClipboardMonitorViewModel
     {
-        private string clipboardValue = "";
-
-        public string ClipboardValue
-        {
-            get => clipboardValue;
-            set => AssignAndNotify(ref clipboardValue, value);
-        }
-
-        private readonly IClipboardNotification notifier;
+        [AutoNotify] private string clipboardValue = "";
         private readonly IReadFromClipboard reader;
 
         public ClipboardMonitorViewModel(IClipboardNotification notifier, IReadFromClipboard reader)
         {
-            this.notifier = notifier;
             this.reader = reader;
             notifier.ClipboardUpdate += GetContents;
         }

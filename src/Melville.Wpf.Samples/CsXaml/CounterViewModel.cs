@@ -6,21 +6,16 @@ using System.Windows.Forms.VisualStyles;
 using System.Windows.Markup;
 using System.Windows.Media;
 using Accord;
+using Melville.INPC;
 using Melville.MVVM.BusinessObjects;
 using Melville.Mvvm.CsXaml;
 using Melville.Mvvm.CsXaml.XamlBuilders;
 
 namespace Melville.Wpf.Samples.CsXaml
 {
-    public class CounterViewModel:NotifyBase
+    public partial class CounterViewModel
     {
-        private int counter = 10;
-        public int Counter
-        {
-            get => counter;
-            set => AssignAndNotify(ref counter, value);
-        }
-
+        [AutoNotify] private int counter = 10;
         public void IncrementCounter() => Counter++;
     }
 

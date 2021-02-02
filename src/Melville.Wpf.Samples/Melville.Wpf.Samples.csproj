@@ -5,6 +5,7 @@
         <TargetFramework>net5.0-windows10.0.18362.0</TargetFramework>
         <UseWPF>true</UseWPF>
         <Nullable>enable</Nullable>
+        <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
     </PropertyGroup>
 
     <ItemGroup>
@@ -33,6 +34,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\Melville.Generators.Tools\Melville.Generators.Tools.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+      <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
       <ProjectReference Include="..\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj" />
       <ProjectReference Include="..\Melville.Mvvm.CsXaml\Melville.Mvvm.CsXaml.csproj" />
       <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />

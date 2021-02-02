@@ -1,9 +1,10 @@
-﻿using Melville.MVVM.BusinessObjects;
+﻿using Melville.INPC;
+using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB.ThumbDrives;
 
 namespace Melville.Wpf.Samples.ThumbDrives
 {
-    public class ThumbDriveViewModel: NotifyBase
+    public partial class ThumbDriveViewModel
     {
         public ThumbDriveViewModel(IDetectThumbDrive driveNotifier)
         {
@@ -16,11 +17,6 @@ namespace Melville.Wpf.Samples.ThumbDrives
             Events += $"\r\n {which} -- {root}";
         }
 
-        private string events = "";
-        public string Events
-        {
-            get => events;
-            set => AssignAndNotify(ref events, value);
-        }
+        [AutoNotify]private string events = "";
     }
 }

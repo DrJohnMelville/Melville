@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
+using Melville.INPC;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB.Pedal;
 using Melville.MVVM.Wpf.Bindings;
@@ -20,29 +21,14 @@ namespace Melville.Wpf.Samples.TranscriptionPedal
         }
     }
 
-    public class TranscriptionPedalViewModel: NotifyBase
+    public partial class TranscriptionPedalViewModel
     {
         public ITranscriptonPedal Pedal { get; }
-        private string leftEvents ="";
-        public string LeftEvents
-        {
-            get => leftEvents;
-            set => AssignAndNotify(ref leftEvents, value);
-        }
-
-        private string centerEvents = "";
-        public string CenterEvents
-        {
-            get => centerEvents;
-            set => AssignAndNotify(ref centerEvents, value);
-        }
-
-        private string rightEvents = "";
-        public string RightEvents
-        {
-            get => rightEvents;
-            set => AssignAndNotify(ref rightEvents, value);
-        }
+        [AutoNotify] private string leftEvents ="";
+        
+        [AutoNotify] private string centerEvents = "";
+        
+        [AutoNotify] private string rightEvents = "";
 
         public TranscriptionPedalViewModel(ITranscriptonPedal pedal)
         {
