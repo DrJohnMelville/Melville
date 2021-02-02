@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.Tools.CodeWriters
+namespace Melville.Generators.INPC.CodeWriters
 {
     public static class EnclosingClassWriter
     {

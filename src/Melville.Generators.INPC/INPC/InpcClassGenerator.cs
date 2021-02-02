@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
-using Melville.Generators.Tools.AstUtilities;
-using Melville.Generators.Tools.CodeWriters;
+using Melville.Generators.INPC.AstUtilities;
+using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

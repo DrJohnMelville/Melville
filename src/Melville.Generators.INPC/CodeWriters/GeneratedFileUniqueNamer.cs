@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace Melville.Generators.Tools.CodeWriters
+namespace Melville.Generators.INPC.CodeWriters
 {
     public class GeneratedFileUniqueNamer
     {
         private Dictionary<string, int> seenItems = new();
+        private string generatorSuffix;
+
+        public GeneratedFileUniqueNamer(string generatorSuffix)
+        {
+            this.generatorSuffix = generatorSuffix;
+        }
 
         private int IndexForName(string name)
         {
@@ -17,6 +23,6 @@ namespace Melville.Generators.Tools.CodeWriters
         private string Suffix(int ordinal) => ordinal == 0 ? "" : $".{ordinal}";
 
         public string CreateFileName(string className) => 
-            $"{className}.Generated{Suffix(IndexForName(className))}.cs";
+            $"{className}.{generatorSuffix}{Suffix(IndexForName(className))}.cs";
     }
 }

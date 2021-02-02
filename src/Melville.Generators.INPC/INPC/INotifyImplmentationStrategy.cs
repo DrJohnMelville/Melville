@@ -1,4 +1,5 @@
-﻿using Melville.Generators.Tools.CodeWriters;
+﻿
+using Melville.Generators.INPC.CodeWriters;
 
 namespace Melville.Generators.INPC.INPC
 {

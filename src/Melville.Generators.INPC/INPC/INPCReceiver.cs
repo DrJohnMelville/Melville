@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Melville.Generators.Tools.AstUtilities;
+using Melville.Generators.INPC.AstUtilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

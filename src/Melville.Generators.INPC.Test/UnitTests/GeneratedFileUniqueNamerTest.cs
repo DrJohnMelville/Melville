@@ -1,11 +1,11 @@
-﻿using Melville.Generators.Tools.CodeWriters;
+﻿using Melville.Generators.INPC.CodeWriters;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.UnitTests
 {
     public class GeneratedFileUniqueNamerTest
     {
-        private readonly GeneratedFileUniqueNamer sut = new ();
+        private readonly GeneratedFileUniqueNamer sut = new ("Generated");
 
         [Fact]
         public void SimpleName()

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Melville.Generators.Tools.CodeWriters
+namespace Melville.Generators.INPC.CodeWriters
 {
     public class RunActionOnDispose: IDisposable
     {

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using Melville.Generators.Tools.CodeWriters;
+using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Melville.Generators.INPC.Macros
 {
@@ -27,7 +22,7 @@ namespace Melville.Generators.INPC.Macros
 
         private void Generate(List<MacroRequest> msrRequests, GeneratorExecutionContext context)
         {
-            var namer = new GeneratedFileUniqueNamer();
+            var namer = new GeneratedFileUniqueNamer("MacroGen");
             foreach (var group in msrRequests.GroupBy(i=>i.NodeToEnclose))
             {
                 context.RenderInType(namer, group.Key, group.Select(i => i.GeneratedCode));

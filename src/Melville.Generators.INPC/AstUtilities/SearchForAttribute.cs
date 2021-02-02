@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.Tools.AstUtilities
+namespace Melville.Generators.INPC.AstUtilities
 {
     public class SearchForAttribute
     {
@@ -15,26 +15,20 @@ namespace Melville.Generators.Tools.AstUtilities
             this.qualifiedAttributeName = qualifiedAttributeName;
         }
 
-        public bool HasAttribute(SyntaxNode node) => null != FindAttribute(node);
+        public bool HasAttribute(MemberDeclarationSyntax node) => null != FindAttribute(node);
 
-        public AttributeSyntax? FindAttribute(SyntaxNode node) =>FindAllAttributes(node).FirstOrDefault();
+        public AttributeSyntax? FindAttribute(MemberDeclarationSyntax node) =>FindAllAttributes(node).FirstOrDefault();
 
-        public IEnumerable<AttributeSyntax> FindAllAttributes(SyntaxNode node)
+        public IEnumerable<AttributeSyntax> FindAllAttributes(MemberDeclarationSyntax node)
         {
             return FindSymbbolAttributes(node).Where(IsRequestedAttribute);
         }
 
-        private static IEnumerable<AttributeSyntax> FindSymbbolAttributes(SyntaxNode node) =>
-            node switch
-            {
-                MemberDeclarationSyntax mds => mds.AttributeLists.SelectMany(i => i.Attributes),
-                _ => Array.Empty<AttributeSyntax>(),
-            };
+        private static IEnumerable<AttributeSyntax> FindSymbbolAttributes(MemberDeclarationSyntax node) =>
+           node.AttributeLists.SelectMany(i => i.Attributes);
 
-        private bool IsRequestedAttribute(AttributeSyntax arg)
-        {
-            return CheckNameInContext(ExpandExplicitAttribute(arg.Name.ToString()), arg);
-        }
+        private bool IsRequestedAttribute(AttributeSyntax arg) => 
+            CheckNameInContext(ExpandExplicitAttribute(arg.Name.ToString()), arg);
 
         private static string ExpandExplicitAttribute(string name) =>
             name.EndsWith("Attribute") ? name : name + "Attribute";

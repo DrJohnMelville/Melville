@@ -17,7 +17,6 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Melville.Generators.Tools" Version="0.1.4" PrivateAssets="all" GeneratePathProperty="true" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0" PrivateAssets="all" />
         <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
     </ItemGroup>
@@ -25,5 +24,8 @@
         <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(PkgMelville_Generators_Tools)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="DependencyPropGen" />
     </ItemGroup>
 </Project>

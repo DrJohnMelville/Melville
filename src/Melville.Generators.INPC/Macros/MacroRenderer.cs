@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Melville.Generators.Tools.CodeWriters;
+using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

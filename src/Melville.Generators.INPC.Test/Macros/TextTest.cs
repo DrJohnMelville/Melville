@@ -19,8 +19,6 @@ namespace Outer
 }
 }
 ");
-
-
         [Fact]
         public void SimpleMacro()
         {
@@ -40,7 +38,7 @@ namespace Outer
         [InlineData("[MacroCode(\"// Macro: ~0~\", Postfix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// 233")]
         
         public void SimpleSub(string input, string output) => 
-            RunTest(input).FileContains("C.Generated.cs", output);
+            RunTest(input).FileContains("C.MacroGen.cs", output);
 
         [Fact]
         public void Prefix()
@@ -55,7 +53,7 @@ namespace Outer
         [MacroItem(1, ""One"")]
         [MacroItem(2, ""Two"")]
         [MacroItem(3, ""Three"")]
-").FileContains("C.Generated.cs", "// Code: 1/One");
+").FileContains("C.MacroGen.cs", "// Code: 1/One");
         }
     }
 

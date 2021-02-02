@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using Melville.Generators.Tools.AstUtilities;
+using Melville.Generators.INPC.AstUtilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -32,10 +30,10 @@ namespace Melville.Generators.INPC.Macros
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {
-            if (!(syntaxNode is MemberDeclarationSyntax)) return;
-            var codeAttrs = codeFinder.FindAllAttributes(syntaxNode).ToList();
+            if (!(syntaxNode is MemberDeclarationSyntax mds)) return;
+            var codeAttrs = codeFinder.FindAllAttributes(mds).ToList();
             if (codeAttrs.Count == 0) return;
-            var items = itemFinder.FindAllAttributes(syntaxNode).ToList();
+            var items = itemFinder.FindAllAttributes(mds).ToList();
             if (items.Count == 0) return;
             
             Requests.Add(new MacroRequest(EnclosingType(syntaxNode), 
