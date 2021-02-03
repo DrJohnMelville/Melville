@@ -60,7 +60,6 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
             Func<CodeWriter, bool> contentFunc)
         {
             var codeWriter = new CodeWriter(context);
-            UdpConsole.WriteLine("TryGen");
             if (!contentFunc(codeWriter)) return; // no code to generate
             codeWriter.PublishCodeInFile(namer.CreateFileName(proposedNamePrefix));
         }

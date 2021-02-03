@@ -11,24 +11,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.Macros
 {
-    public class MacroRequest
+    public static class MacroSyntaxReceiver
     {
-        public TypeDeclarationSyntax NodeToEnclose { get; }
-        public string GeneratedCode { get; }
+        private static SearchForAttribute codeFinder = new("Melville.MacroGen.MacroCodeAttribute");
+        private static SearchForAttribute itemFinder = new("Melville.MacroGen.MacroItemAttribute");
 
-        public MacroRequest(TypeDeclarationSyntax nodeToEnclose, string generatedCode)
-        {
-            this.NodeToEnclose = nodeToEnclose;
-            this.GeneratedCode = generatedCode;
-        }
-    }
-
-    public class MacroSyntaxReceiver
-    {
-        private SearchForAttribute codeFinder = new("Melville.MacroGen.MacroCodeAttribute");
-        private SearchForAttribute itemFinder = new("Melville.MacroGen.MacroItemAttribute");
-
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode, CodeWriter cw)
+        public static void OnVisitSyntaxNode(SyntaxNode syntaxNode, CodeWriter cw)
         {
             if (!(syntaxNode is MemberDeclarationSyntax mds)) return;
             var codeAttrs = codeFinder.FindAllAttributes(mds).ToList();
@@ -39,18 +27,19 @@ namespace Melville.Generators.INPC.Macros
             cw.AppendLine(GenerateCombinations(codeAttrs, items));
         }
 
-        private string GenerateCombinations(List<AttributeSyntax> codeAttrs, List<AttributeSyntax> items)
+        private static string GenerateCombinations(List<AttributeSyntax> codeAttrs, List<AttributeSyntax> items)
         {
-            return StringJoin(
+            return ImplementCartesianProduct(
                 codeAttrs, AllParameters(items));
         }
 
-        private List<List<string>> AllParameters(List<AttributeSyntax> items)
+        private static List<List<string>> AllParameters(List<AttributeSyntax> items)
         {
-            return items.Select(i=>AttributeParameters(i).ToList()).ToList();
+            return items.Select(i=> i.AttributeParameters().ToList()).ToList();
         }
 
-        private string StringJoin(IList<AttributeSyntax> templates, List<List<string>> attrs)
+        private static string ImplementCartesianProduct
+            (IList<AttributeSyntax> templates, List<List<string>> attrs)
         {
             var ret = new StringBuilder();
             foreach (var template in templates.Select(i=>i.ArgumentList).Where(i=>i!=null))
@@ -60,18 +49,6 @@ namespace Melville.Generators.INPC.Macros
             }
 
             return ret.ToString();
-        }
-
-
-        private IEnumerable<string> AttributeParameters(AttributeSyntax attrib) =>
-            attrib.ArgumentList?.Arguments.Select(AttributeParsers.ExtractArgumentFromAttribute)
-            ?? Array.Empty<string>();
-
-
-        private TypeDeclarationSyntax EnclosingType(SyntaxNode syntaxNode)
-        {
-            return syntaxNode is TypeDeclarationSyntax td ? td : EnclosingType(
-                syntaxNode.Parent ?? throw new InvalidOperationException("No enclosing type"));
         }
     }
 
@@ -130,5 +107,9 @@ namespace Melville.Generators.INPC.Macros
                 _ => arg.ToString()
             };
         }
+
+        public static IEnumerable<string> AttributeParameters(this AttributeSyntax attrib) =>
+            attrib.ArgumentList?.Arguments.Select(AttributeParsers.ExtractArgumentFromAttribute)
+            ?? Array.Empty<string>();
     }
 }
