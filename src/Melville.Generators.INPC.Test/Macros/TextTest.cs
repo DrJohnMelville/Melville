@@ -1,6 +1,6 @@
 ﻿using Melville.Generators.INPC.Macros;
 using Melville.Generators.INPC.Test.UnitTests;
-using Melville.MacroGen;
+//using Melville.MacroGen;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.Macros
@@ -23,7 +23,7 @@ namespace Outer
         public void SimpleMacro()
         {
             var tb = RunTest("");
-            tb.FileContains("MacroAttributes.MacroGen.cs", "internal sealed class MacroItemAttribute : Attribute");
+            tb.FileContains("MacroGenAttributes.MacroGen.cs", "internal sealed class MacroItemAttribute : Attribute");
         }
 
         [Theory]
@@ -56,7 +56,7 @@ namespace Outer
 ").FileContains("C.MacroGen.cs", "// Code: 1/One");
         }
     }
-
+/*
     public partial class WithMacro
     {
         [MacroCode("private int Number~1~() => ~0~;")]
@@ -73,4 +73,5 @@ namespace Outer
           
         }
     }
+    */
 }

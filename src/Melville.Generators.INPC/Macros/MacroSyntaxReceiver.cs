@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Melville.Generators.INPC.AstUtilities;
+using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -22,13 +23,12 @@ namespace Melville.Generators.INPC.Macros
         }
     }
 
-    public class MacroSyntaxReceiver: ISyntaxReceiver
+    public class MacroSyntaxReceiver
     {
-        public List<MacroRequest> Requests { get; } = new();
         private SearchForAttribute codeFinder = new("Melville.MacroGen.MacroCodeAttribute");
         private SearchForAttribute itemFinder = new("Melville.MacroGen.MacroItemAttribute");
 
-        public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
+        public void OnVisitSyntaxNode(SyntaxNode syntaxNode, CodeWriter cw)
         {
             if (!(syntaxNode is MemberDeclarationSyntax mds)) return;
             var codeAttrs = codeFinder.FindAllAttributes(mds).ToList();
@@ -36,10 +36,7 @@ namespace Melville.Generators.INPC.Macros
             var items = itemFinder.FindAllAttributes(mds).ToList();
             if (items.Count == 0) return;
             
-            Requests.Add(new MacroRequest(EnclosingType(syntaxNode), 
-                GenerateCombinations(codeAttrs, items)
-                ));
-            
+            cw.AppendLine(GenerateCombinations(codeAttrs, items));
         }
 
         private string GenerateCombinations(List<AttributeSyntax> codeAttrs, List<AttributeSyntax> items)

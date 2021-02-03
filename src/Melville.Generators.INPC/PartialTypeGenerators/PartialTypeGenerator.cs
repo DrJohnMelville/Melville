@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.CodeWriters;
+using Melville.Generators.INPC.Macros;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -12,7 +13,7 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
     {
         protected abstract T PreProcess(IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input);
         protected abstract bool GlobalDeclarations(CodeWriter cw);
-        protected abstract bool GenerateClassContents(T input);
+        protected abstract bool GenerateClassContents(T input, CodeWriter cw);
         protected virtual string ClassSuffix(T input) => "";
 
         private readonly string[] targetAttributes;
@@ -49,7 +50,7 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
                 using (cw.GenerateEnclosingNamespaces(parent))
                 using (cw.GenerateEnclosingClasses(parent, ClassSuffix(input)))
                 {
-                    return GenerateClassContents(input);
+                    return GenerateClassContents(input, cw);
                 }
             });
         }
@@ -59,8 +60,9 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
             Func<CodeWriter, bool> contentFunc)
         {
             var codeWriter = new CodeWriter(context);
+            UdpConsole.WriteLine("TryGen");
             if (!contentFunc(codeWriter)) return; // no code to generate
-            context.AddSource(namer.CreateFileName(proposedNamePrefix), codeWriter.ToString());
+            codeWriter.PublishCodeInFile(namer.CreateFileName(proposedNamePrefix));
         }
     }
     

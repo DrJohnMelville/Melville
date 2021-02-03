@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Melville.UdpConsole
 {
-    public class UdpConsole
+    public static class UdpConsole
     {
         private static UdpClient? client = null;
         private static UdpClient Client
@@ -16,10 +16,11 @@ namespace Melville.UdpConsole
             }
         }
 
-        public static void WriteLine(string str)
+        public static string WriteLine(string str)
         {
             var bytes = Encoding.UTF8.GetBytes(str);
             Client.Send(bytes, bytes.Length, "127.0.0.1", 15321);
+            return str;
         }
     }
 }
