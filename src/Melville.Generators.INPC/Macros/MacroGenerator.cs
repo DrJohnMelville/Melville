@@ -49,14 +49,9 @@ namespace Melville.Generators.INPC.Macros
         {
             foreach (var node in input)
             {
-                GenerateSingleNode(node, cw);
+                MacroSyntaxInterpreter.ExpandSingleMacroSet(node, cw);
             }
             return true;
-        }
-
-        private void GenerateSingleNode(MemberDeclarationSyntax node, CodeWriter cw)
-        {
-            MacroSyntaxReceiver.OnVisitSyntaxNode(node, cw);
         }
     }
 }
