@@ -13,15 +13,16 @@ namespace Melville.Generators.INPC.CodeWriters
         private readonly GeneratorExecutionContext context;
         private readonly List<string> prefixLines = new();
         private readonly IndentedStringBuilder target = new();
+
         public CodeWriter(GeneratorExecutionContext context)
         {
             this.context = context;
         }
 
-        public void PublishCodeInFile(string fileName) => 
+        public void PublishCodeInFile(string fileName) =>
             context.AddSource(fileName, SourceText.From(this.ToString(), Encoding.UTF8));
 
-            
+
 
         public void AddPrefixLine(string line) => prefixLines.Add(line);
         public void AppendLine(string s = "") => target.AppendLine(s);
@@ -32,5 +33,4 @@ namespace Melville.Generators.INPC.CodeWriters
 
         public void ReportDiagnostic(Diagnostic diagnostic) => context.ReportDiagnostic(diagnostic);
     }
-
 }
