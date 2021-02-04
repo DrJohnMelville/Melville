@@ -11,7 +11,7 @@ namespace Melville.Generators.INPC.CodeWriters
     public class CodeWriter
     {
         private readonly GeneratorExecutionContext context;
-        private readonly List<string> prefixLines = new();
+        private readonly HashSet<string> prefixLines = new();
         private readonly IndentedStringBuilder target = new();
 
         public CodeWriter(GeneratorExecutionContext context)

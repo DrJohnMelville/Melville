@@ -24,7 +24,7 @@ namespace Outer
         public void SimpleMacro()
         {
             var tb = RunTest("");
-            tb.FileContains("MacroGenAttributes.MacroGen.cs", "internal sealed class MacroItemAttribute : Attribute");
+            tb.FileContains("MacroGenAttributes.MacroGen.cs", "internal sealed class MacroItemAttribute: Attribute");
         }
 
         [Theory]

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Melville.Generators.INPC.CodeWriters;
 using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;
@@ -24,21 +25,18 @@ namespace Melville.Generators.INPC.Macros
 
         private static void AttributeDeclarations(CodeWriter cw)
         {
-            cw.AddPrefixLine("using System;");
-            cw.AppendLine(
-                @"[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]");
-            cw.AppendLine("internal sealed class MacroCodeAttribute : Attribute");
-            using (cw.CurlyBlock())
+            using (cw.ComplexAttribute("MacroCode",
+                AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Field |
+                AttributeTargets.Event | AttributeTargets.Struct, true))
             {
                 cw.AppendLine(@"public object Prefix {get;set;} = """";");
                 cw.AppendLine(@"public object Postfix {get;set;} = """";");
                 cw.AppendLine("public MacroCodeAttribute(object text){}");
             }
 
-            cw.AppendLine(
-                @"[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Field | AttributeTargets.Event | AttributeTargets.Struct, Inherited = false, AllowMultiple = true)]");
-            cw.AppendLine("internal sealed class MacroItemAttribute : Attribute");
-            using (cw.CurlyBlock())
+            using (cw.ComplexAttribute("MacroItem",
+                AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Field |
+                AttributeTargets.Event | AttributeTargets.Struct, true))
             {
                 cw.AppendLine("public MacroItemAttribute(params object[] text){}");
             }
