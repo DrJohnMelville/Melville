@@ -9,12 +9,12 @@ namespace Melville.Generators.INPC.INPC
     public class ClassToImplement
     {
         public List<FieldDeclarationSyntax> FieldsToWrap { get; }
-        public ClassDeclarationSyntax ClassDeclaration { get; }
+        public TypeDeclarationSyntax ClassDeclaration { get; }
         public SemanticModel SemanticModel { get; }
         public PropertyDependencyChecker PropertyDependencies { get; }
         public INamedTypeSymbol TypeInfo { get; }
 
-        public ClassToImplement(List<FieldDeclarationSyntax> fieldsToWrap, ClassDeclarationSyntax classDeclaration,
+        public ClassToImplement(List<FieldDeclarationSyntax> fieldsToWrap, TypeDeclarationSyntax classDeclaration,
             SemanticModel semanticModel, PropertyDependencyChecker propertyDependencies)
         {
             FieldsToWrap = fieldsToWrap;

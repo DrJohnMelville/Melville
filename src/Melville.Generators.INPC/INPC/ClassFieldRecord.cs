@@ -8,7 +8,7 @@ namespace Melville.Generators.INPC.INPC
     public class ClassFieldRecord{
         public List<FieldDeclarationSyntax> FieldsToWrap { get; } = new List<FieldDeclarationSyntax>();
         public List<PropertyDeclarationSyntax> ProperteisToMap { get; } = new List<PropertyDeclarationSyntax>();
-        public ClassDeclarationSyntax ClassDeclaration { get; }
+        public TypeDeclarationSyntax ClassDeclaration { get; }
         private SemanticModel? semanticModel;
 
         public SemanticModel SemanticModel
@@ -22,7 +22,7 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        public ClassFieldRecord(ClassDeclarationSyntax classDeclaration)
+        public ClassFieldRecord(TypeDeclarationSyntax classDeclaration)
         {
             this.ClassDeclaration = classDeclaration;
         }

@@ -10,17 +10,17 @@ namespace Melville.Generators.INPC.CodeWriters
 {
     public class CodeWriter
     {
-        private readonly GeneratorExecutionContext context;
+        public GeneratorExecutionContext Context { get; }
         private readonly HashSet<string> prefixLines = new();
         private readonly IndentedStringBuilder target = new();
 
         public CodeWriter(GeneratorExecutionContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public void PublishCodeInFile(string fileName) =>
-            context.AddSource(fileName, SourceText.From(this.ToString(), Encoding.UTF8));
+            Context.AddSource(fileName, SourceText.From(this.ToString(), Encoding.UTF8));
 
 
 
@@ -31,6 +31,6 @@ namespace Melville.Generators.INPC.CodeWriters
         public IDisposable IndentedRun() => target.IndentedRun();
         public override string ToString() => string.Join(Environment.NewLine, prefixLines.Append(target.ToString()));
 
-        public void ReportDiagnostic(Diagnostic diagnostic) => context.ReportDiagnostic(diagnostic);
+        public void ReportDiagnostic(Diagnostic diagnostic) => Context.ReportDiagnostic(diagnostic);
     }
 }

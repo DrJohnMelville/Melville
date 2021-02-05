@@ -18,6 +18,11 @@ namespace Melville.Generators.INPC.INPC
             INamedTypeSymbol stringSymbol)
         {
             this.stringSymbol = stringSymbol;
+            CatalogAllClassesToBeEnhanced(allClasses);
+        }
+
+        private void CatalogAllClassesToBeEnhanced(IEnumerable<ClassToImplement> allClasses)
+        {
             foreach (var implClass in allClasses)
             {
                 allTypes.Add(implClass.TypeInfo);
@@ -25,7 +30,7 @@ namespace Melville.Generators.INPC.INPC
         }
 
         public InpcClassGenerator CreateGenerator(ClassToImplement target, GeneratorExecutionContext context) => 
-            new InpcClassGenerator(target, StrategyForClass(target.TypeInfo), context);
+            new(target, StrategyForClass(target.TypeInfo), context);
 
         private INotifyImplementationStategy StrategyForClass(INamedTypeSymbol target)
         {

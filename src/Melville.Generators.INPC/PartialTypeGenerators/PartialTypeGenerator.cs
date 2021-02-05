@@ -11,7 +11,9 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
 {
     public abstract class PartialTypeGenerator<T> : ISourceGenerator
     {
-        protected abstract T PreProcess(IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input);
+        protected abstract T PreProcess(
+            IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input,
+            GeneratorExecutionContext context);
         protected abstract bool GlobalDeclarations(CodeWriter cw);
         protected abstract bool GenerateClassContents(T input, CodeWriter cw);
         protected virtual string ClassSuffix(T input) => "";
@@ -27,18 +29,35 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
             namer = new(suffix);
         }
 
-        public void Initialize(GeneratorInitializationContext context)
-        {
+        public void Initialize(GeneratorInitializationContext context) => 
             context.RegisterForSyntaxNotifications(()=>new PartialTypeReceiver(targetAttributes));
-        }
 
         public void Execute(GeneratorExecutionContext context)
         {
             if (!(context.SyntaxReceiver is PartialTypeReceiver ptr)) return;
-            TryGenerateCode($"{suffix}Attributes", context, GlobalDeclarations);
-            foreach (var group in ptr.ItemsByType())
+            try
             {
-                TryGeneratePartialClass(group.Key, context, PreProcess(group));
+                GenerateCodeForAllClasses(context, ptr);
+            }
+            catch (Exception e)
+            {
+                ReportExceptionAsCompilerError(context, e);
+            }
+        }
+
+        private static void ReportExceptionAsCompilerError(GeneratorExecutionContext context, Exception e)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("INPCGen0003",
+                    "Exception Thrown", e.Message + e.StackTrace, "Fatal", DiagnosticSeverity.Error, true),
+                Location.None));
+        }
+
+        private void GenerateCodeForAllClasses(GeneratorExecutionContext context, PartialTypeReceiver ptr)
+        {
+            TryGenerateCode($"{suffix}Attributes", context, GlobalDeclarations);
+            foreach (var (group, intermed) in ptr.ItemsByType().Select(i=>(i, PreProcess(i,context))).ToList())
+            {
+                TryGeneratePartialClass(group.Key, context, intermed);
             }
         }
 
@@ -74,6 +93,7 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
         }
 
         protected override IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> 
-            PreProcess(IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input) => input;
+            PreProcess(IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input,
+                GeneratorExecutionContext context) => input;
     }
 }
