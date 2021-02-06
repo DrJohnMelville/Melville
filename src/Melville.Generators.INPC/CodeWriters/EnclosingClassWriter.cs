@@ -41,16 +41,10 @@ namespace Melville.Generators.INPC.CodeWriters
         {
             if (!classDeclaration.Modifiers.Any(SyntaxKind.PartialKeyword))
             {
-                writer.ReportDiagnostic(Diagnostic.Create(
-                    NeedPartialDiagnostic(classDeclaration.Identifier.ToString()),
-                    Location.Create(classDeclaration.SyntaxTree, classDeclaration.Modifiers.Span)));
+                writer.ReportDiagnosticAt(classDeclaration, "INPCGen0001", "Classes with generated enhancement must be partial.",
+                    $"Class '{classDeclaration.Identifier.ToString()}' must be declared partial to auto-generate features",
+                    DiagnosticSeverity.Error);
             } 
-        }
-        private static DiagnosticDescriptor NeedPartialDiagnostic(string className)
-        {
-            return new DiagnosticDescriptor("INPCGen0001", "Classes with generated enhancement must be partial.",
-                $"Class '{className}' must be declared partial to auto-generate features",
-                "Generation", DiagnosticSeverity.Error, true);
         }
     }
 }

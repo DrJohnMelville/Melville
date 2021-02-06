@@ -15,7 +15,6 @@ namespace Melville.Generators.INPC.Test.UnitTests
             var driver = CSharpGeneratorDriver.Create(ImmutableArray.Create<ISourceGenerator>(sut), 
                 ImmutableArray<AdditionalText>.Empty, opt);
             driver.RunGeneratorsAndUpdateCompilation(sourceCompilation, out compilation, out diagnostics);
-
         }
 
         private Compilation compilation;

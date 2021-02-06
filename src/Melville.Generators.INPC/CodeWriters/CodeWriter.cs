@@ -33,4 +33,16 @@ namespace Melville.Generators.INPC.CodeWriters
 
         public void ReportDiagnostic(Diagnostic diagnostic) => Context.ReportDiagnostic(diagnostic);
     }
+
+    public static class CodeWriterOperations
+    {
+        public static void ReportDiagnosticAt(
+            this CodeWriter cw, SyntaxNode location, string key, string title, string error, 
+            DiagnosticSeverity severity)
+        {
+            cw.ReportDiagnostic(Diagnostic.Create(
+                new DiagnosticDescriptor(key, title, error, "Generation", severity, true),
+                Location.Create(location.SyntaxTree, location.Span)));
+        }
+    }
 }

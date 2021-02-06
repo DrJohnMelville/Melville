@@ -54,11 +54,18 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
 
         private void GenerateCodeForAllClasses(GeneratorExecutionContext context, PartialTypeReceiver ptr)
         {
-            TryGenerateCode($"{suffix}Attributes", context, GlobalDeclarations);
+            TryGenerateCode($"{suffix}Attributes", context, InnerGlobalDeclarations);
             foreach (var (group, intermed) in ptr.ItemsByType().Select(i=>(i, PreProcess(i,context))).ToList())
             {
                 TryGeneratePartialClass(group.Key, context, intermed);
             }
+        }
+
+        private bool InnerGlobalDeclarations(CodeWriter cw)
+        {
+            cw.AppendLine($"namespace Melville.{suffix}");
+            using var ns = cw.CurlyBlock();
+            return GlobalDeclarations(cw);
         }
 
         private void TryGeneratePartialClass(

@@ -25,7 +25,4 @@
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
         <None Include="$(PkgMelville_Generators_Tools)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
-    <ItemGroup>
-      <Folder Include="DependencyPropGen" />
-    </ItemGroup>
 </Project>
