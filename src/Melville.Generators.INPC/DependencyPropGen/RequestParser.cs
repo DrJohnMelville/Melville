@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text.RegularExpressions;
 using Melville.Generators.INPC.AstUtilities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,17 +28,27 @@ namespace Melville.Generators.INPC.DependencyPropGen
         public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol)
         {
             this.semanticModel = semanticModel;
-            this.ParentSymbol = parentSymbol;
+            ParentSymbol = parentSymbol;
         }
 
-        public void ParseParam(int position, AttributeArgumentSyntax syntax)
+        public void ParseAllParams(AttributeArgumentListSyntax? arguments)
+        {
+            if (arguments?.Arguments is not { } args) return;
+            var pos = 0;
+            foreach (var argument in args)
+            {
+                ParseParam(pos++, argument);
+            }
+        }
+
+        private void ParseParam(int position, AttributeArgumentSyntax syntax)
         {
             switch (position, syntax.NameEquals, syntax.NameColon, syntax.Expression) // remember to handle nameequals and colonequals
             {
                 case (_, {} ne, _, LiteralExpressionSyntax les):
                     ParseNamedProperty(ne, les);
                     break;
-                case (_, _, {} nc, var expr):
+                case (_, _, {} nc, _):
                     ParseColonParameter(nc.Name.ToString(), syntax);
                     break;
                 case (0, _, _,TypeOfExpressionSyntax tos):
@@ -59,15 +73,11 @@ namespace Melville.Generators.INPC.DependencyPropGen
             }
         }
 
-        private void ParseTargetType(TypeOfExpressionSyntax tos)
-        {
+        private void ParseTargetType(TypeOfExpressionSyntax tos) => 
             Type = tos.ToTypeSymbol(semanticModel);
-        }
 
-        private void ParsePropName(AttributeArgumentSyntax syntax)
-        {
+        private void ParsePropName(AttributeArgumentSyntax syntax) => 
             PropName = syntax.ExtractArgumentFromAttribute();
-        }
 
         private void ParseNamedProperty(NameEqualsSyntax ne, LiteralExpressionSyntax les)
         {
@@ -82,14 +92,39 @@ namespace Melville.Generators.INPC.DependencyPropGen
             }
         }
 
-        private static bool ReadBoolLiteral(LiteralExpressionSyntax les)
+        private static bool ReadBoolLiteral(LiteralExpressionSyntax les) => 
+            les.ToString().StartsWith("t");
+
+        public bool Valid() => PropName.Length > 0 && Type != null;
+
+        public void ParseAttributeTarget(MemberDeclarationSyntax targetMember)
         {
-            return les.ToString().StartsWith("t");
+            if (TryParseModifyMethod(targetMember)) return;
         }
 
-        public bool Valid()
+        private bool ComputeAttached(bool isStatic, ImmutableArray<IParameterSymbol> symbolParameters) =>
+            isStatic && symbolParameters.Length > 0 &&
+            symbolParameters[0].Type.FullyQualifiedName() == "System.Windows.DependencyObject";
+
+        private bool TryParseModifyMethod(MemberDeclarationSyntax targetMember)
         {
-            return PropName.Length > 0 && Type != null;
+            if (targetMember is not MethodDeclarationSyntax mds) return false;
+            if (!TryParseModifyMethodName(mds.Identifier.ToString(), out var extractedName)) return false;
+            PropName = extractedName;
+            if (semanticModel.GetDeclaredSymbol(targetMember) is IMethodSymbol symbol)
+            {
+                Attached = ComputeAttached(symbol.IsStatic, symbol.Parameters);
+                Type = symbol.Parameters.LastOrDefault()?.Type;
+            }
+            return true;
+        }
+
+        private static Regex ModifyMethodNameParser = new (@"^On(\w+)Changed$");
+        private bool TryParseModifyMethodName(string name, out string methName)
+        {
+            var match = ModifyMethodNameParser.Match(name);
+            methName = match.Success ? match.Groups[1].Value : "";
+            return match.Success;
         }
     }
 }

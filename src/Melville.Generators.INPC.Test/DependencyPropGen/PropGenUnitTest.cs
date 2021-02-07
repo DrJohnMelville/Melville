@@ -79,6 +79,13 @@ namespace Outer
                 "get => (int?)this.GetValue(Outer.C.NullPropProperty);");
 
         [Theory]
+        [InlineData("public static void OnPropChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i),j)")]
+        [InlineData("public static void OnPropChanged(C obj, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue))")]
+        [InlineData("public static void OnPropChanged(C obj, int newVal, int oldVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue), (int)(j.OldValue))")]
+
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
             "Outer.C.OnPropChanged")]
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal) {}",
@@ -100,6 +107,27 @@ namespace Outer
                 );
         }
 
+        [Theory]
+        [InlineData(
+            "[GenerateDP(typeof(int))] public static void OnPropertyChanged(System.Windows.DependencyObject obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+            true)]
+        [InlineData(
+            "[GenerateDP] public static void OnPropertyChanged(System.Windows.DependencyObject obj, int newValue) {}",
+            true)]
+        [InlineData(
+            "[GenerateDP(typeof(int))] public static void OnPropertyChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+            false)]
+        [InlineData("[GenerateDP] public static void OnPropertyChanged(C obj, int newValue) {}",false)]
+        [InlineData("[GenerateDP] public static void OnPropertyChanged(C obj, int newValue, int oldValue) {}", false)]
+        [InlineData("[GenerateDP] public void OnPropertyChanged(int newValue) {}",false)]
+        [InlineData("[GenerateDP] public void OnPropertyChanged(int newValue, int oldValue) {}", false)]
+        public void InferFromModifyMethod(string code, bool attached)
+        {
+            MultiContentTest(code, 
+                $"    \"Property\", typeof(int), typeof(Outer.C),",
+                attached?"RegisterAttached(":".Register("
+                );
+        }
         [Theory]
         [InlineData("[GenerateDPAttribute(typeof(int),\"Prop\", Attached=true)]")]
         [InlineData("[GenerateDP(typeof(int),\"Prop\", Attached=true)]")]

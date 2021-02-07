@@ -61,15 +61,16 @@ namespace Melville.Generators.INPC.DependencyPropGen
             {
                 foreach (var attribute in searcher.FindAllAttributes(node))
                 {
-                    GenerateSingleDependencyProperty(cw, attribute, semanticModel, classSymbol);
+                    GenerateSingleDependencyProperty(cw, attribute, semanticModel, classSymbol, node);
                 }
             }
         }
 
-        private static void GenerateSingleDependencyProperty(CodeWriter cw, AttributeSyntax attribute, SemanticModel semanticModel,
-            ITypeSymbol classSymbol)
+        private static void GenerateSingleDependencyProperty(CodeWriter cw, AttributeSyntax attribute,
+            SemanticModel semanticModel,
+            ITypeSymbol classSymbol, MemberDeclarationSyntax targetMember)
         { 
-            if (ParseAttribute(attribute, semanticModel, classSymbol) is { } parser &&
+            if (ParseAttribute(attribute, semanticModel, classSymbol, targetMember) is { } parser &&
                 EnsureValidAttribute(cw, attribute, parser))
             {
                 parser.Generate(cw);
@@ -86,17 +87,12 @@ namespace Melville.Generators.INPC.DependencyPropGen
         }
 
         private static RequestParser ParseAttribute(AttributeSyntax attribute, SemanticModel semanticModel,
-            ITypeSymbol classSymbol)
+            ITypeSymbol classSymbol, MemberDeclarationSyntax targetMember)
         {
-            int pos = 0;
             var parser = new RequestParser(semanticModel, classSymbol);
-            if (attribute.ArgumentList is { } al)
-            {
-                foreach (var argument in al.Arguments)
-                {
-                    parser.ParseParam(pos++, argument);
-                }
-            }
+            parser.ParseAttributeTarget(targetMember);
+            // we parse the target before the parameters, because the parameters override the conventions.
+            parser.ParseAllParams(attribute.ArgumentList);
 
             return parser;
         }

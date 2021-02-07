@@ -23,6 +23,15 @@ namespace Melville.Generators.INPC.DependencyPropGen
                     if (candidate.VerifyParameterTypes(
                         "System.Windows.DependencyObject", rp.TargetType(), rp.TargetType()))
                         return $", (i,j)=>{rp.ParentType()}.{methodName}(i, ({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
+
+                    if (candidate.VerifyParameterTypes(
+                        rp.ParentType(), "System.Windows.DependencyPropertyChangedEventArgs"))
+                        return $", (i,j)=>{rp.ParentType()}.{methodName}((({rp.ParentType()})i),j)";
+                    if (candidate.VerifyParameterTypes(rp.ParentType(), rp.TargetType()))
+                        return $", (i,j)=>{rp.ParentType()}.{methodName}((({rp.ParentType()})i), ({rp.NullableTargetType()})(j.NewValue))";
+                    if (candidate.VerifyParameterTypes(
+                        rp.ParentType(), rp.TargetType(), rp.TargetType()))
+                        return $", (i,j)=>{rp.ParentType()}.{methodName}((({rp.ParentType()})i), ({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
                     return "";
                 }
                 // not static
