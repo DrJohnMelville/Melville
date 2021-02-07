@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Melville.Generators.INPC.AstUtilities;
-using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -10,16 +10,21 @@ namespace Melville.Generators.INPC.DependencyPropGen
     public class RequestParser
     {
         private readonly SemanticModel semanticModel;
-        private readonly ITypeSymbol parentSymbol;
+        public ITypeSymbol ParentSymbol { get; }
         public ITypeSymbol? Type { get; private set; }
         public string PropName { get; private set; } = "";
         public bool Attached { get; private set; }
+        public bool Nullable { get; private set; }
         public string OnChanged { get; private set; } = "";
 
+        public string TargetType() => Type?.FullyQualifiedName()??"";
+        public string NullableTargetType() => (Type?.FullyQualifiedName()??"")+ (Nullable?"?":"");
+        public string ParentType() => ParentSymbol.FullyQualifiedName();
+        public string DependencyPropName() => PropName + "Property";
         public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol)
         {
             this.semanticModel = semanticModel;
-            this.parentSymbol = parentSymbol;
+            this.ParentSymbol = parentSymbol;
         }
 
         public void ParseParam(int position, AttributeArgumentSyntax syntax)
@@ -38,9 +43,6 @@ namespace Melville.Generators.INPC.DependencyPropGen
                 case (1, _, _, LiteralExpressionSyntax):
                     ParsePropName(syntax);
                     break;
-                case (2, _, _, LiteralExpressionSyntax les):
-                    ParseAttachedProperty(les);
-                    break;
             }
         }
 
@@ -53,9 +55,6 @@ namespace Melville.Generators.INPC.DependencyPropGen
                     break;
                 case ("name", _):
                     ParsePropName(expr);
-                    break;
-                case ("attached", LiteralExpressionSyntax les):
-                    ParseAttachedProperty(les);
                     break;
             }
         }
@@ -72,18 +71,25 @@ namespace Melville.Generators.INPC.DependencyPropGen
 
         private void ParseNamedProperty(NameEqualsSyntax ne, LiteralExpressionSyntax les)
         {
-            if (ne.Name.ToString() == "Attached")
+            switch (ne.Name.ToString())
             {
-                ParseAttachedProperty(les);
+                case "Attached" :
+                    Attached = ReadBoolLiteral(les);
+                    break;
+                case "Nullable" :
+                    Nullable = ReadBoolLiteral(les);
+                    break;
             }
         }
 
-        private void ParseAttachedProperty(LiteralExpressionSyntax les) =>
-            Attached = les.ToString().StartsWith("t");
-
-        public void Generate(CodeWriter cw)
+        private static bool ReadBoolLiteral(LiteralExpressionSyntax les)
         {
-            cw.AppendLine($"//{Type}/{PropName}/{Attached}/{OnChanged}");
+            return les.ToString().StartsWith("t");
+        }
+
+        public bool Valid()
+        {
+            return PropName.Length > 0 && Type != null;
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
 using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;
@@ -9,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.DependencyPropGen
 {
+    [Generator]
     public class DependencyPropertyGenerator: PartialTypeGenerator
     {
         public DependencyPropertyGenerator() : 
@@ -24,8 +26,9 @@ namespace Melville.Generators.INPC.DependencyPropGen
                 AttributeTargets.Event | AttributeTargets.Struct, true))
             {
                 cw.AppendLine("public bool Attached {get; set;}");
-                cw.AppendLine(
-                    "public GenerateDP(Type targetType = typeof(void), string propName=\"\", bool attached = false){}");
+                cw.AppendLine("public bool Nullable {get; set;}");
+                cw.AppendLine("public GenerateDPAttribute(){}");
+                cw.AppendLine("public GenerateDPAttribute(Type targetType, string propName=\"\"){}");
             }
             return true;
         }
@@ -48,13 +51,15 @@ namespace Melville.Generators.INPC.DependencyPropGen
             return true;
         }
 
+        private static readonly SearchForAttribute searcher =
+            new("Melville.DependencyPropertyGeneration.GenerateDPAttribute"); 
         private static void GenerateAttributes(
             IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, CodeWriter cw, 
             SemanticModel semanticModel, ITypeSymbol classSymbol)
         {
             foreach (var node in input)
             {
-                foreach (var attribute in node.AttributeLists.SelectMany(i => i.Attributes))
+                foreach (var attribute in searcher.FindAllAttributes(node))
                 {
                     GenerateSingleDependencyProperty(cw, attribute, semanticModel, classSymbol);
                 }
@@ -63,8 +68,26 @@ namespace Melville.Generators.INPC.DependencyPropGen
 
         private static void GenerateSingleDependencyProperty(CodeWriter cw, AttributeSyntax attribute, SemanticModel semanticModel,
             ITypeSymbol classSymbol)
+        { 
+            if (ParseAttribute(attribute, semanticModel, classSymbol) is { } parser &&
+                EnsureValidAttribute(cw, attribute, parser))
+            {
+                parser.Generate(cw);
+            }
+        }
+
+        private static bool EnsureValidAttribute(CodeWriter cw, AttributeSyntax attribute, RequestParser parser)
         {
-            if (!attribute.Name.ToString().EndsWith("GenerateDP")) return;
+            if (parser.Valid()) return true;
+            cw.ReportDiagnosticAt(attribute, "DPGen002", "Cannot resolve dependency property.",
+                $"{attribute} does not have enough information to create DP.",
+                DiagnosticSeverity.Error);
+            return false;
+        }
+
+        private static RequestParser ParseAttribute(AttributeSyntax attribute, SemanticModel semanticModel,
+            ITypeSymbol classSymbol)
+        {
             int pos = 0;
             var parser = new RequestParser(semanticModel, classSymbol);
             if (attribute.ArgumentList is { } al)
@@ -75,7 +98,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
                 }
             }
 
-            parser.Generate(cw);
+            return parser;
         }
     }
 }
