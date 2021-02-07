@@ -124,12 +124,11 @@ namespace Melville.Generators.INPC.DependencyPropGen
 
         private ITypeSymbol? FilterTypeSymbolForNullability(ITypeSymbol? sym)
         {
-            if (!IsNullableReferenceType(sym)) return sym;
+            if ( sym == null || !IsNullableReferenceType(sym)) return sym;
             Nullable = true;
             return sym.WithNullableAnnotation(NullableAnnotation.NotAnnotated);
         }
-        private static bool IsNullableReferenceType(ITypeSymbol? rawType) =>
-            rawType != null && 
+        private static bool IsNullableReferenceType(ITypeSymbol rawType) =>
             rawType.IsReferenceType && 
             rawType.NullableAnnotation == NullableAnnotation.Annotated;
 

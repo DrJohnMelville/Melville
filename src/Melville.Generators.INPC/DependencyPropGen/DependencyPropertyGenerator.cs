@@ -93,7 +93,6 @@ namespace Melville.Generators.INPC.DependencyPropGen
             parser.ParseAttributeTarget(targetMember);
             // we parse the target before the parameters, because the parameters override the conventions.
             parser.ParseAllParams(attribute.ArgumentList);
-
             return parser;
         }
     }

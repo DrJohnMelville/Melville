@@ -22,11 +22,11 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
   {
     #region DragTypeProperty
 
-    [GenerateDP(typeof(Type), "DragType", Attached = true)]
+    [GenerateDP(typeof(Type))]
     private static void OnDragTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => 
       BindTreeArrange(d,e,false);
 
-    [GenerateDP(typeof(Type), "DragTypeBackground", Attached = true)]
+    [GenerateDP(typeof(Type))]
     private static void OnDragTypeBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => 
       BindTreeArrange(d, e, true);
 
