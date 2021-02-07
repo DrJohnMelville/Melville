@@ -18,19 +18,19 @@ namespace Melville.Generators.INPC.DependencyPropGen
                     if (candidate.VerifyParameterTypes(
                         "System.Windows.DependencyObject", "System.Windows.DependencyPropertyChangedEventArgs"))
                         return $", {rp.ParentType()}.{methodName}";
-                    if (candidate.VerifyParameterTypes("System.Windows.DependencyObject", rp.TargetType()))
+                    if (candidate.VerifyParameterTypes("System.Windows.DependencyObject", rp.NullableTargetType()))
                         return $", (i,j)=>{rp.ParentType()}.{methodName}(i, ({rp.NullableTargetType()})(j.NewValue))";
                     if (candidate.VerifyParameterTypes(
-                        "System.Windows.DependencyObject", rp.TargetType(), rp.TargetType()))
+                        "System.Windows.DependencyObject", rp.NullableTargetType(), rp.NullableTargetType()))
                         return $", (i,j)=>{rp.ParentType()}.{methodName}(i, ({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
 
                     if (candidate.VerifyParameterTypes(
                         rp.ParentType(), "System.Windows.DependencyPropertyChangedEventArgs"))
                         return $", (i,j)=>{rp.ParentType()}.{methodName}((({rp.ParentType()})i),j)";
-                    if (candidate.VerifyParameterTypes(rp.ParentType(), rp.TargetType()))
+                    if (candidate.VerifyParameterTypes(rp.ParentType(), rp.NullableTargetType()))
                         return $", (i,j)=>{rp.ParentType()}.{methodName}((({rp.ParentType()})i), ({rp.NullableTargetType()})(j.NewValue))";
                     if (candidate.VerifyParameterTypes(
-                        rp.ParentType(), rp.TargetType(), rp.TargetType()))
+                        rp.ParentType(), rp.NullableTargetType(), rp.NullableTargetType()))
                         return $", (i,j)=>{rp.ParentType()}.{methodName}((({rp.ParentType()})i), ({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
                     return "";
                 }
@@ -39,9 +39,9 @@ namespace Melville.Generators.INPC.DependencyPropGen
                     return $", (i,j)=>(({rp.ParentType()})i).{methodName}()";
                 if (candidate.VerifyParameterTypes("System.Windows.DependencyPropertyChangedEventArgs"))
                     return $", (i,j)=>(({rp.ParentType()})i).{methodName}(j)";
-                if (candidate.VerifyParameterTypes(rp.TargetType()))
+                if (candidate.VerifyParameterTypes(rp.NullableTargetType()))
                     return $", (i,j)=>(({rp.ParentType()})i).{methodName}(({rp.NullableTargetType()})(j.NewValue))";
-                if (candidate.VerifyParameterTypes(rp.TargetType(), rp.TargetType()))
+                if (candidate.VerifyParameterTypes(rp.NullableTargetType(), rp.NullableTargetType()))
                     return $", (i,j)=>(({rp.ParentType()})i).{methodName}(({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
 
             }

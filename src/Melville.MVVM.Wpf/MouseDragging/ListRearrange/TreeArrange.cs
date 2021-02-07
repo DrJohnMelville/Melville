@@ -78,12 +78,12 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
     #region Backup Dropper
     [GenerateDP(typeof(IDropTarget), "SupplementalDropTarget", Attached = true, Nullable = true)]
-    [GenerateDP(typeof(string), "SupplementalDropString", Attached = true, Nullable = true)]
-    private static void OnSupplementalDropStringChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    [GenerateDP]
+    private static void OnSupplementalDropStringChanged(DependencyObject d, string? newValue)
     {
       if (d is FrameworkElement fe)
       {
-        SetSupplementalDropTarget(fe, new DropTarget(fe, e.NewValue.ToString()??""));
+        SetSupplementalDropTarget(fe, new DropTarget(fe, newValue??""));
       }
     }
 

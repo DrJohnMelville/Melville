@@ -128,6 +128,22 @@ namespace Outer
                 attached?"RegisterAttached(":".Register("
                 );
         }
+
+        [Theory]
+        [InlineData("int", "int")]
+        [InlineData("int?", "int?")]
+        [InlineData("string", "string")]
+        [InlineData("string?", "string")]
+        [InlineData("object", "object")]
+        [InlineData("object?", "object")]
+        [InlineData("System.Collections.Generic.List<string>", "System.Collections.Generic.List<string>")]
+        [InlineData("System.Collections.Generic.List<string>?", "System.Collections.Generic.List<string>")]
+        public void InferNullable(string type, string storageType)
+        {
+            MultiContentTest($"[GenerateDP] public void OnPropertyChanged({type} newValue) {{}}",
+                $"public {type} Property",
+                $"typeof({storageType})");
+        }
         [Theory]
         [InlineData("[GenerateDPAttribute(typeof(int),\"Prop\", Attached=true)]")]
         [InlineData("[GenerateDP(typeof(int),\"Prop\", Attached=true)]")]

@@ -114,10 +114,24 @@ namespace Melville.Generators.INPC.DependencyPropGen
             if (semanticModel.GetDeclaredSymbol(targetMember) is IMethodSymbol symbol)
             {
                 Attached = ComputeAttached(symbol.IsStatic, symbol.Parameters);
-                Type = symbol.Parameters.LastOrDefault()?.Type;
+                InferTargetType(symbol);
             }
             return true;
         }
+
+        private void InferTargetType(IMethodSymbol symbol) => 
+            Type = FilterTypeSymbolForNullability(symbol.Parameters.LastOrDefault()?.Type);
+
+        private ITypeSymbol? FilterTypeSymbolForNullability(ITypeSymbol? sym)
+        {
+            if (!IsNullableReferenceType(sym)) return sym;
+            Nullable = true;
+            return sym.WithNullableAnnotation(NullableAnnotation.NotAnnotated);
+        }
+        private static bool IsNullableReferenceType(ITypeSymbol? rawType) =>
+            rawType != null && 
+            rawType.IsReferenceType && 
+            rawType.NullableAnnotation == NullableAnnotation.Annotated;
 
         private static Regex ModifyMethodNameParser = new (@"^On(\w+)Changed$");
         private bool TryParseModifyMethodName(string name, out string methName)
