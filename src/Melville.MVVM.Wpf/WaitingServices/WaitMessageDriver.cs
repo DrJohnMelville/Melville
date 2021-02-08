@@ -1,58 +1,33 @@
 ﻿using  System;
 using System.Threading;
+using Melville.INPC;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.CSharpHacks;
 using Melville.MVVM.WaitingServices;
 
 namespace Melville.MVVM.Wpf.WaitingServices
 {
-  public class WaitMessageDriver : NotifyBase, IWaitingService
+  public partial class WaitMessageDriver :IWaitingService
   {
-    private string? waitMessage;
-    public string? WaitMessage
-    {
-      get { return waitMessage; }
-      set { AssignAndNotify(ref waitMessage, value); }
-    }
-
-    private string? errorMessage;
-    public string? ErrorMessage
-    {
-      get { return errorMessage; }
-      set { AssignAndNotify(ref errorMessage, value); }
-    }
-
+    [AutoNotify] private string? waitMessage;
+    [AutoNotify] private string? errorMessage;
+    [AutoNotify] private string? progressMessage;
     #region Progress
 
-    public bool ShowProgress => Total > double.MinValue;
-    private double total = double.MinValue;
-    public double Total
-    {
-      get { return total; }
-      set { AssignAndNotify(ref total, value, nameof(Total), nameof(ShowProgress)); }
-    }
-    private double progress;
-    public double Progress
-    {
-      get { return progress; }
-      set { AssignAndNotify(ref progress, value, nameof(Progress)); }
-    }
+    [AutoNotify]public bool ShowProgress => Total > double.MinValue;
+    [AutoNotify] private double total = double.MinValue;
+   
+    [AutoNotify]private double progress;
 
-    public void MakeProgress()
+    public void MakeProgress(string? item = null)
     {
       Progress++;
+      ProgressMessage = item ?? progressMessage;
     }
 
-    public bool ShowCancelButton => CancellationTokenSource != null;
-    public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? CancellationToken.None;
-    private CancellationTokenSource? cancellationTokenSource;
-    public CancellationTokenSource? CancellationTokenSource
-    {
-      get => cancellationTokenSource;
-      set => AssignAndNotify(ref cancellationTokenSource, value, nameof(CancellationTokenSource),
-        nameof(ShowCancelButton),
-        nameof(CancellationToken));
-    }
+    [AutoNotify]public bool ShowCancelButton => CancellationTokenSource != null;
+    [AutoNotify]public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? CancellationToken.None;
+    [AutoNotify]private CancellationTokenSource? cancellationTokenSource;
     public void CancelWaitOperation() => CancellationTokenSource?.Cancel();
 
     #endregion

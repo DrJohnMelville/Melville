@@ -38,6 +38,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
@@ -47,9 +48,12 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock FontSize="18" HorizontalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3"
                                   Text ="{Binding WaitMessage}" Margin="0 0 0 25"/>
+                        <TextBlock HorizontalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3"
+                                  Text ="{Binding ProgressMessage}" Margin="0 0 0 5"
+                                  wpfHacks:VisibilityHack.CollapseIfWhitespace="{Binding ProgressMessage}"/>
                         <ProgressBar Minimum="0" Maximum="{Binding Total}" Value="{Binding Progress}" Height="15"
-                           wpfHacks:VisibilityHack.CollapseUnless="{Binding ShowProgress}" Grid.Row="2" Grid.Column="1"  Margin="0 0 0 25"/>
-                        <Button Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" 
+                           wpfHacks:VisibilityHack.CollapseUnless="{Binding ShowProgress}" Grid.Row="3" Grid.Column="1"  Margin="0 0 0 25"/>
+                        <Button Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" 
                                 wpfHacks:VisibilityHack.CollapseIfNull="{Binding CancellationTokenSource}" MinWidth="75"
                                 Click="{eventBindings:EventBinding CancelWaitOperation}">Cancel</Button>
 

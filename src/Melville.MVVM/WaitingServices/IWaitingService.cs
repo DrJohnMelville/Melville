@@ -9,7 +9,8 @@ namespace Melville.MVVM.WaitingServices
   {
     double Total { get; set; }
     double Progress { get; set; }
-    void MakeProgress();
+    string? ProgressMessage { get; set; }
+    void MakeProgress(string? item = null);
     CancellationToken CancellationToken { get; }
   }
 

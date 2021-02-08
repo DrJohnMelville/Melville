@@ -10,8 +10,8 @@
     
     <UniformGrid Columns="1">
            <Button Click="{eventBindings:EventBinding SimpleWait}">Simple Wait</Button>
-           <Button>Count To 5</Button>
-           <Button>Labeled Count to 5</Button>
-           <Button>Labels only</Button>
+           <Button Click="{eventBindings:EventBinding WaitProgress}">Count To 5</Button>
+           <Button Click="{eventBindings:EventBinding WaitProgressWithLabel}">Labeled Count to 5</Button>
+           <Button Click="{eventBindings:EventBinding WaitLabel}">Labels only</Button>
        </UniformGrid>
 </UserControl>
