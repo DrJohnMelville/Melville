@@ -17,8 +17,6 @@ namespace Melville.Generators.INPC.Macros
 
         protected override bool GlobalDeclarations(CodeWriter cw)
         {
-            cw.Append("namespace Melville.MacroGen");
-            using var ns = cw.CurlyBlock();
             AttributeDeclarations(cw);
             return true;
         }

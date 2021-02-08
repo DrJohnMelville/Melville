@@ -16,9 +16,9 @@ namespace Melville.Generators.INPC.Macros
         {
             prefix = postfix = null;
             text = "";
-            foreach (var attr in attrs.Arguments)
+            foreach (var argument in attrs.Arguments)
             {
-                switch (attr.NameEquals?.Name.ToString(), attr.ExtractArgumentFromAttribute())
+                switch (argument.NameEquals?.Name.ToString(), argument.ExtractArgumentFromAttribute())
                 {
                     case ("Prefix", var val):
                         prefix = val;

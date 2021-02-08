@@ -1,15 +1,16 @@
-﻿#nullable disable warnings
-using  System;
+﻿using  System;
 using System.Collections;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Melville.DependencyPropertyGeneration;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
 using Melville.MVVM.Wpf.WpfHacks;
+
 
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 {
@@ -17,25 +18,17 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
   {
     void AddFormats(IDataObject dataObject, object sourceObject);
   }
-  public sealed class TreeArrange
+  public sealed partial class TreeArrange
   {
     #region DragTypeProperty
 
-    public static Type GetDragType(DependencyObject obj) => (Type) obj.GetValue(DragTypeProperty);
-    public static void SetDragType(DependencyObject obj, Type value) => obj.SetValue(DragTypeProperty, value);
-    public static readonly DependencyProperty DragTypeProperty = DependencyProperty.RegisterAttached("DragType",
-      typeof(Type), typeof(TreeArrange),
-      new FrameworkPropertyMetadata(null, DragTypeChanged));
+    [GenerateDP(typeof(Type))]
+    private static void OnDragTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => 
+      BindTreeArrange(d,e,false);
 
-    private static void DragTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => BindTreeArrange(d,e,false);
-
-    public static Type GetDragTypeBackground(DependencyObject ob) => (Type)ob.GetValue(DragTypeBackgroundProperty);
-    public static void SetDragTypeBackground(DependencyObject ob, Type value) => ob.SetValue(DragTypeBackgroundProperty, value);
-    public static readonly DependencyProperty DragTypeBackgroundProperty =
-      DependencyProperty.RegisterAttached("DragTypeBackground",
-        typeof(Type), typeof(TreeArrange), new FrameworkPropertyMetadata(null, DragTypeBackgroundChanged));
-
-    private static void DragTypeBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => BindTreeArrange(d, e, true);
+    [GenerateDP(typeof(Type))]
+    private static void OnDragTypeBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => 
+      BindTreeArrange(d, e, true);
 
     private static void BindTreeArrange(DependencyObject d, DependencyPropertyChangedEventArgs e, bool dragInBackground)
     {
@@ -68,83 +61,29 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
     #region VisualToDrag
 
-
-    public static FrameworkElement GetVisualToDrag(DependencyObject obj)
-    {
-      return (FrameworkElement)obj.GetValue(VisualToDragProperty);
-    }
-
-    public static void SetVisualToDrag(DependencyObject obj, FrameworkElement value)
-    {
-      obj.SetValue(VisualToDragProperty, value);
-    }
-
-    // Using a DependencyProperty as the backing store for VisualToDrag.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty VisualToDragProperty =
-        DependencyProperty.RegisterAttached("VisualToDrag", typeof(FrameworkElement), typeof(TreeArrange), new PropertyMetadata(null));
-
-
-
-
+    [GenerateDP(typeof(FrameworkElement), "VisualToDrag", Attached = true, Nullable = true)]
+    
     #endregion
 
     #region ItemToDrag
 
 
-
-    public static object GetDraggedItem(DependencyObject obj)
-    {
-      return (object)obj.GetValue(DraggedItemProperty);
-    }
-
-    public static void SetDraggedItem(DependencyObject obj, object value)
-    {
-      obj.SetValue(DraggedItemProperty, value);
-    }
-
-    // Using a DependencyProperty as the backing store for DraggedItem.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty DraggedItemProperty =
-        DependencyProperty.RegisterAttached("DraggedItem", typeof(object), typeof(TreeArrange), new PropertyMetadata(null));
-
-
-
+    [GenerateDP(typeof(object), "DraggedItem", Attached = true)]
     #endregion
 
     #region SupplementalFormats
 
-    public static IAddSupplementalFormats GetSupplementalFormats(DependencyObject obj) =>
-      (IAddSupplementalFormats) obj.GetValue(SupplementalFormatsProperty);
-
-    public static void SetSupplementalFormats(DependencyObject obj, IAddSupplementalFormats format) =>
-      obj.SetValue(SupplementalFormatsProperty, format);
-    public static readonly DependencyProperty SupplementalFormatsProperty = DependencyProperty.RegisterAttached(
-      "SupplementalFormats", typeof(IAddSupplementalFormats), typeof(TreeArrange), new PropertyMetadata(null));
+    [GenerateDP(typeof(IAddSupplementalFormats), "SupplementalFormats", Attached = true, Nullable = true)]    
     #endregion
 
     #region Backup Dropper
-    public static IDropTarget GetSupplementalDropTarget(DependencyObject obj) =>
-      (IDropTarget) obj.GetValue(SupplementalDropTargetProperty);
-    public static void SetSupplementalDropTarget(DependencyObject obj, IDropTarget value) => 
-      obj.SetValue(SupplementalDropTargetProperty, value);
-    public static readonly DependencyProperty SupplementalDropTargetProperty =
-      DependencyProperty.RegisterAttached("SupplementalDropTarget", typeof(IDropTarget), typeof(TreeArrange), 
-        new PropertyMetadata(null));
-
-
-
-    public static string GetSupplementalDropString(DependencyObject obj) => 
-      (string)obj.GetValue(SupplementalDropStringProperty);
-    public static void SetSupplementalDropString(DependencyObject obj, string value) => 
-      obj.SetValue(SupplementalDropStringProperty, value);
-    public static readonly DependencyProperty SupplementalDropStringProperty =
-        DependencyProperty.RegisterAttached("SupplementalDropString", typeof(string), typeof(TreeArrange), 
-          new FrameworkPropertyMetadata(null, SetSupplementalDrop));
-
-    private static void SetSupplementalDrop(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    [GenerateDP(typeof(IDropTarget), "SupplementalDropTarget", Attached = true, Nullable = true)]
+    [GenerateDP]
+    private static void OnSupplementalDropStringChanged(DependencyObject d, string? newValue)
     {
       if (d is FrameworkElement fe)
       {
-        SetSupplementalDropTarget(fe, new DropTarget(fe, e.NewValue.ToString()));
+        SetSupplementalDropTarget(fe, new DropTarget(fe, newValue??""));
       }
     }
 
@@ -156,7 +95,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
        private readonly FrameworkElement rootElt;
        private readonly Type dropType;
-       private string DragTypeName() => dropType.FullName;
+       private string DragTypeName() => dropType.FullName??"";
 
        public TreeDropDriver(FrameworkElement  rootElt, Type dropType)
        {
@@ -195,11 +134,11 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
        }
 
        private static IMouseDataSource CreateDragger(MouseButtonEventArgs e, FrameworkElement fe) =>
-         GetVisualToDrag(fe) is FrameworkElement dragTarget
+         GetVisualToDrag(fe) is {} dragTarget
            ? new MouseDragger(dragTarget, e).LeafTarget()
            : new MouseDragger(fe, e).TypedTarget(typeof(ListViewItem), typeof(TreeViewItem), typeof(ListBoxItem));
 
-       private static object FindDraggedItem(FrameworkElement fe)
+       private static object? FindDraggedItem(FrameworkElement fe)
        {
          return GetDraggedItem(fe) ?? fe.DataContext;
        }
@@ -207,6 +146,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
        private DataObject GetDataObject(FrameworkElement fe)
        {
          var data = FindDraggedItem(fe);
+         if (data == null) return new DataObject();
          var ret = new DataObject(DragTypeName(), data);
          TreeArrange.GetSupplementalFormats(fe)?.AddFormats(ret, data);
          return ret;
@@ -248,19 +188,25 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
          }
        }
 
-       private IDropTarget SupplementalDropTarget()
+       private IDropTarget? SupplementalDropTarget()
        {
          return GetSupplementalDropTarget(rootElt);
        }
 
-       private FrameworkElement AdornmentTarget(object elt)
+       private FrameworkElement? AdornmentTarget(object elt)
        {
-         return 
-           GetVisualToDrag(elt as DependencyObject) ??
-            (elt is FrameworkElement fe
-           ? fe.Parents().OfType<FrameworkElement>().FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe
-           : null);
+         return elt switch
+         {
+           DependencyObject dobj when GetVisualToDrag(dobj) is { } explicitTarget => explicitTarget,
+           FrameworkElement fe => TryGetContainingCollectionViewItem(fe),
+           _ => null
+         };
        }
+
+       private static FrameworkElement TryGetContainingCollectionViewItem(FrameworkElement fe) =>
+         DependencyObjectExtensions.Parents(fe)
+           .OfType<FrameworkElement>()
+           .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
 
 
        private static DropAdornerKind DropTypeByPosition(DragEventArgs e, FrameworkElement fe) =>
@@ -306,7 +252,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
          }
        }
 
-       private IList FindList(FrameworkElement targetElement, object targetData) =>
+       private IList? FindList(FrameworkElement targetElement, object targetData) =>
          targetElement.Parents().OfType<ItemsControl>()
            .Select(i => i.ItemsSource)
            .OfType<IList>()
