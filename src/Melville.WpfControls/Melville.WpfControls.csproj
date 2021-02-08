@@ -8,7 +8,7 @@
 
 
   <PropertyGroup>
-    <Version>0.2.8</Version>
+    <Version>0.2.9</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPFControls</Title>

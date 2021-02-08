@@ -19,8 +19,8 @@ namespace Melville.MVVM.WPF.Test.WaitMessageTests
         .Property(i => i.ErrorMessage, "xxx")
         .Property(i => i.Progress, 10.0)
         .Property(i => i.Total, 10.0, i => i.ShowProgress)
-        .Property(i => i.CancellationTokenSource, new CancellationTokenSource(), i => i.ShowCancelButton,
-          i => i.CancellationToken)
+        .Property(i => i.CancellationTokenSource, new CancellationTokenSource(),
+          i => i.CancellationToken, i => i.ShowCancelButton)
         .DoTests();
     }
 
