@@ -161,6 +161,39 @@ namespace Outer
                 "    obj.SetValue(Outer.C.PropProperty, value);"
             );
 
+        [Fact]
+        public void GenerateFromDeclaration()
+        {
+            var res = RunTest(@"
+              [GenerateDP] public static readonly System.Windows.DependencyProperty NovelProperty =
+                System.Windows.DependencyProperty.Register(""Novel"", typeof(int),
+                typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
+            
+            res.FileDoesNotContain("C.DependencyPropertyGeneration.cs", ".Register");
+            res.FileContains("C.DependencyPropertyGeneration.cs", 
+                "get => (int)this.GetValue(Outer.C.NovelProperty);");
+            res.FileContains("C.DependencyPropertyGeneration.cs", 
+                "set => this.SetValue(Outer.C.NovelProperty, value);");
+        }
+        [Fact]
+        public void GenerateAttachedFromDeclaration()
+        {
+            var res = RunTest(@"
+              [GenerateDP] public static readonly System.Windows.DependencyProperty NovelProperty =
+                System.Windows.DependencyProperty.RegisterAttached(""Novel"", typeof(int),
+                typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
+            
+            res.FileDoesNotContain("C.DependencyPropertyGeneration.cs", ".Register");
+            res.FileContains("C.DependencyPropertyGeneration.cs", 
+                   "public static int GetNovel(System.Windows.DependencyObject obj) =>");
+            res.FileContains("C.DependencyPropertyGeneration.cs", 
+                   "(int)obj.GetValue(Outer.C.NovelProperty);");
+            res.FileContains("C.DependencyPropertyGeneration.cs", 
+                   "public static void SetNovel(System.Windows.DependencyObject obj, int value) =>");
+            res.FileContains("C.DependencyPropertyGeneration.cs", 
+                   "obj.SetValue(Outer.C.NovelProperty, value);");
+        }
+
         private void MultiContentTest(string source, params string[] contents)
         {
             var res = RunTest(source);
