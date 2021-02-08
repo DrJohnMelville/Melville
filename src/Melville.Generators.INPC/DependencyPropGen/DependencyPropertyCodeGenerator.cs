@@ -27,7 +27,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
             var attached = rp.Attached ? "Attached" : "";
             cw.AppendLine($"    System.Windows.DependencyProperty.Register{attached}(");
             cw.AppendLine($"    \"{rp.PropName}\", typeof({rp.TargetType()}), typeof({rp.ParentType()}),");
-            cw.AppendLine($"    new System.Windows.FrameworkPropertyMetadata(default({rp.TargetType()}){ChangeFunc(rp)}));");
+            cw.AppendLine($"    new System.Windows.FrameworkPropertyMetadata({rp.DefaultExpression()}{ChangeFunc(rp)}));");
             cw.AppendLine();
         }
 

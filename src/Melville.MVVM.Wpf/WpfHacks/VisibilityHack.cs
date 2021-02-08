@@ -14,30 +14,30 @@ namespace Melville.MVVM.Wpf.WpfHacks
         }
 
         [GenerateDP]
-        private static void OnCollapseIfChanged(DependencyObject d, bool show) => 
+        private static void OnCollapseIfChanged(DependencyObject d, bool show = false) => 
             ComputeVisibility(d, show, Visibility.Collapsed);
 
         [GenerateDP]
-        private static void OnHideIfChanged(DependencyObject d, bool show) =>
+        private static void OnHideIfChanged(DependencyObject d, bool show = false) =>
             ComputeVisibility(d, show, Visibility.Hidden);
   
         [GenerateDP]
-        private static void OnCollapseUnlessChanged(DependencyObject d, bool show) =>
+        private static void OnCollapseUnlessChanged(DependencyObject d, bool show = true) =>
             OnCollapseIfChanged(d, !show);
         [GenerateDP]
-        private static void OnHideUnlessChanged(DependencyObject d, bool show) =>
+        private static void OnHideUnlessChanged(DependencyObject d, bool show = true) =>
             OnHideIfChanged(d, !show);
 
-        [GenerateDP]
+        [GenerateDP(Default = "ImplausibleString kgjk;h&^#$jhc;")]
         private static void OnCollapseIfNullChanged(DependencyObject d, object? arg) =>
             OnCollapseIfChanged(d, arg == null);
-        [GenerateDP]
+        [GenerateDP(Default = "ImplausibleString kgjk;h&^#$jhc;")]
         private static void OnCollapseUnlessNullChanged(DependencyObject d, object? arg) =>
             OnCollapseIfChanged(d, arg != null);
-        [GenerateDP]
+        [GenerateDP(Default = "ImplausibleString kgjk;h&^#$jhc;")]
         private static void OnCollapseIfWhitespaceChanged(DependencyObject d, object? arg) =>
             OnCollapseIfChanged(d, string.IsNullOrWhiteSpace(arg?.ToString()));
-        [GenerateDP]
+        [GenerateDP(Default = "ImplausibleString kgjk;h&^#$jhc;")]
         private static void OnCollapseUnlessWhitespaceChanged(DependencyObject d, object? arg) =>
             OnCollapseIfChanged(d, !string.IsNullOrWhiteSpace(arg?.ToString()));
     }

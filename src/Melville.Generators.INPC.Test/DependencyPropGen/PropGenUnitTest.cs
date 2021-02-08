@@ -175,6 +175,18 @@ namespace Outer
             res.FileContains("C.DependencyPropertyGeneration.cs", 
                 "set => this.SetValue(Outer.C.NovelProperty, value);");
         }
+
+        [Theory]
+        [InlineData("[GenerateDP(typeof(int),\"Prop\", Default=10)]", "Metadata(10)")]
+        [InlineData("[GenerateDP] private void OnPropChanged(int i = 10)", "Metadata(10,")]
+        [InlineData("[GenerateDP] private void OnPropChanged(string i = \"Hello\")", "Metadata(\"Hello\",")]
+        [InlineData("[GenerateDP(typeof(string),\"Prop\", Default=\"Hello\")]", "Metadata(\"Hello\")")]
+        public void GeneratePropWithDefault(string prompt, string defaultText)
+        {
+            var res = RunTest(prompt);
+            res.FileContains("C.DependencyPropertyGeneration.cs", defaultText);
+            
+        }
         [Fact]
         public void GenerateAttachedFromDeclaration()
         {

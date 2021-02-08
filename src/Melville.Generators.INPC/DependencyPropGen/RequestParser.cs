@@ -20,6 +20,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         public string PropName { get; private set; } = "";
         public bool Attached { get; private set; }
         public bool Nullable { get; private set; }
+        private string? customDefault;
         
         public bool Valid() => PropName.Length > 0 && Type != null;
         public bool FromCustomDpDeclaration => storedDependencyPropertyName != null;
@@ -28,6 +29,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         public string ParentType() => ParentSymbol.FullyQualifiedName();
         private string? storedDependencyPropertyName;
         public string DependencyPropName() => storedDependencyPropertyName?? (PropName + "Property");
+        public string DefaultExpression() =>  customDefault??$"default({TargetType()})";
         
         public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol)
         {
@@ -95,6 +97,9 @@ namespace Melville.Generators.INPC.DependencyPropGen
                 case "Nullable" :
                     Nullable = ReadBoolLiteral(les);
                     break;
+                case "Default":
+                    customDefault = les.ToString();
+                    break;
             }
         }
 
@@ -124,16 +129,22 @@ namespace Melville.Generators.INPC.DependencyPropGen
             if (semanticModel.GetDeclaredSymbol(targetMethod) is IMethodSymbol symbol)
             {
                 Attached = ComputeAttached(symbol.IsStatic, symbol.Parameters);
-                InferTargetType(symbol);
+                Type = FilterTypeSymbolForNullability(symbol.Parameters.LastOrDefault()?.Type);
+                if (Type != null) // we haave a type so we must have found a valid parameter
+                {
+                    customDefault = DefaultValueTextFromLastParameter(targetMethod);
+                }
             }
+        }
+
+        private static string? DefaultValueTextFromLastParameter(MethodDeclarationSyntax targetMethod)
+        {
+            return targetMethod.ParameterList.Parameters.Last().Default?.Value.ToString();
         }
 
         private bool ComputeAttached(bool isStatic, ImmutableArray<IParameterSymbol> symbolParameters) =>
             isStatic && symbolParameters.Length > 0 &&
             symbolParameters[0].Type.FullyQualifiedName() == "System.Windows.DependencyObject";
-
-        private void InferTargetType(IMethodSymbol symbol) => 
-            Type = FilterTypeSymbolForNullability(symbol.Parameters.LastOrDefault()?.Type);
 
         private ITypeSymbol? FilterTypeSymbolForNullability(ITypeSymbol? sym)
         {

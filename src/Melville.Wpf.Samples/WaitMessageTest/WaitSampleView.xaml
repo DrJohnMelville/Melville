@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.WaitMessageTest.WaitSampleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.WaitMessageTest"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UniformGrid Columns="1">
+           <Button Click="{eventBindings:EventBinding SimpleWait}">Simple Wait</Button>
+           <Button>Count To 5</Button>
+           <Button>Labeled Count to 5</Button>
+           <Button>Labels only</Button>
+       </UniformGrid>
+</UserControl>

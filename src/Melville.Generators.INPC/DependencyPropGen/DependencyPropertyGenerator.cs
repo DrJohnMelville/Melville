@@ -27,6 +27,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
             {
                 cw.AppendLine("public bool Attached {get; set;}");
                 cw.AppendLine("public bool Nullable {get; set;}");
+                cw.AppendLine("public object? Default {get; set;}");
                 cw.AppendLine("public GenerateDPAttribute(){}");
                 cw.AppendLine("public GenerateDPAttribute(Type targetType, string propName=\"\"){}");
             }

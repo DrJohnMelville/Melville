@@ -29,4 +29,7 @@
       <Generator></Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="WaitMessages" />
+  </ItemGroup>
 </Project>

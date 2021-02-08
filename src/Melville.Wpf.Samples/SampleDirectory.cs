@@ -9,6 +9,7 @@ using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.Wpf.Samples.ShellCommands;
 using Melville.Wpf.Samples.ThumbDrives;
 using Melville.Wpf.Samples.TranscriptionPedal;
+using Melville.Wpf.Samples.WaitMessageTest;
 using Melville.Wpf.Samples.WebView2Integration;
 
 namespace Melville.Wpf.Samples
@@ -16,7 +17,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem? DefaultItem() =>
-            SearchTreeForSample<WebView2ViewModel>();
+            SearchTreeForSample<WaitSampleViewModel>();
 
         public SampleDirectory()
         {
@@ -49,7 +50,8 @@ namespace Melville.Wpf.Samples
                     Page<CallMethodOnApplicationViewModel>("Call Method On Application"),
                     Page<ScopedMethodCallViewModel>("Call Methods in a scope"),
                     Page<WebView2ViewModel>("WebView2 Events"),
-                    Page<DiBindingViewModel>("DI Binding")
+                    Page<DiBindingViewModel>("DI Binding"),
+                    Page<WaitSampleViewModel>("Waiting Screen")
                 ),
                 Node("Statistics",
                     Page<LinqGraphViewModel>("LinqPad Graphics Module"))
