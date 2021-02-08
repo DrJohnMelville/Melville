@@ -16,18 +16,19 @@ namespace Melville.Generators.INPC.DependencyPropGen
             if (rp.Type == null) return;
             cw.AppendLine($"// {rp.PropName} Dependency Property Implementation");
             GenerateDependencyProperty(rp, cw);
-            cw.AppendLine("");
             GenerateAccessorMembers(rp, cw);
-            cw.AppendLine("");
+            cw.AppendLine();
         }
 
         private static void GenerateDependencyProperty(RequestParser rp, CodeWriter cw)
         {
+            if (rp.FromCustomDpDeclaration) return;
             cw.AppendLine($"public static readonly System.Windows.DependencyProperty {rp.DependencyPropName()} = ");
             var attached = rp.Attached ? "Attached" : "";
             cw.AppendLine($"    System.Windows.DependencyProperty.Register{attached}(");
             cw.AppendLine($"    \"{rp.PropName}\", typeof({rp.TargetType()}), typeof({rp.ParentType()}),");
             cw.AppendLine($"    new System.Windows.FrameworkPropertyMetadata(default({rp.TargetType()}){ChangeFunc(rp)}));");
+            cw.AppendLine();
         }
 
         private static string ChangeFunc(RequestParser rp)

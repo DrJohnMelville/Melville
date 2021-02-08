@@ -10,7 +10,7 @@
 
 
   <PropertyGroup>
-    <Version>0.3.10</Version>
+    <Version>0.3.11</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPF</Title>
