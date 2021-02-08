@@ -16,7 +16,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem? DefaultItem() =>
-            SearchTreeForSample<ChYokeViewModel>();
+            SearchTreeForSample<WebView2ViewModel>();
 
         public SampleDirectory()
         {
