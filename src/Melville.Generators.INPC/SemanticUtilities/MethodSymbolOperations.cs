@@ -12,7 +12,7 @@ namespace Melville.Generators.INPC.SemanticUtilities
             var paramSymbols = ms.Parameters;
             if (paramSymbols.Length != parameters.Length) return false;
             return paramSymbols
-                .Zip(parameters, (i, j) => i.Type.FullyQualifiedName() == j)
+                .Zip(parameters, (i, j) => j == null || i.Type.FullyQualifiedName() == j)
                 .All(i=>i);
         }
     }

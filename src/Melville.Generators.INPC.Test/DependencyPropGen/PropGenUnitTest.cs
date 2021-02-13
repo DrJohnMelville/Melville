@@ -92,6 +92,10 @@ namespace Outer
             "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue))")]
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal, int oldVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue), (int)(j.OldValue))")]
+        [InlineData("public static void OnPropChanged(string obj, int newVal, int oldVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue), (int)(j.OldValue))")]
+        [InlineData("public static void OnPropChanged(string obj, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue))")]
         [InlineData("public void OnPropChanged(System.Windows.DependencyPropertyChangedEventArgs e) {}",
             "(i,j)=>((Outer.C)i).OnPropChanged(j)")]
          [InlineData("public void OnPropChanged() {}",
