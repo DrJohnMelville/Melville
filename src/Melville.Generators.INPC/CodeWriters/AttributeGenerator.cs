@@ -25,7 +25,7 @@ namespace Melville.Generators.INPC.CodeWriters
             return string.Join(" | ",
                 Enum.GetValues(typeof(AttributeTargets))
                     .OfType<AttributeTargets>()
-                    .Where(i => (i & targets) != 0)
+                    .Where(i => (i & targets) == i)
                     .Select(i => $"AttributeTargets.{Enum.GetName(typeof(AttributeTargets), i)}"));
         }
     }

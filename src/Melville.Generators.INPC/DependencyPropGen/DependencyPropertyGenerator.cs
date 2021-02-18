@@ -23,7 +23,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         {
             using (cw.ComplexAttribute("GenerateDP",
                 AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Field |
-                AttributeTargets.Event | AttributeTargets.Struct, true))
+                AttributeTargets.Event | AttributeTargets.Struct | AttributeTargets.Method, true))
             {
                 cw.AppendLine("public bool Attached {get; set;}");
                 cw.AppendLine("public bool Nullable {get; set;}");
