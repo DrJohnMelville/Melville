@@ -70,24 +70,15 @@ namespace Melville.MVVM.FileSystem
     }
 
     protected virtual MemoryFile CreateFile(string name) => new MemoryFile(name, this);
-
-    // not sure this is unused 1/10/2021 will see if anything breaks
-    // public IFile FileRecord(string name)
-    // {
-    //   var regEx = MatchGlob(name);
-    //   return files.Keys.Where(i => regEx.Match(i).Success).Select(i => files[i]).FirstOrDefault();
-    // }
-
+    
     public IEnumerable<IFile> AllFiles()
     {
       CheckForThrow();
       return files.Values.Where(i => i.Exists());
     }
 
-    public static Regex MatchGlob(string glob)
-    {
-      return new Regex($"^{RegexExtensions.GlobToRexex(glob)}$", RegexOptions.IgnoreCase);
-    }
+    public static Regex MatchGlob(string glob) => 
+      new Regex($"[/\\\\]{RegexExtensions.GlobToRexex(glob)}$", RegexOptions.IgnoreCase);
 
     public IEnumerable<IFile> AllFiles(string glob)
     {

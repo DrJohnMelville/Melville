@@ -25,7 +25,7 @@ namespace Melville.Generators.INPC.Macros
         {
             using (cw.ComplexAttribute("MacroCode",
                 AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Field |
-                AttributeTargets.Event | AttributeTargets.Struct, true))
+                AttributeTargets.Event | AttributeTargets.Struct | AttributeTargets.Method, true))
             {
                 cw.AppendLine(@"public object Prefix {get;set;} = """";");
                 cw.AppendLine(@"public object Postfix {get;set;} = """";");
@@ -34,7 +34,7 @@ namespace Melville.Generators.INPC.Macros
 
             using (cw.ComplexAttribute("MacroItem",
                 AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Field |
-                AttributeTargets.Event | AttributeTargets.Struct, true))
+                AttributeTargets.Event | AttributeTargets.Struct | AttributeTargets.Method, true))
             {
                 cw.AppendLine("public MacroItemAttribute(params object[] text){}");
             }

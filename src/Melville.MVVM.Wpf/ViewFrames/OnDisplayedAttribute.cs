@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.ViewFrames

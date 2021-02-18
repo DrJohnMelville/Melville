@@ -10,7 +10,7 @@
 
 
   <PropertyGroup>
-    <Version>0.3.13</Version>
+    <Version>0.3.15</Version>
     <Authors>John Melville, MS, MD</Authors>
     <Company>Melville Computing</Company>
     <Title>Melville.MVM.WPF</Title>
@@ -22,7 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
-    <PackageReference Include="Ookii.Dialogs.Wpf.NETCore" Version="2.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
     <PackageReference Include="Serilog" Version="2.9.0" />
   </ItemGroup>
 

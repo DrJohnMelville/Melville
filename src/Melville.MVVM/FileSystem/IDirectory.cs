@@ -45,26 +45,6 @@ namespace Melville.MVVM.FileSystem
       return $"{Guid.NewGuid()}.{ext}";
     }
     
-    public static IDirectory PhotoSubDirectory(this IDirectory root)
-    {
-      return root.SubDirectory("Photos");
-    }
-
-    public static IDirectory AudioSubDirectory(this IDirectory root)
-    {
-      return root.SubDirectory("Audio");
-    }
-
-    public static IFile NewPhotoFile(this IDirectory transactedRoot, string extension)
-    {
-      return transactedRoot.PhotoSubDirectory().GetRandomFile(extension);
-    }
-
-    public static IFile NewAudioFile(this IDirectory transactedRoot)
-    {
-      return transactedRoot.AudioSubDirectory().GetRandomFile("wma");
-    }
-
     public static async Task DuplicateFrom(this IDirectory deestination, IDirectory source)
     {
 

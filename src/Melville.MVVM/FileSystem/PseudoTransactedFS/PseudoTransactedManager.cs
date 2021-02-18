@@ -46,7 +46,7 @@ namespace Melville.MVVM.FileSystem.PseudoTransactedFS
     }
 
     public IDirectory UntransactedRoot => innerFileSystem;
-    public IDisposable? WriteToken() => innerFileSystem.AudioSubDirectory().WriteToken();
+    public IDisposable? WriteToken() => innerFileSystem.SubDirectory("Audio").WriteToken();
     public bool IsLocalStore => true;
     public IDownloadProgressStore? ProgressStore => null;
     public ValueTask DisposeAsync() => new ValueTask();

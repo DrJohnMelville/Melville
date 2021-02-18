@@ -1,7 +1,9 @@
 ﻿#nullable disable warnings
 using  System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using Melville.MVVM.Asyncs;
+using Melville.MVVM.CSharpHacks;
 using Melville.MVVM.FileSystem;
 using Xunit;
 
@@ -58,7 +60,6 @@ namespace Melville.Mvvm.TestHelpers.MockFiles
       using (var reader = new StreamReader(s2))
       {
         Assert.Equal(content, reader.ReadToEnd());
-
       }
     }
     public static void AssertContentMatches(this Stream s, string content)
@@ -69,7 +70,8 @@ namespace Melville.Mvvm.TestHelpers.MockFiles
       using (var reader = new StreamReader(s2))
       {
         var actualContent = reader.ReadToEnd();
-        Assert.True(MockDirectory.MatchGlob(content).IsMatch(actualContent),
+        var regex = new Regex($"^{RegexExtensions.GlobToRexex(content)}$", RegexOptions.IgnoreCase);
+        Assert.True(regex.IsMatch(actualContent),
           string.Format("\r\n{0} and \r\n{1} do not match.", actualContent, content));
       }
     }

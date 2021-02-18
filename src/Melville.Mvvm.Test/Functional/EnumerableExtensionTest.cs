@@ -1,5 +1,7 @@
 ﻿#nullable disable warnings
 using  System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Melville.MVVM.Functional;
 using Xunit;
@@ -51,5 +53,14 @@ namespace Melville.Mvvm.Test.Functional
       Assert.Throws<InvalidOperationException>(()=>new[] {1}.ByIndex(i));
     }
 
+    [Fact]
+    public void EmptyIfNullTests()
+    {
+      Assert.Empty(((IEnumerable<string>)null).EmptyIfNull());
+      Assert.Empty(((IEnumerable)null).EmptyIfNull());
+      Assert.Empty(new int[0].EmptyIfNull());
+      Assert.Single(new []{1}.EmptyIfNull());
+      
+    }
   }
 }

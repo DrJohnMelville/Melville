@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Management;
-using Accord;
 using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB;
 using Melville.MVVM.Wpf.DiParameterSources;

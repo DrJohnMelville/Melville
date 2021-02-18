@@ -30,31 +30,29 @@ namespace Melville.MVVM.Functional
     /// <returns>an enumeration with the original elements interleaved with delimiters</returns>
     public static IEnumerable<T> Interleave<T>(this IEnumerable<T> baseEnumeration, T delimiter, T lastDelimiter)
     {
-      using (var iter = baseEnumeration.GetEnumerator())
+      using var iter = baseEnumeration.GetEnumerator();
+      // guard clause for empty source
+      if (!iter.MoveNext()) yield break;
+
+      //first iteration of loop is unrolled because the first item does not have a delimiter
+      yield return iter.Current;
+      if (!iter.MoveNext()) yield break;
+
+      //This is a while loop with a break in the middle.  I reuse the loop termination test to decide which interleavedItem to
+      // use, thus the body of the loop gets repeated.
+      while (true)
       {
-        // guard clause for empty source
-        if (!iter.MoveNext()) yield break;
-
-        //first iteration of loop is unrolled because the first item does not have a delimiter
-        yield return iter.Current;
-        if (!iter.MoveNext()) yield break;
-
-        //This is a while loop with a break in the middle.  I reuse the loop termination test to decide which interleavedItem to
-        // use, thus the body of the loop gets repeated.
-        while (true)
+        T item = iter.Current;
+        if (iter.MoveNext())
         {
-          T item = iter.Current;
-          if (iter.MoveNext())
-          {
-            yield return delimiter;
-            yield return item;
-          }
-          else
-          {
-            yield return lastDelimiter;
-            yield return item;
-            yield break;
-          }
+          yield return delimiter;
+          yield return item;
+        }
+        else
+        {
+          yield return lastDelimiter;
+          yield return item;
+          yield break;
         }
       }
     }
@@ -515,6 +513,11 @@ namespace Melville.MVVM.Functional
         yield return item;
       }
     }
+
+    public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) =>
+      source ?? Array.Empty<T>();
+    public static IEnumerable EmptyIfNull(this IEnumerable? source) =>
+      source ?? Array.Empty<object>();
 
   }
 }
