@@ -13,26 +13,21 @@ namespace Melville.Generators.INPC.Test.DelegateToGen
     // }
     public class DelegateToTest
     {
-        private GeneratorTestBed RunTest(string s) => new(new DelegateToGenerator(), @"
+        private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), @"
 using Melville.DelegateToGeneration;
 namespace Outer
 {
     public interface IInterface
-    {
-        void A();
-        void B(int x);
-        int C(int x);
-        IInterface D(IInterface x, int y, IInterface z);
-    }
+    {"+intMembers+@"}
     public partial class C {" +
-                                                   s +
-                                                   @"
+                                                                                                        s +
+                                                                                                        @"
 }
 }
 ");
 
         private GeneratorTestBed RunTestOnField(string s) =>
-            RunTest(s + " private IInterface field;");
+            RunTest(s + " private IInterface field;", "");
 
         [Fact]
         public void GenerateProperty()
@@ -54,17 +49,53 @@ namespace Outer
         [InlineData("public IInterface Method() => null")]
         public void InheritFromDelegatedInterface(string member)
         {
-            var res = RunTest("[DelegateTo] "+member);
+            var res = RunTest("[DelegateTo] "+member, @"");
             res.FileContains("C.DelegateToGeneration.cs",
                 "public partial class C : Outer.IInterface");            
         }
 
-        [Fact]
-        public void IplementsAllMethods()
+        [Theory]
+        [InlineData(" [DelegateTo] private IInterface Field; ", "get => this.Field.A;")]
+        [InlineData(" [DelegateTo] private IInterface Field {get;} ", "get => this.Field.A;")]
+        [InlineData(" [DelegateTo] private IInterface Field() ", "get => this.Field().A;")]
+        public void DelegationPrefixes(string targetMember, string output)
         {
-            var res = RunTest(" [DelegateTo] private IInterface Field; ");
+            var res = RunTest(targetMember, "int A {get;}");
             res.FileContains("C.DelegateToGeneration.cs",
-                "public void A() => this.field.A();");
+                output);
+        }
+        [Theory]
+        [InlineData("int A {get;}", "public int A")]
+        [InlineData("int A {get;}", "get => this.Field.A;")]
+        [InlineData("int A {get;set;}", "get => this.Field.A;")]
+        [InlineData("int A {get;set;}", "set => this.Field.A = value;")]
+        [InlineData("int A {set;}", "set => this.Field.A = value;")]
+        [InlineData("int A {get;init;}", "init => this.Field.A = value;")]
+        [InlineData("int A();", "public int A() => this.Field.A();")]
+        [InlineData("int A(int a);", "public int A(int a) => this.Field.A(a);")]
+        [InlineData("int A(int a, string b);", "public int A(int a, string b) => this.Field.A(a, b);")]
+        [InlineData("T A<T>();", "public T A<T>() => this.Field.A<T>();")]
+        [InlineData("T A<T,T2>();", "public T A<T,T2>() => this.Field.A<T,T2>();")]
+        [InlineData("IList<T> A<T>(T a);", "public IList<T> A<T>(T a) => this.Field.A<T>(a);")]
+        [InlineData("void A();", "public void A() => this.Field.A();")]
+        [InlineData("event EventHandler A;", "public event EventHandler A")]
+        [InlineData("event EventHandler A;", "add => this.Field.A += value;")]
+        [InlineData("event EventHandler A;", "remove => this.Field.A -= value;")]
+        [InlineData("int this[int a]", "public int this[int a] => this.Field[a];")]
+        public void IplementsMembers(string intMember, string output)
+        {
+            var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
+            res.FileContains("C.DelegateToGeneration.cs",
+                output);
+        }
+        [Theory]
+        [InlineData("int A {get;set;}", "get_A")]
+        [InlineData("int A {get;set;}", "set_A")]
+        public void DoNotImplementHiddenMethods(string intMember, string output)
+        {
+            var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
+            res.FileDoesNotContain("C.DelegateToGeneration.cs",
+                output);
         }
     }
 }

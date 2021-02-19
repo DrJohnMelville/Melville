@@ -16,11 +16,11 @@ namespace Melville.Generators.INPC.DelegateToGen
             return new DelegationRequest(classSymbol, ParseItems(model, members));
         }
 
-        private static List<DelegationRequestMember> ParseItems(
+        private static List<IDelegatedMethodGenerator> ParseItems(
             SemanticModel model, IEnumerable<MemberDeclarationSyntax> members) =>
-            members.Select(i=>ParseItem(model, i)).OfType<DelegationRequestMember>().ToList();
+            members.Select(i=>ParseItem(model, i)).OfType<IDelegatedMethodGenerator>().ToList();
 
-        private static DelegationRequestMember? ParseItem(
+        private static IDelegatedMethodGenerator? ParseItem(
             SemanticModel model, MemberDeclarationSyntax member) =>
             member switch
             {
@@ -30,25 +30,25 @@ namespace Melville.Generators.INPC.DelegateToGen
                 _ => throw new InvalidProgramException("This is not a valid delegation target")
             };
 
-        private static DelegationRequestMember? ParseFromMethod(
+        private static IDelegatedMethodGenerator? ParseFromMethod(
             SemanticModel model, MethodDeclarationSyntax mds) =>
             model.GetDeclaredSymbol(mds) is IMethodSymbol symbol && IsValidDelegatingMethod(symbol)
-                ? new DelegationRequestMember(symbol.ReturnType, $"this.{symbol.Name}().")
+                ? DelegatedMethodGenerator.Create(symbol.ReturnType, $"this.{symbol.Name}().", mds)
                 : null;
 
         private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
             symbol.Parameters.Length == 0 && !symbol.ReturnsVoid;
 
-        private static DelegationRequestMember? ParseFromProperty(
+        private static IDelegatedMethodGenerator? ParseFromProperty(
             SemanticModel model, PropertyDeclarationSyntax pds) => 
             model.GetDeclaredSymbol(pds) is IPropertySymbol ps ? 
-                new DelegationRequestMember(ps.Type, $"this.{ps.Name}.") : 
+                DelegatedMethodGenerator.Create(ps.Type, $"this.{ps.Name}.", pds) : 
                 null;
 
-        private static DelegationRequestMember? ParseFromField(
+        private static IDelegatedMethodGenerator? ParseFromField(
             SemanticModel model, FieldDeclarationSyntax fs) =>
             model.GetDeclaredSymbol(FirstVariableDecl(fs)) is IFieldSymbol symbol?
-                new DelegationRequestMember(symbol.Type, $"this.{symbol.Name}."):
+                DelegatedMethodGenerator.Create(symbol.Type, $"this.{symbol.Name}.", fs):
                 null;
 
         private static VariableDeclaratorSyntax FirstVariableDecl(FieldDeclarationSyntax fs) => 

@@ -13,7 +13,7 @@ namespace Melville.Generators.INPC.DelegateToGen
             base("DelegateToGeneration", "Melville.DelegateToGeneration.DelegateToAttribute")
         {
         }
-
+        
         protected override string ClassSuffix(DelegationRequest input) => input.ClassSuffix();
 
         protected override DelegationRequest PreProcess(
