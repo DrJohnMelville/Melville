@@ -29,6 +29,9 @@ namespace Melville.Generators.INPC.DelegateToGen
         {
             switch (member)
             {
+                case IPropertySymbol {IsIndexer: true} ps:
+                    GenerateIndexer(ps, cw);
+                    break;
                 case IPropertySymbol ps :
                     GenerateProperty(ps, cw);
                     break;
@@ -44,6 +47,38 @@ namespace Melville.Generators.INPC.DelegateToGen
             }
         }
 
+        private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
+        {
+            MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this" );
+            ParameterList(cw, ps.Parameters, i => $"{i.Type.FullyQualifiedName()} {i.Name}", "[", "]");
+            cw.AppendLine();
+            PropertyBlock(ps, cw, $"[{string.Join(", ", ps.Parameters.Select(i=>i.Name))}]");
+        }
+        
+        private void GenerateProperty(IPropertySymbol ps, CodeWriter cw)
+        {
+            MemberPrefix(cw, ps.Type.FullyQualifiedName(), ps.Name);
+            cw.AppendLine();
+            PropertyBlock(ps, cw, "."+ps.Name);
+        }
+
+        private void PropertyBlock(IPropertySymbol ps, CodeWriter cw, string propertyCall)
+        {
+            using (cw.CurlyBlock())
+            {
+                if (ps.GetMethod != null)
+                {
+                    cw.AppendLine($"get => {MethodPrefix}{propertyCall};");
+                }
+
+                if (ps.SetMethod is { } setMethod)
+                {
+                    cw.AppendLine($"{setMethodKeyword(setMethod)} => {MethodPrefix}{propertyCall} = value;");
+                }
+            }
+        }
+
+
         private void GenerateEvent(IEventSymbol es, CodeWriter cw)
         {
             MemberPrefix(cw, "event "+es.Type.FullyQualifiedName(), es.Name);
@@ -52,11 +87,11 @@ namespace Melville.Generators.INPC.DelegateToGen
             {
                 if (es.AddMethod != null)
                 {
-                    cw.AppendLine($"add => {MethodPrefix}{es.Name} += value;");
+                    cw.AppendLine($"add => {MethodPrefix}.{es.Name} += value;");
                 }
                 if (es.RemoveMethod != null)
                 {
-                    cw.AppendLine($"remove => {MethodPrefix}{es.Name} -= value;");
+                    cw.AppendLine($"remove => {MethodPrefix}.{es.Name} -= value;");
                 }
             }
         }
@@ -71,15 +106,23 @@ namespace Melville.Generators.INPC.DelegateToGen
         {
             MemberPrefix(cw, ms.ReturnType.FullyQualifiedName(), ms.Name);
             AppendTypeParamList(cw, ms.TypeParameters);
-            cw.Append("(");
-            AppendArgumentList(cw, ms.Parameters, i => $"{i.Type.FullyQualifiedName()} {i.Name}");
-            cw.Append(") => ");
+            ParameterList(cw, ms.Parameters, i => $"{i.Type.FullyQualifiedName()} {i.Name}", "(", ")");
+            cw.Append(" => ");
             cw.Append(MethodPrefix);
+            cw.Append(".");
             cw.Append(ms.Name);
             AppendTypeParamList(cw, ms.TypeParameters);
-            cw.Append("(");
-            AppendArgumentList(cw, ms.Parameters, i => i.Name);
-            cw.AppendLine(");");
+            ParameterList(cw, ms.Parameters, i => i.Name, "(", ")");
+            cw.AppendLine(";");
+        }
+
+        private void ParameterList(
+            CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, 
+            Func<IParameterSymbol, string> display, string open, string close)
+        {
+            cw.Append(open);
+            AppendArgumentList(cw, parameters, display);
+            cw.Append(close);
         }
 
         // we don't generate the component methods of properties, events, or indexers, because
@@ -96,23 +139,6 @@ namespace Melville.Generators.INPC.DelegateToGen
             cw.Append("<");
             cw.Append(string.Join(",", parameters.Select(i=>i.Name)));
             cw.Append(">");
-        }
-
-        private void GenerateProperty(IPropertySymbol ps, CodeWriter cw)
-        {
-            MemberPrefix(cw, ps.Type.FullyQualifiedName(), ps.Name);
-            cw.AppendLine();
-            using (cw.CurlyBlock())
-            {
-                if (ps.GetMethod != null)
-                {
-                    cw.AppendLine($"get => {MethodPrefix}{ps.Name};");
-                }
-                if (ps.SetMethod is {} setMethod)
-                {
-                    cw.AppendLine($"{setMethodKeyword(setMethod)} => {MethodPrefix}{ps.Name} = value;");
-                }
-            }
         }
 
         private void MemberPrefix(CodeWriter cw, string typeName, string memberName)

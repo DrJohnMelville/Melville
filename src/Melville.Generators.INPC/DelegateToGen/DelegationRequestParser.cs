@@ -33,7 +33,7 @@ namespace Melville.Generators.INPC.DelegateToGen
         private static IDelegatedMethodGenerator? ParseFromMethod(
             SemanticModel model, MethodDeclarationSyntax mds) =>
             model.GetDeclaredSymbol(mds) is IMethodSymbol symbol && IsValidDelegatingMethod(symbol)
-                ? DelegatedMethodGenerator.Create(symbol.ReturnType, $"this.{symbol.Name}().", mds)
+                ? DelegatedMethodGenerator.Create(symbol.ReturnType, $"this.{symbol.Name}()", mds)
                 : null;
 
         private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
@@ -42,13 +42,13 @@ namespace Melville.Generators.INPC.DelegateToGen
         private static IDelegatedMethodGenerator? ParseFromProperty(
             SemanticModel model, PropertyDeclarationSyntax pds) => 
             model.GetDeclaredSymbol(pds) is IPropertySymbol ps ? 
-                DelegatedMethodGenerator.Create(ps.Type, $"this.{ps.Name}.", pds) : 
+                DelegatedMethodGenerator.Create(ps.Type, $"this.{ps.Name}", pds) : 
                 null;
 
         private static IDelegatedMethodGenerator? ParseFromField(
             SemanticModel model, FieldDeclarationSyntax fs) =>
             model.GetDeclaredSymbol(FirstVariableDecl(fs)) is IFieldSymbol symbol?
-                DelegatedMethodGenerator.Create(symbol.Type, $"this.{symbol.Name}.", fs):
+                DelegatedMethodGenerator.Create(symbol.Type, $"this.{symbol.Name}", fs):
                 null;
 
         private static VariableDeclaratorSyntax FirstVariableDecl(FieldDeclarationSyntax fs) => 

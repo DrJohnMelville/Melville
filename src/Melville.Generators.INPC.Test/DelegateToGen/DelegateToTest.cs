@@ -81,8 +81,11 @@ namespace Outer
         [InlineData("event EventHandler A;", "public event EventHandler A")]
         [InlineData("event EventHandler A;", "add => this.Field.A += value;")]
         [InlineData("event EventHandler A;", "remove => this.Field.A -= value;")]
-        [InlineData("int this[int a]", "public int this[int a] => this.Field[a];")]
-        public void IplementsMembers(string intMember, string output)
+        [InlineData("int this[int a] {get;}", "public int this[int a]")]
+        [InlineData("int this[int a] {get;}", "get => this.Field[a];")]
+        [InlineData("int this[int a] {get; set;}", "get => this.Field[a];")]
+        [InlineData("int this[int a] {get; set;}", "set => this.Field[a] = value;")]
+        public void ImplementsMembers(string intMember, string output)
         {
             var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
             res.FileContains("C.DelegateToGeneration.cs",
