@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.DelegateToGen
     public class DelegateToGenerator: PartialTypeGenerator<DelegationRequest>
     {
         public DelegateToGenerator() : 
-            base("DelegateToGeneration", "Melville.DelegateToGeneration.DelegateToAttribute")
+            base("DelegateToGeneration", "Melville.INPC.DelegateToAttribute")
         {
         }
         
@@ -26,13 +26,7 @@ namespace Melville.Generators.INPC.DelegateToGen
             GeneratorExecutionContext context) => 
             context.Compilation.GetSemanticModel(input.Key.SyntaxTree);
 
-        protected override bool GlobalDeclarations(CodeWriter cw)
-        {
-            using var block = cw.ComplexAttribute("DelegateTo",
-                AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method);
-            cw.AppendLine("public DelegateToAttribute(bool explicitImplementation = false){}");
-            return true;
-        }
+        protected override bool GlobalDeclarations(CodeWriter cw) => true;
 
         protected override bool GenerateClassContents(DelegationRequest input, CodeWriter cw)
         {

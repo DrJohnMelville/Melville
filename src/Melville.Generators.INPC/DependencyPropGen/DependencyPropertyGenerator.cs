@@ -15,23 +15,13 @@ namespace Melville.Generators.INPC.DependencyPropGen
     {
         public DependencyPropertyGenerator() : 
             base("DependencyPropertyGeneration",
-                "Melville.DependencyPropertyGeneration.GenerateDPAttribute")
+                "Melville.INPC.GenerateDPAttribute")
         {
         }
 
         protected override bool GlobalDeclarations(CodeWriter cw)
         {
-            using (cw.ComplexAttribute("GenerateDP",
-                AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Field |
-                AttributeTargets.Event | AttributeTargets.Struct | AttributeTargets.Method, true))
-            {
-                cw.AppendLine("public bool Attached {get; set;}");
-                cw.AppendLine("public bool Nullable {get; set;}");
-                cw.AppendLine("public object? Default {get; set;}");
-                cw.AppendLine("public GenerateDPAttribute(){}");
-                cw.AppendLine("public GenerateDPAttribute(Type targetType, string propName=\"\"){}");
-            }
-            return true;
+            return false;
         }
 
         protected override bool 
@@ -53,7 +43,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         }
 
         private static readonly SearchForAttribute searcher =
-            new("Melville.DependencyPropertyGeneration.GenerateDPAttribute"); 
+            new("Melville.INPC.GenerateDPAttribute"); 
         private static void GenerateAttributes(
             IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, CodeWriter cw, 
             SemanticModel semanticModel, ITypeSymbol classSymbol)

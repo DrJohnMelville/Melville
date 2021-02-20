@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.Test.DependencyPropGen
     {
         private GeneratorTestBed RunTest(string s) =>
             new GeneratorTestBed(new DependencyPropertyGenerator(), @"
-using Melville.DependencyPropertyGeneration;
+using Melville.INPC;
 using System;
 namespace Outer
 {
@@ -21,14 +21,6 @@ namespace Outer
 }
 }
 ");
-
-        [Fact]
-        public void CanUseProperty()
-        {
-            var res = RunTest("[GenerateDP(typeof(int),\"Prop\"]");
-            res.FileContains("DependencyPropertyGenerationAttributes.DependencyPropertyGeneration.cs",
-            "internal sealed class GenerateDPAttribute: Attribute");
-        }
 
         [Theory]
         [InlineData("bool")]

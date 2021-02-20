@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Melville.INPC
 {
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class, 
+    [Conditional("ShowCodeGenAttributes")]
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Class,
         Inherited = false, AllowMultiple = false)]
     public sealed class AutoNotifyAttribute : Attribute
     {

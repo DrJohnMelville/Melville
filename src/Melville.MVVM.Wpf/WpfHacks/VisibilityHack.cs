@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Melville.DependencyPropertyGeneration;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.WpfHacks
 {

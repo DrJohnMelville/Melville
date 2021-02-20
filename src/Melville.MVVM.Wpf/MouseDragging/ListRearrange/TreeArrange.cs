@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Melville.DependencyPropertyGeneration;
+using Melville.INPC;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
 
 

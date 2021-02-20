@@ -1,7 +1,7 @@
 ﻿using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-using Melville.MacroGen;
+using Melville.INPC;
 
 namespace Melville.P2P.Raw.BinaryObjectPipes
 {

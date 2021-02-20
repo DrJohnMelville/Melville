@@ -10,8 +10,8 @@ namespace Melville.Generators.INPC.Macros
 {
     public static class MacroSyntaxInterpreter
     {
-        private static SearchForAttribute codeFinder = new("Melville.MacroGen.MacroCodeAttribute");
-        private static SearchForAttribute itemFinder = new("Melville.MacroGen.MacroItemAttribute");
+        private static SearchForAttribute codeFinder = new("Melville.INPC.MacroCodeAttribute");
+        private static SearchForAttribute itemFinder = new("Melville.INPC.MacroItemAttribute");
 
         public static void ExpandSingleMacroSet(SyntaxNode syntaxNode, CodeWriter cw)
         {

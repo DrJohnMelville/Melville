@@ -14,7 +14,7 @@ namespace Melville.Generators.INPC.Test.DelegateToGen
     public class DelegateToTest
     {
         private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), @"
-using Melville.DelegateToGeneration;
+using Melville.INPC;
 namespace Outer
 {
     public interface IInterface
@@ -28,19 +28,7 @@ namespace Outer
 
         private GeneratorTestBed RunTestOnField(string s) =>
             RunTest(s + " private IInterface field;", "");
-
-        [Fact]
-        public void GenerateProperty()
-        {
-            var res = RunTestOnField("[DelegateTo]");
-            res.FileContains("DelegateToGenerationAttributes.DelegateToGeneration.cs",
-                "internal sealed class DelegateToAttribute: Attribute");
-            res.FileContains("DelegateToGenerationAttributes.DelegateToGeneration.cs",
-                " [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property | AttributeTargets.Field, Inherited=false)]");
-            res.FileContains("DelegateToGenerationAttributes.DelegateToGeneration.cs",
-                "public DelegateToAttribute(bool explicitImplementation = false){}");
-        }
-
+        
         [Theory]
         [InlineData("private IInterface Field;")]
         [InlineData("public IInterface RProp{get;}")]
