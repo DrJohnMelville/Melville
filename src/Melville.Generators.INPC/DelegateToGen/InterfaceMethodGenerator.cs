@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Melville.Generators.INPC.AstUtilities;
@@ -19,11 +20,19 @@ namespace Melville.Generators.INPC.DelegateToGen
 
         public override void GenerateForwardingMethods(ITypeSymbol parentClass, CodeWriter cw)
         {
-            foreach (var member in TargetType.GetMembers())
+            foreach (var member in MembersToForward(parentClass))
             {
-                GenerateForwardingMember(cw, member);
+                    GenerateForwardingMember(cw, member);
             }
         }
+
+        private IEnumerable<ISymbol> MembersToForward(ITypeSymbol parentClass) =>
+            TargetType.
+                GetMembers().
+                Where(i=>ImplementationMissing(parentClass, i));
+
+        private static bool ImplementationMissing(ITypeSymbol parentClass, ISymbol i) => 
+            parentClass.FindImplementationForInterfaceMember(i) == null;
 
         private void GenerateForwardingMember(CodeWriter cw, ISymbol member)
         {

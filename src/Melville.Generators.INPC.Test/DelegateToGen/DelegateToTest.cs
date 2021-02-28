@@ -19,9 +19,7 @@ namespace Outer
 {
     public interface IInterface
     {"+intMembers+@"}
-    public partial class C {" +
-                                                                                                        s +
-                                                                                                        @"
+    public partial class C: IInterface {" + s + @"
 }
 }
 ");
@@ -30,16 +28,16 @@ namespace Outer
             RunTest(s + " private IInterface field;", "");
         
         [Theory]
-        [InlineData("private IInterface Field;")]
-        [InlineData("public IInterface RProp{get;}")]
-        [InlineData("public IInterface RProp => null")]
-        [InlineData("public IInterface Prop{get;set;}")]
-        [InlineData("public IInterface Method() => null")]
-        public void InheritFromDelegatedInterface(string member)
+        [InlineData("private IInterface Field;", "this.Field.A()")]
+        [InlineData("public IInterface RProp{get;}", "this.RProp.A()")]
+        [InlineData("public IInterface RProp => null", "this.RProp.A()")]
+        [InlineData("public IInterface Prop{get;set;}", "this.Prop.A()")]
+        [InlineData("public IInterface Method() => null", "this.Method().A()")]
+        public void InheritFromDelegatedInterface(string member, string methodCall)
         {
-            var res = RunTest("[DelegateTo] "+member, @"");
-            res.FileContains("C.DelegateToGeneration.cs",
-                "public partial class C : Outer.IInterface");            
+            var res = RunTest("[DelegateTo] "+member, @"int A();");
+            res.FileContains("C.DelegateToGeneration.cs", "public partial class C");            
+            res.FileContains("C.DelegateToGeneration.cs", methodCall);            
         }
 
         [Theory]
@@ -79,6 +77,16 @@ namespace Outer
             res.FileContains("C.DelegateToGeneration.cs",
                 output);
         }
+
+        [Fact]
+        public void DoNotGenerateExistingMembers()
+        {
+            var res = RunTest(" [DelegateTo] private IInterface Field; public int A()=>1;",
+                "int A(); int B(int b1);");
+            res.FileContains("C.DelegateToGeneration.cs", "int B(int b1)");
+            res.FileDoesNotContain("C.DelegateToGeneration.cs", "int A(");
+        }
+        
         [Theory]
         [InlineData("int A {get;set;}", "get_A")]
         [InlineData("int A {get;set;}", "set_A")]

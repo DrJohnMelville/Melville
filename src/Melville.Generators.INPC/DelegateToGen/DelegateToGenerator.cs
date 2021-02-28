@@ -14,7 +14,7 @@ namespace Melville.Generators.INPC.DelegateToGen
         {
         }
         
-        protected override string ClassSuffix(DelegationRequest input) => input.ClassSuffix();
+        protected override string ClassSuffix(DelegationRequest input) => "";
 
         protected override DelegationRequest PreProcess(
             IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, 

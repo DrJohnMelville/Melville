@@ -16,12 +16,7 @@ namespace Melville.Generators.INPC.DelegateToGen
             this.parentClass = parentClass;
             this.targets = targets;
         }
-
-        public string ClassSuffix() => ": "+string.Join(", ", AncestorTypes());
-
-        private IEnumerable<string> AncestorTypes() => 
-            targets.Select(i=>i.InheritFrom()).OfType<string>();
-
+        
         public void GenerateForwardingMethods(CodeWriter cw)
         {
             foreach (var target in targets)
