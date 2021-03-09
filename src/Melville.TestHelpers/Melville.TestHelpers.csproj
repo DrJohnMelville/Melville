@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Version>0.3.7</Version>
-    <Authors>John Melville</Authors>
-    <Company>Melville Computiing</Company>
+    
+    
+    
     <Title>Melville.TestHelpers</Title>
     <Description>A library that makes unit testing a little bit easier.</Description>
-    <Copyright>2018 John Melville</Copyright>
-    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+    
+    
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>annotations</Nullable>
   </PropertyGroup>

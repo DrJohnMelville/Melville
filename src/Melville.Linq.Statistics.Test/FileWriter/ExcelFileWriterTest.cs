@@ -9,12 +9,10 @@ namespace Test.FileWriter
 {
   public sealed class ExcelFileWriterTest
   {
-    private MemoryStream output;
-
     [Fact]
     public void WriteSimpleFile()
     {
-      output = new MemoryStream();
+      var output = new MemoryStream();
       var pack = new ExcelFileWriter(output);
       pack.AddPage("FooBar", new List<IList>
       {
@@ -47,8 +45,8 @@ namespace Test.FileWriter
       var ms = new MemoryStream();
       CsvFileWriter.Write(ms, new List<IList>
       {
-        new List<object> {"1", null, "3"},
-        new List<object> { 1, 2, 3}
+        new List<object?> {"1", null, "3"},
+        new List<object?> { 1, 2, 3}
       });
       var str = Encoding.UTF8.GetString(ms.GetBuffer());
       Assert.Equal("1,,3\r\n1,2,3\r\n", str.Trim('\0'));      

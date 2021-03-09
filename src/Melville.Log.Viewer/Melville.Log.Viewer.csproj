@@ -4,7 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Nullable>enable</Nullable>
+    
     <UserSecretsId>7cfb7489-0c66-42f3-bec2-77a2250777de</UserSecretsId>
     <ApplicationIcon>ApplicationRoot/app.ico</ApplicationIcon>
   </PropertyGroup>

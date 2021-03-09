@@ -2,15 +2,15 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        
     </PropertyGroup>
     <PropertyGroup>
-        <Version>0.1.4</Version>
-        <Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        
+        
+        
         <Title>Melville.IOC.Interception</Title>
         <PackageDescription>This is a binding that allows Melville.IOC Castle.Core Interceptors.</PackageDescription>
-        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>

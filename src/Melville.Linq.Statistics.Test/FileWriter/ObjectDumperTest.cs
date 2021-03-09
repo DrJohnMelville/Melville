@@ -42,7 +42,7 @@ namespace Test.FileWriter
       {
         new
         {
-          Int = 1, Double = 1.0, Date = DateTime.Now, Null = (string)null,
+          Int = 1, Double = 1.0, Date = DateTime.Now, Null = (string?)null,
           IntString = "10", DoubleString="10.2", String="xxYY"
         },
       }).ToList();

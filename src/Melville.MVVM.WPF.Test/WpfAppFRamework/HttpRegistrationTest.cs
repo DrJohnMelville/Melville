@@ -17,7 +17,7 @@ namespace Melville.MVVM.WPF.Test.WpfAppFRamework
             ioc.RegisterHttpClientWithSingleSource();
 
             var c1 = ioc.Get<HttpClient>();
-            Assert.False((bool)c1.GetField("_disposeHandler"));
+            Assert.False((c1.GetField("_disposeHandler") as bool?) ?? true);
         }
 
     }

@@ -3,17 +3,17 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>   
     <DebugType>Full</DebugType>   
-    <Nullable>enable</Nullable>
+    
   </PropertyGroup>
 
 
   <PropertyGroup>
-    <Version>0.2.11</Version>
-    <Authors>John Melville, MS, MD</Authors>
-    <Company>Melville Computing</Company>
+    
+    
+    
     <Title>Melville.MVM.WPFControls</Title>
     <PackageDescription>John Melville's favorite WPF controls</PackageDescription>
-    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+    
     <generatepackageonbuild>true</generatepackageonbuild>
   </PropertyGroup>
 

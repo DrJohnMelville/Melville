@@ -28,7 +28,7 @@ namespace Test.Graphics.Internal
       this.data = data;
     }
 
-    private string RenderToString(object area) => InnerRenderToString(((IDataSerries)area).GraphHost as Graph);
+    private string RenderToString(object area) => InnerRenderToString((((IDataSerries)area).GraphHost as Graph)!);
 
 
     private static string InnerRenderToString(Graph parent)

@@ -2,16 +2,16 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Nullable>Enable</Nullable>
+        
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.1.4</Version>
-        <Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        
+        
+        
         <Title>P2P Discovery Methods</Title>
         <PackageDescription>Add endpoint to retrieved logs from the website.</PackageDescription>
-        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IsPackable>true</IsPackable>
     </PropertyGroup>

@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
+        
     </PropertyGroup>
     <PropertyGroup>
-        <Version>0.1.26</Version>
-        <Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        
+        
+        
         <Title>Melville.IOC</Title>
         <PackageDescription>A highly configurable IOC Container</PackageDescription>
-        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>

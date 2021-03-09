@@ -2,16 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <Version>0.3.10</Version>
-    <Authors>John Melville, MS, MD</Authors>
-    <Company>Melville Computing</Company>
     <Title>Melville.MVVM</Title>
     <PackageDescription>Generic MVVM utilities</PackageDescription>
-    <Copyright>2019 John Melville, MS, MD</Copyright>
-    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-
-
 </Project>

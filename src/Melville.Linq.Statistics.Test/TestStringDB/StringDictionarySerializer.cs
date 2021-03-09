@@ -31,7 +31,8 @@ namespace Test.TestStringDB
 
     private static string GetDatabaseFile(string databaseName) => databaseName + ".txt";
 
-    private string LookupResult(string key) => data.TryGetValue(key, out string ret) ? ret : "<No value defined.>";
+    private string LookupResult(string key) => 
+      data.TryGetValue(key, out string? ret) ? ret : "<No value defined.>";
 
     private bool dirty = false;
 
@@ -41,9 +42,10 @@ namespace Test.TestStringDB
     /// <param name="result">Result to test or remember</param>
     /// <param name="member">Usually leave this blank.  If your have more than one assert per test method, give each a unique name here</param>
     /// <param name="file">Leave blank.  C# will fill in the calling file name</param>
-    public void AssertDatabase(string result, [CallerMemberName] string member = null,
-      [CallerFilePath] string file = null)
+    public void AssertDatabase(string? result, [CallerMemberName] string? member = null,
+      [CallerFilePath] string? file = null)
     {
+      if (result == null) throw new InvalidOperationException("Cannot test for null in StringDictionary");
       var datumKey = $"{Path.GetFileName(file)}_{member}";
       string expected = LookupResult(datumKey);
       if (expected.Equals(result)) return; // quit early on success

@@ -41,7 +41,7 @@ namespace Testr.Graphics.Internal
         case IEnumerable enumerable:
           return StringTuple(enumerable.Cast<object>().Prepend("Array").ToArray());
         default:
-          return o.ToString();
+          return o.ToString()??"";
       }
     }
 

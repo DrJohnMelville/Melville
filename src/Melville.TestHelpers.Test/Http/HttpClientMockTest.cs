@@ -42,7 +42,7 @@ namespace Melville.TestHelpers.Test.Http
         [InlineData("https://www.drjonmelville.com/ESearch?x=y")]
         public async Task NullMatchesEverything(string url)
         {
-            mock.Setup(null, HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
+            mock.Setup(null!, HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
             var http = mock.ToHttpClient();
             Assert.Equal("FooBar", await http.GetStringAsync(url));
         }

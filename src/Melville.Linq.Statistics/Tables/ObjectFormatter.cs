@@ -9,7 +9,7 @@ namespace Melville.Linq.Statistics.Tables
     private readonly Dictionary<Type, Func<object,string>> formatters =
       new Dictionary<Type, Func<object, string>>();
 
-    public string Format(object obj)
+    public string Format(object? obj)
     {
       if (obj == null) return "<null>";
       var paramType = obj.GetType();

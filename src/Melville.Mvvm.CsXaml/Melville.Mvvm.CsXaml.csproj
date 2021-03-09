@@ -3,14 +3,14 @@
     <PropertyGroup>
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
-        <Nullable>enable</Nullable>
-        <Version>0.0.3</Version>
-        <Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        
+        
+        
+        
         <Title>Melville.MVVM.CsXaml</Title>
         <PackageDescription>Declare Wpf structures in code.</PackageDescription>
-        <Copyright>2020 John Melville, MS, MD</Copyright>
-        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        
+        
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 

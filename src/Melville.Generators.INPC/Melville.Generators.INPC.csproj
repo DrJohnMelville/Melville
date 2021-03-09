@@ -3,16 +3,16 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>preview</LangVersion>
-        <Nullable>enable</Nullable>
+        
         <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
     <PropertyGroup>
-        <Version>0.1.10</Version>
-        <Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        
+        
+        
         <Title>Melville.Generators.INPC</Title>
         <PackageDescription>A C# generator that generate INotifyPropertyChanged notification.</PackageDescription>
-        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>

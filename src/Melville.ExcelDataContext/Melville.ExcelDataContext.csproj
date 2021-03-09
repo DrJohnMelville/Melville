@@ -5,7 +5,7 @@
     <AssemblyName>Melville.ExcelDataContext</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>linqpad-driver</PackageTags>
-    <Nullable>enable</Nullable>
+    
   </PropertyGroup>
   <PropertyGroup>
     <DefineConstants>NETCORE</DefineConstants>

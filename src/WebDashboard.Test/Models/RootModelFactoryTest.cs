@@ -98,7 +98,7 @@ namespace WebDashboard.Test.Models
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
     <UserSecretsId>5e7f3d51-4b7a-41f8-a32a-8f6c11c29274</UserSecretsId>
-    <Nullable>enable</Nullable>
+    
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include=""JetBrains.Annotations"" Version=""2019.1.3"" />

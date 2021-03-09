@@ -2,13 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0-windows</TargetFramework>
-        <Nullable>enable</Nullable>
+        
 
-        <Version>0.1.17</Version>
-        <Authors>John Melville, MS, MD</Authors>
-        <Company>Melville Computing</Company>
+        
+        
+        
         <Title>Melville.WpfAppFramework</Title>
-        <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        
         <PackageDescription>Lets us configure a entire WPF navigation app with logging and IOC from a
         single startup class</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

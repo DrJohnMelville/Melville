@@ -92,10 +92,11 @@ namespace Test.DescriptiveStats
     [Fact]
     public void GetRows()
     {
-     var table = Enumerable.Range(1, 10).Table()
+     var table = 
+       (TableImplementation<int, TableFactory.ValueBox<int>>)
+       Enumerable.Range(1, 10).Table()
         .WithRows("Divisable by 2",i => i % 2 == 0)
-        .WithColumns("Divisable By 3", i => i % 3 == 0) as 
-        TableImplementation<int, TableFactory.ValueBox<int>>;
+        .WithColumns("Divisable By 3", i => i % 3 == 0);
 
       var rows = table.GridRows().AsList();
       Assert.Equal(2, rows.Count());
@@ -110,10 +111,10 @@ namespace Test.DescriptiveStats
     [Fact]
     public void GetMultiRow()
     {
-     var table = Enumerable.Range(1, 10).Table()
+     var table = (TableImplementation<int, TableFactory.ValueBox<int>>)
+         Enumerable.Range(1, 10).Table()
         .WithRows("Divisable by 2",i => i % 2 == 0)
-        .WithRows("Divisable By 3", i => i % 3 == 0) as 
-        TableImplementation<int, TableFactory.ValueBox<int>>;
+        .WithRows("Divisable By 3", i => i % 3 == 0);
 
       var columns = table.GridRows().AsList();
       Assert.Equal(4, columns.Count());
@@ -124,10 +125,11 @@ namespace Test.DescriptiveStats
     [Fact]
     public void ExplicitRowsAndColumns()
     {
-     var table = Enumerable.Range(1, 20).Table().
+     var table = 
+       (TableImplementation<int, TableFactory.ValueBox<int>>)
+       Enumerable.Range(1, 20).Table().
          WithExplicitRow("Rows", i => i % 7 == 0, ie => ie % 10 == 0)
-         .WithExplicitColumn("Divisible", i => i % 2 == 0, i => i % 3 == 0, i => i % 5 == 0) as 
-        TableImplementation<int, TableFactory.ValueBox<int>>;
+         .WithExplicitColumn("Divisible", i => i % 2 == 0, i => i % 3 == 0, i => i % 5 == 0);
 
       data.AssertDatabase(table.ToDump().ToString());
     }
@@ -135,10 +137,11 @@ namespace Test.DescriptiveStats
     [Fact]
     public void GetRowHeight()
     {
-      var table = Enumerable.Range(1, 10).Table()
+      var table = 
+        (TableImplementation<int, TableFactory.ValueBox<int>>)
+        Enumerable.Range(1, 10).Table()
           .WithRows("Divisable by 2",i => i % 2 == 0)
-          .WithColumns("Divisable By 3", i => i % 3 == 0) as 
-        TableImplementation<int, TableFactory.ValueBox<int>>;
+          .WithColumns("Divisable By 3", i => i % 3 == 0);
       
       Assert.Equal(1, table.RowHeaders.DimensionLength(0));
       table.ToDump();
@@ -151,12 +154,13 @@ namespace Test.DescriptiveStats
     [InlineData(2, 1)]
     public void DimensionLengthAndCopies(int row, int dimension)
         {
-      var table = Enumerable.Range(1, 100)
+      var table =
+        (TableImplementation<int, TableFactory.ValueBox<int>>) 
+        Enumerable.Range(1, 100)
         .Table()
         .WithRows(i => i % 2)
         .WithRows(i => i % 3)
-        .WithRows(i => i % 5) as
-        TableImplementation<int, TableFactory.ValueBox<int>>;
+        .WithRows(i => i % 5);
       Assert.Equal(dimension, table.RowHeaders.DimensionLength(row));
     }
 

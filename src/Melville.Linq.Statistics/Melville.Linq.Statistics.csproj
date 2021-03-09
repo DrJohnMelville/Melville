@@ -11,11 +11,11 @@
 
 
   <PropertyGroup>
-    <Version>0.1.1</Version>
-    <Authors>John Melville, MS, MD</Authors>
-    <Company>Melville Computing</Company>
+    
+    
+    
     <Title>Melville.Linq.Statistics</Title>
-    <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+    
     <PackageDescription>A simple data analysis framework that works well with LinqPad.</PackageDescription>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
