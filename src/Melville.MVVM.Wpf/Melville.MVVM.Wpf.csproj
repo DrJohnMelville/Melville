@@ -23,7 +23,7 @@
     <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="3.1.0" />
-    <PackageReference Include="Serilog" Version="2.9.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
   </ItemGroup>
 
   <ItemGroup>

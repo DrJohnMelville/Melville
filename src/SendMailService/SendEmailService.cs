@@ -4,7 +4,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Binder;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 
@@ -72,7 +71,7 @@ namespace SendMailService
     {
       var mimeMessage = new MimeMessage();
       mimeMessage.From.Add(new MailboxAddress(SourceName, SourceAccount));
-      mimeMessage.To.Add(new MailboxAddress(email));
+      mimeMessage.To.Add(MailboxAddress.Parse(email));
       mimeMessage.Subject = subject;
       mimeMessage.Body = new TextPart("html"){Text = htmlMessage};
       return mimeMessage;
