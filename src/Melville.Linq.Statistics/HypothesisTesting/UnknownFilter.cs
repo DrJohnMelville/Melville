@@ -21,11 +21,7 @@ namespace Melville.Linq.Statistics.HypothesisTesting
 
     public void 
       
-      AddFilter<TResult>(Func<T, TResult> func) where TResult : class
-    {
-      filters.Add(i=> func(i) != null);
-    }
-    public void AddFilter<TResult>(Func<T, TResult?> func) where TResult : struct
+      AddFilter<TResult>(Func<T, TResult> func) 
     {
       filters.Add(i=> func(i) != null);
     }

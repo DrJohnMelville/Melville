@@ -39,8 +39,10 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
 
         private static void BindOpenGeneric(IBindableIocService container, ServiceDescriptor service)
         {
+            if (service.ImplementationType is {} implementationType)
             container.BindGeneric(service.ServiceType,
-                service.ImplementationType, ConstructorSelectors.EmulateDotNet, i => SetLifetime(i, service));
+                implementationType, ConstructorSelectors.EmulateDotNet, 
+                i => SetLifetime(i, service));
         }
 
         private static void BindConcreteType(IBindableIocService container, ServiceDescriptor service)
@@ -78,12 +80,12 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection
             service switch
             {
                 var x when x.ImplementationType != null => 
-                              target.ToType(service.ImplementationType, ConstructorSelectors.EmulateDotNet),
+                              target.ToType(x.ImplementationType, ConstructorSelectors.EmulateDotNet),
                 var x when x.ImplementationInstance != null => 
                               target.DoBinding(new ConstantActivationStrategy(service.ImplementationInstance)),
                 var x when x.ImplementationFactory != null => 
                               target.DoBinding(new MethodActivationStrategy<object>
-                                  ((container, request)=>service.ImplementationFactory(
+                                  ((container, _)=>x.ImplementationFactory(
                                   new ServiceProviderAdapter(container)))),
                 _=>throw new InvalidOperationException(
                     "ServiceDescriptor must define one of ImplementationType, ImplementationInstance, or ImplementationFactory.")

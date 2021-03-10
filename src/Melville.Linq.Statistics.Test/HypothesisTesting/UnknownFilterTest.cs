@@ -8,11 +8,11 @@ namespace Test.HypothesisTesting
   {
     private class SortedClass
     {
-      public string S { get; }
+      public string? S { get; }
       public bool? B { get; }
       public int? I { get; }
 
-      public SortedClass(string s, bool? b, int? x)
+      public SortedClass(string? s, bool? b, int? x)
       {
         S = s;
         B = b;

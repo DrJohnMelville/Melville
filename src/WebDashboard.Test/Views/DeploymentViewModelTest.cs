@@ -2,6 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Melville.MVVM.FileSystem;
+using Melville.MVVM.RunShellCommands;
 using Melville.MVVM.Wpf.RootWindows;
 using Moq;
 using WebDashboard.Views;
@@ -11,16 +12,16 @@ namespace WebDashboard.Test.Views
 {
     public class DeploymentViewModelTest
     {
-        private readonly Mock<INavigationWindow> nav = new Mock<INavigationWindow>();
-        private readonly Mock<IRootViewModel> rvm = new Mock<IRootViewModel>();
-        private readonly Mock<IDirectory> projectDir = new Mock<IDirectory>();
-        private readonly Mock<IFile> projectFile = new Mock<IFile>();
-        private readonly Mock<IFile> configFile = new Mock<IFile>();
-        private readonly Mock<IFile> publishFile = new Mock<IFile>();
-        private readonly MemoryStream configStream = new MemoryStream();
-        private readonly Mock<IRunProcess> runner = new Mock<IRunProcess>();
-        private readonly Mock<IProcessProxy> proxy = new Mock<IProcessProxy>();
-        private readonly Mock<IHasPassword> password = new Mock<IHasPassword>();
+        private readonly Mock<INavigationWindow> nav = new();
+        private readonly Mock<IRootViewModel> rvm = new();
+        private readonly Mock<IDirectory> projectDir = new();
+        private readonly Mock<IFile> projectFile = new();
+        private readonly Mock<IFile> configFile = new();
+        private readonly Mock<IFile> publishFile = new();
+        private readonly MemoryStream configStream = new();
+        private readonly Mock<IRunShellCommand> runner = new();
+        private readonly Mock<IProcessProxy> proxy = new();
+        private readonly Mock<IHasPassword> password = new();
         
         
         private readonly DeploymentViewModel sut;
@@ -36,7 +37,7 @@ namespace WebDashboard.Test.Views
             proxy.SetupGet(i => i.HasExited).Returns(true);
             rvm.SetupGet(i => i.WebConfig).Returns("New Web Config");
             rvm.Setup(i => i.PublishFile()).Returns(publishFile.Object);
-            runner.Setup(i => i.Run("dotnet", It.IsAny<string>())).Returns(proxy.Object);
+            runner.Setup(i => i.CapturedShellExecute("dotnet", It.IsAny<string>())).Returns(proxy.Object);
             sut = new DeploymentViewModel(nav.Object, rvm.Object, password.Object);
         }
 
@@ -54,7 +55,7 @@ namespace WebDashboard.Test.Views
             password.Setup(i => i.Password()).Returns("StupidPass");
             await sut.RunDeployment(runner.Object);
             Assert.Equal("New Web Config", Encoding.UTF8.GetString(configStream.ToArray()));
-            runner.Verify(i=>i.Run("dotnet", 
+            runner.Verify(i=>i.CapturedShellExecute("dotnet", 
                 @"publish C:\dir\Target.csproj /p:PublishProfile=PubFile /p:Password=StupidPass"), Times.Once);
             configFile.Verify(i=>i.Delete(), Times.Once);
         }
