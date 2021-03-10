@@ -4,11 +4,10 @@ using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.ViewFrames;
-using Melville.WpfAppFramework.StartupBases;
-using WebDashboard.Models;
-using WebDashboard.Startup;
+using WebDashboard.SecretManager.Models;
+using WebDashboard.SecretManager.Views;
 
-namespace WebDashboard.Views
+namespace WebDashboard.Startup
 {
     [OnDisplayed(nameof(Setup))]
     public class FileLoadViewModel
@@ -33,13 +32,19 @@ namespace WebDashboard.Views
         {
             var file = GetPubXmlFile();
             if (file == null || !file.Exists()) return;
-            navigation.NavigateTo(viewModelFactory(await modelFactory.Create(file)));
+            navigation.NavigateTo(await ViewModelForFile(file));
         }
+
+        private async Task<RootViewModel> ViewModelForFile(IFile file) =>
+            file.Extension().ToLower() switch
+            {
+                _=>viewModelFactory(await modelFactory.Create(file))
+            };
 
         private IFile? GetPubXmlFile()
         {
             return HasPublishFileOnCommandLine()?startup.ArgumentAsFile(0):
-                fileDlg.GetLoadFile(null, "pubxml", "Project or Deploy File|*.pubxml;*.csproj", "Pick a Deploy file");
+                fileDlg.GetLoadFile(null, "pubxml", "Project or Deploy File|*.pubxml;*.csproj;*.props", "Pick a Deploy file");
         }
 
         private bool HasPublishFileOnCommandLine() => 

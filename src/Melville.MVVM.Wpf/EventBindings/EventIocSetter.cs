@@ -18,8 +18,10 @@ namespace Melville.MVVM.Wpf.EventBindings
     private void HandleEvent(object o, EventArgs e)
     {
       if(o is DependencyObject dependencyObject)
-      RunOnVisualTreeSearch.Run(dependencyObject, MethodName,
-        SearchTreeParameterParser.EvalParameters(Parameters, dependencyObject, e), out _);
+      {
+        object?[] inputParams = SearchTreeParameterParser.EvalParameters(Parameters, dependencyObject, e);
+        new VisualTreeRunner(dependencyObject).RunTreeSearch(MethodName, inputParams, out var result);
+      }
     }
 
     public void BeginInit()

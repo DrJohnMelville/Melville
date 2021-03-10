@@ -5,7 +5,7 @@ using Melville.MVVM.FileSystem;
 using Melville.MVVM.RunShellCommands;
 using Melville.MVVM.Wpf.RootWindows;
 using Moq;
-using WebDashboard.Views;
+using WebDashboard.SecretManager.Views;
 using Xunit;
 
 namespace WebDashboard.Test.Views

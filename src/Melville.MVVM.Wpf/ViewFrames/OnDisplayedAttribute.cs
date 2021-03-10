@@ -15,7 +15,7 @@ namespace Melville.MVVM.Wpf.ViewFrames
 
         public void DoCall(object target, DependencyObject frame)
         {
-            RunOnVisualTreeSearch.TryInvokeMethod(frame, Array.Empty<object>(), target, MethodName, out _);
+            new VisualTreeRunner(frame).RunOnTarget(target, MethodName, Array.Empty<object>(), out _);
         }
     }
 }

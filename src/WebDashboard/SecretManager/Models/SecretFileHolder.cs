@@ -10,7 +10,7 @@ using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Functional;
 
-namespace WebDashboard.Models
+namespace WebDashboard.SecretManager.Models
 {
     public sealed class SecretFileHolder
     {

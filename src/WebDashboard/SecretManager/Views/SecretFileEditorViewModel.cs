@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using Melville.MVVM.BusinessObjects;
-using WebDashboard.Models;
+using WebDashboard.SecretManager.Models;
 
-namespace WebDashboard.Views
+namespace WebDashboard.SecretManager.Views
 {
     public interface ISecretFileEditorViewModel
     {

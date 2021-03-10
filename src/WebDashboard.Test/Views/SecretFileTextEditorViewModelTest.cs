@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using Melville.MVVM.FileSystem;
 using Moq;
-using WebDashboard.Models;
-using WebDashboard.Views;
+using WebDashboard.SecretManager.Models;
+using WebDashboard.SecretManager.Views;
 using Xunit;
 
 namespace WebDashboard.Test.Views

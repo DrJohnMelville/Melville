@@ -2,7 +2,7 @@
 using System.Text.Json;
 using Melville.MVVM.FileSystem;
 using Moq;
-using WebDashboard.Models;
+using WebDashboard.SecretManager.Models;
 using Xunit;
 
 namespace WebDashboard.Test.Models

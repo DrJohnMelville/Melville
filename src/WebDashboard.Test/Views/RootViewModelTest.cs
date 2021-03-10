@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Melville.MVVM.Wpf.RootWindows;
 using Moq;
-using WebDashboard.Models;
+using WebDashboard.SecretManager.Models;
+using WebDashboard.SecretManager.Views;
 using WebDashboard.Test.Models;
-using WebDashboard.Views;
 using Xunit;
 
 namespace WebDashboard.Test.Views

@@ -3,9 +3,9 @@ using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
-using WebDashboard.Models;
+using WebDashboard.SecretManager.Models;
 
-namespace WebDashboard.Views
+namespace WebDashboard.SecretManager.Views
 {
     public interface IRootViewModel
     {

@@ -9,8 +9,7 @@ using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.ViewFrames;
 
-
-namespace WebDashboard.Views
+namespace WebDashboard.SecretManager.Views
 {
     [OnDisplayed(nameof(RunDeployment))]
     public class DeploymentViewModel

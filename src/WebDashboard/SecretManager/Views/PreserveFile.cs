@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Melville.MVVM.FileSystem;
 
-namespace WebDashboard.Views
+namespace WebDashboard.SecretManager.Views
 {
     public class PreserveFile: IAsyncDisposable
     {

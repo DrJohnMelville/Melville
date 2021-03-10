@@ -21,7 +21,8 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
     protected void InvokeTarget(DependencyObject target, object? ea)
     {
       if (!DecrementAndQueryCallCount()) return;
-      RunOnVisualTreeSearch.Run(target, Method, SearchTreeParameterParser.EvalParameters(Parameters, target, ea), out var _);
+      object?[] inputParams = SearchTreeParameterParser.EvalParameters(Parameters, target, ea);
+      new VisualTreeRunner(target).RunTreeSearch(Method, inputParams, out var _);
     }
 
     private bool DecrementAndQueryCallCount()

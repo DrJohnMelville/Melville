@@ -1,9 +1,9 @@
-﻿﻿using System;
- using System.Text.Json;
- using Melville.MVVM.BusinessObjects;
-using WebDashboard.Models;
+﻿using System;
+using System.Text.Json;
+using Melville.MVVM.BusinessObjects;
+using WebDashboard.SecretManager.Models;
 
-namespace WebDashboard.Views
+namespace WebDashboard.SecretManager.Views
 {
     public class SecretFileTextEditorViewModel:NotifyBase, ISecretFileEditorViewModel
     {

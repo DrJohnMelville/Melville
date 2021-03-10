@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace WebDashboard.Views
+namespace WebDashboard.Startup
 {
     public partial class FileLoadView : UserControl
     {

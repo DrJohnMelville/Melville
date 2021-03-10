@@ -82,7 +82,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 
     private void HandleQueryOrDrop(IDropInfo adapter, DragEventArgs e)
     {
-      if (RunOnVisualTreeSearch.Run(target, method, new[] { adapter }, out var result))
+      object?[] inputParams = new[] { adapter };
+      if (new VisualTreeRunner(target).RunTreeSearch(method, inputParams, out var result))
       {
         e.Handled = true;
         e.Effects = result as DragDropEffects? ?? DragDropEffects.None;

@@ -156,22 +156,29 @@ namespace Melville.MVVM.WPF.Test.EventBindings
     public void RunArbitraryFunc()
     {
       var realTb = new TextBlock {Text = "Foo"};
-      var ret = RunOnVisualTreeSearch.Run(realTb, (TextBlock tb) => tb.Text);
-       Assert.Equal(ret, ret);
-      
+      var ret = new VisualTreeRunner(realTb).Run( (TextBlock tb) => tb.Text);
+      Assert.Equal(ret, ret);
     }
     [StaFact]
     public void RunArbitraryAction()
     {
       var realTB = new TextBlock {Text = "Foo"};
       string s = "";
-      RunOnVisualTreeSearch.Run(realTB, (TextBlock tb) =>
+      new VisualTreeRunner(realTB).Run((TextBlock tb) =>
       {
         s = tb.Text;
       });
       Assert.Equal("Foo", s);
-      
     }
 
+    [Fact]
+    public void RunStaticArbitraryAction()
+    {
+      var realTB = new TextBlock();
+      new VisualTreeRunner(realTB).Run<TextBlock>(StaticModifyTb);
+      Assert.Equal("Static Set", realTB.Text);
+    }
+
+    private static void StaticModifyTb(TextBlock tb) => tb.Text = "Static Set";
   }
 }

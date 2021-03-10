@@ -13,9 +13,6 @@
       <Page Include="App.xaml">
         <Generator>MSBuild:Compile</Generator>
       </Page>
-      <Page Update="Views\SecretFileTextEditorView.xaml">
-        <Generator></Generator>
-      </Page>
     </ItemGroup>
 
     <ItemGroup>
@@ -28,11 +25,5 @@
       <Resource Include="RootWindows\app.ico">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Resource>
-    </ItemGroup>
-    
-    <ItemGroup>
-      <Compile Update="Views\SecretFileTextEditorView.xaml.cs">
-        <DependentUpon>SecretFileTextEditorView.xaml</DependentUpon>
-      </Compile>
     </ItemGroup>
 </Project>

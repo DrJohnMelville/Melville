@@ -1,16 +1,16 @@
-﻿<UserControl x:Class="WebDashboard.Views.RootView"
+﻿<UserControl x:Class="WebDashboard.SecretManager.Views.RootView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:WebDashboard.Views"
              xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids;assembly=Melville.WpfControls"
              xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
              xmlns:viewFrames="clr-namespace:Melville.MVVM.Wpf.ViewFrames;assembly=Melville.MVVM.Wpf"
              xmlns:capLockIndicator="clr-namespace:Melville.WpfControls.CapLockIndicator;assembly=Melville.WpfControls"
              xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
+             xmlns:views="clr-namespace:WebDashboard.SecretManager.Views"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance {x:Type local:RootViewModel}}"
+             d:DataContext="{d:DesignInstance {x:Type views:RootViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
     <easyGrids:EasyGrid>
         <Grid.ColumnDefinitions>
@@ -53,7 +53,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Text="{Binding WebConfig}" Grid.ColumnSpan="5" Margin="0 0 0 20"></TextBox>
+                    <TextBox Text="{Binding WebConfig}" Grid.ColumnSpan="5" Margin="0 0 0 20" />
                     <TextBlock Grid.Row="1" Grid.Column="0">Password: </TextBlock>
                     <capLockIndicator:ShowCapLock Grid.Row="1" Grid.Column="1">
                     <PasswordBox Name="PasswordBox"/>

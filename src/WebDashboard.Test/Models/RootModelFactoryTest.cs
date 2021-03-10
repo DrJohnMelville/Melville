@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Melville.MVVM.FileSystem;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Moq;
-using WebDashboard.Models;
+using WebDashboard.SecretManager.Models;
 using WebDashboard.SystemInterface;
 using Xunit;
 

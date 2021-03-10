@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using Melville.MVVM.FileSystem;
 using WebDashboard.SystemInterface;
 
-namespace WebDashboard.Models
+namespace WebDashboard.SecretManager.Models
 {
     public interface IRootModelFactory
     {

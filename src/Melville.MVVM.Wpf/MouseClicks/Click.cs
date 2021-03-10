@@ -151,7 +151,8 @@ namespace Melville.MVVM.Wpf.MouseClicks
         if (CheckDimension(finalPosition.X, firstPosition.X) &&
             CheckDimension(finalPosition.Y, firstPosition.Y))
         {
-          RunOnVisualTreeSearch.Run(target as DependencyObject, method, new[] {args}, out var _);
+          object?[] inputParams = new[] {args};
+          new VisualTreeRunner(target as DependencyObject).RunTreeSearch(method, inputParams, out var _);
         }
       }
       private bool CheckDimension(double endPosition, double beginPosition) => Math.Abs(endPosition - beginPosition) < 5.0;

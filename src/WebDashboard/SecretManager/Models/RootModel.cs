@@ -3,7 +3,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Melville.MVVM.FileSystem;
 
-namespace WebDashboard.Models
+namespace WebDashboard.SecretManager.Models
 {
     public class RootModel
     {

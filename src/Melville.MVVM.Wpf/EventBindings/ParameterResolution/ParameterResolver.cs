@@ -49,15 +49,16 @@ namespace Melville.MVVM.Wpf.EventBindings.ParameterResolution
       var ret = new ResolvedParameters(parameters.Length, dIContainer, sender, inputParam);
       for (int i = 0; i < parameters.Length; i++)
       {
-        if (!ActualOrDefaultParamValue(parameters[i], sender, inputParam, dIContainer, out var actualVal)) return null;
+        if (!ActualOrDefaultParamValue(parameters[i], sender, inputParam, out var actualVal))
+          return null;
         ret.Put(i, actualVal);        
         
       }
       return ret;
     }
 
-    private static bool ActualOrDefaultParamValue(ParameterInfo parameter, DependencyObject sender, object?[] inputParam,
-      IDIIntegration scope, [NotNullWhen(true)] out IFactory? result)
+    private static bool ActualOrDefaultParamValue(
+      ParameterInfo parameter, DependencyObject sender, IEnumerable<object?> inputParam, [NotNullWhen(true)] out IFactory? result)
     {
       result = parameter switch
       {
@@ -71,7 +72,8 @@ namespace Melville.MVVM.Wpf.EventBindings.ParameterResolution
 
     private static bool HasFromServiceAttribute(ParameterInfo p) => Attribute.IsDefined(p, typeof(FromServicesAttribute));
 
-    public static bool ResolveParameter(Type parameterType, DependencyObject sender, object?[] inputParam,
+    public static bool ResolveParameter(
+      Type parameterType, DependencyObject sender, IEnumerable<object?> inputParam,
       [NotNullWhen(true)]out IFactory? result)
       {
       foreach (var candidate in AllParameterPossibilities(sender, inputParam))
@@ -92,7 +94,8 @@ namespace Melville.MVVM.Wpf.EventBindings.ParameterResolution
       return false;
     }
 
-    private static IEnumerable<object> AllParameterPossibilities(DependencyObject sender, object?[] inputParam) =>
+    private static IEnumerable<object> AllParameterPossibilities(
+      DependencyObject sender, IEnumerable<object?> inputParam) =>
       inputParam.Concat(sender.AllSources()).OfType<object>().Distinct();
   }
 }
