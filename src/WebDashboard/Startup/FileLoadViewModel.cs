@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Melville.MVVM.FileSystem;
-using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.ViewFrames;
 using WebDashboard.NugetManager;
-using WebDashboard.SecretManager.Models;
-using WebDashboard.SecretManager.Views;
 
 namespace WebDashboard.Startup
 {
@@ -20,16 +17,19 @@ namespace WebDashboard.Startup
         private readonly IOpenSaveFile fileDlg;
         private readonly IStartupData startup;
         private readonly INavigationWindow navigation;
+        private readonly IList<IFileViewerFactory> factories;
 
-        public FileLoadViewModel(IOpenSaveFile fileDlg, IStartupData startup, IRootModelFactory modelFactory, 
-            Func<RootModel, RootViewModel> viewModelFactory, INavigationWindow navigation)
+        public FileLoadViewModel(
+            IOpenSaveFile fileDlg, IStartupData startup, INavigationWindow navigation,
+            IList<IFileViewerFactory> factories)
         {
             this.fileDlg = fileDlg;
             this.startup = startup;
             this.navigation = navigation;
+            this.factories = factories;
         }
 
-        public async Task Setup([FromServices]IList<IFileViewerFactory> factories)
+        public async Task Setup()
         {
             var file = GetPubXmlFile();
             if (file == null || !file.Exists()) return;

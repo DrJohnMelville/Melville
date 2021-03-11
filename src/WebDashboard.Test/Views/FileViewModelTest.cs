@@ -28,8 +28,11 @@ namespace WebDashboard.Test.Views
 
         public FileViewModelTest()
         {
-            sut = new FileLoadViewModel(fileDlg.Object, startUp.Object, modelFact.Object, 
-                r=>new RootViewModel(r), nav.Object );
+            sut = new FileLoadViewModel(fileDlg.Object, startUp.Object, nav.Object,
+                new IFileViewerFactory[]
+                {
+                    new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))
+                });
         }
 
         [Theory]
@@ -54,7 +57,7 @@ namespace WebDashboard.Test.Views
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(
                 cmdLineFile == null?new string[0]:new[]{cmdLineFile});
-             await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
+             await sut.Setup();
             fileDlg.Verify(loadFileExpr, Times.Exactly(loadDb));
             nav.Verify(i=>i.NavigateTo(It.IsAny<RootViewModel>()));
         }
@@ -65,7 +68,7 @@ namespace WebDashboard.Test.Views
             file.Setup(i => i.Exists()).Returns(false);
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(new []{"xxyy.pubxml"});
-            await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
+            await sut.Setup();
             nav.VerifyNoOtherCalls();
             modelFact.VerifyNoOtherCalls();
         }
@@ -74,7 +77,7 @@ namespace WebDashboard.Test.Views
         {
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(new string[0]);
-            await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
+            await sut.Setup();
             nav.VerifyNoOtherCalls();
             modelFact.VerifyNoOtherCalls();
         }
@@ -87,7 +90,7 @@ namespace WebDashboard.Test.Views
             fileDlg.Setup(loadFileExpr).Returns(file.Object);
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(new string[0]);
-            await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
+            await sut.Setup();
             nav.VerifyNoOtherCalls();
             modelFact.VerifyNoOtherCalls();
         }

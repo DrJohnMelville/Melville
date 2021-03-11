@@ -6,28 +6,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Melville.INPC;
 using Melville.MVVM.Wpf.DiParameterSources;
 
 namespace Melville.MVVM.Wpf.ViewFrames
 {
-  public sealed class ViewFrame: Decorator
+  public sealed partial class ViewFrame: Decorator
   {
-    public object Content
+
+    [GenerateDP]
+    private void OnContentChanged(object? newValue)
     {
-      get { return GetValue(ContentProperty); }
-      set { SetValue(ContentProperty, value); }
-    }
-
-    // Using a DependencyProperty as the backing store for Content.  This enables animation, styling, binding, etc...
-    public static readonly DependencyProperty ContentProperty =
-        DependencyProperty.Register("Content", typeof(object), typeof(ViewFrame), 
-          new FrameworkPropertyMetadata(null, ContentChanged));
-
-
-
-    private static void ContentChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
-    {
-      ((ViewFrame) target).Child = GenerateChild(e.NewValue, target);
+      Child = GenerateChild(newValue);
+      RunMethodsFromOnDisplayedAttributes(newValue);
     }
 
 
@@ -38,45 +29,44 @@ namespace Melville.MVVM.Wpf.ViewFrames
 #endif
     }
 
-    private static UIElement GenerateChild(object value, DependencyObject frame)
+    private UIElement GenerateChild(object? value)
     {
-      var ret = CreateViewObject(value, frame);
+      var ret = CreateViewObject(value);
       if (ret is FrameworkElement fe) { fe.DataContext = value; }
-      RunMethodsFromOnDisplayedAttributes(frame, value);
       return ret;
     }
 
-    private static void RunMethodsFromOnDisplayedAttributes(DependencyObject frame, object viewModel)
+    private void RunMethodsFromOnDisplayedAttributes(object? viewModel)
     {
       if (viewModel == null) return;
       foreach (var initializer in viewModel.GetType().GetCustomAttributes().OfType<OnDisplayedAttribute>())
       {
-        initializer.DoCall(viewModel, frame);
+        initializer.DoCall(viewModel, this);
       }
     }
 
-    private static UIElement CreateViewObject(object model, DependencyObject frame) =>
+    private UIElement CreateViewObject(object? model) =>
       model switch
       {
         string s => DisplayMessage(s, SystemColors.WindowTextBrush),
         null => DisplayMessage("<Null>"),
         ICreateView icv => icv.View(),
-        _ => CreateFromConvention(model, frame)
+        _ => CreateFromConvention(model)
       };
 
-    private static UIElement CreateFromConvention(object model, DependencyObject frame)
+    private UIElement CreateFromConvention(object model)
     {
-      var container = DiIntegration.SearchForContainer(frame);
+      var container = DiIntegration.SearchForContainer(this);
       return (GetMappingConvention(container) is {} convention)?
         convention.ViewFromViewModel(model, container) :
         DisplayMessage("Could not find view mapping convention");
     }
 
-    private static IViewMappingConvention? GetMappingConvention(IDIIntegration container) => 
+    private  IViewMappingConvention? GetMappingConvention(IDIIntegration container) => 
       container.Get(typeof(IViewMappingConvention)) as IViewMappingConvention;
 
 
-    private static TextBlock DisplayMessage(string message, Brush? foreground = null) =>
-      new TextBlock {Text = message, Foreground = foreground ?? Brushes.Red};
+    private TextBlock DisplayMessage(string message, Brush? foreground = null) =>
+      new() {Text = message, Foreground = foreground ?? Brushes.Red};
   }
 }
