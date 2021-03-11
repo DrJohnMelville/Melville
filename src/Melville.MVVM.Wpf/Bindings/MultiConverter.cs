@@ -34,6 +34,12 @@ namespace Melville.MVVM.Wpf.Bindings
       this.inverseFunction = inverseFunction;
     }
 
+    #region Add InverseFunctions
+
+    
+
+    #endregion
+
     #region Convert and ConvertBack methods for both interfaces
     public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     { //IMultiValueConverter

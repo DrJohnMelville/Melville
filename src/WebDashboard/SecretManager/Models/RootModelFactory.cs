@@ -14,7 +14,7 @@ namespace WebDashboard.SecretManager.Models
     public interface IRootModelFactory
     {
         Task<RootModel> Create(IFile pubXmlFile);
-    }
+    } 
     public class RootModelFactory: IRootModelFactory
     {
         private readonly IEnvironmentExpander environment;
