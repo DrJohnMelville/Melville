@@ -2,8 +2,10 @@
  using System.Linq.Expressions;
  using System.Text.Json;
  using System.Threading.Tasks;
+ using System.Windows.Forms.VisualStyles;
  using System.Xml.Linq;
  using Melville.MVVM.FileSystem;
+ using Melville.MVVM.Wpf.EventBindings.SearchTree;
  using Melville.MVVM.Wpf.MvvmDialogs;
  using Melville.MVVM.Wpf.RootWindows;
  using Moq;
@@ -40,18 +42,19 @@ namespace WebDashboard.Test.Views
         public async Task Setup(string? cmdLineFile, int loadDb)
         {
             Expression<Func<IOpenSaveFile, IFile>> loadFileExpr = 
-                i=>i.GetLoadFile(null, "pubxml", "Project or Deploy File|*.pubxml;*.csproj", "Pick a Deploy file");
+                i=>i.GetLoadFile(null, "pubxml", "Project or Deploy File|*.pubxml;*.csproj;*.props", "Pick a Deploy file");
             modelFact.Setup(i => i.Create(It.IsAny<IFile>())).ReturnsAsync(
                 (IFile i) => new RootModel(new PublishFileHolder(i, new XElement("XElt")),
                     new ProjectFileHolder(i, new XElement("XElt")),
                     new SecretFileHolder(i, JsonDocument.Parse("{}")),
                     new SecretFileHolder(i, JsonDocument.Parse("{}"))));
             file.Setup(i => i.Exists()).Returns(true);
+            file.SetupGet(i => i.Path).Returns(cmdLineFile??"xxx.csproj");
             fileDlg.Setup(loadFileExpr).Returns(file.Object);
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(
                 cmdLineFile == null?new string[0]:new[]{cmdLineFile});
-            await sut.Setup();
+             await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
             fileDlg.Verify(loadFileExpr, Times.Exactly(loadDb));
             nav.Verify(i=>i.NavigateTo(It.IsAny<RootViewModel>()));
         }
@@ -62,7 +65,7 @@ namespace WebDashboard.Test.Views
             file.Setup(i => i.Exists()).Returns(false);
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(new []{"xxyy.pubxml"});
-            await sut.Setup();
+            await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
             nav.VerifyNoOtherCalls();
             modelFact.VerifyNoOtherCalls();
         }
@@ -71,7 +74,7 @@ namespace WebDashboard.Test.Views
         {
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(new string[0]);
-            await sut.Setup();
+            await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
             nav.VerifyNoOtherCalls();
             modelFact.VerifyNoOtherCalls();
         }
@@ -84,7 +87,7 @@ namespace WebDashboard.Test.Views
             fileDlg.Setup(loadFileExpr).Returns(file.Object);
             startUp.Setup(i => i.ArgumentAsFile(0)).Returns(file.Object);
             startUp.SetupGet(i => i.CommandLineArguments).Returns(new string[0]);
-            await sut.Setup();
+            await sut.Setup(new IFileViewerFactory[]{new SecretManagerViewModelFactory(modelFact.Object, rm=>new RootViewModel(rm))});
             nav.VerifyNoOtherCalls();
             modelFact.VerifyNoOtherCalls();
         }

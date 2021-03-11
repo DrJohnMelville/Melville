@@ -171,7 +171,7 @@ namespace Melville.MVVM.WPF.Test.EventBindings
       Assert.Equal("Foo", s);
     }
 
-    [Fact]
+    [StaFact]
     public void RunStaticArbitraryAction()
     {
       var realTB = new TextBlock();

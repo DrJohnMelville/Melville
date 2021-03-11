@@ -23,6 +23,10 @@ namespace WebDashboard.Startup
         protected override void RegisterWithIocContainer(IBindableIocService service)
         {
             service.AddLogging();
+            // window selectors
+            service.Bind<IFileViewerFactory>().To<NugetManagerViewModelFactory>();
+            service.Bind<IFileViewerFactory>().To<SecretManagerViewModelFactory>();
+  
             // Root Window
             service.Bind<INavigationWindow>().To<NavigationWindow>().AsSingleton();
             service.Bind<RootNavigationWindow>().And<Window>().And<IRootNavigationWindow>()

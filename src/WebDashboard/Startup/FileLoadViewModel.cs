@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.DiParameterSources;
@@ -27,32 +29,17 @@ namespace WebDashboard.Startup
             this.navigation = navigation;
         }
 
-        public async Task Setup(IVisualTreeRunner runner)
+        public async Task Setup([FromServices]IList<IFileViewerFactory> factories)
         {
             var file = GetPubXmlFile();
             if (file == null || !file.Exists()) return;
-            var newVM = await ViewModelForFile(file, runner);
-            navigation.NavigateTo(newVM);
+            navigation.NavigateTo(await ViewModelForFile(factories, file));
         }
 
-        private Task<object> ViewModelForFile(IFile file, IVisualTreeRunner runner) =>
-            runner.RunOnTarget<Task<object>>(this, FactoryName(file.Extension().ToLower()), file);
-
-        private string FactoryName(string extension) => extension switch
+        private Task<object> ViewModelForFile(IList<IFileViewerFactory> factories, IFile file)
         {
-            "props" => nameof(NugetManagerView),
-            _ => nameof(SecretManagerView)
-        };
-
-        public Task<object> NugetManagerView(IFile file,
-            [FromServices] Func<IFile, NugetViewModel> vmFactory) =>
-            Task.FromResult<object>(vmFactory(file));
-        
-        public async Task<object> SecretManagerView(IFile file, 
-            [FromServices] Func<RootModel, RootViewModel> factory, 
-            [FromServices] IRootModelFactory rootModelFactory)
-        {
-            return factory(await rootModelFactory.Create(file));
+            var extension = file.Extension().ToLower();
+            return factories.First(i => i.IsValidForExtension(extension)).Create(file);
         }
 
         private IFile? GetPubXmlFile()
