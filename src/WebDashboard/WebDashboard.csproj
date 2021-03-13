@@ -4,7 +4,7 @@
         <OutputType>WinExe</OutputType>
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWPF>true</UseWPF>
-        
+        <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
         <ApplicationIcon>RootWindows/App.ico</ApplicationIcon>
     </PropertyGroup>
 
@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
       <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
       <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
     </ItemGroup>

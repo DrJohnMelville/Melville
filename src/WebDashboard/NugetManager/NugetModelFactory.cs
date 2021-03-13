@@ -47,8 +47,13 @@ namespace WebDashboard.NugetManager
             (await file.GetUniqueTag("GeneratePackageOnBuild"))?.ToLower().Equals("true") ?? false;
 
         private IEnumerable<IDirectory> GetAllSubdirectories(IDirectory directory)
-            => directory.AllSubDirectories().SelectRecursive(i=>i.AllSubDirectories());
-        
+            => VisibileSubDirs(directory).SelectRecursive(VisibileSubDirs);
+
+        private IEnumerable<IDirectory> VisibileSubDirs(IDirectory i)
+        {
+            return i.AllSubDirectories().Where(j => !j.Name.StartsWith("."));
+        }
+
         private async Task ComputeProjectDependencies()
         {
             foreach (var file in projects)

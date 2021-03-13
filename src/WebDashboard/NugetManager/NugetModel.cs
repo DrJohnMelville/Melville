@@ -9,6 +9,14 @@ namespace WebDashboard.NugetManager
         public IFile File { get; }
         public List<ProjectFile> DependsOn { get; } = new();
         [AutoNotify] private bool deploy;
+
+        partial void WhenDeployChanges(bool oldValue, bool newValue)
+        {
+            foreach (var proj in DependsOn)
+            {
+                proj.Deploy = Deploy;
+            }
+        }
         
         public ProjectFile(IFile file)
         {

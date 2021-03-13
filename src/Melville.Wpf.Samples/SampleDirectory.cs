@@ -1,6 +1,5 @@
 ﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
-using Melville.Wpf.Samples.CsXaml;
 using Melville.Wpf.Samples.DiBinding;
 using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
@@ -29,13 +28,6 @@ namespace Melville.Wpf.Samples
 
         private ISampleTreeItem AppllicationIntegrationNode() =>
             Node("Root",
-                Node("CsXaml",
-                    Page<ListBoxViewModel>("List Binding"),
-                    Page<CounterViewModel>("Counter View"),
-                    Page<GridCreatorViewModel>("Grid View"),
-                    Page<DockPanelCreatorViewModel>("DockPanel View"),
-                    Page<DataGridViewModel>("Data Grid")
-                ),
                 Node("Hardware",
                     Page<TranscriptionPedalViewModel>("Transcription Pedal"),
                     Page<JoystickTranscriptionPedalViewModel>("Joystick emulating Transcription Pedal"),

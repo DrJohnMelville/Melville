@@ -14,7 +14,7 @@
     <Title>Melville.MVM.WPFControls</Title>
     <PackageDescription>John Melville's favorite WPF controls</PackageDescription>
     
-    <generatepackageonbuild>true</generatepackageonbuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,8 +28,5 @@
     <Page Update="FilteredDataGrids\GridParts.xaml">
       <Generator></Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="WaitMessages" />
   </ItemGroup>
 </Project>
