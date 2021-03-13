@@ -14,17 +14,20 @@ namespace WebDashboard.Startup
     }
     public class NugetManagerViewModelFactory: IFileViewerFactory
     {
-        private readonly Func<NugetViewModel> viewModelFactory;
+        private readonly NugetModelFactory modelFactory;
+        private readonly Func<NugetModel, NugetViewModel> viewModelFactory;
 
-        public NugetManagerViewModelFactory(Func<NugetViewModel> viewModelFactory)
+        public NugetManagerViewModelFactory(
+            Func<NugetModel, NugetViewModel> viewModelFactory, NugetModelFactory modelFactory)
         {
             this.viewModelFactory = viewModelFactory;
+            this.modelFactory = modelFactory;
         }
 
         public bool IsValidForExtension(string extension) =>
             extension.Equals("props", StringComparison.Ordinal);
 
-        public Task<object> Create(IFile file) => Task.FromResult((object) viewModelFactory());
+        public async Task<object> Create(IFile file) => viewModelFactory(await modelFactory.Create(file));
 
     }
     public class SecretManagerViewModelFactory: IFileViewerFactory

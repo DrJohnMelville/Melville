@@ -4,8 +4,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WebDashboard.NugetManager"
+        xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids;assembly=Melville.WpfControls"
+        d:DataContext="{d:DesignData Type={x:Type local:NugetViewModel}}"
         mc:Ignorable="d">
-    <Grid>
-        <TextBlock>NuGet</TextBlock>
+    <Grid easyGrids:GridOperations.ColsAndRows="*/auto,*">
+        <TextBlock>Deploying Version: <TextBlock Text="{Binding Model.Version}"/></TextBlock>
+        <ItemsControl Grid.Row="1" ItemsSource="{Binding Model.Files}" DisplayMemberPath="File.Path"></ItemsControl>
     </Grid>
 </UserControl>

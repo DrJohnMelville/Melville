@@ -183,6 +183,5 @@ namespace Melville.Mvvm.Test.FileSystem
       Assert.True(mockDirectory2.File("F1").Exists());
       Assert.Equal("content", mockDirectory2.File("F1").Content());
     }
-    
   }
 }

@@ -1,6 +1,7 @@
 ﻿using  System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Melville.MVVM.Functional
 {
@@ -100,6 +101,11 @@ namespace Melville.MVVM.Functional
       {
         list.Remove(item);
       }
+    }
+
+    public static async Task AddRangeAsync<T>(this ICollection<T> list, IAsyncEnumerable<T> source)
+    {
+      await foreach(var item in source) list.Add(item);
     }
   }
 }
