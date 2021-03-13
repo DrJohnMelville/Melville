@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Functional;
 
@@ -12,7 +13,6 @@ namespace WebDashboard.NugetManager
         private List<ProjectFile> projects = new();
         public async Task<NugetModel> Create(IFile buildPropsFile)
         {
-
             await projects.AddRangeAsync(FindProjects(buildPropsFile));
             await ComputeProjectDependencies();
             return new(await buildPropsFile.GetUniqueTag("Version") ?? "No Version Found",
@@ -53,19 +53,19 @@ namespace WebDashboard.NugetManager
         {
             foreach (var file in projects)
             {
-                foreach (var dependency in await DependencyRelativePaths(file))
+                var projFile = (await file.File.ReadAsXmlAsync()) as XElement;
+                if (projFile == null) continue;
+                foreach (var dependency in projFile
+                    .Descendants("ProjectReference")
+                    .Select(i=>i.Attribute("Include")?.Value)
+                    .OfType<string>()
+                    .Select(i=>PickProject(file.File.FileAtRelativePath(i)))
+                    .OfType<ProjectFile>())
                 {
-                    var candidate = PickProject(file.File.FileAtRelativePath(dependency));
-                    if (candidate != null)
-                    {
-                        file.DependsOn.Add(candidate);
-                    }
+                        file.DependsOn.Add(dependency);
                 }
             }
         }
-
-        private static Task<IEnumerable<string>> DependencyRelativePaths(ProjectFile file) => 
-            file.File.GetMultipleTagProperties("ProjectReference", "Include");
 
         private ProjectFile? PickProject(IFile? projFile) => 
             projFile == null ?

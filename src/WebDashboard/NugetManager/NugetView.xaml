@@ -5,10 +5,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:WebDashboard.NugetManager"
         xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids;assembly=Melville.WpfControls"
+        xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
         d:DataContext="{d:DesignData Type={x:Type local:NugetViewModel}}"
         mc:Ignorable="d">
+    <UserControl.Resources>
+        <DataTemplate DataType="{x:Type local:ProjectFile}">
+            <Border BorderThickness="1" BorderBrush="Black" CornerRadius="10" Background="Transparent">
+                <CheckBox IsChecked="{Binding Deploy, Mode=TwoWay}" Margin="10"
+                          Content="{Binding File.Name}"></CheckBox>
+            </Border>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type local:ProjectEdge}">
+            <TextBlock/>
+        </DataTemplate>
+    </UserControl.Resources>
     <Grid easyGrids:GridOperations.ColsAndRows="*/auto,*">
         <TextBlock>Deploying Version: <TextBlock Text="{Binding Model.Version}"/></TextBlock>
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding Model.Files}" DisplayMemberPath="File.Path"></ItemsControl>
+        <zoom:ZoomControl Grid.Row="1">
+            <local:NugetGraphLayout Grid.Row="1"
+                                    HighlightAlgorithmType="Simple" LayoutAlgorithmType="ISOM"
+                                    OverlapRemovalAlgorithmType="FSA"
+                                    Graph="{Binding Model.Graph, PresentationTraceSources.TraceLevel=High}">
+            </local:NugetGraphLayout>
+        </zoom:ZoomControl>
     </Grid>
 </UserControl>

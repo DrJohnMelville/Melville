@@ -36,7 +36,7 @@ namespace WebDashboard.NugetManager
         {
             var escapedTag = Regex.Escape(tagname);
             var escapedprop = Regex.Escape(propName);
-            return new Regex(@$"<[^>]*{escapedTag}[^>]+{escapedprop}[^>]*=[^>]*""([^""]+)""");
+            return new Regex(@$"<[^>]*{escapedTag}[^>]+{escapedprop}[^>]*=[^>]*""([^"">]+)""");
         }
     }
 }

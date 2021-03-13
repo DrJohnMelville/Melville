@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using Melville.INPC;
 using Melville.MVVM.FileSystem;
 
 namespace WebDashboard.NugetManager
 {
-    public class ProjectFile
+    public partial class ProjectFile
     {
         public IFile File { get; }
         public List<ProjectFile> DependsOn { get; } = new();
+        [AutoNotify] private bool deploy;
+        
         public ProjectFile(IFile file)
         {
             this.File = file;
@@ -16,11 +19,25 @@ namespace WebDashboard.NugetManager
     {
         public string Version { get; }
         public IList<ProjectFile> Files { get; }
+        public ProjectGraph Graph { get; }
 
         public NugetModel(string version, IList<ProjectFile> files)
         {
             Version = version;
             Files = files;
+            Graph = new ProjectGraph();
+            foreach (var vertex in Files)
+            {
+                Graph.AddVertex(vertex);
+            }
+
+            foreach (var source in Files)
+            {
+                foreach (var target in source.DependsOn)
+                {
+                    Graph.AddEdge(new ProjectEdge(source, target));
+                }
+            }
         }
     }
 }
