@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Melville.Linq.Statistics.Functional;
@@ -128,6 +129,10 @@ namespace Melville.Linq.Statistics.Graphics.Internal
     }
     public override object ToDump() => GraphHost.ToDump();
     public override BitmapSource ToWpfBitmap() => GraphHost.ToWpfBitmap();
+
+    public override void WriteToDisk(string filePath, BitmapEncoder encoder, int width, int height = -1) =>
+      GraphHost.WriteToDisk(filePath, encoder, width, height);
+    
     public override void ShowInWindow() => GraphHost.ShowInWindow();
 
     public override TNewSerries AddSerries<TNewSerries>(TNewSerries serries) => GraphHost.AddSerries(serries);
