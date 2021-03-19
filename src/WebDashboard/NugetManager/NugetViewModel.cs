@@ -1,26 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Melville.MVVM.FileSystem;
+using Melville.MVVM.Wpf.RootWindows;
+using WebDashboard.ConsoleWindows;
 
 namespace WebDashboard.NugetManager
 {
-    public class NugetViewModel
+    public interface INugetViewModel
     {
-        public NugetModel Model { get; }
+    }
+
+    public class NugetViewModel: INugetViewModel
+    {
+        private readonly NugetModel model;
 
         public NugetViewModel(NugetModel model)
         {
-            Model = model;
+            this.model = model;
         }
         
-        public void UploadPackages()
+        public void UploadPackages(INavigationWindow nav)
         {
-            var files = Model.Files
+            var files = model.Files
                 .Where(i => i.Deploy)
-                .Select(i => i.Package(Model.Version))
+                .Select(i => i.Package(model.Version))
                 .OfType<IFile>()
-                .ToArray();
+                .ToList();
+            nav.NavigateTo( new ConsoleWindowViewModel(new NugetDeploymentCommands(this, files)));
         }
 
     }

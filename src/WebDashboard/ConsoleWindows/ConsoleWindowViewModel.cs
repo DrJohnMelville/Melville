@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Melville.INPC;
 using Melville.MVVM.AdvancedLists;
@@ -29,13 +30,25 @@ namespace WebDashboard.ConsoleWindows
 
         public async Task RunCommand([FromServices]IRunShellCommand shell)
         {
-            await foreach (var (cmd, parameters) in consoleCommands.Commands())
+            try
             {
-                await shell.CapturedShellExecute(cmd, parameters).PumpOutput(Output.Add);
+                await foreach (var (cmd, parameters) in consoleCommands.Commands())
+                {
+                    await shell.CapturedShellExecute(cmd, parameters).PumpOutput(Output.Add);
+                }
             }
-
-            Done = true;
+            catch (Exception e)
+            {
+               Output.Add("Exception Thrown: "+e.GetType().Name);
+               Output.Add(e.Message);
+               Output.Add(e.StackTrace??"");
+            }
+            finally
+            {
+                Done = true;
+            }
         }
+        
         public void Return(INavigationWindow navigator) => 
             navigator.NavigateTo(consoleCommands.NavigateOnReturn());
     }
