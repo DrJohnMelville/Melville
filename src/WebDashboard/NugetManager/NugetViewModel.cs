@@ -11,18 +11,18 @@ namespace WebDashboard.NugetManager
 
     public class NugetViewModel: INugetViewModel
     {
-        private readonly NugetModel model;
+        public NugetModel Model { get; }
 
         public NugetViewModel(NugetModel model)
         {
-            this.model = model;
+            Model = model;
         }
         
         public void UploadPackages(INavigationWindow nav)
         {
-            var files = model.Files
+            var files = Model.Files
                 .Where(i => i.Deploy)
-                .Select(i => i.Package(model.Version))
+                .Select(i => i.Package(Model.Version))
                 .OfType<IFile>()
                 .ToList();
             nav.NavigateTo( new ConsoleWindowViewModel(new NugetDeploymentCommands(this, files)));
