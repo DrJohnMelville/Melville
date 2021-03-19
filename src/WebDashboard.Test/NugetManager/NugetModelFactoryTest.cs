@@ -38,6 +38,10 @@ namespace WebDashboard.Test.NugetManager
         {
             var projDir = root.SubDirectory(dirName);
             projDir.Create();
+            var bindir = projDir.SubDirectory("bin");
+            bindir.Create();
+            var relDir = bindir.SubDirectory("Release");
+            relDir.Create();
             var projFile = projDir.File(fileName);
             projFile.Create(
                 $"<Project><PropertyGroup><GeneratePackageOnBuild>{gpob}</GeneratePackageOnBuild>" +
@@ -52,9 +56,8 @@ namespace WebDashboard.Test.NugetManager
         public async Task FindsProjectThatMakesNugetPackage(string dirName,string fileName, string gpob, int files)
         {
             CreateProjectDir(dirName, fileName, gpob);
-            var model = await sut.Create(BuildPropFile("1.2.3"));
+            var model = await sut.Create(BuildPropFile("1.2.3")); 
             Assert.Equal(files, model.Files.Count);
-                        
         }
 
         [Fact]
@@ -65,6 +68,9 @@ namespace WebDashboard.Test.NugetManager
             CreateProjectDir("Project.C", "Project.C.csproj", "true");
             var model = await sut.Create(BuildPropFile("1.2.3"));
             Assert.Equal(3, model.Files.Count);
+            Assert.Equal(@"Z:\md\Project.A\bin\Release\Project.A.1.2.3.nupkg", 
+                model.Files[0].Package("1.2.3")?.Path);
+            
         }
 
         [Fact]

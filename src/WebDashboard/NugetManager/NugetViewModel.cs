@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Melville.MVVM.FileSystem;
 
 namespace WebDashboard.NugetManager
 {
@@ -10,5 +13,15 @@ namespace WebDashboard.NugetManager
         {
             Model = model;
         }
+        
+        public void UploadPackages()
+        {
+            var files = Model.Files
+                .Where(i => i.Deploy)
+                .Select(i => i.Package(Model.Version))
+                .OfType<IFile>()
+                .ToArray();
+        }
+
     }
 }

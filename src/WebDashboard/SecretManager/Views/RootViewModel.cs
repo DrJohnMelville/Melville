@@ -3,6 +3,7 @@ using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.FileSystem;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
+using WebDashboard.ConsoleWindows;
 using WebDashboard.SecretManager.Models;
 
 namespace WebDashboard.SecretManager.Views
@@ -55,9 +56,9 @@ namespace WebDashboard.SecretManager.Views
         public IFile ProjectFile() => Model.ProjectFile.File;
         public IFile? PublishFile() => Model.PublishFile?.File;
 
-        public void Deploy([FromServices] Func<RootViewModel, IHasPassword, DeploymentViewModel> createDeployment,
+        public void Deploy([FromServices] Func<RootViewModel, IHasPassword, DeploymentCommandSource> createDeployment,
             INavigationWindow navigationWindow, IHasPassword password) =>
-            navigationWindow.NavigateTo(createDeployment(this, password));
+            navigationWindow.NavigateTo(new ConsoleWindowViewModel(createDeployment(this, password)));
 
         public void SwapView(ISecretFileEditorViewModel view)
         {

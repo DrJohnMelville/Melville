@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Melville.MVVM.FileSystem;
@@ -24,7 +25,7 @@ namespace WebDashboard.Test.Views
         private readonly Mock<IHasPassword> password = new();
         
         
-        private readonly DeploymentViewModel sut;
+        private readonly DeploymentCommandSource sut;
 
         public DeploymentViewModelTest()
         {
@@ -38,25 +39,24 @@ namespace WebDashboard.Test.Views
             rvm.SetupGet(i => i.WebConfig).Returns("New Web Config");
             rvm.Setup(i => i.PublishFile()).Returns(publishFile.Object);
             runner.Setup(i => i.CapturedShellExecute("dotnet", It.IsAny<string>())).Returns(proxy.Object);
-            sut = new DeploymentViewModel(nav.Object, rvm.Object, password.Object);
+            sut = new DeploymentCommandSource(password.Object, rvm.Object);
         }
 
         [Fact]
         public void NavigateBack()
         {
-            sut.Return();
-            nav.Verify(i=>i.NavigateTo(rvm.Object), Times.Once);
-            nav.VerifyNoOtherCalls();
+            Assert.Equal(rvm.Object, sut.Model);
+            
         }
 
         [Fact]
         public async Task RunDeployment()
         {
             password.Setup(i => i.Password()).Returns("StupidPass");
-            await sut.RunDeployment(runner.Object);
+            Assert.Equal(
+                ("dotnet", @"publish C:\dir\Target.csproj /p:PublishProfile=PubFile /p:Password=StupidPass")
+            , await sut.Commands().SingleAsync());
             Assert.Equal("New Web Config", Encoding.UTF8.GetString(configStream.ToArray()));
-            runner.Verify(i=>i.CapturedShellExecute("dotnet", 
-                @"publish C:\dir\Target.csproj /p:PublishProfile=PubFile /p:Password=StupidPass"), Times.Once);
             configFile.Verify(i=>i.Delete(), Times.Once);
         }
     }

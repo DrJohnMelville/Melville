@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Melville.MVVM.Wpf.RootWindows;
 using Moq;
+using WebDashboard.ConsoleWindows;
 using WebDashboard.SecretManager.Models;
 using WebDashboard.SecretManager.Views;
 using WebDashboard.Test.Models;
@@ -33,10 +34,10 @@ namespace WebDashboard.Test.Views
         {
             await Create();
             var navMock = new Mock<INavigationWindow>();
-            var dvm = new DeploymentViewModel(navMock.Object, sut, Mock.Of<IHasPassword>());
+            var dvm = new DeploymentCommandSource(Mock.Of<IHasPassword>(), sut);
             
             sut.Deploy((i,j)=>dvm, navMock.Object, Mock.Of<IHasPassword>());
-            navMock.Verify(i=>i.NavigateTo(dvm), Times.Once);
+            navMock.Verify(i=>i.NavigateTo(It.IsAny<ConsoleWindowViewModel>()), Times.Once);
         }
     }
 }

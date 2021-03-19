@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WebDashboard.NugetManager"
         xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids;assembly=Melville.WpfControls"
         xmlns:zoom="clr-namespace:GraphSharp.Controls.Zoom;assembly=GraphSharp.Controls"
+        xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
         d:DataContext="{d:DesignData Type={x:Type local:NugetViewModel}}"
         mc:Ignorable="d">
     <UserControl.Resources>
@@ -21,6 +22,7 @@
     </UserControl.Resources>
     <Grid easyGrids:GridOperations.ColsAndRows="*/auto,*">
         <TextBlock>Deploying Version: <TextBlock Text="{Binding Model.Version}"/></TextBlock>
+        <Button HorizontalAlignment="Right" Click="{eventBindings:EventBinding UploadPackages}">Upload</Button>
         <zoom:ZoomControl Grid.Row="1">
             <local:NugetGraphLayout Grid.Row="1"
                                     HighlightAlgorithmType="Simple" LayoutAlgorithmType="ISOM"

@@ -14,38 +14,34 @@ namespace WebDashboard.NugetManager
         public async Task<NugetModel> Create(IFile buildPropsFile)
         {
             await projects.AddRangeAsync(FindProjects(buildPropsFile));
-            await ComputeProjectDependencies();
+            ComputeProjectDependencies();
             return new(await buildPropsFile.GetUniqueTag("Version") ?? "No Version Found",
                 projects);
         }
         
         private IAsyncEnumerable<ProjectFile> FindProjects(IFile buildPropsFile)
         {
-            return ProjectFiles(
-                    buildPropsFile.Directory ?? throw new InvalidOperationException("No Directory"))
-                .Select(i => new ProjectFile(i));
+            return ProjectFiles(buildPropsFile.Directory ?? throw new InvalidOperationException("No Directory"));
         }
 
-        private async IAsyncEnumerable<IFile> ProjectFiles(IDirectory directory)
+        private async IAsyncEnumerable<ProjectFile> ProjectFiles(IDirectory directory)
         {
             foreach (var candidateDir in GetAllSubdirectories(directory))
             {
-                if (await ValidProjectFile(candidateDir) is { } projFile)
+                if (await ValidProjectFile(candidateDir) is { GeneratesPackageOnBuild: true} projFile)
                 {
                     yield return projFile;
                 }
             }
         }
 
-        private async Task<IFile?> ValidProjectFile(IDirectory candidateDir)
+        private async Task<ProjectFile?> ValidProjectFile(IDirectory candidateDir)
         {
             var file = candidateDir.File(candidateDir.Name + ".csproj");
-            return file.Exists() && await FileGeneratesPackage(file) ? file : null;
+            return file.Exists() && (await file.ReadAsXmlAsync()) is XElement elt 
+                   ? new ProjectFile(file, elt) : null;
         }
-
-        private static async Task<bool> FileGeneratesPackage(IFile file) =>
-            (await file.GetUniqueTag("GeneratePackageOnBuild"))?.ToLower().Equals("true") ?? false;
-
+        
         private IEnumerable<IDirectory> GetAllSubdirectories(IDirectory directory)
             => VisibileSubDirs(directory).SelectRecursive(VisibileSubDirs);
 
@@ -54,17 +50,12 @@ namespace WebDashboard.NugetManager
             return i.AllSubDirectories().Where(j => !j.Name.StartsWith("."));
         }
 
-        private async Task ComputeProjectDependencies()
+        private void ComputeProjectDependencies()
         {
             foreach (var file in projects)
             {
-                var projFile = (await file.File.ReadAsXmlAsync()) as XElement;
-                if (projFile == null) continue;
-                foreach (var dependency in projFile
-                    .Descendants("ProjectReference")
-                    .Select(i=>i.Attribute("Include")?.Value)
-                    .OfType<string>()
-                    .Select(i=>PickProject(file.File.FileAtRelativePath(i)))
+                foreach (var dependency in file.ComputeDependencies()
+                    .Select(PickProject)
                     .OfType<ProjectFile>())
                 {
                         file.DependsOn.Add(dependency);
@@ -72,9 +63,7 @@ namespace WebDashboard.NugetManager
             }
         }
 
-        private ProjectFile? PickProject(IFile? projFile) => 
-            projFile == null ?
-                null : 
+        private ProjectFile? PickProject(IFile projFile) => 
                 projects.FirstOrDefault(i => i.File.Path.Equals(projFile.Path));
     }
 }
