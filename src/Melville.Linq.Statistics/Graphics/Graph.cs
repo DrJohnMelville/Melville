@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using LINQPad;
 using Melville.Linq.Statistics.Graphics.Gutters;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;
@@ -31,6 +34,16 @@ namespace Melville.Linq.Statistics.Graphics
     {
       Console.WriteLine(new Hyperlinq(ShowInWindow, Title, false));
       return GenerateOutputVisual().ToBitmap((int)Width, (int)Height);
+    }
+
+    public override void WriteToDisk(string filePath, BitmapEncoder encoder, int width = -1, int height = -1)
+    {
+      if (width < 0) width = (int)Width;
+      if (height < 0) height = (int)(width * Height / Width);
+      var renderTargetBitmap = GenerateOutputVisual().CreateOutputBitmap(width, height, Width);
+      encoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+      using var output = File.Create(filePath);
+      encoder.Save(output);
     }
 
     private Border GenerateOutputVisual()

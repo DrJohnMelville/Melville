@@ -13,7 +13,7 @@ namespace Melville.ExcelDataContext
 
         public string FilePath
         {
-            get { return connectionInfo.DriverData.Element("Path")?.ToString() ?? ""; }
+            get { return connectionInfo.DriverData.Element("Path")?.Value.ToString() ?? ""; }
             set { connectionInfo.DriverData.SetElementValue("Path", value); }
         }
     }

@@ -18,7 +18,7 @@ namespace Melville.Linq.Statistics.Graphics
       var src = new MemoryStream(dest.ToArray());
       return new Bitmap(src);
     }
-    public static void WriteBitmapToDisk(BitmapSource bitmap,
+    public static void WriteBitmapToDisk(this BitmapSource bitmap,
       Stream outputStream)
     {
           var encoder = CreateEncoder();

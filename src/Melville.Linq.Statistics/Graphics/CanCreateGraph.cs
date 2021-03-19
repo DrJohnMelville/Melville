@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -45,6 +46,10 @@ namespace Melville.Linq.Statistics.Graphics
 
     public HistogramPlot<T> Histogram<T>(IEnumerable<T> data, Func<T, double> selector)=>
       AddSerries(new HistogramPlot<T>(data, selector));
+
+    public abstract void WriteToDisk(string filePath, BitmapEncoder encoder, int width = -1, int height = -1);
+    public void WriteToDisk(string filePath, int width = -1, int height = -1) =>
+       WriteToDisk(filePath, new PngBitmapEncoder(), width, height);
   }
 
   public abstract class CanCreateGraphWithData<T> : CanCreateGraph
