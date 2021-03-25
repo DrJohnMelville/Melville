@@ -4,13 +4,6 @@ using Xunit;
 
 namespace Melville.Generators.INPC.Test.DelegateToGen
 {
-    // public interface IInterface
-    // {
-    //     void A();
-    //     void B(int x);
-    //     int C(int x);
-    //     IInterface D(IInterface x, int y, IInterface z);
-    // }
     public class DelegateToTest
     {
         private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), @"

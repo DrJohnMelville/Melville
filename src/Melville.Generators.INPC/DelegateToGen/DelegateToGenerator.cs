@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.DelegateToGen
 {
+    [Generator]
     public class DelegateToGenerator: PartialTypeGenerator<DelegationRequest>
     {
         public DelegateToGenerator() : 
