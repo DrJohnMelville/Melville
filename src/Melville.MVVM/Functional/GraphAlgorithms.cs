@@ -74,7 +74,7 @@ namespace Melville.MVVM.Functional
       this IEnumerable<TSource> source,
       Func<TSource, IEnumerable<TSource>> recursiveSelector) 
     {
-      Stack<IEnumerator<TSource>> stack = new Stack<IEnumerator<TSource>>();
+      Stack<IEnumerator<TSource>> stack = new();
       PushEnumeratorIfNotNull(stack, source);
 
       try

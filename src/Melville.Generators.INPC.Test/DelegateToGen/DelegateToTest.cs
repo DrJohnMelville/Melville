@@ -12,14 +12,11 @@ namespace Outer
 {
     public interface IInterface
     {"+intMembers+@"}
+    public interface IChildInterface: IInterface { void ChildMethod(); }
     public partial class C: IInterface {" + s + @"
 }
 }
 ");
-
-        private GeneratorTestBed RunTestOnField(string s) =>
-            RunTest(s + " private IInterface field;", "");
-        
         [Theory]
         [InlineData("private IInterface Field;", "this.Field.A()")]
         [InlineData("public IInterface RProp{get;}", "this.RProp.A()")]
@@ -88,6 +85,15 @@ namespace Outer
             var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
             res.FileDoesNotContain("C.DelegateToGeneration.cs",
                 output);
+        }
+        
+        [Fact]
+        public void InheritedInterface()
+        {
+            var res = RunTest("[DelegateTo] private IChildInterface field;", "int Parent();");
+            res.FileContains("C.DelegateToGeneration.cs", "public void ChildMethod() => this.field.ChildMethod();");
+            res.FileContains("C.DelegateToGeneration.cs", "public int Parent() => this.field.Parent();");
+
         }
     }
 }

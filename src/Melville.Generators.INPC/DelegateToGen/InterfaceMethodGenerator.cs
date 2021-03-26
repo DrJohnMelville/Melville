@@ -27,9 +27,12 @@ namespace Melville.Generators.INPC.DelegateToGen
         }
 
         private IEnumerable<ISymbol> MembersToForward(ITypeSymbol parentClass) =>
-            TargetType.
-                GetMembers().
-                Where(i=>ImplementationMissing(parentClass, i));
+            TargetTypeAndParents()
+                .SelectMany(i=>i.GetMembers())
+                .Where(i=>ImplementationMissing(parentClass, i));
+
+        private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
+            TargetType.AllInterfaces.Cast<ITypeSymbol>().Append(TargetType);
 
         private static bool ImplementationMissing(ITypeSymbol parentClass, ISymbol i) => 
             parentClass.FindImplementationForInterfaceMember(i) == null;
