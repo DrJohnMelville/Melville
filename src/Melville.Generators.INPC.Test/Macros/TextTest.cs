@@ -8,13 +8,13 @@ namespace Melville.Generators.INPC.Test.Macros
     public class TextTest
     {
         private GeneratorTestBed RunTest(string s) =>
-            new GeneratorTestBed(new MacroGenerator(), @"
+            new(new MacroGenerator(), @"
 using Melville.INPC;
 namespace Outer
 {
     public partial class C {" +
-                                                       s +
-                                                       @"
+                                      s +
+                                      @"
     private void Func();
 }
 }
@@ -40,6 +40,12 @@ namespace Outer
             RunTest("[MacroCode(\"// Macro: ~0~\", Prefix=\"// Prefix\")] [MacroItem(\"One\")]");
         }
 
+        [Fact]
+        public void RepeatedUsing()
+        {
+            RunTest(@"[MacroCode(""// Code: ~0~/~1~"", Prefix = ""public void Generated() {"", Postfix = ""}"")]")
+                .FileContains("C.MacroGen.cs", "using Melville.INPC");
+        }    
         [Fact]
         public void Gen()
         {

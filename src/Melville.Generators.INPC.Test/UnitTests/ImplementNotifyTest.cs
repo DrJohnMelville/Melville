@@ -248,6 +248,7 @@ using Melville.INPC;
             tb.AssertNoDiagnostics();
             tb.FileEqual("C.INPC.cs",
                 @"#nullable enable
+using Melville.INPC;
 public partial class C : Melville.INPC.IExternalNotifyPropertyChanged
 {
     public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;

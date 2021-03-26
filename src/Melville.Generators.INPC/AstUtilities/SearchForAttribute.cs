@@ -43,10 +43,10 @@ namespace Melville.Generators.INPC.AstUtilities
         private bool SearchParentNameSpaces(string attributeName, SyntaxNode context)
         {
             var oldList = new List<string> {attributeName};
-            foreach (var usingList in UsingDeclarationListsForSurroundingScopes(context))
+            foreach (var usingList in (IEnumerable<SyntaxList<UsingDirectiveSyntax>>) context.UsingDeclarationListsForSurroundingScopes())
             {
-                IList<string> newList = Enumerable
-                    .SelectMany<string, string, string>(usingList.Select(i => i.Name.ToString()), ns => oldList,
+                IList<string> newList = usingList.Select(i => i.Name.ToString())
+                    .SelectMany<string, string, string>(ns => oldList,
                         (ns, item) => string.Concat((string) ns, (string) ".", (string) item))
                     .ToList();
                 foreach (var item in newList)
@@ -57,27 +57,6 @@ namespace Melville.Generators.INPC.AstUtilities
             }
 
             return false;
-        }
-
-
-        private IEnumerable<SyntaxList<UsingDirectiveSyntax>> UsingDeclarationListsForSurroundingScopes(
-            SyntaxNode context)
-        {
-            var currentNode = context.Parent;
-            while (currentNode != null)
-            {
-                switch (currentNode)
-                {
-                    case NamespaceDeclarationSyntax nds:
-                        yield return nds.Usings;
-                        break;
-                    case CompilationUnitSyntax cus:
-                        yield return cus.Usings;
-                        break;
-                }
-
-                currentNode = currentNode.Parent;
-            }
         }
     }
 }

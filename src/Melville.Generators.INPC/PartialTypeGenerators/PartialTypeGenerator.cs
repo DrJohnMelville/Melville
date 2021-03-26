@@ -73,7 +73,7 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
         {
             TryGenerateCode(parent.Identifier.ToString(), context, cw =>
             {
-                using (cw.GenerateEnclosingNamespaces(parent))
+                using (cw.GeneratePartialClassContext(parent))
                 using (cw.GenerateEnclosingClasses(parent, ClassSuffix(input)))
                 {
                     return GenerateClassContents(input, cw);

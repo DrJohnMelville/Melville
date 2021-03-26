@@ -4,6 +4,7 @@ using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using CSharpExtensions = Microsoft.CodeAnalysis.CSharp.CSharpExtensions;
 
 namespace Melville.Generators.INPC.INPC
 {
@@ -33,7 +34,7 @@ namespace Melville.Generators.INPC.INPC
 
         private void GenerateCodeForClass()
         {
-            using var ns = CodeWriter.GenerateEnclosingNamespaces(Target.ClassDeclaration);
+            using var ns = CodeWriter.GeneratePartialClassContext(Target.ClassDeclaration);
             using var classes = GenerateClassDeclaration();
             notifyStrategy.DeclareMethod(CodeWriter);
             GenerateAllPropertyDeclarations();
