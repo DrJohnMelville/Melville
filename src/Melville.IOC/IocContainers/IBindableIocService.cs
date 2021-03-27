@@ -60,7 +60,7 @@ namespace Melville.IOC.IocContainers
 
         #endregion
 
-        #region
+        #region Interception
 
         public static void Intercept(this IBindableIocService service, IInterceptionRule rule) =>
             service.InterceptionPolicy.Add(rule);

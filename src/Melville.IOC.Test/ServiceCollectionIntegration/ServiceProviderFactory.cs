@@ -42,5 +42,13 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration
             var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
             Assert.NotNull(prov.GetService<IServiceProvider>());            
         }
+
+        [Fact]
+        public void BindWithCustomAction()
+        {
+            var sut2 = new MelvilleServiceProviderFactory(false, i => i.Bind<string>().ToConstant("Hello World"));
+            var sp = sut2.CreateServiceProvider(sut2.CreateBuilder(new ServiceCollection()));
+            Assert.Equal("Hello World", sp.GetRequiredService<string>());
+        }
     }
 }
