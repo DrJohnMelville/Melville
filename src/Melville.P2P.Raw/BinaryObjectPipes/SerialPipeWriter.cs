@@ -20,6 +20,8 @@ namespace Melville.P2P.Raw.BinaryObjectPipes
             position = 0;
         }
 
+        [MacroItem("sbyte")]
+        [MacroItem("byte")]
         [MacroItem("ushort")]
         [MacroItem("short")]
         [MacroItem("int")]
