@@ -2,8 +2,8 @@
 using  System.Collections;
 using System.IO;
 using System.Linq;
-using Melville.FileSystem.FileSystem;
-using Melville.FileSystem.FileSystem.RelativeFiles;
+using Melville.FileSystem;
+using Melville.FileSystem.RelativeFiles;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Melville.Mvvm.TestHelpers.TestWrappers;
 using Moq;

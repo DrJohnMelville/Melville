@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using Melville.MVVM.RunShellCommands;
 using Melville.MVVM.Wpf.RootWindows;
 using Moq;

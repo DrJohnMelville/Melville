@@ -2,7 +2,7 @@
 using  System;
 using System.Collections.Generic;
 using System.Text;
-using Melville.MVVM.AdvancedLists;
+using Melville.Lists.AdvancedLists;
 using Xunit;
 
 namespace Melville.Mvvm.Test.AdvancedLists

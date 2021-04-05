@@ -1,5 +1,5 @@
 ﻿#nullable disable warnings
-using  Melville.MVVM.AdvancedLists.ListMonitors;
+using Melville.Lists.AdvancedLists.ListMonitors;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
 

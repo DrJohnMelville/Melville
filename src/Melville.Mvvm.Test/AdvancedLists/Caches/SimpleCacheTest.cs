@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Melville.MVVM.AdvancedLists.Caches;
+using Melville.Lists.AdvancedLists.Caches;
 using Xunit;
 
 namespace Melville.Mvvm.Test.AdvancedLists.Caches

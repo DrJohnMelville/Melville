@@ -3,7 +3,7 @@ using  System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem

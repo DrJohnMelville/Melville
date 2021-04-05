@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
-using Melville.MVVM.AdvancedLists;
+using Melville.Lists.AdvancedLists;
 using Melville.MVVM.USB;
 
 namespace Melville.Wpf.Samples.HIDExplore

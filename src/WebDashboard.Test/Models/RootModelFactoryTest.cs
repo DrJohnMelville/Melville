@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Moq;
 using WebDashboard.SecretManager.Models;

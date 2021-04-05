@@ -2,7 +2,7 @@
 using  System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 
 namespace Melville.Mvvm.TestHelpers.MockFiles
 {

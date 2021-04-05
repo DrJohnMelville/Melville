@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+        <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
+        <ProjectReference Include="..\Melville.Linq\Melville.Linq.csproj" />
+    </ItemGroup>
+
+</Project>

@@ -3,9 +3,7 @@ using  System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using Melville.FileSystem;
-using Melville.FileSystem.FileSystem;
 using Melville.MVVM.Asyncs;
-using Melville.MVVM.CSharpHacks;
 using Xunit;
 
 namespace Melville.Mvvm.TestHelpers.MockFiles

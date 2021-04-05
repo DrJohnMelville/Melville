@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using Ookii.Dialogs.Wpf;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;

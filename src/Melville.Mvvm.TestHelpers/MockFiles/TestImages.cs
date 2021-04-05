@@ -1,4 +1,4 @@
-﻿using Melville.FileSystem.FileSystem;
+﻿using Melville.FileSystem;
 
 #nullable disable warnings
 namespace Melville.Mvvm.TestHelpers.MockFiles

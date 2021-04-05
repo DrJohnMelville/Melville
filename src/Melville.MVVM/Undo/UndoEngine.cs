@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
-using Melville.MVVM.AdvancedLists;
+using Melville.Lists.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
 
 namespace Melville.MVVM.Undo

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using Melville.Linq;
-using Melville.MVVM.AdvancedLists;
+using Melville.Lists.AdvancedLists;
 
 namespace WebDashboard.SecretManager.Models
 {

@@ -2,8 +2,8 @@
 using  System;
 using System.Collections.Generic;
 using System.Text;
-using Melville.MVVM.AdvancedLists;
-using Melville.MVVM.AdvancedLists.ListMonitors;
+using Melville.Lists.AdvancedLists;
+using Melville.Lists.AdvancedLists.ListMonitors;
 using Moq;
 using Xunit;
 

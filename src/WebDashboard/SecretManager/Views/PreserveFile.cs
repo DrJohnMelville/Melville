@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 
 namespace WebDashboard.SecretManager.Views
 {

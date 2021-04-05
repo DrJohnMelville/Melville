@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Melville.MVVM.AdvancedLists;
+using Melville.Lists.AdvancedLists;
 using Melville.MVVM.Wpf.DiParameterSources;
 
 namespace Melville.MVVM.Wpf.RootWindows

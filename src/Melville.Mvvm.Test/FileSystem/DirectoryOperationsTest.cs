@@ -1,7 +1,7 @@
 ﻿#nullable disable warnings
 using System;
 using System.Linq;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Xunit;
 

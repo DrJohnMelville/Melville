@@ -1,7 +1,7 @@
 ﻿#nullable disable warnings
 using  System.Collections.ObjectModel;
-using Melville.MVVM.AdvancedLists;
-using Melville.MVVM.AdvancedLists.ListMonitors;
+using Melville.Lists.AdvancedLists;
+using Melville.Lists.AdvancedLists.ListMonitors;
 using Melville.MVVM.BusinessObjects;
 using Xunit;
 

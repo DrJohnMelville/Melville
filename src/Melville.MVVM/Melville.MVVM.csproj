@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Melville.Linq\Melville.Linq.csproj" />
+    <ProjectReference Include="..\Melville.Linq\Melville.Linq.csproj" />
+    <ProjectReference Include="..\Melville.Lists\Melville.Lists.csproj" />
   </ItemGroup>
 </Project>

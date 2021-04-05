@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Melville.FileSystem.FileSystem;
+using Melville.FileSystem;
 using WebDashboard.ConsoleWindows;
 
 namespace WebDashboard.NugetManager

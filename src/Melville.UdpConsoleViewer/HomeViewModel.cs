@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Melville.MVVM.AdvancedLists;
+using Melville.Lists.AdvancedLists;
 using Melville.MVVM.Wpf.ViewFrames;
 using Melville.P2P.Raw.NetworkPrimatives;
 
