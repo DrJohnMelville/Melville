@@ -28,11 +28,7 @@ namespace Melville.MVVM.BusinessObjects
       }
     }
    
-    private static bool PropertyExists(object obj, string property)
-    {
-      if (String.IsNullOrEmpty(property)) return true;
-      return obj.GetType().GetProperty(property) != null;
-    }
-
+    private static bool PropertyExists(object obj, string property) => 
+      String.IsNullOrEmpty(property) || obj.GetType().GetProperty(property) != null;
   }
 }
