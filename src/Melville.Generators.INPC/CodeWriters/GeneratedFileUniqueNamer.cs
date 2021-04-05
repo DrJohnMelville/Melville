@@ -24,5 +24,10 @@ namespace Melville.Generators.INPC.CodeWriters
 
         public string CreateFileName(string className) => 
             $"{className}.{generatorSuffix}{Suffix(IndexForName(className))}.cs";
+
+        public void Clear()
+        {
+            seenItems.Clear();
+        }
     }
 }

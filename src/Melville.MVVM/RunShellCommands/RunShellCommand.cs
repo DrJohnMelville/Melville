@@ -23,6 +23,7 @@ namespace Melville.MVVM.RunShellCommands
             var psi = CreateInfo(command, parameters);
             psi.RedirectStandardOutput = true;
             psi.UseShellExecute = false;
+            psi.CreateNoWindow = false;
             return new ProcessProxy(StartProcess(psi));
         }
 

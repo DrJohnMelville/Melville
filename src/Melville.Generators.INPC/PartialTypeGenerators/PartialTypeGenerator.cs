@@ -34,6 +34,7 @@ namespace Melville.Generators.INPC.PartialTypeGenerators
 
         public void Execute(GeneratorExecutionContext context)
         {
+            namer.Clear();
             if (!(context.SyntaxReceiver is PartialTypeReceiver ptr)) return;
             try
             {
