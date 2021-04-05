@@ -1,6 +1,6 @@
 ﻿#nullable disable warnings
 using  System.Collections.Generic;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 using Xunit;
 
 namespace Melville.Mvvm.Test.Functional

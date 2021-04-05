@@ -2,8 +2,8 @@
 using  System;
 using System.IO;
 using System.Threading.Tasks;
-using Melville.MVVM.FileSystem;
-using Melville.MVVM.FileSystem.Switchable;
+using Melville.FileSystem.FileSystem;
+using Melville.FileSystem.FileSystem.Switchabe;
 using Moq;
 using Xunit;
 

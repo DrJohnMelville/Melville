@@ -6,4 +6,12 @@
     <PackageDescription>Generic MVVM utilities</PackageDescription>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Functional" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Melville.Linq\Melville.Linq.csproj" />
+  </ItemGroup>
 </Project>

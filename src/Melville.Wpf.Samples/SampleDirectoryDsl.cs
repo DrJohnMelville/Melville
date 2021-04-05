@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 
 namespace Melville.Wpf.Samples

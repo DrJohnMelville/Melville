@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows;
-using Melville.MVVM.FileSystem;
+using Melville.FileSystem.FileSystem;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles

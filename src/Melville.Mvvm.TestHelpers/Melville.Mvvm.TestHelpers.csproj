@@ -42,6 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Melville.FileSystem\Melville.FileSystem.csproj" />
     <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
   </ItemGroup>
 

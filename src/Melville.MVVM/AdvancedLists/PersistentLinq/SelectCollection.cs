@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 using Melville.MVVM.Invariants;
 
 namespace Melville.MVVM.AdvancedLists.PersistentLinq

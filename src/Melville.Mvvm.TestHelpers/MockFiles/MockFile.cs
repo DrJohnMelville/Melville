@@ -1,6 +1,7 @@
 ﻿#nullable disable warnings
+using System.IO;
 using  System.Runtime.CompilerServices;
-using Melville.MVVM.FileSystem;
+using Melville.FileSystem.FileSystem;
 
 namespace Melville.Mvvm.TestHelpers.MockFiles
 {

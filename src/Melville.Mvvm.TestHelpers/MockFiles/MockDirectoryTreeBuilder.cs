@@ -1,5 +1,4 @@
 ﻿using System;
-using Melville.MVVM.FileSystem;
 
 namespace Melville.Mvvm.TestHelpers.MockFiles
 {

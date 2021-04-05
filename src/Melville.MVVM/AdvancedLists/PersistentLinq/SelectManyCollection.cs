@@ -9,7 +9,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 
 namespace Melville.MVVM.AdvancedLists.PersistentLinq
 {

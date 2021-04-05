@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 
 namespace Melville.MVVM.Wpf.WpfHacks
 {

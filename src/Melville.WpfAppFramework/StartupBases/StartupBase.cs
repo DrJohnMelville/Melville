@@ -3,7 +3,6 @@ using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.BindingSources;
 using Melville.IOC.TypeResolutionPolicy;
 using Melville.Log.NamedPipeEventSink;
-using Melville.MVVM.Functional;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 

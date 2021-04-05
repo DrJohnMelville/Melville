@@ -8,7 +8,6 @@ using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.BusinessObjects;
-using Melville.MVVM.FileSystem;
 using Serilog.Events;
 using Serilog.Formatting.Compact.Reader;
 

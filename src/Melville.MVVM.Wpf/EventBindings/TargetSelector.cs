@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 
 namespace Melville.MVVM.Wpf.EventBindings
 {
@@ -25,11 +25,11 @@ namespace Melville.MVVM.Wpf.EventBindings
     public static IEnumerable<object> AllSources(this DependencyObject sender,
       params object[] firstItems)
     {
-      return InnerSources(sender)
-        .SelectMany(SearchAdditionalTargets)
-        .Prepend(firstItems)
+      return firstItems
+        .Concat(InnerSources(sender).SelectMany(SearchAdditionalTargets))
         .Append(Application.Current)
-        .Where(i => i != null).Distinct();
+        .Where(i => i != null)
+        .Distinct();
 
     }
     private static IEnumerable<object> InnerSources(DependencyObject sender)

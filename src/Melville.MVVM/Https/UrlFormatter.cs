@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 
 namespace Melville.MVVM.Https
 {

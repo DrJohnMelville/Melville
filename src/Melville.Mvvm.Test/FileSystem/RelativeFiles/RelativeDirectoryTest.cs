@@ -2,9 +2,8 @@
 using  System.Collections;
 using System.IO;
 using System.Linq;
-using Melville.MVVM.FileSystem;
-using Melville.MVVM.FileSystem.RelativeFiles;
-using Melville.MVVM.Functional;
+using Melville.FileSystem.FileSystem;
+using Melville.FileSystem.FileSystem.RelativeFiles;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Melville.Mvvm.TestHelpers.TestWrappers;
 using Moq;
@@ -17,7 +16,7 @@ namespace Melville.Mvvm.Test.FileSystem.RelativeFiles
     [Fact]
     public void TestRelativeDirectory()
     {
-      var tester = new WrapperTest<MVVM.FileSystem.IDirectory>(target =>
+      var tester = new WrapperTest<IDirectory>(target =>
       {
         var root = new Mock<IDirectory>();
         root.Setup(i => i.SubDirectory("Test.txt")).Returns(target);

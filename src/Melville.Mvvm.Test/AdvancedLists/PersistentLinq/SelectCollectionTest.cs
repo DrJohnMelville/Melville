@@ -3,9 +3,9 @@ using  System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using Melville.Linq;
 using Melville.MVVM.AdvancedLists;
 using Melville.MVVM.AdvancedLists.PersistentLinq;
-using Melville.MVVM.Functional;
 using Xunit;
 
 namespace Melville.Mvvm.Test.AdvancedLists.PersistentLinq

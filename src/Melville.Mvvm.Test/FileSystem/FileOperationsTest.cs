@@ -3,8 +3,8 @@ using System;
 using  System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Melville.FileSystem.FileSystem;
 using Melville.Mvvm.TestHelpers.MockFiles;
-using Melville.MVVM.FileSystem;
 using Moq;
 using Xunit;
 

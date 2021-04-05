@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 
 namespace Melville.MVVM.Wpf.Bindings
 {
@@ -100,8 +100,9 @@ namespace Melville.MVVM.Wpf.Bindings
         case 0: return values;
         default:
           return LengthLegalWithTrimming(values, paramTypes) ?
-                                                               values.Take(paramTypes.Length).ToArray() :
-                                                                                                          FunctionalMethods.Repeat(DependencyProperty.UnsetValue, paramTypes.Length).ToArray(); // param count wrong, so return a list ParameterListValid will reject
+            values.Take(paramTypes.Length).ToArray() :
+            FunctionalMethods.Repeat(DependencyProperty.UnsetValue, paramTypes.Length).ToArray(); 
+              // param count wrong, so return a list ParameterListValid will reject
       }
     }
     private bool ParameterListValid(object[] values, Type[] paramType)

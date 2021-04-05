@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using Melville.Linq;
 using Melville.MVVM.CSharpHacks;
-using Melville.MVVM.Functional;
 
 namespace Melville.MVVM.BusinessObjects
 {

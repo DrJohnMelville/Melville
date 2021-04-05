@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Melville.MVVM.Functional;
+using Melville.Linq;
 using Melville.MVVM.Undo;
 
 namespace Melville.MVVM.AdvancedLists
