@@ -1,6 +1,5 @@
 using Xunit;
 using Melville.Linq.Statistics.HypothesisTesting;
-using Melville.Linq.Statistics.Tables;
 
 namespace Test.HypothesisTesting
 {

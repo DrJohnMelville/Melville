@@ -1,6 +1,4 @@
-﻿using Melville.IOC.InjectionPolicies;
-
-namespace Melville.IOC.TypeResolutionPolicy
+﻿namespace Melville.IOC.TypeResolutionPolicy
 {
     public class StandardTypeResolutionPolicy : TypeResolutionPolicyList
     {

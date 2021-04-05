@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Threading.Tasks;
-using Melville.P2P.Raw.Discovery;
+﻿using System.Threading.Tasks;
 using Melville.P2P.Raw.NetworkPrimatives;
 using Xunit;
 

@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Melville.FileSystem;
 using Melville.Linq;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 
 namespace WebDashboard.SecretManager.Models
 {

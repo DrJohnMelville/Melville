@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using Melville.P2P.Raw.BinaryObjectPipes;
 using Melville.P2P.Raw.Discovery;
 using Melville.P2P.Raw.NetworkPrimatives;

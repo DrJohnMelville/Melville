@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using LINQPad.Extensibility.DataContext;
-using Melville.ExcelDataContext.FileReader;
 using Melville.ExcelDataContext.SchemaComputation;
 
 namespace Melville.ExcelDataContext

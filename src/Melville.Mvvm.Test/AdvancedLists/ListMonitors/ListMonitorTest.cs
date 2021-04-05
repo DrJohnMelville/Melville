@@ -1,9 +1,6 @@
 ﻿#nullable disable warnings
-using  System;
-using System.Collections.Generic;
-using System.Text;
-using Melville.Lists.AdvancedLists;
-using Melville.Lists.AdvancedLists.ListMonitors;
+using Melville.Lists;
+using Melville.Lists.ListMonitors;
 using Moq;
 using Xunit;
 

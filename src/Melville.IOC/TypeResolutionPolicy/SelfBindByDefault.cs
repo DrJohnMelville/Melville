@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Melville.IOC.BindingRequests;
-using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 

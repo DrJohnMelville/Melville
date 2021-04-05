@@ -1,9 +1,7 @@
-﻿using System;
-using Melville.IOC.AspNet.RegisterFromServiceCollection;
+﻿using Melville.IOC.AspNet.RegisterFromServiceCollection;
 using Melville.IOC.IocContainers;
 using Melville.IOC.Test.IocContainers;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Xunit;
 
 namespace Melville.IOC.Test.ServiceCollectionIntegration

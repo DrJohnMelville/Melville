@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Melville.MVVM.WindowMessages;
 using Microsoft.Win32.SafeHandles;

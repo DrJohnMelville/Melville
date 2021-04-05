@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Melville.Linq.Statistics.HypothesisTesting;
 using Xunit;

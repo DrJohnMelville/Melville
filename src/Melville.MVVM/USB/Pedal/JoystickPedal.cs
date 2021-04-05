@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using Melville.MVVM.USB.Joysticks;
 
 namespace Melville.MVVM.USB.Pedal

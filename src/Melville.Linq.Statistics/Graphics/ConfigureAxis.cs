@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 using Melville.Linq.Statistics.Functional;
-using Melville.Linq.Statistics.Graphics.Internal;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;
 
 namespace Melville.Linq.Statistics.Graphics

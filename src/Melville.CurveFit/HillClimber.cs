@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Linq.Expressions;
 
 namespace Melville.CurveFit
 {

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using LINQPad;
 using Melville.Linq.Statistics.Graphics.Gutters;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;

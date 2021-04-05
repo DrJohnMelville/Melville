@@ -5,9 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Accord.Statistics.Models.Regression.Linear;
-using Melville.Linq.Statistics.DescriptiveStats;
 using Melville.Linq.Statistics.Functional;
-using Melville.Linq.Statistics.Graphics.Gutters;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;
 
 namespace Melville.Linq.Statistics.Graphics.Internal

@@ -2,10 +2,8 @@
  using System.Linq.Expressions;
  using System.Text.Json;
  using System.Threading.Tasks;
- using System.Windows.Forms.VisualStyles;
  using System.Xml.Linq;
  using Melville.FileSystem;
- using Melville.MVVM.Wpf.EventBindings.SearchTree;
  using Melville.MVVM.Wpf.MvvmDialogs;
  using Melville.MVVM.Wpf.RootWindows;
  using Moq;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Melville.Lists.AdvancedLists.Caches
+namespace Melville.Lists.Caches
 {
   public sealed class WeakCache<TKey, TResult> where TResult : class
   {

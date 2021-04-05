@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Melville.Lists.AdvancedLists.ListMonitors
+namespace Melville.Lists.ListMonitors
 {
   public sealed class DeepPropertyChangeNotification<T> : IListMonitor<T>
     where T : INotifyPropertyChanged

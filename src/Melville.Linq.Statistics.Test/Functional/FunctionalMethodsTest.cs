@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using Melville.Linq.Statistics.DescriptiveStats;
-using Melville.Linq.Statistics.Functional;
+﻿using Melville.Linq.Statistics.Functional;
 using Xunit;
 
 namespace Test.Functional

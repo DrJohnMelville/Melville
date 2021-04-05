@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Melville.IOC.IocContainers;
-using Melville.IOC.Test.TypeResolutionPolicy;
 using Xunit;
 
 namespace Melville.IOC.Test.IocContainers

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
 using Xunit;

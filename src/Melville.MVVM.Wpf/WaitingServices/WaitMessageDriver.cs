@@ -1,7 +1,6 @@
 ﻿using  System;
 using System.Threading;
 using Melville.INPC;
-using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.CSharpHacks;
 using Melville.MVVM.WaitingServices;
 

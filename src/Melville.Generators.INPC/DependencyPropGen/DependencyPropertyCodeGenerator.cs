@@ -1,6 +1,4 @@
-﻿using System;
-using Melville.Generators.INPC.AstUtilities;
-using Melville.Generators.INPC.CodeWriters;
+﻿using Melville.Generators.INPC.CodeWriters;
 
 namespace Melville.Generators.INPC.DependencyPropGen
 {

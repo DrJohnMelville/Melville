@@ -1,13 +1,9 @@
-using System.Linq;
 using AspNetCoreLocalLog.HubLog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
-using Serilog.Events;
 using TokenServiceClient.Website;
 
 namespace LoggingTestWebsite

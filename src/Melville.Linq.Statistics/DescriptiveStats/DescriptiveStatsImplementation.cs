@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Accord.Statistics.Models.Regression.Linear;
-using Accord.Statistics.Visualizations;
 using Melville.Linq.Statistics.Functional;
 
 namespace Melville.Linq.Statistics.DescriptiveStats

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Immutable;
-using System.Diagnostics.SymbolStore;
+﻿using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text.RegularExpressions;
 using Melville.Generators.INPC.AstUtilities;
 using Microsoft.CodeAnalysis;

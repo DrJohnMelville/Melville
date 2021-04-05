@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
 using System.Threading.Channels;
-using System.Threading.Tasks;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;

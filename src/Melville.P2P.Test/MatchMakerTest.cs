@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.IO.Pipelines;
-using System.Text;
 using System.Threading.Tasks;
 using Melville.P2P.Raw.BinaryObjectPipes;
 using Melville.P2P.Raw.Matchmaker;
@@ -33,10 +32,10 @@ namespace Melville.P2P.Test
         {
             var dict = new BinaryObjectDictionary();
             dict.Register<Message>(Message.ReadMessage);
-            using var server = new MatchmakerServer(70, dict);
+            using var server = new MatchmakerServer(71, dict);
             MonitorServer(server);
 
-            using var client = new MatchMakerClient(70, dict);
+            using var client = new MatchMakerClient(71, dict);
             var (reader, writer) = await client.Connect();
             await writer.Write(new Message("This is a test"));
 

@@ -2,7 +2,6 @@
 using System.Windows.Data;
 using System.Windows.Media;
 using Melville.INPC;
-using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB.Pedal;
 using Melville.MVVM.Wpf.Bindings;
 using Melville.MVVM.Wpf.ViewFrames;

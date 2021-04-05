@@ -1,7 +1,5 @@
 ﻿using System;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using OfficeOpenXml.FormulaParsing.Excel.Operators;
 
 namespace Melville.Linq.Statistics.Graphics.Internal
 {

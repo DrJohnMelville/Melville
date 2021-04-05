@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Melville.Wpf.Samples.DiBinding
+﻿namespace Melville.Wpf.Samples.DiBinding
 {
     public interface IBoundInt
     {

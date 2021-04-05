@@ -1,9 +1,5 @@
-﻿using  System;
-using System.IO;
-using System.Runtime.InteropServices;
+﻿using System.IO;
 using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Melville.MVVM.Wpf.Clipboards

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows.Media;
 using Melville.Linq.Statistics.DescriptiveStats;
 using Melville.Linq.Statistics.Functional;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 namespace Melville.Linq.Statistics.Graphics.Internal
 {

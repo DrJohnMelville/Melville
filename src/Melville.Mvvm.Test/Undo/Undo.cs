@@ -1,7 +1,4 @@
 ﻿#nullable disable warnings
-using  System;
-using System.Collections.Generic;
-using System.Text;
 using Melville.MVVM.Undo;
 using Xunit;
 

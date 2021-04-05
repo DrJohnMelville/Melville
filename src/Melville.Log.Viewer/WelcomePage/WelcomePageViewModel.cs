@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Melville.Log.NamedPipeEventSink;
 using Melville.Log.Viewer.HomeScreens;
-using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.BusinessObjects;
-using Melville.MVVM.Wpf.DiParameterSources;
-using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-using Serilog.Formatting.Compact.Reader;
 
 namespace Melville.Log.Viewer.WelcomePage
 {

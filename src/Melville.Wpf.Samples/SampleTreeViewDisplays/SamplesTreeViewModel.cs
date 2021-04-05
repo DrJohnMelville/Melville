@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Melville.MVVM.BusinessObjects;
-using Melville.WpfAppFramework.StartupBases;
 
 namespace Melville.Wpf.Samples.SampleTreeViewDisplays
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using Melville.INPC;
-using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.Wpf.Clipboards;
 
 namespace Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor

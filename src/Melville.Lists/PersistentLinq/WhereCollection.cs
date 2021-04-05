@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 
-namespace Melville.Lists.AdvancedLists.PersistentLinq
+namespace Melville.Lists.PersistentLinq
 {
   public sealed class WhereCollection<T> : IList<T>, INotifyCollectionChanged, INotifyPropertyChanged
   {

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Media;
 using Melville.Linq.Statistics.Functional;
-using OfficeOpenXml.Drawing.Chart;
 
 namespace Melville.Linq.Statistics.Graphics.Internal
 {

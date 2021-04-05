@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Input;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 using Melville.Log.Viewer.LogViews;
 using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.BusinessObjects;
-using Melville.WpfAppFramework.StartupBases;
 
 namespace Melville.Log.Viewer.HomeScreens
 {

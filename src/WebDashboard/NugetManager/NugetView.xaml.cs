@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Forms;
-
-namespace WebDashboard.NugetManager
+﻿namespace WebDashboard.NugetManager
 {
     public partial class NugetView 
     {

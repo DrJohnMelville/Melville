@@ -1,7 +1,5 @@
 ﻿#nullable disable warnings
 using  System;
-using System.Collections.Generic;
-using System.Text;
 using Melville.MVVM.BusinessObjects;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;

@@ -1,6 +1,4 @@
-﻿using System.Windows;
-
-namespace Melville.Wpf.Samples.ApplicationBinding
+﻿namespace Melville.Wpf.Samples.ApplicationBinding
 {
     public class CallMethodOnApplicationViewModel
     {

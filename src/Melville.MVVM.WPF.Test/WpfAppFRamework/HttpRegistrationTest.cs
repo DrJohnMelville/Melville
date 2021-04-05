@@ -1,9 +1,7 @@
-﻿using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using Melville.IOC.IocContainers;
 using Melville.MVVM.CSharpHacks;
 using Melville.WpfAppFramework.HttpsServices;
-using Melville.WpfAppFramework.StartupBases;
 using Xunit;
 
 namespace Melville.MVVM.WPF.Test.WpfAppFRamework

@@ -1,7 +1,5 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
-using Melville.IOC.IocContainers.BindingSources;
-using Melville.IOC.TypeResolutionPolicy;
 using Melville.Log.NamedPipeEventSink;
 using Microsoft.Extensions.Configuration;
 using Serilog;

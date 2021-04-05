@@ -1,5 +1,4 @@
 ﻿using Melville.INPC;
-using Melville.MVVM.BusinessObjects;
 using Melville.MVVM.USB.ThumbDrives;
 
 namespace Melville.Wpf.Samples.ThumbDrives

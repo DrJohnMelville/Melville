@@ -1,5 +1,4 @@
-﻿using Melville.IOC.IocContainers;
-using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
+﻿using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Xunit;
 
 namespace Melville.IOC.Test.IocContainers

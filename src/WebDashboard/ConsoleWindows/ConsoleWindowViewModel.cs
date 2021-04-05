@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Melville.INPC;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 using Melville.MVVM.RunShellCommands;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;

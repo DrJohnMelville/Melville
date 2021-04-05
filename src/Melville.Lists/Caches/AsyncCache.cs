@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Melville.Lists.AdvancedLists.Caches
+namespace Melville.Lists.Caches
 {
   public class AsyncCache<TKey, TResult>
   {

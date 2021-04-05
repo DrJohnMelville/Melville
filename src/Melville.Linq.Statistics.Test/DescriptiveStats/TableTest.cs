@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Melville.Linq.Statistics.DescriptiveStats;
+﻿using System.Linq;
 using Melville.Linq.Statistics.FileWriter;
 using Melville.Linq.Statistics.Functional;
 using Melville.Linq.Statistics.Tables;

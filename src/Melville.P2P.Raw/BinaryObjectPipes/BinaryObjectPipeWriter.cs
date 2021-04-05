@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.IO.Pipelines;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Melville.P2P.Raw.BinaryObjectPipes

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 using Melville.MVVM.USB;
 
 namespace Melville.Wpf.Samples.HIDExplore

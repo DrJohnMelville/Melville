@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers.ActivationStrategies;
 

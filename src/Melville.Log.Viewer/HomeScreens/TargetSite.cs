@@ -1,6 +1,4 @@
-﻿using System.Windows.Documents;
-
-namespace Melville.Log.Viewer.HomeScreens
+﻿namespace Melville.Log.Viewer.HomeScreens
 {
     public class TargetSite
     {

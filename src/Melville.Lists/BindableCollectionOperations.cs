@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using Melville.Lists.AdvancedLists.ListMonitors;
+using Melville.Lists.ListMonitors;
 
-namespace Melville.Lists.AdvancedLists
+namespace Melville.Lists
 {
   public static class BindableCollectionOperations
   {

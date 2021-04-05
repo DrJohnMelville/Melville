@@ -1,7 +1,6 @@
 ﻿using  System;
 using System.Windows;
 using Melville.Linq;
-using Melville.MVVM.Wpf.MouseDragging.Drag;
 
 namespace Melville.MVVM.Wpf.MouseDragging
 {

@@ -3,15 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Xml.Linq;
-using Accord;
 using Accord.Statistics.Analysis;
-using Accord.Statistics.Models.Regression;
-using Accord.Statistics.Models.Regression.Fitting;
-using Melville.Linq.Statistics.HypothesisTesting;
 using Melville.Linq.Statistics.Functional;
 using Melville.Linq.Statistics.Tables;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 
 namespace Melville.Linq.Statistics.HypothesisTesting
 {

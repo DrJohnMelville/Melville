@@ -1,8 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
-using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
-using Moq;
 using Xunit;
 
 namespace Melville.IOC.Test.IocContainers.TypeActivation

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 
-namespace Melville.Lists.AdvancedLists.ListMonitors
+namespace Melville.Lists.ListMonitors
 {
   public interface IListMonitor<TItem>
   {

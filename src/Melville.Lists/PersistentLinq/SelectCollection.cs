@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Melville.Linq;
 
-namespace Melville.Lists.AdvancedLists.PersistentLinq
+namespace Melville.Lists.PersistentLinq
 {
 
   /// <summary>

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 using Melville.MVVM.Wpf.ViewFrames;
 using Melville.P2P.Raw.NetworkPrimatives;
 

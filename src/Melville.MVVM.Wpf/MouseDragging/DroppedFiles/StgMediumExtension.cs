@@ -2,7 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles
 {

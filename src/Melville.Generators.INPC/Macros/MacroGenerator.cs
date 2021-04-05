@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Melville.Generators.INPC.CodeWriters;
 using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;

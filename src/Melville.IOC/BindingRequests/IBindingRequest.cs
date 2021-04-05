@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Melville.IOC.IocContainers;
-using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.BindingRequests
 {

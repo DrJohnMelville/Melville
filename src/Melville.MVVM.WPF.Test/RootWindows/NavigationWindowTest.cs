@@ -1,5 +1,4 @@
-﻿using Melville.MVVM.CSharpHacks;
-using Melville.MVVM.Wpf.RootWindows;
+﻿using Melville.MVVM.Wpf.RootWindows;
 using Moq;
 using Xunit;
 

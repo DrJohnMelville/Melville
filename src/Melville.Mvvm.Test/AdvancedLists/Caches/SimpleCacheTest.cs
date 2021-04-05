@@ -1,10 +1,7 @@
 ﻿#nullable disable warnings
 using  System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using Melville.Lists.AdvancedLists.Caches;
+using Melville.Lists.Caches;
 using Xunit;
 
 namespace Melville.Mvvm.Test.AdvancedLists.Caches

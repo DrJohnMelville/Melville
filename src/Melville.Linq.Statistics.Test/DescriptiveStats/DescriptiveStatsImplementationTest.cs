@@ -1,6 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
+﻿using System.Linq;
 using Melville.Linq.Statistics.DescriptiveStats;
 using Xunit;
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace Melville.Lists.AdvancedLists
+namespace Melville.Lists
 {
   /// <summary>
   /// This class can be accessed from any thread and will appropriately marshall notification changes to the proper thread for CollectionView

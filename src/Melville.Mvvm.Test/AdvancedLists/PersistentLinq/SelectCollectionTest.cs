@@ -1,11 +1,9 @@
 ﻿#nullable disable warnings
 using  System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using Melville.Linq;
-using Melville.Lists.AdvancedLists;
-using Melville.Lists.AdvancedLists.PersistentLinq;
+using Melville.Lists;
+using Melville.Lists.PersistentLinq;
 using Xunit;
 
 namespace Melville.Mvvm.Test.AdvancedLists.PersistentLinq

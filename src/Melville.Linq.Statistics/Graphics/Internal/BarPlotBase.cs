@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
-using Accord.Math.Optimization;
 using Melville.Linq.Statistics.Graphics.Gutters;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;
-using OfficeOpenXml.DataValidation;
 
 namespace Melville.Linq.Statistics.Graphics.Internal
 {

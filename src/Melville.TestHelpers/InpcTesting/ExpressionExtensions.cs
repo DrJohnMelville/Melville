@@ -1,7 +1,6 @@
 ﻿using System;
 using  System.Linq.Expressions;
 using System.Reflection;
-using Xunit.Sdk;
 
 namespace Melville.TestHelpers.InpcTesting
 {

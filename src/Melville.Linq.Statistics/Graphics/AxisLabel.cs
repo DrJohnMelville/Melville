@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using Melville.Linq.Statistics.Graphics.Gutters;
 using Melville.Linq.Statistics.Graphics.Internal;
 using Melville.Linq.Statistics.Graphics.Internal.Axes;
 

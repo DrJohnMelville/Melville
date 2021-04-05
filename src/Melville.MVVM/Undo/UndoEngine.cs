@@ -1,9 +1,7 @@
 ﻿using  System;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 using Melville.MVVM.BusinessObjects;
 
 namespace Melville.MVVM.Undo

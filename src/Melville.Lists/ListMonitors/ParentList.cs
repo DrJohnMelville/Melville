@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Melville.INPC;
 
-namespace Melville.Lists.AdvancedLists.ListMonitors
+namespace Melville.Lists.ListMonitors
 {
   public interface IParent<TChild>
   {

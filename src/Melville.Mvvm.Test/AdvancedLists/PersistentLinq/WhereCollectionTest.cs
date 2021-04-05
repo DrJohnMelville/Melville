@@ -2,8 +2,8 @@
 using  System.Collections.Specialized;
 using System.Linq;
 using Melville.Linq;
-using Melville.Lists.AdvancedLists;
-using Melville.Lists.AdvancedLists.PersistentLinq;
+using Melville.Lists;
+using Melville.Lists.PersistentLinq;
 using Xunit;
 
 namespace Melville.Mvvm.Test.AdvancedLists.PersistentLinq

@@ -1,7 +1,5 @@
 ﻿using System.Buffers;
-using System.IO;
 using System.IO.Pipelines;
-using System.Threading.Tasks;
 using Melville.P2P.Raw.BinaryObjectPipes;
 using Xunit;
 

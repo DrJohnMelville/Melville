@@ -1,13 +1,9 @@
 using System;
-using LINQPad;
 using LINQPad.Extensibility.DataContext;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Windows;
 
 namespace Melville.ExcelDataContext
 {

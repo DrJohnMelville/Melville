@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
-namespace Melville.Lists.AdvancedLists.Caches
+namespace Melville.Lists.Caches
 {
   public class WeakCacheAsync<TKey, TResult> where TResult : class
   {

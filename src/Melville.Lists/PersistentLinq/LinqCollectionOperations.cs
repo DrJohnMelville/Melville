@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Melville.Lists.AdvancedLists.PersistentLinq
+namespace Melville.Lists.PersistentLinq
 {
   public static class LinqCollectionOperations
   {

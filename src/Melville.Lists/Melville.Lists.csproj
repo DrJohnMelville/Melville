@@ -9,5 +9,9 @@
         <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
         <ProjectReference Include="..\Melville.Linq\Melville.Linq.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="AdvancedLists" />
+    </ItemGroup>
 
 </Project>

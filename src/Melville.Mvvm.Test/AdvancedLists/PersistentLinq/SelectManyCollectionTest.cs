@@ -1,8 +1,8 @@
 ﻿#nullable disable warnings
 using  System.Collections.Specialized;
 using System.Linq;
-using Melville.Lists.AdvancedLists;
-using Melville.Lists.AdvancedLists.PersistentLinq;
+using Melville.Lists;
+using Melville.Lists.PersistentLinq;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
 

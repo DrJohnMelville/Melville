@@ -1,15 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Threading;
-using Melville.Lists.AdvancedLists;
+using Melville.Lists;
 using Melville.Log.Viewer.HomeScreens;
-using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.BusinessObjects;
 using Serilog.Events;
-using Serilog.Formatting.Compact.Reader;
 
 namespace Melville.Log.Viewer.LogViews
 {

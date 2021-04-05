@@ -1,6 +1,4 @@
-﻿using System;
-using Melville.MVVM.BusinessObjects;
-using Microsoft.Web.WebView2.Wpf;
+﻿using Melville.MVVM.BusinessObjects;
 
 namespace Melville.Wpf.Samples.WebView2Integration
 {

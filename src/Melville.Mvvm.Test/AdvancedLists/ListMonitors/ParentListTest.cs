@@ -1,5 +1,5 @@
 ﻿#nullable disable warnings
-using Melville.Lists.AdvancedLists.ListMonitors;
+using Melville.Lists.ListMonitors;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
 
@@ -12,8 +12,8 @@ namespace Melville.Mvvm.Test.AdvancedLists.ListMonitors
     public void AddAndReleaseSemantics()
     {
       var parent = new SimpleParent();
-      var child = new NotifyChildBase<SimpleParent>();
-      var list = new ParentList<NotifyChildBase<SimpleParent>, SimpleParent>(parent);
+      var child = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
+      var list = new ParentList<Lists.ListMonitors.NotifyChildBase<SimpleParent>, SimpleParent>(parent);
 
       Assert.Null(child.Parent);
 
@@ -35,8 +35,8 @@ namespace Melville.Mvvm.Test.AdvancedLists.ListMonitors
     public void SetAttachesParent()
     {
       var parent = new SimpleParent();
-      var child = new NotifyChildBase<SimpleParent>();
-      var list = new ParentList<NotifyChildBase<SimpleParent>, SimpleParent>(parent);
+      var child = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
+      var list = new ParentList<Lists.ListMonitors.NotifyChildBase<SimpleParent>, SimpleParent>(parent);
 
       Assert.Null(child.Parent);
 
@@ -49,9 +49,9 @@ namespace Melville.Mvvm.Test.AdvancedLists.ListMonitors
     public void SetReleasesOutgoingParent()
     {
       var parent = new SimpleParent();
-      var child1 = new NotifyChildBase<SimpleParent>();
-      var child2 = new NotifyChildBase<SimpleParent>();
-      var list = new ParentList<NotifyChildBase<SimpleParent>, SimpleParent>(parent);
+      var child1 = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
+      var child2 = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
+      var list = new ParentList<Lists.ListMonitors.NotifyChildBase<SimpleParent>, SimpleParent>(parent);
 
       Assert.Null(child2.Parent);
 
@@ -67,9 +67,9 @@ namespace Melville.Mvvm.Test.AdvancedLists.ListMonitors
     public void ClearSemantics()
     {
       var parent = new SimpleParent();
-      var child1 = new NotifyChildBase<SimpleParent>();
-      var child2 = new NotifyChildBase<SimpleParent>();
-      var list = new ParentList<NotifyChildBase<SimpleParent>, SimpleParent>(parent);
+      var child1 = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
+      var child2 = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
+      var list = new ParentList<Lists.ListMonitors.NotifyChildBase<SimpleParent>, SimpleParent>(parent);
 
       Assert.Null(child2.Parent);
 
@@ -85,14 +85,14 @@ namespace Melville.Mvvm.Test.AdvancedLists.ListMonitors
       Assert.Null(child2.Parent);
     }
 
-    class SimpleParent : IParent<NotifyChildBase<SimpleParent>>
+    class SimpleParent : IParent<Lists.ListMonitors.NotifyChildBase<SimpleParent>>
     {
-      public ParentList<NotifyChildBase<SimpleParent>, SimpleParent> List { get; set; }
+      public ParentList<Lists.ListMonitors.NotifyChildBase<SimpleParent>, SimpleParent> List { get; set; }
       public SimpleParent()
       {
-        List = new ParentList<NotifyChildBase<SimpleParent>, SimpleParent>(this);
+        List = new ParentList<Lists.ListMonitors.NotifyChildBase<SimpleParent>, SimpleParent>(this);
       }
-      public void LosingChild(NotifyChildBase<SimpleParent> child)
+      public void LosingChild(Lists.ListMonitors.NotifyChildBase<SimpleParent> child)
       {
         List.Remove(child);
       }
@@ -104,7 +104,7 @@ namespace Melville.Mvvm.Test.AdvancedLists.ListMonitors
       var parent2 = new SimpleParent();
       var list1 = parent1.List;
       var list2 = parent2.List;
-      var item = new NotifyChildBase<SimpleParent>();
+      var item = new Lists.ListMonitors.NotifyChildBase<SimpleParent>();
 
       Assert.Null(item.Parent);
 

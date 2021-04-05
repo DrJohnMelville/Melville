@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
-using System.Windows;
-using System.Windows.Input;
 using System.Xml.Linq;
-using System.Xml.Schema;
 using Accord.Statistics.Analysis;
 using Accord.Statistics.Testing;
-using LINQPad;
 using Melville.Linq.Statistics.FileWriter;
 using Melville.Linq.Statistics.Functional;
 using Melville.Linq.Statistics.HypothesisTesting;

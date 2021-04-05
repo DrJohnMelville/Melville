@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Melville.Lists.AdvancedLists.Caches
+namespace Melville.Lists.Caches
 {
   public sealed class SimpleCache<TKey, TResult>
   {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Melville.P2P.Raw.BinaryObjectPipes;
+﻿using System.Threading.Tasks;
 using Melville.P2P.Raw.NetworkPrimatives;
 
 namespace Melville.P2P.Raw.Discovery

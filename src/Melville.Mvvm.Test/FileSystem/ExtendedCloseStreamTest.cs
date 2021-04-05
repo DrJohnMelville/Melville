@@ -1,8 +1,5 @@
 ﻿#nullable disable warnings
-using  System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Melville.FileSystem;
 using Xunit;
 

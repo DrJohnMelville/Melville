@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace Melville.Lists.AdvancedLists
+namespace Melville.Lists
 {
   
   public class ObservableCollectionWithProperClearMethod<T> : ObservableCollection<T>
