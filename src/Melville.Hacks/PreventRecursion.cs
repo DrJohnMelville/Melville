@@ -1,6 +1,6 @@
-﻿using  System;
+﻿using System;
 
-namespace Melville.MVVM.CSharpHacks
+namespace Melville.Hacks
 {
   public sealed class PreventRecursion
   {

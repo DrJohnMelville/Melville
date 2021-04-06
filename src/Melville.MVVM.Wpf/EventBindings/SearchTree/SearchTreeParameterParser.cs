@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using Melville.Hacks.Reflection;
 using Melville.Linq;
-using Melville.MVVM.CSharpHacks;
 
 namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 {

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using Melville.MVVM.CSharpHacks;
+using Melville.Hacks.Reflection;
 using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
 using Serilog;
 

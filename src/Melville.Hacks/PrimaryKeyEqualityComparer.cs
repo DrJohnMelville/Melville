@@ -1,8 +1,8 @@
-﻿using  System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Melville.MVVM.CSharpHacks
+namespace Melville.Hacks
 {
   /// <summary>
   /// This clas lets you define identity semantics based on a primary key

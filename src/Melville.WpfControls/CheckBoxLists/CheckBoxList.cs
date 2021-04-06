@@ -1,7 +1,7 @@
 ﻿using  System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using Melville.MVVM.CSharpHacks;
+using Melville.Hacks;
 
 namespace Melville.WpfControls.CheckBoxLists
 {

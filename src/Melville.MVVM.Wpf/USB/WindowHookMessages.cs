@@ -5,6 +5,7 @@ using System.Windows.Media;
 
 namespace Melville.MVVM.Wpf.USB
 {
+    [Obsolete("Use WindowMessageSource-- may disappear very soon")]
     public static class WindowHookMessages
     {
         public static void AttachWindowHook(this Visual vis, int msg, Action<IntPtr, IntPtr> method) =>

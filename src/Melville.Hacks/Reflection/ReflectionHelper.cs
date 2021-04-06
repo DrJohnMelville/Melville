@@ -1,18 +1,26 @@
-﻿using  System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Melville.Linq;
 
-namespace Melville.MVVM.CSharpHacks
+namespace Melville.Hacks.Reflection
 {
+  //This class puts several extension methods on object.  Put it in its own namespace so you have to
+  // essentilly opt into this behaVIOR
   public static class ReflectionHelper
   {
     #region MemberInfoSelectors
 
-    private static IEnumerable<Type> AllBaseClasses(object target) =>
-      FunctionalMethods.Sequence<Type?>(target.GetType(), i => i?.BaseType).OfType<Type>();
-
+    private static IEnumerable<Type> AllBaseClasses(object target)
+    {
+      Type? type = target.GetType();
+      while (type != null)
+      {
+        yield return type;
+        type = type.BaseType;
+      }
+    }
+    
     private const BindingFlags DefaultBindingFlags =
       BindingFlags.Public | BindingFlags.Instance;
 

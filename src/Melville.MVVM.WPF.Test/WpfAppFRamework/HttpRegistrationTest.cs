@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
+using Melville.Hacks.Reflection;
 using Melville.IOC.IocContainers;
-using Melville.MVVM.CSharpHacks;
 using Melville.WpfAppFramework.HttpsServices;
 using Xunit;
 

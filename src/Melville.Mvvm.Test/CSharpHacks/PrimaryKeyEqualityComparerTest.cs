@@ -1,5 +1,5 @@
 ﻿#nullable disable warnings
-using  Melville.MVVM.CSharpHacks;
+using Melville.Hacks;
 using Xunit;
 
 namespace Melville.Mvvm.Test.CSharpHacks

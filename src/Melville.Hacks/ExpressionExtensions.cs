@@ -2,7 +2,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Melville.MVVM.CSharpHacks
+namespace Melville.Hacks
 {
   public static class ExpressionExtensions
   {

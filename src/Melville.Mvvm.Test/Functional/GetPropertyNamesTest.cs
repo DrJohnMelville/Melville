@@ -2,14 +2,14 @@
 using  System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Melville.MVVM.CSharpHacks;
+using Melville.Hacks;
 using Xunit;
 
 namespace Melville.Mvvm.Test.Functional
 {
   public sealed class GetPropertyNamesTest
   {
-    public IList<string> GetNames<T1,T2>(Expression<Func<T1, T2>> expr) => GetPropertyNames.FromExpression(expr);
+    public IEnumerable<string> GetNames<T1,T2>(Expression<Func<T1, T2>> expr) => GetPropertyNames.FromExpression(expr);
     [Fact]
     public void ExtractSingleName()
     {

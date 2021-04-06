@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
-using Melville.MVVM.CSharpHacks;
+using Melville.Hacks;
 using Moq;
 using Xunit;
 

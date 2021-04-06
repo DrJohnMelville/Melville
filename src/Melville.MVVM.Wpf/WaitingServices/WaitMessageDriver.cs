@@ -1,7 +1,7 @@
 ﻿using  System;
 using System.Threading;
+using Melville.Hacks;
 using Melville.INPC;
-using Melville.MVVM.CSharpHacks;
 using Melville.MVVM.WaitingServices;
 
 namespace Melville.MVVM.Wpf.WaitingServices

@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Windows;
+using Melville.Hacks;
 using Melville.MVVM.BusinessObjects;
-using Melville.MVVM.CSharpHacks;
 
 namespace Melville.MVVM.Wpf.ViewFrames
 {

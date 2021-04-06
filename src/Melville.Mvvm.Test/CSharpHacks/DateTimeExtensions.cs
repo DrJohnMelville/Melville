@@ -1,6 +1,6 @@
 ﻿#nullable disable warnings
 using  System;
-using Melville.MVVM.CSharpHacks;
+using Melville.Hacks;
 using Xunit;
 
 namespace Melville.Mvvm.Test.CSharpHacks

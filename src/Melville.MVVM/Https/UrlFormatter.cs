@@ -7,6 +7,7 @@ using Melville.Linq;
 
 namespace Melville.MVVM.Https
 {
+  [Obsolete("Move this into WID4Web and then delete")]
   public static class UrlFormatter
   {
     public static string ConcatUrlParts(params string[] strings) =>

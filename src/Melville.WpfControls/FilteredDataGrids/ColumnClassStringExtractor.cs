@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
-using Melville.MVVM.CSharpHacks;
+using Melville.Hacks.Reflection;
 
 namespace Melville.WpfControls.FilteredDataGrids
 {

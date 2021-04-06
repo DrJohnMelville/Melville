@@ -1,8 +1,8 @@
-﻿using  System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Melville.MVVM.CSharpHacks
+namespace Melville.Hacks
 {
   public static class TaskExtensions
   {
