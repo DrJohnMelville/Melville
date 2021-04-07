@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Melville.MVVM.WindowMessages
+namespace Melville.SystemInterface.WindowMessages
 {
     public class WindowMessageEventArgs:EventArgs
     {

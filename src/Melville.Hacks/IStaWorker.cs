@@ -1,8 +1,8 @@
-﻿using  System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Melville.MVVM.Asyncs
+namespace Melville.Hacks
 {
   /// <summary>
   /// Run an action on a new background threat which uses the STA threadding model.

@@ -1,7 +1,7 @@
 ﻿using System;
-using Melville.MVVM.WindowMessages;
+using Melville.SystemInterface.WindowMessages;
 
-namespace Melville.MVVM.USB
+namespace Melville.SystemInterface.USB
 {
     public interface IMonitorForDeviceArrival
     {

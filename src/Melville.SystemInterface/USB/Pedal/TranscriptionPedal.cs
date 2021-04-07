@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Melville.MVVM.USB.Pedal
+namespace Melville.SystemInterface.USB.Pedal
 {
     public enum PedalButton
     {

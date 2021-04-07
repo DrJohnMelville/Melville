@@ -2,10 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Melville.MVVM.WindowMessages;
+using Melville.SystemInterface.WindowMessages;
 using Microsoft.Win32.SafeHandles;
 
-namespace Melville.MVVM.USB
+namespace Melville.SystemInterface.USB
 {
 
   public abstract class UsbDevice: IDisposable

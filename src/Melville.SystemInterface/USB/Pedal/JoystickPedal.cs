@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using Melville.MVVM.USB.Joysticks;
+using Melville.SystemInterface.USB.Joysticks;
 
-namespace Melville.MVVM.USB.Pedal
+namespace Melville.SystemInterface.USB.Pedal
 {
     public class JoystickPedal: ITranscriptonPedal
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Melville.MVVM.RunShellCommands
+namespace Melville.SystemInterface.RunShellCommands
 {
     public interface IProcessProxy
     {

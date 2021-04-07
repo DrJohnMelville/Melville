@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows;
 using Melville.IOC.IocContainers;
-using Melville.MVVM.USB;
-using Melville.MVVM.USB.Pedal;
-using Melville.MVVM.USB.ThumbDrives;
-using Melville.MVVM.WindowMessages;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.MVVM.Wpf.WindowMessages;
+using Melville.SystemInterface.USB;
+using Melville.SystemInterface.USB.Pedal;
+using Melville.SystemInterface.USB.ThumbDrives;
+using Melville.SystemInterface.WindowMessages;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.WpfAppFramework.StartupBases;

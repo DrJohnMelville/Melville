@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Melville.MVVM.BusinessObjects;
-using Melville.MVVM.Time;
 using Melville.MVVM.Wpf.DiParameterSources;
+using Melville.SystemInterface.Time;
 
 namespace Melville.Wpf.Samples.ScopedMethodCalls
 {

@@ -1,10 +1,10 @@
-﻿using  System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Melville.MVVM.Asyncs
+namespace Melville.Hacks
 {
   // Async to non async by Stephen Toub
   //https://blogs.msdn.microsoft.com/pfxteam/2012/02/02/await-synchronizationcontext-and-console-apps-part-3/

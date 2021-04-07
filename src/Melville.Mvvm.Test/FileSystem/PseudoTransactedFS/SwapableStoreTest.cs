@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Melville.FileSystem;
 using Melville.FileSystem.PseudoTransactedFS;
-using Melville.MVVM.Asyncs;
+using Melville.Hacks;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Melville.Mvvm.TestHelpers.TestWrappers;
 using Moq;

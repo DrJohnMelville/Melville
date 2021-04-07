@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Melville.MVVM.WindowMessages;
+using Melville.SystemInterface.WindowMessages;
 
-namespace Melville.MVVM.USB.ThumbDrives
+namespace Melville.SystemInterface.USB.ThumbDrives
 {
     public class ThumbDriveEventArgs : EventArgs
     {

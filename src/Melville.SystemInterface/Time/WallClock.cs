@@ -1,7 +1,7 @@
-﻿using  System;
+﻿using System;
 using System.Threading.Tasks;
 
-namespace Melville.MVVM.Time
+namespace Melville.SystemInterface.Time
 {
   public class WallClock : IWallClock
   {

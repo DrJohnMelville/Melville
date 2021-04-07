@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace Melville.MVVM.USB
+namespace Melville.SystemInterface.USB
 {
     public static class EnumDevices
     {

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Melville.MVVM.RunShellCommands
+namespace Melville.SystemInterface.RunShellCommands
 {
     public interface IRunShellCommand
     {

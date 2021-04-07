@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Melville.MVVM.USB.Joysticks
+namespace Melville.SystemInterface.USB.Joysticks
 {
     public abstract class JoystickBase : UsbDevice
     {
