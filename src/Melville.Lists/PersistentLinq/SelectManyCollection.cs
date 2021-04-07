@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using Melville.Linq;
 
 namespace Melville.Lists.PersistentLinq
 {
@@ -43,8 +42,15 @@ namespace Melville.Lists.PersistentLinq
 
     private void RemoveSubCollectionChangedNotification(INotifyCollectionChanged i) => i.CollectionChanged -= SubCollectionChanged;
 
-    private void DoItemsAction(IList? collection, Action<INotifyCollectionChanged> action) => 
-      collection?.OfType<TParent>().Select(subItems).OfType<INotifyCollectionChanged>().ForEach(action);
+    private void DoItemsAction(IList? collection, Action<INotifyCollectionChanged> action)
+    {
+      if (collection == null) return;
+      foreach (var item in collection.OfType<TParent>().Select(subItems).OfType<INotifyCollectionChanged>())
+      {
+        action(item);
+      }
+    }
+
     private void SubCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
       if (sender == null)

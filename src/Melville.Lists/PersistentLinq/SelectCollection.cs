@@ -5,7 +5,6 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using Melville.Linq;
 
 namespace Melville.Lists.PersistentLinq
 {
@@ -102,7 +101,15 @@ namespace Melville.Lists.PersistentLinq
     [return:MaybeNull]
     public TDest TryCache([AllowNull]TSource key) => 
       (!object.Equals(key, default(TSource)!)) && cache.TryGetValue(key!, out var ret) ? ret : default!;
-    private void RemoveItemsFromCache(IList? items) => items?.OfType<TSource>().ForEach(i => cache.Remove(i));
+    private void RemoveItemsFromCache(IList? items)
+    {
+      if (items == null) return;
+      foreach (var item in items.OfType<TSource>())
+      {
+        cache.Remove(item);
+      }
+    }
+
     #endregion
 
     #region Implementation of IEnumerable
@@ -270,7 +277,10 @@ namespace Melville.Lists.PersistentLinq
       // clean out the cache
       if (DisposeOnRemove)
       {
-        cache.Values.OfType<IDisposable>().ForEach(i => i.Dispose());
+        foreach (var disposable in cache.Values.OfType<IDisposable>())
+        {
+          disposable.Dispose();
+        }
         cache.Clear(); 
       }
     }
@@ -278,7 +288,10 @@ namespace Melville.Lists.PersistentLinq
     public void DisposeList(IEnumerable items)
     {
       if (!DisposeOnRemove) return;
-      items.OfType<IDisposable>().ForEach(i => i.Dispose());
+      foreach (var disposable in items.OfType<IDisposable>())
+      {
+        disposable.Dispose();
+      }
     }
     #endregion
 

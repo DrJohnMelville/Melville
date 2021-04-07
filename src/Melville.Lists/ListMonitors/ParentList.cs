@@ -8,13 +8,12 @@ namespace Melville.Lists.ListMonitors
   {
     void LosingChild(TChild child);
   }
-  public interface IChild<TParent> where TParent:notnull
+  public interface IChild<TParent> 
   {
     /// <summary>
     ///   Gets or Sets the Parent
     /// </summary>
-    [MaybeNull]
-    TParent Parent { get; set; }
+    TParent? Parent { get; set; }
   }
 
   public partial class NotifyChildBase<T> :IChild<T> 
