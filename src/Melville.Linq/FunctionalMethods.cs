@@ -44,42 +44,6 @@ namespace Melville.Linq
     /// <returns>an enumerable object with a </returns>
     public static IEnumerable<T> Repeat<T>(T element, int copies) => Enumerable.Repeat(element, copies);
     
-    /// <summary>
-    /// "Clamps" a value to be within the range of min...max inclusive
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static double Clamp(this double value, double min, double max) => Math.Max(min, Math.Min(max, value));
-
-    /// <summary>
-    /// "Clamps" a value to be within the range of min...max inclusive
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static int Clamp(this int value, int min, int max) => Math.Max(min, Math.Min(max, value));
-
-    /// <summary>
-    /// Returns true if Min &lt;= value &lt;= max
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static bool IsInRange(this double value, double min, double max) => (min <= value) && (value <= max);
-
-    /// <summary>
-    /// Returns true if Min &lt;= value &lt;= max
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static bool IsInRange(this int value, int min, int max) => (min <= value) && (value <= max);
-
     public static T Fix<T>(this T item, Action<T> action)
     {
       action(item);

@@ -1,6 +1,7 @@
 ﻿#nullable disable warnings
 using  System.Collections.Specialized;
 using System.Linq;
+using Melville.Hacks;
 using Melville.Linq;
 using Melville.Lists;
 using Melville.Lists.PersistentLinq;

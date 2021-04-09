@@ -17,11 +17,8 @@ namespace Melville.FileSystem
     {
       base.Close();
       GC.SuppressFinalize(this);
-      // only call the extended close action once
-      var localAction = closeAction;
+      closeAction?.Invoke();
       closeAction = null;
-      if (localAction == null) return;
-      localAction();
     }
 
     ~ExtendedCloseStream()

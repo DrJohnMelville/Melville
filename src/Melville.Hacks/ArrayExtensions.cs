@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Melville.FileSystem
+namespace Melville.Hacks
 {
   public static class ArrayExtensions
   {

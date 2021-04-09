@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace Melville.Linq
+namespace Melville.Hacks
 {
   public static class ListExtensions
   {

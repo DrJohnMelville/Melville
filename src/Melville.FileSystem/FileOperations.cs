@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Melville.Hacks;
 
 namespace Melville.FileSystem
 {
@@ -62,25 +63,18 @@ namespace Melville.FileSystem
 
     public static async Task WriteXmlAsync(this IFile file, XElement element)
     {
-      using (var output = await file.CreateWrite())
-      {
-        await WriteXmlAsync(output, element);
-      }
+      await using var output = await file.CreateWrite();
+      await WriteXmlAsync(output, element);
     }
 
     public static async Task WriteXmlAsync(this Stream output, XElement element)
     {
-      var buffer = new AsyncWriterBuffer();
-      using (var writer = CreateXmlWriter(buffer.Buffer))
-      {
-        element.WriteTo(writer);
-      }
-      await buffer.WriteAsync(output);
+      using var writer = CreateXmlWriter(output);
+      await element.WriteToAsync(writer, CancellationToken.None);
     }
 
-    public static XmlWriter CreateXmlWriter(Stream output)
-    {
-      return XmlWriter.Create(output,
+    public static XmlWriter CreateXmlWriter(Stream output) =>
+      XmlWriter.Create(output,
         new XmlWriterSettings
         {
           CheckCharacters = true,
@@ -90,7 +84,7 @@ namespace Melville.FileSystem
           Indent = false,
           NewLineHandling = NewLineHandling.Replace
         });
-    }
+
     #endregion
 
     public static string Extension(this IFileSystemObject file) => Extension(file.Path);

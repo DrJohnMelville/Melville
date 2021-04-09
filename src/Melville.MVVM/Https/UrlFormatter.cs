@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Melville.Linq;
 
 namespace Melville.MVVM.Https
 {
@@ -25,9 +24,8 @@ namespace Melville.MVVM.Https
     public static string ToUrlList(object? parameters) =>
       parameters == null
         ? ""
-        : parameters.GetType().GetProperties()
-          .Select(i => ParameterValue(parameters, i))
-          .Interleave("&").ConcatenateStrings();
+        : String.Join("&", parameters.GetType().GetProperties()
+          .Select(i => ParameterValue(parameters, i)));
 
     public static string ParameterValue(object parameters, PropertyInfo property)
     {
@@ -56,12 +54,9 @@ namespace Melville.MVVM.Https
       .Select(i => new KeyValuePair<string, string>(i.Name, i.GetValue(parameters)?.ToString()??""));
 
     public static string MakeFolderList(params object[] folders) =>
-      folders
-        .Select(i=>Uri.EscapeDataString(i.ToString()??""))
-        .Interleave("/")
-        .Concat("/")
-        .ConcatenateStrings();
-
+      String.Join("/",folders
+        .Select(i=>Uri.EscapeDataString(i.ToString()??"")))+"/";
+        
     public static string MakePeerUri(this Uri source, string suffix) => 
       $"{source.Scheme}://{source.Authority}{suffix}";
   }

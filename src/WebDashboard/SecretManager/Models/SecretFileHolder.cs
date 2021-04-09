@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Melville.FileSystem;
+using Melville.Hacks;
 using Melville.Linq;
 using Melville.Lists;
 

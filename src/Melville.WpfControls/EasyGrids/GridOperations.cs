@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using Melville.Hacks;
 using Melville.Linq;
 
 namespace Melville.WpfControls.EasyGrids

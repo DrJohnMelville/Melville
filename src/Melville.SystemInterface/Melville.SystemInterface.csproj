@@ -2,6 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Title>Melville.SystemInterface</Title>
+        <PackageDescription>Interface system services like clock, USB, or running shell programs</PackageDescription>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
 
 </Project>

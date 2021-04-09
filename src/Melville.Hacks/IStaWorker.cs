@@ -62,7 +62,8 @@ namespace Melville.Hacks
       {
         tcs.SetResult(await action());
       });
-      if (OperatingSystem.IsWindows()) thread.SetApartmentState(ApartmentState.STA);
+      
+      thread.SetApartmentState(ApartmentState.STA);
       thread.Start();
       return tcs.Task;
     }

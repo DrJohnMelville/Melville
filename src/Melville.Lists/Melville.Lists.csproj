@@ -2,11 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+        <Title>Melville.Lists</Title>
+        <PackageDescription>Threadsafe lists -- mainly for WPF.  Also persistent linq lists</PackageDescription>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     
     <ItemGroup>
         <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
-        <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
     </ItemGroup>
     
     <ItemGroup>
