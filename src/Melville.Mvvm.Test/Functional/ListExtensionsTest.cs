@@ -1,5 +1,6 @@
 ﻿#nullable disable warnings
 using  System.Collections.Generic;
+using Melville.Hacks;
 using Melville.Linq;
 using Xunit;
 

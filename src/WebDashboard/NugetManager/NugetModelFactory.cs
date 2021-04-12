@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Melville.FileSystem;
+using Melville.Hacks;
 using Melville.Linq;
 
 namespace WebDashboard.NugetManager

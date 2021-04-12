@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Windows;
 using System.Windows.Interop;
-using Melville.MVVM.WindowMessages;
+using Melville.SystemInterface.WindowMessages;
 
 namespace Melville.MVVM.Wpf.WindowMessages
 {

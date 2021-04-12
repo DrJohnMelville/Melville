@@ -1,6 +1,6 @@
 ﻿using  System;
 using System.Runtime.InteropServices;
-using Melville.MVVM.WindowMessages;
+using Melville.SystemInterface.WindowMessages;
 
 namespace Melville.MVVM.Wpf.Clipboards
 {

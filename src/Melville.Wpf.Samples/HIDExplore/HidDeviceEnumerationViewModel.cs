@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Melville.MVVM.BusinessObjects;
-using Melville.MVVM.USB;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.ViewFrames;
+using Melville.SystemInterface.USB;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 
 namespace Melville.Wpf.Samples.HIDExplore

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Melville.Linq
 {
@@ -41,58 +42,30 @@ namespace Melville.Linq
     /// <param name="element">The element to be repeated.</param>
     /// <param name="copies">The number of copies to return.</param>
     /// <returns>an enumerable object with a </returns>
-    public static IEnumerable<T> Repeat<T>(T element, int copies)
-    {
-      return InnerRepeat(element, copies);
-    }
-    public static IEnumerable<T> InnerRepeat<T>(T element, int copies)
-    {
-      for (int i = 0; i < copies; i++)
-      {
-        yield return element;
-      }
-    }
-
-    /// <summary>
-    /// "Clamps" a value to be within the range of min...max inclusive
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static double Clamp(this double value, double min, double max) => Math.Max(min, Math.Min(max, value));
-
-    /// <summary>
-    /// "Clamps" a value to be within the range of min...max inclusive
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static int Clamp(this int value, int min, int max) => Math.Max(min, Math.Min(max, value));
-
-    /// <summary>
-    /// Returns true if Min &lt;= value &lt;= max
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static bool IsInRange(this double value, double min, double max) => (min <= value) && (value <= max);
-
-    /// <summary>
-    /// Returns true if Min &lt;= value &lt;= max
-    /// </summary>
-    /// <param name="value">the value to be clamped</param>
-    /// <param name="min">The minimum value</param>
-    /// <param name="max">the maximum value</param>
-    /// <returns>The initial value, clamped to the range of min...max</returns>
-    public static bool IsInRange(this int value, int min, int max) => (min <= value) && (value <= max);
-
+    public static IEnumerable<T> Repeat<T>(T element, int copies) => Enumerable.Repeat(element, copies);
+    
     public static T Fix<T>(this T item, Action<T> action)
     {
       action(item);
       return item;
     }
+    
+    /// <summary>
+    /// Get an entire tree of nodes using the given function to find children.
+    /// This function implements a preorder traversal.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the node being found.</typeparam>
+    /// <param name="source">The root of the tree.</param>
+    /// <param name="recursiveSelector">The function the maps any node to the enumeration of its children.</param>
+    /// <returns>All of the children and subchildren of this node in pre-order</returns>
+    public static IEnumerable<TSource> SelectRecursive<TSource>(
+      this IEnumerable<TSource> source,
+      Func<TSource, IEnumerable<TSource>?> recursiveSelector) =>
+      new RecursiveSelector<TSource>(source, recursiveSelector);
+
+
+    public static IEnumerable<TSource> SelectRecursive<TSource>(
+      TSource source, Func<TSource, IEnumerable<TSource>?> recursiveSelector) =>
+      new EnumerateSingle<TSource>(source).SelectRecursive(recursiveSelector);
   }
 }

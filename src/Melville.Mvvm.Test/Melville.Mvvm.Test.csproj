@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj" />
     <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
+    <ProjectReference Include="..\Melville.SystemInterface\Melville.SystemInterface.csproj" />
     <ProjectReference Include="..\Melville.TestHelpers\Melville.TestHelpers.csproj" />
   </ItemGroup>
 

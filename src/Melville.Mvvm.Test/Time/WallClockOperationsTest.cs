@@ -1,7 +1,7 @@
 ﻿#nullable disable warnings
 using  System;
 using System.Threading.Tasks;
-using Melville.MVVM.Time;
+using Melville.SystemInterface.Time;
 using Moq;
 using Xunit;
 

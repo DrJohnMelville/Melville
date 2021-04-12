@@ -1,5 +1,5 @@
 ﻿using Melville.MVVM.BusinessObjects;
-using Melville.MVVM.USB.Joysticks;
+using Melville.SystemInterface.USB.Joysticks;
 
 namespace Melville.Wpf.Samples.TranscriptionPedal
 {

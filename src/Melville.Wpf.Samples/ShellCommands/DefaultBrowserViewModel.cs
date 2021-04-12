@@ -1,4 +1,4 @@
-﻿using Melville.MVVM.RunShellCommands;
+﻿using Melville.SystemInterface.RunShellCommands;
 
 namespace Melville.Wpf.Samples.ShellCommands
 {

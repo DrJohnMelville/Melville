@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Melville.Hacks;
-using Melville.Linq;
 
 namespace Melville.MVVM.BusinessObjects
 {
@@ -37,7 +36,10 @@ namespace Melville.MVVM.BusinessObjects
 
     protected void OnPropertyChanged(params string[] otherParams)
     {
-      otherParams.ForEach(OnPropertyChanged);
+      foreach (var param in otherParams)
+      {
+         OnPropertyChanged(param);
+      }
     }
 
 
@@ -69,7 +71,10 @@ namespace Melville.MVVM.BusinessObjects
       {
         if (e.PropertyName?.Equals(foreignProperty, StringComparison.Ordinal) ?? true)
         {
-          localProperties.ForEach(OnPropertyChanged);
+          foreach (var property in localProperties)
+          {
+            OnPropertyChanged(property);
+          }
         }
       };
 
