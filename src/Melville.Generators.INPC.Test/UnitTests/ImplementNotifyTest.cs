@@ -411,6 +411,20 @@ namespace NM
             tb.FileContains("C.INPC.cs", "int? IntProp");
             tb.FileContains("C.INPC.1.cs", "T TProp");
         }
+        [Fact]
+        public void IncludeAttribute()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                @"using Melville.INPC;
+  using System.Collections.Generic;
+  public partial class C
+  {
+    [AutoNotify][NewProp(""Hello"")] private int integer;
+  }");
+            tb.AssertNoDiagnostics();
+            tb.FileContains("C.INPC.cs", "[NewProp(\"Hello\")]\r\n    public int Integer");
+            tb.FileDoesNotContain("C.INPC.cs", "[AutoNotify]");
+        }
 
     }
 }

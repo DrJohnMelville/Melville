@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
@@ -69,7 +70,7 @@ namespace Melville.Generators.INPC.INPC
         {
             var fieldName = variable.Identifier.ToString();
             var propertyName = ComputePropertyName(fieldName);
-            WritePropertyDecl(type, propertyName, fieldName);
+            WritePropertyDecl(type, variable, propertyName, fieldName);
             WritePartialChangeDeclaration(type, propertyName);
         }
 
@@ -82,8 +83,10 @@ namespace Melville.Generators.INPC.INPC
             CodeWriter.AppendLine(" newValue);");
         }
 
-        private void WritePropertyDecl(IFieldSymbol type, string propertyName, string fieldName)
+        private void WritePropertyDecl(
+            IFieldSymbol type, VariableDeclaratorSyntax variable, string propertyName, string fieldName)
         {
+            WriteAttributes(variable);
             WritePropertyLine(type, propertyName);
             using var propIndent = CodeWriter.CurlyBlock();
             WriteGetter(fieldName);
@@ -91,6 +94,16 @@ namespace Melville.Generators.INPC.INPC
             using var setIndent = CodeWriter.CurlyBlock();
             WriteSetterCode(propertyName, fieldName);
         }
+
+        private void WriteAttributes(VariableDeclaratorSyntax variable)
+        {
+            var attrs = ExtractAttributes(variable);
+            if (!attrs.HasValue) return;
+            CodeWriter.CopyAttributes(attrs.Value, "AutoNotify");
+        }
+
+        private static SyntaxList<AttributeListSyntax>? ExtractAttributes(VariableDeclaratorSyntax variable) => 
+            (variable.Parent?.Parent as MemberDeclarationSyntax)?.AttributeLists;
 
         private void WriteSetterCode(string propertyName, string fieldName)
         {
