@@ -89,10 +89,10 @@ namespace Melville.Generators.INPC.INPC
             WriteAttributes(variable);
             WritePropertyLine(type, propertyName);
             using var propIndent = CodeWriter.CurlyBlock();
-            WriteGetter(fieldName);
+            WriteGetter(fieldName, propertyName, type);
             CodeWriter.AppendLine("set");
             using var setIndent = CodeWriter.CurlyBlock();
-            WriteSetterCode(propertyName, fieldName);
+            WriteSetterCode(propertyName, fieldName, type);
         }
 
         private void WriteAttributes(VariableDeclaratorSyntax variable)
@@ -105,10 +105,13 @@ namespace Melville.Generators.INPC.INPC
         private static SyntaxList<AttributeListSyntax>? ExtractAttributes(VariableDeclaratorSyntax variable) => 
             (variable.Parent?.Parent as MemberDeclarationSyntax)?.AttributeLists;
 
-        private void WriteSetterCode(string propertyName, string fieldName)
+        private void WriteSetterCode(string propertyName, string fieldName, 
+            IFieldSymbol classSymbol)
         {
             CodeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
-            CodeWriter.AppendLine($"this.{fieldName} = value;");
+            CodeWriter.Append($"this.{fieldName} = ");
+            ComputeSetterFilter(classSymbol, propertyName);
+            CodeWriter.AppendLine($";");
             CodeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, this.{fieldName});");
             foreach (var changedProperty in 
                 Target.PropertyDependencies.AllDependantProperties(propertyName))
@@ -120,10 +123,38 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        private void WriteGetter(string fieldName)
+        private void ComputeSetterFilter(IFieldSymbol fieldSymbol, string propertyName)
+        {
+            var setterFilterName = propertyName + "SetFilter";
+            if (HasPeerFilterHasMethod(fieldSymbol, setterFilterName))
+            {
+                CodeWriter.Append($"this.{setterFilterName}(value)");
+            }
+            else
+            {
+                CodeWriter.Append("value");
+            }
+        }
+
+        private static bool HasPeerFilterHasMethod(IFieldSymbol fieldSymbol, string methodName) =>
+            fieldSymbol.ContainingSymbol is ITypeSymbol its &&
+            its.HasMethod(fieldSymbol.Type, methodName, fieldSymbol.Type);
+
+        private void WriteGetter(string fieldName, string propertyName, IFieldSymbol fieldSymbol)
         {
             CodeWriter.Append("get => this.");
-            CodeWriter.Append(fieldName);
+            var getterFilterName = propertyName + "GetFilter";
+            if (HasPeerFilterHasMethod(fieldSymbol, getterFilterName))
+            {
+                CodeWriter.Append(getterFilterName);
+                CodeWriter.Append("(this.");
+                CodeWriter.Append(fieldName);
+                CodeWriter.Append(")");
+            }
+            else
+            {
+                CodeWriter.Append(fieldName);
+            }
             CodeWriter.AppendLine(";");
         }
 
@@ -135,9 +166,10 @@ namespace Melville.Generators.INPC.INPC
             CodeWriter.AppendLine(propertyName);
         }
 
+        private static readonly Regex PropertyNameRegex = new("_*(.)(.*)");
         private string ComputePropertyName(string fieldName)
         {
-            var match = Regex.Match(fieldName, "_*(.)(.*)");
+            var match = PropertyNameRegex.Match(fieldName);
             return match.Groups[1].Value.ToUpper() + match.Groups[2].Value;
         }
     }

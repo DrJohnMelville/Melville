@@ -11,7 +11,7 @@ namespace Melville.Generators.INPC.AstUtilities
     {
         public static void WriteTypeSymbolName(this CodeWriter writer, ITypeSymbol symbol)
         {
-            writer.Append(symbol.ToString());
+            writer.Append(symbol.FullyQualifiedName());
         }
 
         public static string FullyQualifiedName(this ITypeSymbol symbol)
@@ -20,34 +20,43 @@ namespace Melville.Generators.INPC.AstUtilities
         }
 
         public static bool HasMethod(
-            this ITypeSymbol? symbol, Type? returnType, string name, params Type[] parameters)
+            this ITypeSymbol symbol, ITypeSymbol? returnType, string name, params ITypeSymbol[] parameters) =>
+            HasMethodImpl(symbol, returnType?.FullyQualifiedName(), name,
+                parameters.Select(i => i.FullyQualifiedName()).ToArray());
+
+        public static bool HasMethod(
+            this ITypeSymbol symbol, Type? returnType, string name, params Type[] parameters) =>
+            HasMethodImpl(symbol, returnType?.FullyQualifiedName(), name,
+                parameters.Select(i => i.FullyQualifiedName()).ToArray());
+
+        private static bool HasMethodImpl(
+            this ITypeSymbol? symbol, string? returnType, string name, params string[] paramTypes)
         {
             if (symbol == null) return false;
-            return HasLocalMethod(symbol, returnType, name, parameters) ||
-                   HasMethod(symbol.BaseType, returnType, name, parameters);
+            return HasLocalMethod(symbol, returnType, name, paramTypes) ||
+                   HasMethodImpl(symbol.BaseType, returnType, name, paramTypes);
         }
-
-        public static bool HasLocalMethod(
-            this ITypeSymbol symbol, Type? returnType, string name, params Type[] parameters) =>
+        
+        private static bool HasLocalMethod(
+            this ITypeSymbol symbol, string? returnType, string name, params string[] parameters) =>
             symbol.GetMembers().OfType<IMethodSymbol>().Any(m =>
                 MethodMatches(returnType, name, parameters, m));
 
-        private static bool MethodMatches(Type? returnType, string name, Type[] parameters, IMethodSymbol m)
-        {
-            return ReturnTypeMatches(returnType, m) &&
-                   name.Equals(m.Name, StringComparison.Ordinal) &&
-                   ParametersMatch(parameters, m.Parameters);
-        }
+        private static bool MethodMatches(
+            string? returnType, string name, string[] parameters, IMethodSymbol m) =>
+            ReturnTypeMatches(returnType, m) &&
+            name.Equals(m.Name, StringComparison.Ordinal) &&
+            ParametersMatch(parameters, m.Parameters);
 
-        private static bool ParametersMatch(Type[] expected, ImmutableArray<IParameterSymbol> found) =>
+        private static bool ParametersMatch(string[] expected, ImmutableArray<IParameterSymbol> found) =>
             (expected.Length == found.Length)
             && expected.Zip(found, (i, j) => TypeMatches(j.Type, i)).All(i=>i);
 
-        private static bool ReturnTypeMatches(Type? returnType, IMethodSymbol m) =>
+        private static bool ReturnTypeMatches(string? returnType, IMethodSymbol m) =>
             returnType == null ? m.ReturnsVoid :
                 TypeMatches(m.ReturnType, returnType);
 
-        public static bool TypeMatches(ITypeSymbol symbol, Type type) => 
-            symbol.FullyQualifiedName().Equals(type.FullyQualifiedName());
+        private static bool TypeMatches(ITypeSymbol symbol, string type) => 
+            symbol.FullyQualifiedName().Equals(type);
     }
 }

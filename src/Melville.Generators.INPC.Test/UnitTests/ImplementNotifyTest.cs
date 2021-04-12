@@ -434,9 +434,24 @@ namespace NM
   public partial class C
   {
     [AutoNotify] private int integer;
+    private int IntegerSetFilter(int i) => i;
   }");
             tb.AssertNoDiagnostics();
-            tb.FileContains("C.INPC.cs", "this.integer = IntegerSetFilter(value);");
+            tb.FileContains("C.INPC.cs", "this.integer = this.IntegerSetFilter(value);");
+        }
+        [Fact]
+        public void GetFilter()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                @"using Melville.INPC;
+  using System.Collections.Generic;
+  public partial class C
+  {
+    [AutoNotify] private int integer;
+    private int IntegerGetFilter(int i) => i;
+  }");
+            tb.AssertNoDiagnostics();
+            tb.FileContains("C.INPC.cs", "=> this.IntegerGetFilter(this.integer);");
         }
 
     }
