@@ -10,6 +10,8 @@ namespace Melville.INPC
 
     public static class PropertyChangeOperations
     {
+        public static void NotifyPropertyChange(this IExternalNotifyPropertyChanged obj, string propertyName) =>
+            obj.OnPropertyChanged(propertyName);
         public static void DelegatePropertyChangeFrom(
             this IExternalNotifyPropertyChanged target,
             INotifyPropertyChanged foreignObject,
