@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.AstUtilities;
 using Microsoft.CodeAnalysis;
@@ -58,12 +56,9 @@ namespace Melville.Generators.INPC.INPC
             SymbolEqualityComparer.Default.Equals(generatedRoot, target)
             && MemberIsMissing(generatedRoot, intName + ".OnPropertyChanged");
 
-        private bool MemberIsMissing(INamedTypeSymbol generatedRoot, string methodName) => 
-            !generatedRoot
-                .GetMembers(methodName)
-                .OfType<IMethodSymbol>()
-                .Any(i => HasSingleStringParameter(i.Parameters));
-
+        private bool MemberIsMissing(INamedTypeSymbol generatedRoot, string methodName) =>
+            !generatedRoot.HasMethod(null,methodName, typeof(string));
+       
         private INamedTypeSymbol? MostGeneralAncestorThatWillBeGenerated(INamedTypeSymbol? child)
         {
             if (child == null) return null;
@@ -76,21 +71,7 @@ namespace Melville.Generators.INPC.INPC
                 .Where(HasOnPropertyChangedMethod)
                 .FirstOrDefault();
 
-        private bool HasOnPropertyChangedMethod(INamedTypeSymbol? target)
-        {
-            if (target == null) return false;
-            return target.GetMembers().OfType<IMethodSymbol>().Any(IsOnPropertyChangedMethod) ||
-                   HasOnPropertyChangedMethod(target.BaseType);
-        }
-
-        private bool IsOnPropertyChangedMethod(IMethodSymbol i) =>
-            i.Name.Equals("OnPropertyChanged", StringComparison.Ordinal) &&
-            HasSingleStringParameter(i.Parameters);
-
-        private bool HasSingleStringParameter(ImmutableArray<IParameterSymbol> parameters) =>
-            parameters.Length == 1 && IsStringParameter(parameters[0]);
-
-        private bool IsStringParameter(IParameterSymbol parameter) =>
-            SymbolEqualityComparer.Default.Equals(parameter.Type, stringSymbol);
+        private bool HasOnPropertyChangedMethod(INamedTypeSymbol target) => 
+            target.HasMethod(null, "OnPropertyChanged", typeof(string));
     }
 }

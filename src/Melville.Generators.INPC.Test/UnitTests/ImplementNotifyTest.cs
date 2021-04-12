@@ -263,7 +263,7 @@ public partial class C : Melville.INPC.IExternalNotifyPropertyChanged
         {
             var ___LocalOld = this.ip2;
             this.ip2 = value;
-            WhenIp2Changes(___LocalOld, value);
+            WhenIp2Changes(___LocalOld, this.ip2);
             ((Melville.INPC.IExternalNotifyPropertyChanged)this).OnPropertyChanged(""Ip2"");
         }
     }
@@ -424,6 +424,19 @@ namespace NM
             tb.AssertNoDiagnostics();
             tb.FileContains("C.INPC.cs", "[NewProp(\"Hello\")]\r\n    public int Integer");
             tb.FileDoesNotContain("C.INPC.cs", "[AutoNotify]");
+        }
+        [Fact]
+        public void SetFilter()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                @"using Melville.INPC;
+  using System.Collections.Generic;
+  public partial class C
+  {
+    [AutoNotify] private int integer;
+  }");
+            tb.AssertNoDiagnostics();
+            tb.FileContains("C.INPC.cs", "this.integer = IntegerSetFilter(value);");
         }
 
     }

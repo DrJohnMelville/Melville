@@ -109,7 +109,7 @@ namespace Melville.Generators.INPC.INPC
         {
             CodeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
             CodeWriter.AppendLine($"this.{fieldName} = value;");
-            CodeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, value);");
+            CodeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, this.{fieldName});");
             foreach (var changedProperty in 
                 Target.PropertyDependencies.AllDependantProperties(propertyName))
             {
