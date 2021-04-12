@@ -108,12 +108,15 @@ namespace Melville.Generators.INPC.INPC
         private void WriteSetterCode(string propertyName, string fieldName, 
             IFieldSymbol classSymbol)
         {
-            CodeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
-            CodeWriter.Append($"this.{fieldName} = ");
-            ComputeSetterFilter(classSymbol, propertyName);
-            CodeWriter.AppendLine($";");
-            CodeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, this.{fieldName});");
-            foreach (var changedProperty in 
+            StoreOldValue(fieldName);
+            GenerateFieldAsignment(propertyName, fieldName, classSymbol);
+            CallWhenChangesMethod(propertyName, fieldName);
+            GeneratePropertyChangeCalls(propertyName);
+        }
+
+        private void GeneratePropertyChangeCalls(string propertyName)
+        {
+            foreach (var changedProperty in
                 Target.PropertyDependencies.AllDependantProperties(propertyName))
             {
                 notifyStrategy.PropertyChangeCallPrefix(CodeWriter);
@@ -121,6 +124,23 @@ namespace Melville.Generators.INPC.INPC
                 CodeWriter.Append(changedProperty);
                 CodeWriter.AppendLine("\");");
             }
+        }
+
+        private void CallWhenChangesMethod(string propertyName, string fieldName)
+        {
+            CodeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, this.{fieldName});");
+        }
+
+        private void StoreOldValue(string fieldName)
+        {
+            CodeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
+        }
+
+        private void GenerateFieldAsignment(string propertyName, string fieldName, IFieldSymbol classSymbol)
+        {
+            CodeWriter.Append($"this.{fieldName} = ");
+            ComputeSetterFilter(classSymbol, propertyName);
+            CodeWriter.AppendLine($";");
         }
 
         private void ComputeSetterFilter(IFieldSymbol fieldSymbol, string propertyName)
