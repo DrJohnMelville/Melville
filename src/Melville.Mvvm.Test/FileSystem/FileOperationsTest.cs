@@ -1,7 +1,10 @@
 ﻿#nullable disable warnings
+using System;
 using  System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Melville.FileSystem;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Moq;
@@ -181,6 +184,15 @@ namespace Melville.Mvvm.Test.FileSystem
       Assert.False(mockDirectory1.File("F1").Exists());
       Assert.True(mockDirectory2.File("F1").Exists());
       Assert.Equal("content", mockDirectory2.File("F1").Content());
+    }
+
+    [Fact]
+    public async Task WriteXmlAsync()
+    {
+      var target = new MemoryStream();
+      await target.WriteXmlAsync(new XElement("Foo"));
+      Assert.Contains("<?xml version=\"1.0\" encoding=\"utf-8\"?><Foo />",
+        Encoding.UTF8.GetString(target.GetBuffer().AsSpan()[..(int)target.Length]));
     }
   }
 }

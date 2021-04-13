@@ -82,7 +82,8 @@ namespace Melville.FileSystem
           ConformanceLevel = ConformanceLevel.Document,
           Encoding = Encoding.UTF8,
           Indent = false,
-          NewLineHandling = NewLineHandling.Replace
+          NewLineHandling = NewLineHandling.Replace,
+          Async = true
         });
 
     #endregion
