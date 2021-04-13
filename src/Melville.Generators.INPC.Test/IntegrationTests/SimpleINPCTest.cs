@@ -25,7 +25,7 @@ namespace Melville.Generators.INPC.Test.IntegrationTests
             [AutoNotify] private string notifyChanged = "";
             [AutoNotify] private int x;
 
-            partial void WhenXChanges(int oldValue, int newValue)
+            void OnXChanged(int oldValue, int newValue)
             {
                 NotifyChanged = $"{oldValue} -> {newValue}";
             }

@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.INPC;
+﻿using System.Text.Json.Serialization;
+using Melville.Generators.INPC.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.UnitTests
@@ -261,15 +262,37 @@ public partial class C : Melville.INPC.IExternalNotifyPropertyChanged
         get => this.ip2;
         set
         {
-            var ___LocalOld = this.ip2;
             this.ip2 = value;
-            WhenIp2Changes(___LocalOld, this.ip2);
             ((Melville.INPC.IExternalNotifyPropertyChanged)this).OnPropertyChanged(""Ip2"");
         }
     }
-    partial void WhenIp2Changes(int oldValue, int newValue);
 }
 ");
+        }
+
+        [Theory]
+        [InlineData("private void OnIpChanged(int old, int newVal){}",
+            "var ___LocalOld = this.ip", "not InFile")]
+        [InlineData("private void OnIpChanged(int old, int newVal){}",
+            "this.OnIpChanged(___LocalOld, this.ip);", "not InFile")]
+        [InlineData("private void OnIpChanged(int newVal){}", "this.OnIpChanged(this.ip);", "___LocalOld")]
+        [InlineData("private void OnIpChanged(){}", "this.OnIpChanged();", "___LocalOld")]
+        [InlineData(" ", "this.ip", "this.OnIpChanged();")]
+        public void OnPropertyChanged(string methodDecl, string included, string excluded)
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                $@"
+using Melville.INPC;
+namespace NM
+{{
+  public class C
+  {{ 
+    {methodDecl}
+    [AutoNotify] private int ip;
+  }}
+}}");
+            tb.FileContains("C.INPC.cs", included);
+            tb.FileDoesNotContain("C.INPC.cs", excluded);
         }
 
         [Fact]

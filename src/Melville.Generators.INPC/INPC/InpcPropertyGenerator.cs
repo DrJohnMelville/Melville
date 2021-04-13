@@ -36,11 +36,14 @@ namespace Melville.Generators.INPC.INPC
             fieldName = this.variable.Identifier.ToString();
             propertyName = ComputePropertyName(fieldName);
         }
-
+        
         public void DeclareWrappingProperty()
         {
-            WritePropertyDecl();
-            WritePartialChangeDeclaration();
+            WriteAttributes();
+            WritePropertyLine();
+            using var propIndent = codeWriter.CurlyBlock();
+            WriteGetter();
+            WriteSetter();
         }
 
         private static readonly Regex propertyNameRegex = new("_*(.)(.*)");
@@ -49,15 +52,10 @@ namespace Melville.Generators.INPC.INPC
             var match = propertyNameRegex.Match(fieldName);
             return match.Groups[1].Value.ToUpper() + match.Groups[2].Value;
         }
-        
-        private void WritePropertyDecl()
-        {
-            WriteAttributes();
-            WritePropertyLine();
-            using var propIndent = codeWriter.CurlyBlock();
-            WriteGetter();
-            WriteSetter();
-        }
+
+        private void WriteAttributes() => 
+            codeWriter.CopyAttributes(fieldToWrap.AttributeLists, "AutoNotify");
+
         private void WritePropertyLine()
         {
             codeWriter.Append("public ");
@@ -65,6 +63,7 @@ namespace Melville.Generators.INPC.INPC
             codeWriter.Append(" ");
             codeWriter.AppendLine(propertyName);
         }
+
         private void WriteGetter()
         {
             codeWriter.Append("get => this.");
@@ -82,6 +81,7 @@ namespace Melville.Generators.INPC.INPC
             }
             codeWriter.AppendLine(";");
         }
+
         private  bool HasPeerFilterHasMethod(string methodName) =>
             fieldToWrapSymbol.ContainingSymbol is ITypeSymbol its &&
             its.HasMethod(fieldToWrapSymbol.Type, methodName, fieldToWrapSymbol.Type);
@@ -92,11 +92,13 @@ namespace Melville.Generators.INPC.INPC
             using var setIndent = codeWriter.CurlyBlock();
             WriteSetterCode();
         }
+
         private void WriteSetterCode()
         {
-            StoreOldValue();
+            var changeMethodParamCount = SearchForOnChangedMethod();
+            StoreOldValue(changeMethodParamCount);
             GenerateFieldAsignment();
-            CallWhenChangesMethod();
+            CallOnChangedMethod(changeMethodParamCount);
             GeneratePropertyChangeCalls();
         }
 
@@ -112,14 +114,28 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        private void CallWhenChangesMethod()
+        private void CallOnChangedMethod(int onChangedParams)
         {
-            codeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, this.{fieldName});");
+            switch (onChangedParams)
+            {
+                case 0:
+                    codeWriter.AppendLine($"this.On{propertyName}Changed();");
+                    break;
+                case 1:
+                    codeWriter.AppendLine($"this.On{propertyName}Changed(this.{fieldName});");
+                    break;
+                case 2:
+                    codeWriter.AppendLine($"this.On{propertyName}Changed(___LocalOld, this.{fieldName});");
+                    break;
+            }
         }
 
-        private void StoreOldValue()
+        private void StoreOldValue(int onChangedParams)
         {
-            codeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
+            if (onChangedParams == 2)
+            {
+                codeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
+            }
         }
 
         private void GenerateFieldAsignment()
@@ -141,21 +157,21 @@ namespace Melville.Generators.INPC.INPC
                 codeWriter.Append("value");
             }
         }
-        
-        private void WriteAttributes()
-        {
-            codeWriter.CopyAttributes(fieldToWrap.AttributeLists, "AutoNotify");
-        }
 
-        
-        private void WritePartialChangeDeclaration()
+        private int SearchForOnChangedMethod()
         {
-            codeWriter.Append($"partial void When{propertyName}Changes(");
-            codeWriter.WriteTypeSymbolName(fieldToWrapSymbol.Type);
-            codeWriter.Append(" oldValue, ");
-            codeWriter.WriteTypeSymbolName(fieldToWrapSymbol.Type);
-            codeWriter.AppendLine(" newValue);");
+            var changeMethodName = $"On{propertyName}Changed";
+            var targetType = fieldToWrapSymbol.Type;
+            return true switch
+            {
+                true when
+                    target.TypeInfo.HasMethod(null, changeMethodName, targetType, targetType) => 2,
+                true when
+                    target.TypeInfo.HasMethod(null, changeMethodName, targetType) => 1,
+                true when
+                    target.TypeInfo.HasMethod(null, changeMethodName, Array.Empty<ITypeSymbol>()) => 0,
+                _ => -1
+            };
         }
-
     }
 }
