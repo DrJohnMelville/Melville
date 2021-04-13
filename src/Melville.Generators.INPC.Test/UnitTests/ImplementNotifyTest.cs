@@ -271,13 +271,15 @@ public partial class C : Melville.INPC.IExternalNotifyPropertyChanged
         }
 
         [Theory]
+        [InlineData("private void OnIpChanged(int old, int newVal){} private int IpSetFilter(int a)=>a;",
+            "this.OnIpChanged(this.ip, this.ip = this.IpSetFilter(value));", "this.ip = value;")]
         [InlineData("private void OnIpChanged(int old, int newVal){}",
-            "var ___LocalOld = this.ip", "not InFile")]
-        [InlineData("private void OnIpChanged(int old, int newVal){}",
-            "this.OnIpChanged(___LocalOld, this.ip);", "not InFile")]
-        [InlineData("private void OnIpChanged(int newVal){}", "this.OnIpChanged(this.ip);", "___LocalOld")]
-        [InlineData("private void OnIpChanged(){}", "this.OnIpChanged();", "___LocalOld")]
-        [InlineData(" ", "this.ip", "this.OnIpChanged();")]
+            "this.OnIpChanged(this.ip, this.ip = value);", "this.ip = value;")]
+        [InlineData("private void OnIpChanged(int newVal){}", 
+            "this.OnIpChanged(this.ip = value);", "this.ip = value;")]
+        [InlineData("private void OnIpChanged(){}", "this.ip = value;", "gbjojh")]
+        [InlineData("private void OnIpChanged(){}", "this.OnIpChanged();", "gbjojh")]
+        [InlineData(" ", "this.ip = value;", "this.OnIpChanged();")]
         public void OnPropertyChanged(string methodDecl, string included, string excluded)
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),

@@ -95,10 +95,7 @@ namespace Melville.Generators.INPC.INPC
 
         private void WriteSetterCode()
         {
-            var changeMethodParamCount = SearchForOnChangedMethod();
-            StoreOldValue(changeMethodParamCount);
-            GenerateFieldAsignment();
-            CallOnChangedMethod(changeMethodParamCount);
+            CallOnChangedMethod();
             GeneratePropertyChangeCalls();
         }
 
@@ -114,51 +111,33 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        private void CallOnChangedMethod(int onChangedParams)
+        private void CallOnChangedMethod()
         {
-            switch (onChangedParams)
+            switch (ParametersOfOnChangeMethod())
             {
                 case 0:
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($";");
                     codeWriter.AppendLine($"this.On{propertyName}Changed();");
                     break;
                 case 1:
-                    codeWriter.AppendLine($"this.On{propertyName}Changed(this.{fieldName});");
+                    codeWriter.Append($"this.On{propertyName}Changed(");
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($");");
                     break;
                 case 2:
-                    codeWriter.AppendLine($"this.On{propertyName}Changed(___LocalOld, this.{fieldName});");
+                    codeWriter.Append($"this.On{propertyName}Changed(this.{fieldName}, ");
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($");");
+                    break;
+                default:
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($";");
                     break;
             }
         }
 
-        private void StoreOldValue(int onChangedParams)
-        {
-            if (onChangedParams == 2)
-            {
-                codeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
-            }
-        }
-
-        private void GenerateFieldAsignment()
-        {
-            codeWriter.Append($"this.{fieldName} = ");
-            ComputeSetterFilter();
-            codeWriter.AppendLine($";");
-        }
-
-        private void ComputeSetterFilter()
-        {
-            var setterFilterName = propertyName + "SetFilter";
-            if (HasPeerFilterHasMethod(setterFilterName))
-            {
-                codeWriter.Append($"this.{setterFilterName}(value)");
-            }
-            else
-            {
-                codeWriter.Append("value");
-            }
-        }
-
-        private int SearchForOnChangedMethod()
+        private int ParametersOfOnChangeMethod()
         {
             var changeMethodName = $"On{propertyName}Changed";
             var targetType = fieldToWrapSymbol.Type;
@@ -172,6 +151,25 @@ namespace Melville.Generators.INPC.INPC
                     target.TypeInfo.HasMethod(null, changeMethodName, Array.Empty<ITypeSymbol>()) => 0,
                 _ => -1
             };
+        }
+
+        private void GenerateFieldAsignment()
+        {
+            codeWriter.Append($"this.{fieldName} = ");
+            ComputeSetterFilter();
+        }
+
+        private void ComputeSetterFilter()
+        {
+            var setterFilterName = propertyName + "SetFilter";
+            if (HasPeerFilterHasMethod(setterFilterName))
+            {
+                codeWriter.Append($"this.{setterFilterName}(value)");
+            }
+            else
+            {
+                codeWriter.Append("value");
+            }
         }
     }
 }
