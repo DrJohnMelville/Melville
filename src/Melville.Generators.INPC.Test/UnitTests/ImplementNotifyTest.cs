@@ -444,10 +444,10 @@ namespace NM
   using System.Collections.Generic;
   public partial class C
   {
-    [AutoNotify][NewProp(""Hello"")] private int integer;
+    [AutoNotify(Attributes=""[NewProp(1)]"")]private int integer;
   }");
             tb.AssertNoDiagnostics();
-            tb.FileContains("C.INPC.cs", "[NewProp(\"Hello\")]\r\n    public int Integer");
+            tb.FileContains("C.INPC.cs", "[NewProp(1)]\r\n    public int Integer");
             tb.FileDoesNotContain("C.INPC.cs", "[AutoNotify]");
         }
         [Fact]

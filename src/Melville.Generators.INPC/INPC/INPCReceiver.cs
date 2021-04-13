@@ -8,7 +8,8 @@ namespace Melville.Generators.INPC.INPC
     public class INPCReceiver : ISyntaxReceiver
     {
         public Dictionary<ClassDeclarationSyntax, ClassFieldRecord> ClassesToAugment { get; } = new();
-        private SearchForAttribute autoNotifyAttributeSearcher = new("Melville.INPC.AutoNotifyAttribute");
+        private static SearchForAttribute autoNotifyAttributeSearcher =
+            new("Melville.INPC.AutoNotifyAttribute");
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {

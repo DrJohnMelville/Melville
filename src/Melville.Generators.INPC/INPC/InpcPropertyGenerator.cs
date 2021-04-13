@@ -21,14 +21,15 @@ namespace Melville.Generators.INPC.INPC
         public InpcPropertyGenerator(FieldDeclarationSyntax fieldToWrap,
             CodeWriter codeWriter,
             ClassToImplement target,
-            INotifyImplementationStategy notifyStrategy, 
+            INotifyImplementationStategy notifyStrategy,
             VariableDeclaratorSyntax variable)
         {
             this.fieldToWrap = fieldToWrap;
-            fieldToWrapSymbol =  
+            fieldToWrapSymbol =
                 (target.SemanticModel.GetDeclaredSymbol(fieldToWrap.Declaration.Variables.First())
                     as IFieldSymbol) ??
-                    throw new InvalidProgramException("This should be an IFieldSymbol");;
+                throw new InvalidProgramException("This should be an IFieldSymbol");
+            ;
             this.codeWriter = codeWriter;
             this.target = target;
             this.notifyStrategy = notifyStrategy;
@@ -36,7 +37,7 @@ namespace Melville.Generators.INPC.INPC
             fieldName = this.variable.Identifier.ToString();
             propertyName = ComputePropertyName(fieldName);
         }
-        
+
         public void DeclareWrappingProperty()
         {
             WriteAttributes();
@@ -47,14 +48,29 @@ namespace Melville.Generators.INPC.INPC
         }
 
         private static readonly Regex propertyNameRegex = new("_*(.)(.*)");
+
         private static string ComputePropertyName(string fieldName)
         {
             var match = propertyNameRegex.Match(fieldName);
             return match.Groups[1].Value.ToUpper() + match.Groups[2].Value;
         }
 
-        private void WriteAttributes() => 
-            codeWriter.CopyAttributes(fieldToWrap.AttributeLists, "AutoNotify");
+        private static SearchForAttribute
+            autoNotifyAttributeSearcher = new("Melville.INPC.AutoNotifyAttribute");
+
+        private void WriteAttributes()
+        {
+            foreach (var attribute in autoNotifyAttributeSearcher.FindAllAttributes(fieldToWrap))
+            {
+                foreach (var (name, value) in attribute.ToArguments())
+                {
+                    if (name?.Equals("Attributes", StringComparison.Ordinal) ?? false)
+                    {
+                        codeWriter.AppendLine(value);
+                    }
+                }
+            }
+        }
 
         private void WritePropertyLine()
         {
@@ -79,10 +95,11 @@ namespace Melville.Generators.INPC.INPC
             {
                 codeWriter.Append(fieldName);
             }
+
             codeWriter.AppendLine(";");
         }
 
-        private  bool HasPeerFilterHasMethod(string methodName) =>
+        private bool HasPeerFilterHasMethod(string methodName) =>
             fieldToWrapSymbol.ContainingSymbol is ITypeSymbol its &&
             its.HasMethod(fieldToWrapSymbol.Type, methodName, fieldToWrapSymbol.Type);
 
