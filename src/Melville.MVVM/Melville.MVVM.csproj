@@ -11,4 +11,8 @@
     <ProjectReference Include="..\Melville.Hacks\Melville.Hacks.csproj" />
     <ProjectReference Include="..\Melville.Lists\Melville.Lists.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Https" />
+  </ItemGroup>
 </Project>
