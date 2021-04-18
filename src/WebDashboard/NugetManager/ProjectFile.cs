@@ -19,7 +19,7 @@ namespace WebDashboard.NugetManager
                 .Any(i => i.Value.Equals("true", StringComparison.OrdinalIgnoreCase));
         [AutoNotify] private bool deploy;
 
-        partial void WhenDeployChanges(bool oldValue, bool newValue)
+        void OnDeployChanged()
         {
             foreach (var proj in DependsOn)
             {

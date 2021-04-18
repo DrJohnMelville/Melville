@@ -21,5 +21,14 @@ namespace Melville.Generators.INPC.AstUtilities
         public static IEnumerable<string> AttributeParameters(this AttributeSyntax attrib) =>
             attrib.ArgumentList?.Arguments.Select(AttributeParsers.ExtractArgumentFromAttribute)
             ?? Array.Empty<string>();
+
+        public static IEnumerable<(string? Name, string Value)> ToArguments(
+            this AttributeSyntax attribute) => attribute.ArgumentList?.ToArguments()??
+                                               Array.Empty<(string?,string)>();
+        public static IEnumerable<(string? Name, string Value)> ToArguments(
+            this AttributeArgumentListSyntax listSyntax) =>
+          listSyntax.Arguments
+              .Select(i=>(i.NameEquals?.Name.ToString(), i.ExtractArgumentFromAttribute()));
+        
     }
 }

@@ -21,14 +21,15 @@ namespace Melville.Generators.INPC.INPC
         public InpcPropertyGenerator(FieldDeclarationSyntax fieldToWrap,
             CodeWriter codeWriter,
             ClassToImplement target,
-            INotifyImplementationStategy notifyStrategy, 
+            INotifyImplementationStategy notifyStrategy,
             VariableDeclaratorSyntax variable)
         {
             this.fieldToWrap = fieldToWrap;
-            fieldToWrapSymbol =  
+            fieldToWrapSymbol =
                 (target.SemanticModel.GetDeclaredSymbol(fieldToWrap.Declaration.Variables.First())
                     as IFieldSymbol) ??
-                    throw new InvalidProgramException("This should be an IFieldSymbol");;
+                throw new InvalidProgramException("This should be an IFieldSymbol");
+            ;
             this.codeWriter = codeWriter;
             this.target = target;
             this.notifyStrategy = notifyStrategy;
@@ -39,25 +40,38 @@ namespace Melville.Generators.INPC.INPC
 
         public void DeclareWrappingProperty()
         {
-            WritePropertyDecl();
-            WritePartialChangeDeclaration();
-        }
-
-        private static readonly Regex propertyNameRegex = new("_*(.)(.*)");
-        private static string ComputePropertyName(string fieldName)
-        {
-            var match = propertyNameRegex.Match(fieldName);
-            return match.Groups[1].Value.ToUpper() + match.Groups[2].Value;
-        }
-        
-        private void WritePropertyDecl()
-        {
             WriteAttributes();
             WritePropertyLine();
             using var propIndent = codeWriter.CurlyBlock();
             WriteGetter();
             WriteSetter();
         }
+
+        private static readonly Regex propertyNameRegex = new("_*(.)(.*)");
+
+        private static string ComputePropertyName(string fieldName)
+        {
+            var match = propertyNameRegex.Match(fieldName);
+            return match.Groups[1].Value.ToUpper() + match.Groups[2].Value;
+        }
+
+        private static SearchForAttribute
+            autoNotifyAttributeSearcher = new("Melville.INPC.AutoNotifyAttribute");
+
+        private void WriteAttributes()
+        {
+            foreach (var attribute in autoNotifyAttributeSearcher.FindAllAttributes(fieldToWrap))
+            {
+                foreach (var (name, value) in attribute.ToArguments())
+                {
+                    if (name?.Equals("Attributes", StringComparison.Ordinal) ?? false)
+                    {
+                        codeWriter.AppendLine(value);
+                    }
+                }
+            }
+        }
+
         private void WritePropertyLine()
         {
             codeWriter.Append("public ");
@@ -65,6 +79,7 @@ namespace Melville.Generators.INPC.INPC
             codeWriter.Append(" ");
             codeWriter.AppendLine(propertyName);
         }
+
         private void WriteGetter()
         {
             codeWriter.Append("get => this.");
@@ -80,9 +95,11 @@ namespace Melville.Generators.INPC.INPC
             {
                 codeWriter.Append(fieldName);
             }
+
             codeWriter.AppendLine(";");
         }
-        private  bool HasPeerFilterHasMethod(string methodName) =>
+
+        private bool HasPeerFilterHasMethod(string methodName) =>
             fieldToWrapSymbol.ContainingSymbol is ITypeSymbol its &&
             its.HasMethod(fieldToWrapSymbol.Type, methodName, fieldToWrapSymbol.Type);
 
@@ -92,11 +109,10 @@ namespace Melville.Generators.INPC.INPC
             using var setIndent = codeWriter.CurlyBlock();
             WriteSetterCode();
         }
+
         private void WriteSetterCode()
         {
-            StoreOldValue();
-            GenerateFieldAsignment();
-            CallWhenChangesMethod();
+            CallOnChangedMethod();
             GeneratePropertyChangeCalls();
         }
 
@@ -112,21 +128,52 @@ namespace Melville.Generators.INPC.INPC
             }
         }
 
-        private void CallWhenChangesMethod()
+        private void CallOnChangedMethod()
         {
-            codeWriter.AppendLine($"When{propertyName}Changes(___LocalOld, this.{fieldName});");
+            switch (ParametersOfOnChangeMethod())
+            {
+                case 0:
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($";");
+                    codeWriter.AppendLine($"this.On{propertyName}Changed();");
+                    break;
+                case 1:
+                    codeWriter.Append($"this.On{propertyName}Changed(");
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($");");
+                    break;
+                case 2:
+                    codeWriter.Append($"this.On{propertyName}Changed(this.{fieldName}, ");
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($");");
+                    break;
+                default:
+                    GenerateFieldAsignment();
+                    codeWriter.AppendLine($";");
+                    break;
+            }
         }
 
-        private void StoreOldValue()
+        private int ParametersOfOnChangeMethod()
         {
-            codeWriter.AppendLine($"var ___LocalOld = this.{fieldName};");
+            var changeMethodName = $"On{propertyName}Changed";
+            var targetType = fieldToWrapSymbol.Type;
+            return true switch
+            {
+                true when
+                    target.TypeInfo.HasMethod(null, changeMethodName, targetType, targetType) => 2,
+                true when
+                    target.TypeInfo.HasMethod(null, changeMethodName, targetType) => 1,
+                true when
+                    target.TypeInfo.HasMethod(null, changeMethodName, Array.Empty<ITypeSymbol>()) => 0,
+                _ => -1
+            };
         }
 
         private void GenerateFieldAsignment()
         {
             codeWriter.Append($"this.{fieldName} = ");
             ComputeSetterFilter();
-            codeWriter.AppendLine($";");
         }
 
         private void ComputeSetterFilter()
@@ -141,21 +188,5 @@ namespace Melville.Generators.INPC.INPC
                 codeWriter.Append("value");
             }
         }
-        
-        private void WriteAttributes()
-        {
-            codeWriter.CopyAttributes(fieldToWrap.AttributeLists, "AutoNotify");
-        }
-
-        
-        private void WritePartialChangeDeclaration()
-        {
-            codeWriter.Append($"partial void When{propertyName}Changes(");
-            codeWriter.WriteTypeSymbolName(fieldToWrapSymbol.Type);
-            codeWriter.Append(" oldValue, ");
-            codeWriter.WriteTypeSymbolName(fieldToWrapSymbol.Type);
-            codeWriter.AppendLine(" newValue);");
-        }
-
     }
 }
