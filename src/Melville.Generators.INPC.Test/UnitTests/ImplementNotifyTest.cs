@@ -38,7 +38,7 @@ namespace NM
             tb.AssertNoDiagnostics();
             tb.FileContains("D.INPC.cs", "public partial class C");
             tb.FileContains("D.INPC.cs",
-                "public partial class D : Melville.INPC.IExternalNotifyPropertyChanged");
+                "public partial class D: Melville.INPC.IExternalNotifyPropertyChanged");
         }
 
         [Fact]
@@ -249,7 +249,7 @@ using Melville.INPC;
             tb.FileEqual("C.INPC.cs",
                 @"#nullable enable
 using Melville.INPC;
-public partial class C : Melville.INPC.IExternalNotifyPropertyChanged
+public partial class C: Melville.INPC.IExternalNotifyPropertyChanged
 {
     public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
     void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)
@@ -302,7 +302,7 @@ namespace NM
         [AutoNotify] private int y;
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
-                "public partial class ImplementInheritedINPC \r\n{");
+                "public partial class ImplementInheritedINPC\r\n{");
         }
 
         [Fact]
@@ -319,7 +319,7 @@ namespace NM
         [AutoNotify] private int y;
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
-                "public partial class ImplementInheritedINPC \r\n{");
+                "public partial class ImplementInheritedINPC\r\n{");
         }
 
         [Fact]
@@ -333,7 +333,7 @@ namespace NM
         [AutoNotify] private int y;
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
-                "public partial class ImplementInheritedINPC \r\n{");
+                "public partial class ImplementInheritedINPC\r\n{");
         }
 
         [Fact]
@@ -452,6 +452,20 @@ namespace NM
   }");
             tb.AssertNoDiagnostics();
             tb.FileContains("C.INPC.cs", "=> this.IntegerGetFilter(this.integer);");
+        }
+        [Fact]
+        public void ClassWithGenericConstraint()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                @"using Melville.INPC;
+  public interface IInt{}
+  public partial class C<T> where T: IInt
+  {
+    [AutoNotify] private int integer;
+  }");
+            tb.AssertNoDiagnostics();
+            tb.FileContains("C.INPC.cs", 
+                "public partial class C<T>: Melville.INPC.IExternalNotifyPropertyChanged where T: IInt");
         }
 
     }
