@@ -8,8 +8,7 @@ namespace Melville.Generators.INPC.INPC
 {
     public class PropertyDependencyChecker
     {
-        private readonly Dictionary<string, HashSet<string>> mappings = 
-            new Dictionary<string, HashSet<string>>();
+        private readonly Dictionary<string, HashSet<string>> mappings = new();
 
         public void AddProperty(PropertyDeclarationSyntax property)
         {
@@ -40,7 +39,10 @@ namespace Melville.Generators.INPC.INPC
         private bool ValidInvocation(SyntaxNode invocation) =>
             invocation.Parent switch
             {
-                MemberAccessExpressionSyntax mae when !mae.Expression.ToString().Equals("this") => false,
+                MemberAccessExpressionSyntax mae when mae.Expression == invocation => true,
+                MemberAccessExpressionSyntax mae when !(
+                    mae.Expression.ToString().Equals("this") &&
+                    mae.Name == invocation) => false,
                 MemberBindingExpressionSyntax _ => false,
                 _=> true
             };

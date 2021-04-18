@@ -249,7 +249,7 @@ using Melville.INPC;
             tb.FileEqual("C.INPC.cs",
                 @"#nullable enable
 using Melville.INPC;
-public partial class C: Melville.INPC.IExternalNotifyPropertyChanged
+public partial class C: Melville.INPC.IExternalNotifyPropertyChanged 
 {
     public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
     void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)
@@ -302,7 +302,7 @@ namespace NM
         [AutoNotify] private int y;
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
-                "public partial class ImplementInheritedINPC\r\n{");
+                "public partial class ImplementInheritedINPC \r\n{");
         }
 
         [Fact]
@@ -319,7 +319,7 @@ namespace NM
         [AutoNotify] private int y;
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
-                "public partial class ImplementInheritedINPC\r\n{");
+                "public partial class ImplementInheritedINPC \r\n{");
         }
 
         [Fact]
@@ -333,11 +333,15 @@ namespace NM
         [AutoNotify] private int y;
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
-                "public partial class ImplementInheritedINPC\r\n{");
+                "public partial class ImplementInheritedINPC \r\n{");
         }
 
-        [Fact]
-        public void PropegateToReadOnlyPropertyImpl()
+        [Theory]
+        [InlineData("[AutoNotify] int FindY {get{return Y;}}")]
+        [InlineData("[AutoNotify] int FindY => Y")]
+        [InlineData("[AutoNotify] string FindY => Y.GetType().ToString")]
+        [InlineData("[AutoNotify] string FindY => this.Y.GetType().ToString")]
+        public void PropegateToReadOnlyPropertyImpl(string propDecl)
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
                 @"using Melville.INPC;
@@ -345,7 +349,7 @@ namespace NM
     {
         protected void OnPropertyChanged(string property) {}
         [AutoNotify] private int y;
-        [AutoNotify] public int FindY {get {return Y;}}
+        "+propDecl+@"
     }");
             tb.FileContains("ImplementInheritedINPC.INPC.cs",
                 @"OnPropertyChanged(""FindY"");");

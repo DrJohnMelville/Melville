@@ -32,6 +32,7 @@ namespace Melville.Generators.INPC.CodeWriters
             writer.Append(classDecl.Identifier.ToString());
             if (classDecl.TypeParameterList is { } tpl) writer.Append(tpl.ToString());
             writer.Append(suffix);
+            writer.Append(" ");
             writer.Append(classDecl.ConstraintClauses.ToString());
             writer.AppendLine();
         }
