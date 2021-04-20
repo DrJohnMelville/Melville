@@ -7,7 +7,7 @@ namespace Melville.INPC
     /// <p>Generate a dependency property.</p>
     /// <p>On a dependency property declaration. -- declares the helper methods</p>
     /// <p>[GenerateDP(typeof(type), "Name", Attached = true, Nullabel= true)]</p>
-    /// <p>[GenerateDP]void OnPropertyChanged(int newValue, int oldvalue) = nonattached prop</p>
+    /// <p>[GenerateDP]void OnPropertyChanged(int oldValue, int newvalue) = nonattached prop</p>
     /// <p>[GenerateDP]void OnPropertyChanged(int newValue = defaultValue) = nonattached prop</p>
     /// <p>[GenerateDP]static void OnPropertyChanged(DepednencyObject obj, int newValue = defaultValue) = attached prop</p>
     /// <p>[GenerateDP]static void OnPropertyChanged(ObjectType obj, int newValue = defaultValue) = attached prop</p>

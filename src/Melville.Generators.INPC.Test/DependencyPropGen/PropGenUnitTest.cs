@@ -73,17 +73,17 @@ namespace Outer
             "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i),j)")]
         [InlineData("public static void OnPropChanged(C obj, int newVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue))")]
-        [InlineData("public static void OnPropChanged(C obj, int newVal, int oldVal) {}",
-            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue), (int)(j.OldValue))")]
+        [InlineData("public static void OnPropChanged(C obj, int oldVal, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.OldValue), (int)(j.NewValue))")]
 
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
             "Outer.C.OnPropChanged")]
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue))")]
-        [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal, int oldVal) {}",
-            "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue), (int)(j.OldValue))")]
-        [InlineData("public static void OnPropChanged(string obj, int newVal, int oldVal) {}",
-            "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue), (int)(j.OldValue))")]
+        [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int oldVal, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.OldValue), (int)(j.NewValue))")]
+        [InlineData("public static void OnPropChanged(string obj, int oldVal, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.OldValue), (int)(j.NewValue))")]
         [InlineData("public static void OnPropChanged(string obj, int newVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue))")]
         [InlineData("public void OnPropChanged(System.Windows.DependencyPropertyChangedEventArgs e) {}",
@@ -92,8 +92,8 @@ namespace Outer
             "(i,j)=>((Outer.C)i).OnPropChanged()")]
          [InlineData("public void OnPropChanged(int newVal) {}",
             "(i,j)=>((Outer.C)i).OnPropChanged((int)(j.NewValue))")]
-         [InlineData("public void OnPropChanged(int newVal, int oldValue) {}",
-            "(i,j)=>((Outer.C)i).OnPropChanged((int)(j.NewValue), (int)(j.OldValue))")]
+         [InlineData("public void OnPropChanged(int oldVal, int newValue) {}",
+            "(i,j)=>((Outer.C)i).OnPropChanged((int)(j.OldValue), (int)(j.NewValue))")]
         public void CallOnChangedMethod(string methodDecl, string callSyntax)
         {
             MultiContentTest(methodDecl + "[GenerateDP(typeof(int), \"Prop\"]",

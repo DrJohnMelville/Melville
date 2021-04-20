@@ -22,7 +22,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
                         return $", (i,j)=>{rp.ParentType()}.{methodName}(i, ({rp.NullableTargetType()})(j.NewValue))";
                     if (candidate.VerifyParameterTypes(
                         "System.Windows.DependencyObject", rp.NullableTargetType(), rp.NullableTargetType()))
-                        return $", (i,j)=>{rp.ParentType()}.{methodName}(i, ({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
+                        return $", (i,j)=>{rp.ParentType()}.{methodName}(i, ({rp.NullableTargetType()})(j.OldValue), ({rp.NullableTargetType()})(j.NewValue))";
 
                     if (candidate.VerifyParameterTypes(
                         rp.ParentType(), "System.Windows.DependencyPropertyChangedEventArgs"))
@@ -31,7 +31,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
                         return $", (i,j)=>{rp.ParentType()}.{methodName}((({candidate.Parameters[0].Type.FullyQualifiedName()})i), ({rp.NullableTargetType()})(j.NewValue))";
                     if (candidate.VerifyParameterTypes(
                         null, rp.NullableTargetType(), rp.NullableTargetType()))
-                        return $", (i,j)=>{rp.ParentType()}.{methodName}((({candidate.Parameters[0].Type.FullyQualifiedName()})i), ({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
+                        return $", (i,j)=>{rp.ParentType()}.{methodName}((({candidate.Parameters[0].Type.FullyQualifiedName()})i), ({rp.NullableTargetType()})(j.OldValue), ({rp.NullableTargetType()})(j.NewValue))";
                     return "";
                 }
                 // not static
@@ -42,7 +42,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
                 if (candidate.VerifyParameterTypes(rp.NullableTargetType()))
                     return $", (i,j)=>(({rp.ParentType()})i).{methodName}(({rp.NullableTargetType()})(j.NewValue))";
                 if (candidate.VerifyParameterTypes(rp.NullableTargetType(), rp.NullableTargetType()))
-                    return $", (i,j)=>(({rp.ParentType()})i).{methodName}(({rp.NullableTargetType()})(j.NewValue), ({rp.NullableTargetType()})(j.OldValue))";
+                    return $", (i,j)=>(({rp.ParentType()})i).{methodName}(({rp.NullableTargetType()})(j.OldValue), ({rp.NullableTargetType()})(j.NewValue))";
 
             }
             return "";
