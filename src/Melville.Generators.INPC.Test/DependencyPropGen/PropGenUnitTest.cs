@@ -43,6 +43,7 @@ namespace Outer
         [InlineData("System.String", "string")]
         [InlineData("Int32", "int")]
         [InlineData("C", "Outer.C")]
+        [InlineData("System.Collections.Generic.List<string>", "System.Collections.Generic.List<string>")]
         public void GenerateNamedType(string codeName, string expandedName) =>
             MultiContentTest($"[GenerateDP(typeof({codeName}),\"Prop\")]",
                 $"public static readonly System.Windows.DependencyProperty PropProperty =",
