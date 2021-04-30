@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -24,16 +25,15 @@ namespace Melville.Generators.INPC.CodeWriters
         private static void CopyClassDeclarationBeforeOpeningBrace(CodeWriter writer, 
             TypeDeclarationSyntax classDecl, string suffix)
         {
-            const int CSharpAttributeListKind = 8847;
-            foreach (var token in classDecl.ChildNodesAndTokens())
-            {
-                if (token.RawKind == CSharpAttributeListKind) continue;
-                if (token == classDecl.BaseList) continue;
-                if (token == classDecl.OpenBraceToken) break;
-                writer.Append(token.ToString());
-                writer.Append(" ");
-            }
+            writer.Append(classDecl.Modifiers.ToString());
+            writer.Append(" ");
+            writer.Append(classDecl.Keyword.ToString());
+            writer.Append(" ");
+            writer.Append(classDecl.Identifier.ToString());
+            if (classDecl.TypeParameterList is { } tpl) writer.Append(tpl.ToString());
             writer.Append(suffix);
+            writer.Append(" ");
+            writer.Append(classDecl.ConstraintClauses.ToString());
             writer.AppendLine();
         }
 

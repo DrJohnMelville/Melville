@@ -24,7 +24,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         public string ParentType() => ParentSymbol.FullyQualifiedName();
         private string? storedDependencyPropertyName;
         public string DependencyPropName() => storedDependencyPropertyName?? (PropName + "Property");
-        public string DefaultExpression() =>  customDefault??$"default({TargetType()})";
+        public string DefaultExpression() =>  customDefault??$"default({NullableTargetType()})";
         
         public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol)
         {
@@ -48,8 +48,8 @@ namespace Melville.Generators.INPC.DependencyPropGen
         {
             switch (position, syntax.NameEquals, syntax.NameColon, syntax.Expression) // remember to handle nameequals and colonequals
             {
-                case (_, {} ne, _, LiteralExpressionSyntax les):
-                    ParseNamedProperty(ne, les);
+                case (_, {} ne, _, var exp):
+                    ParseNamedProperty(ne, exp);
                     break;
                 case (_, _, {} nc, _):
                     ParseColonParameter(nc.Name.ToString(), syntax);
@@ -82,7 +82,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         private void ParsePropName(AttributeArgumentSyntax syntax) => 
             PropName = syntax.ExtractArgumentFromAttribute();
 
-        private void ParseNamedProperty(NameEqualsSyntax ne, LiteralExpressionSyntax les)
+        private void ParseNamedProperty(NameEqualsSyntax ne, ExpressionSyntax les)
         {
             switch (ne.Name.ToString())
             {
@@ -98,7 +98,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
             }
         }
 
-        private static bool ReadBoolLiteral(LiteralExpressionSyntax les) => 
+        private static bool ReadBoolLiteral(ExpressionSyntax les) => 
             les.ToString().StartsWith("t");
         
 

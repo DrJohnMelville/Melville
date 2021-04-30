@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 namespace Melville.MVVM.BusinessObjects
 {
+  [Obsolete("Use versions in Melville.INPC")]
   public static class NotifyPropertyChangedOperations
   {
     public static Action WhenMemberChanges(this INotifyPropertyChanged target, string member, Action action)

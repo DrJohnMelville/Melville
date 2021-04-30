@@ -43,6 +43,7 @@ namespace Outer
         [InlineData("System.String", "string")]
         [InlineData("Int32", "int")]
         [InlineData("C", "Outer.C")]
+        [InlineData("System.Collections.Generic.List<string>", "System.Collections.Generic.List<string>")]
         public void GenerateNamedType(string codeName, string expandedName) =>
             MultiContentTest($"[GenerateDP(typeof({codeName}),\"Prop\")]",
                 $"public static readonly System.Windows.DependencyProperty PropProperty =",
@@ -62,28 +63,38 @@ namespace Outer
                 "public static int? GetNullProp(System.Windows.DependencyObject obj)",
                 "(int?)obj.GetValue(Outer.C.NullPropProperty)",
                 "public static void SetNullProp(System.Windows.DependencyObject obj, int? value) =>");
+
         [Fact]
         public void NullableProperty() =>
             MultiContentTest("[GenerateDP(typeof(int), \"NullProp\", Nullable=true",
                 "public int? NullProp",
-                "get => (int?)this.GetValue(Outer.C.NullPropProperty);");
+                "get => (int?)this.GetValue(Outer.C.NullPropProperty);",
+                "\"NullProp\", typeof(int?)",
+                "default(int?)");
+      [Fact]
+        public void NullableReferenceProperty() =>
+            MultiContentTest("[GenerateDP(typeof(string), \"NullProp\", Nullable=true",
+                "public string? NullProp",
+                "get => (string?)this.GetValue(Outer.C.NullPropProperty);",
+                "\"NullProp\", typeof(string)",
+                "default(string?)");
 
         [Theory]
         [InlineData("public static void OnPropChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
             "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i),j)")]
         [InlineData("public static void OnPropChanged(C obj, int newVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue))")]
-        [InlineData("public static void OnPropChanged(C obj, int newVal, int oldVal) {}",
-            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue), (int)(j.OldValue))")]
+        [InlineData("public static void OnPropChanged(C obj, int oldVal, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.OldValue), (int)(j.NewValue))")]
 
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
             "Outer.C.OnPropChanged")]
         [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue))")]
-        [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal, int oldVal) {}",
-            "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue), (int)(j.OldValue))")]
-        [InlineData("public static void OnPropChanged(string obj, int newVal, int oldVal) {}",
-            "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue), (int)(j.OldValue))")]
+        [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int oldVal, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.OldValue), (int)(j.NewValue))")]
+        [InlineData("public static void OnPropChanged(string obj, int oldVal, int newVal) {}",
+            "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.OldValue), (int)(j.NewValue))")]
         [InlineData("public static void OnPropChanged(string obj, int newVal) {}",
             "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue))")]
         [InlineData("public void OnPropChanged(System.Windows.DependencyPropertyChangedEventArgs e) {}",
@@ -92,8 +103,8 @@ namespace Outer
             "(i,j)=>((Outer.C)i).OnPropChanged()")]
          [InlineData("public void OnPropChanged(int newVal) {}",
             "(i,j)=>((Outer.C)i).OnPropChanged((int)(j.NewValue))")]
-         [InlineData("public void OnPropChanged(int newVal, int oldValue) {}",
-            "(i,j)=>((Outer.C)i).OnPropChanged((int)(j.NewValue), (int)(j.OldValue))")]
+         [InlineData("public void OnPropChanged(int oldVal, int newValue) {}",
+            "(i,j)=>((Outer.C)i).OnPropChanged((int)(j.OldValue), (int)(j.NewValue))")]
         public void CallOnChangedMethod(string methodDecl, string callSyntax)
         {
             MultiContentTest(methodDecl + "[GenerateDP(typeof(int), \"Prop\"]",
@@ -172,6 +183,7 @@ namespace Outer
 
         [Theory]
         [InlineData("[GenerateDP(typeof(int),\"Prop\", Default=10)]", "Metadata(10)")]
+        [InlineData("[GenerateDP(typeof(int),\"Prop\", Default=-10)]", "Metadata(-10)")]
         [InlineData("[GenerateDP] private void OnPropChanged(int i = 10)", "Metadata(10,")]
         [InlineData("[GenerateDP] private void OnPropChanged(string i = \"Hello\")", "Metadata(\"Hello\",")]
         [InlineData("[GenerateDP(typeof(string),\"Prop\", Default=\"Hello\")]", "Metadata(\"Hello\")")]
