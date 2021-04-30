@@ -24,7 +24,7 @@ namespace Melville.Generators.INPC.DependencyPropGen
         public string ParentType() => ParentSymbol.FullyQualifiedName();
         private string? storedDependencyPropertyName;
         public string DependencyPropName() => storedDependencyPropertyName?? (PropName + "Property");
-        public string DefaultExpression() =>  customDefault??$"default({TargetType()})";
+        public string DefaultExpression() =>  customDefault??$"default({NullableTargetType()})";
         
         public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol)
         {

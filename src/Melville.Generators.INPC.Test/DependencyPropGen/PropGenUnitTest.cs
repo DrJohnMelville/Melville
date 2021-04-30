@@ -67,7 +67,8 @@ namespace Outer
         public void NullableProperty() =>
             MultiContentTest("[GenerateDP(typeof(int), \"NullProp\", Nullable=true",
                 "public int? NullProp",
-                "get => (int?)this.GetValue(Outer.C.NullPropProperty);");
+                "get => (int?)this.GetValue(Outer.C.NullPropProperty);",
+                "default(int?)");
 
         [Theory]
         [InlineData("public static void OnPropChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
