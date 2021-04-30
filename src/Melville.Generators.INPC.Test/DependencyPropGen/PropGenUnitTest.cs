@@ -63,12 +63,21 @@ namespace Outer
                 "public static int? GetNullProp(System.Windows.DependencyObject obj)",
                 "(int?)obj.GetValue(Outer.C.NullPropProperty)",
                 "public static void SetNullProp(System.Windows.DependencyObject obj, int? value) =>");
+
         [Fact]
         public void NullableProperty() =>
             MultiContentTest("[GenerateDP(typeof(int), \"NullProp\", Nullable=true",
                 "public int? NullProp",
                 "get => (int?)this.GetValue(Outer.C.NullPropProperty);",
+                "\"NullProp\", typeof(int?)",
                 "default(int?)");
+      [Fact]
+        public void NullableReferenceProperty() =>
+            MultiContentTest("[GenerateDP(typeof(string), \"NullProp\", Nullable=true",
+                "public string? NullProp",
+                "get => (string?)this.GetValue(Outer.C.NullPropProperty);",
+                "\"NullProp\", typeof(string)",
+                "default(string?)");
 
         [Theory]
         [InlineData("public static void OnPropChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",

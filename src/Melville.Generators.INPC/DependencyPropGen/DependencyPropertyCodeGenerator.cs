@@ -24,10 +24,13 @@ namespace Melville.Generators.INPC.DependencyPropGen
             cw.AppendLine($"public static readonly System.Windows.DependencyProperty {rp.DependencyPropName()} = ");
             var attached = rp.Attached ? "Attached" : "";
             cw.AppendLine($"    System.Windows.DependencyProperty.Register{attached}(");
-            cw.AppendLine($"    \"{rp.PropName}\", typeof({rp.TargetType()}), typeof({rp.ParentType()}),");
+            cw.AppendLine($"    \"{rp.PropName}\", typeof({TypeOfArgument(rp)}), typeof({rp.ParentType()}),");
             cw.AppendLine($"    new System.Windows.FrameworkPropertyMetadata({rp.DefaultExpression()}{ChangeFunc(rp)}));");
             cw.AppendLine();
         }
+
+        private static string TypeOfArgument(RequestParser rp) => 
+            rp.Type != null && rp.Type.IsValueType ? rp.NullableTargetType() : rp.TargetType();
 
         private static string ChangeFunc(RequestParser rp)
         {
