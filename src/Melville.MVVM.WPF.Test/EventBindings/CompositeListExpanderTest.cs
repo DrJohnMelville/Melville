@@ -13,15 +13,6 @@ namespace Melville.MVVM.WPF.Test.EventBindings
             Assert.Equal(new object[]{1,2,3}, sut.Expand(new object[]{1,2,3}));
         }
 
-        class Doubler : IListExpander
-        {
-            public void Push(object value, Action<object> target)
-            {
-                target(value);
-                if (value is int i) target(i * 2);
-            }
-        }
-
         [Fact] 
         public void SingleSubstitution()
         {

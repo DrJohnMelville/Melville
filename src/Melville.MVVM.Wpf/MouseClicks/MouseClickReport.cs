@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using Melville.MVVM.Wpf.MouseDragging;
 
 namespace Melville.MVVM.Wpf.MouseClicks
 {
@@ -13,6 +14,7 @@ namespace Melville.MVVM.Wpf.MouseClicks
         Point AbsoluteLocation();
         Point RelativeLocation();
         Point PointRelativeTo(IInputElement element);
+        IMouseDragger CreateDragger();
     }
 
     public class MouseClickReport : IMouseClickReport
@@ -38,5 +40,8 @@ namespace Melville.MVVM.Wpf.MouseClicks
             return new Point(absPoint.X / target.ActualWidth, absPoint.Y / target.ActualHeight);
         }
         public Point PointRelativeTo(IInputElement element) => eventArgs.GetPosition(element);
+
+        public IMouseDragger CreateDragger() =>
+            new MouseDragger(target, eventArgs);
     }
 }

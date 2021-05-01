@@ -10,7 +10,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
   {
     public FrameworkElement Target { get; }
 
-    public WindowMouseDataSource(FrameworkElement target, MouseButtonEventArgs args)
+    public WindowMouseDataSource(FrameworkElement target, MouseButtonEventArgs? args)
     {
       Target = target;
       if (args != null)

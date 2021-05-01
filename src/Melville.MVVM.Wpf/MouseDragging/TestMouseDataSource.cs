@@ -16,7 +16,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
     {
       this.buttonUsed = buttonUsed;
       this.windowSize = new Size(width, height);
-      this.target = target!; // this is ok because it is only a test class -- should not be in  production code
+      this.target = target!; // this is ok because it is only a test class -- should not be null in production code
     }
 
     public override void CancelMouseBinding()
