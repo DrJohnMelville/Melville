@@ -4,8 +4,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Melville.Hacks.Reflection;
+using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
 using Serilog;
 
@@ -32,13 +34,15 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
             var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
             var methodName = pathComponents.LastOrDefault() ?? "";
+            var context =
+                CreateContext(inputParams, methodName);
             var targets = AddPathFollowing(TargetSelector.ResolveTarget(root), pathComponents);
 
             foreach (var target in targets)
             {
                 if (target == null) continue;
                 Log.Debug("Searching Object: {target}", target.ToString());
-                if (RunOnTarget(target, methodName, inputParams, out result)) return true;
+                if (RunOnTarget(target, ref context, out result)) return true;
             }
 
             Log.Error("Failed to bind method: {MethodName}", targetMethodName);
@@ -46,25 +50,39 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             return false;
         }
 
+        private VisualTreeRunContext CreateContext(object?[] inputParams, string? methodName) =>
+            new(DiIntegration.SearchForContainer(root), root, methodName, 
+                inputParams.Append(this));
+
         public bool RunOnTarget(object? target, string targetMethodName, object?[] inputParams, out object? result)
+        {
+            var context = CreateContext(inputParams, targetMethodName);
+            return RunOnTarget(target, ref context, out result);
+        }
+
+        private bool RunOnTarget(object? target, ref VisualTreeRunContext context, out object? result)
         {
             result = null;
             if (target == null) return false;
             Log.Debug("Searching Object: {target}", target.ToString());
             return 
-                TryInvokeMethod(inputParams, target, targetMethodName, out result) || 
-                TryInvokeCommand(inputParams, targetMethodName, target);
+                TryInvokeMethod(ref context, target, out result) || 
+                TryInvokeCommand(ref context, target);
         }
 
-        public bool RunMethod(Delegate function, object?[] parameters, out object? result) => 
-            TryRunSingleMethod(parameters, function.Target, function.Method, out result);
-
-        private bool TryInvokeCommand(object?[] inputParams, string methodName, object target)
+        public bool RunMethod(Delegate function, object?[] parameters, out object? result)
         {
-            var commandCandidate = string.IsNullOrWhiteSpace(methodName) ? target : target.GetPath(methodName, true);
+            var context = CreateContext(parameters, "");
+            return InnerRunSingleMethod(ref context, function.Target, function.Method, out result);
+        }
+
+        private bool TryInvokeCommand(ref VisualTreeRunContext context, object target)
+        {
+            var commandCandidate = string.IsNullOrWhiteSpace(context.TargetMethodName) ? target : 
+                target.GetPath(context.TargetMethodName, true);
             if (commandCandidate is ICommand command)
             {
-                InvokeCommand(inputParams.OfType<object>().ToArray(), command);
+                InvokeCommand(context.InputParameters.ToArray(), command);
 
                 return true;
             }
@@ -72,9 +90,9 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             return false;
         }
 
-        private void InvokeCommand(object[] inputParams, ICommand command)
+        private void InvokeCommand(object?[] inputParams, ICommand command)
         {
-            var param = inputParams.Length == 2 ? inputParams[0] : inputParams;
+            var param = inputParams.Length >= 2 ? inputParams[0] : inputParams;
             if (command.CanExecute(param))
             {
                 command.Execute(param);
@@ -82,33 +100,30 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             }
         }
 
-        private  bool TryInvokeMethod(object?[] inputParams, object target,
-            string methodName,
-            out object? o)
+        private  bool TryInvokeMethod(ref VisualTreeRunContext context, object target, out object? o)
         {
             o = null;
-            if (string.IsNullOrWhiteSpace(methodName)) return false;
+            if (string.IsNullOrWhiteSpace(context.TargetMethodName)) return false;
 
-            foreach (var candidate in CandidateMethods(target, methodName))
+            foreach (var candidate in CandidateMethods(target, context.TargetMethodName))
             {
-                if (TryRunSingleMethod(inputParams, target, candidate, out o)) return true;
+                if (InnerRunSingleMethod(ref context, target, candidate, out o)) return true;
             }
 
             return false;
         }
 
-        private bool TryRunSingleMethod(object?[] inputParams, object? target,
-            MethodInfo candidate, out object? o)
+        private bool InnerRunSingleMethod(ref VisualTreeRunContext context, object? target, MethodInfo candidate,
+            out object? o)
         {
             o = null;
             Log.Debug("Trying Method {methodName} on {Type}", candidate.Name, candidate.DeclaringType?.Name);
-            var parameters = ParameterResolver.Resolve(candidate.GetParameters(), root, 
-                inputParams.Append(this).ToArray());
+            var parameters = ParameterResolver.Resolve(candidate.GetParameters(), ref context);
             if (parameters != null)
             {
-                var scope = parameters.GetValues(out var arguments);
+                var scope = parameters.Value.GetValues(ref context, out var arguments);
                 var ret = candidate.Invoke(target, arguments);
-                o = ProcessMethodReturn(ret, inputParams, scope);
+                o = ProcessMethodReturn(ret, context.InputParameters, scope);
                 return true;
             }
             else
@@ -188,7 +203,8 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             var decl = function.GetInvocationList().First();
             if (decl.Target == null || decl.Method == null)
                 throw new InvalidOperationException("Must be a Func or Action to execute.");
-            TryRunSingleMethod(Array.Empty<object>(), decl.Target, decl.Method, out var result);
+            var context = CreateContext(Array.Empty<object>(), "");
+            InnerRunSingleMethod(ref context, decl.Target, decl.Method, out var result);
             return result;
         }
     }

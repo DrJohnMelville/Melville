@@ -1,55 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Reflection;
-using System.Windows;
 using Melville.MVVM.Wpf.DiParameterSources;
+using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.EventBindings.ParameterResolution
 {
-  public sealed class ResolvedParameters
-  {
-    private readonly IDIIntegration di;
-    private readonly DependencyObject sender;
-    private readonly object?[] inputParam;
-    private readonly IFactory[] factories;
-
-    public ResolvedParameters(in int numberOfParameters, IDIIntegration dIContainer, DependencyObject sender, 
-      object?[] inputParam)
-    {
-      this.di = dIContainer;
-      this.sender = sender;
-      this.inputParam = inputParam;
-      factories = new IFactory[numberOfParameters];
-    }
-
-    public void Put(int position, IFactory parameter)
-    {
-      factories[position] = parameter;
-    }
-    
-    public IDisposable GetValues(out object?[] values)
-    {
-      var scope = di.CreateScope();
-      values = new object?[factories.Length];
-      for (int i = 0; i < factories.Length; i++)
-      {
-        values[i] = factories[i].Create(scope, sender, inputParam);
-      }
-      return scope;
-    }
-  }
   public static class ParameterResolver
   {
-    public static ResolvedParameters? Resolve(ParameterInfo[] parameters, DependencyObject sender, 
-      object?[] inputParam)
+    public static ResolvedParameters? Resolve(ParameterInfo[] parameters, ref VisualTreeRunContext context)
     {
-      var dIContainer = DiIntegration.SearchForContainer(sender);
-      var ret = new ResolvedParameters(parameters.Length, dIContainer, sender, inputParam);
+      var ret = new ResolvedParameters(parameters.Length);
       for (int i = 0; i < parameters.Length; i++)
       {
-        if (!ActualOrDefaultParamValue(parameters[i], sender, inputParam, out var actualVal))
+        if (!ActualOrDefaultParamValue(parameters[i], ref context, out var actualVal))
           return null;
         ret.Put(i, actualVal);        
         
@@ -58,25 +22,26 @@ namespace Melville.MVVM.Wpf.EventBindings.ParameterResolution
     }
 
     private static bool ActualOrDefaultParamValue(
-      ParameterInfo parameter, DependencyObject sender, IEnumerable<object?> inputParam, [NotNullWhen(true)] out IFactory? result)
+      ParameterInfo parameter, ref VisualTreeRunContext context, [NotNullWhen(true)] out IFactory? result)
     {
       result = parameter switch
       {
         var p when HasFromServiceAttribute(p) => new DiFactory(parameter),
-        var p when ResolveParameter(p.ParameterType, sender, inputParam, out var r) => r,
+        var p when ResolveParameter(p.ParameterType, ref context, out var r) => r,
         var p when p.HasDefaultValue => new ConstantFactory(p.DefaultValue),
         _ => null      
       };
       return result != null;
     }
 
-    private static bool HasFromServiceAttribute(ParameterInfo p) => Attribute.IsDefined(p, typeof(FromServicesAttribute));
+    private static bool HasFromServiceAttribute(ParameterInfo p) => 
+      Attribute.IsDefined(p, typeof(FromServicesAttribute));
 
     public static bool ResolveParameter(
-      Type parameterType, DependencyObject sender, IEnumerable<object?> inputParam,
+      Type parameterType, ref VisualTreeRunContext context,
       [NotNullWhen(true)]out IFactory? result)
       {
-      foreach (var candidate in AllParameterPossibilities(sender, inputParam))
+      foreach (var candidate in context.AllParameterPossibilities())
       {
         if (candidate is IFactory fact && parameterType.IsAssignableFrom(fact.TargetType))
         {
@@ -93,9 +58,5 @@ namespace Melville.MVVM.Wpf.EventBindings.ParameterResolution
       result = null;
       return false;
     }
-
-    private static IEnumerable<object> AllParameterPossibilities(
-      DependencyObject sender, IEnumerable<object?> inputParam) =>
-      inputParam.Concat(sender.AllSources()).OfType<object>().Distinct();
   }
 }

@@ -3,6 +3,7 @@ using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.DiBinding;
 using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
+using Melville.Wpf.Samples.MouseClicks;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.Wpf.Samples.ShellCommands;
@@ -16,7 +17,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem? DefaultItem() =>
-            SearchTreeForSample<WaitSampleViewModel>();
+            SearchTreeForSample<MouseClickViewModel>();
 
         public SampleDirectory()
         {
@@ -43,7 +44,8 @@ namespace Melville.Wpf.Samples
                     Page<ScopedMethodCallViewModel>("Call Methods in a scope"),
                     Page<WebView2ViewModel>("WebView2 Events"),
                     Page<DiBindingViewModel>("DI Binding"),
-                    Page<WaitSampleViewModel>("Waiting Screen")
+                    Page<WaitSampleViewModel>("Waiting Screen"),
+                    Page<MouseClickViewModel>("Mouse Clicks")
                 ),
                 Node("Statistics",
                     Page<LinqGraphViewModel>("LinqPad Graphics Module"))

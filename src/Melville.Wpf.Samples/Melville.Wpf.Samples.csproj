@@ -72,9 +72,5 @@
         <DependentUpon>JoystickView.xaml</DependentUpon>
       </Compile>
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="CsXaml" />
-    </ItemGroup>
     
 </Project>
