@@ -49,7 +49,7 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             return false;
         }
 
-        private VisualTreeRunContext CreateContext(object?[] inputParams, string? methodName) =>
+        private VisualTreeRunContext CreateContext(object?[] inputParams, string methodName) =>
             new(DiIntegration.SearchForContainer(root), root, methodName, 
                 inputParams.Append(this));
 

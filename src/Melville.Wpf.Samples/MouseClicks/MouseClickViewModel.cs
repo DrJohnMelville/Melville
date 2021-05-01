@@ -1,6 +1,7 @@
 ﻿using System.Windows.Input;
 using ABI.Windows.Foundation.Collections;
 using Melville.INPC;
+using Melville.MVVM.Wpf.MouseClicks;
 
 namespace Melville.Wpf.Samples.MouseClicks
 {
@@ -8,9 +9,9 @@ namespace Melville.Wpf.Samples.MouseClicks
     {
         [AutoNotify] private string message = "Mouse Clicks";
 
-        public void MouseDownHandler(MouseButtonEventArgs e, MouseClickView view)
+        public void MouseDownHandler(IMouseClickReport report)
         {
-            Message = "Clicked " + e.GetPosition(view);
+            Message = $"Clicked ({report.AbsoluteLocation()}) / ({report.RelativeLocation()})";
         }
     }
 }
