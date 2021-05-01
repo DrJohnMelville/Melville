@@ -17,6 +17,12 @@ namespace Melville.MVVM.Wpf.DiParameterSources
         public object? Get(ParameterInfo info);
         public object? Get(Type type);
     }
+
+    public static class DIIntegrationOperations
+    {
+        public static T GetRequired<T>(this IDIIntegration di) => (T) di.Get(typeof(T)) ??
+           throw new InvalidOperationException("Cannot Create a: " + typeof(T).Name);
+    }
     
     public class EmptyScopeFactory: IDIIntegration
     {

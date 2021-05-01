@@ -105,7 +105,7 @@ namespace Melville.MVVM.WPF.Test.EventBindings
     {
       var data = new DateTime(1975, 07, 28);
       Elt.DataContext = data;
-      TargetSelector.SetTargetProperty(Elt, target.Object);
+      TargetSelector.SetTarget(Elt, target.Object);
       FireMethod(nameof(ITarget.HasDataContext));
       target.Verify(i=>i.HasDataContext(data), Times.Once);
     }

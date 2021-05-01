@@ -4,6 +4,7 @@
         <Description>This is a library of my favorite wpf controls</Description>
         <OutputType>Library</OutputType>
         <DebugType>Full</DebugType>
+        <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />

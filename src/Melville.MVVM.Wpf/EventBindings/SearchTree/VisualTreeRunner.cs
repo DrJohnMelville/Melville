@@ -34,9 +34,8 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
             var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
             var methodName = pathComponents.LastOrDefault() ?? "";
-            var context =
-                CreateContext(inputParams, methodName);
-            var targets = AddPathFollowing(TargetSelector.ResolveTarget(root), pathComponents);
+            var context = CreateContext(inputParams, methodName);
+            var targets = AddPathFollowing(context.Targets, pathComponents);
 
             foreach (var target in targets)
             {
@@ -83,10 +82,8 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
             if (commandCandidate is ICommand command)
             {
                 InvokeCommand(context.InputParameters.ToArray(), command);
-
                 return true;
             }
-
             return false;
         }
 
