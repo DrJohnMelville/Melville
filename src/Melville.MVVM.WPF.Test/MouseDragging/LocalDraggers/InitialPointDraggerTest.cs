@@ -69,6 +69,29 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
             target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
             target.VerifyNoOtherCalls();
         }
+
+        [Theory]
+        [InlineData(7,25,7,25)]
+        [InlineData(7,15,7,20)]
+        [InlineData(7,19.99,7,20)]
+        [InlineData(7,20.01,7,20.01)]
+        [InlineData(7,24,7,24)]
+        [InlineData(7,29.99,7,29.99)]
+        [InlineData(7,30.01,7,30)]
+        [InlineData(7,60,7,30)]
+        [InlineData(1,25,5,25)]
+        [InlineData(4.999,25,5,25)]
+        [InlineData(5.02,25,5.02,25)]
+        [InlineData(9.99,25,9.99,25)]
+        [InlineData(10.1,25,10,25)]
+        [InlineData(100,25,10,25)]
+        public void ConstrainedDriver(double iX, double iY, double fX, double fY)
+        {
+            var sut = LocalDragger.Constrain(5,10,20,30, target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(iX,iY));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
+            target.VerifyNoOtherCalls();
+        }
         
     }
 }

@@ -2,8 +2,11 @@
 using System.ComponentModel.Design.Serialization;
 using System.Windows;
 using System.Windows.Forms.Design.Behavior;
+using System.Windows.Input;
+using Melville.Hacks;
 using Melville.MVVM.Undo;
 using Melville.MVVM.Wpf.EventBindings;
+using Melville.MVVM.Wpf.KeyboardFacade;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
@@ -61,9 +64,42 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
         private static double SnapToGrid(double snapSize, double dimension) => 
             snapSize * Math.Round(dimension / snapSize);
 
+        public static ILocalDragger<T> OnKey<T>(
+            ModifierKeys modifier, Func<ILocalDragger<T>, ILocalDragger<T>> whenPressed,
+            ILocalDragger<T> unpressed) where T : struct =>
+            OnKey<T>(new KeyboardQuery(), modifier, whenPressed, unpressed);
 
-        //next we need to build a grid snapping dragger and then compoose the field dragger from
-        // the RestrictToAxis, InitialPointDragger, new dragger, and the KeySwitching dragger
+        public static ILocalDragger<T> OnKey<T>(IKeyboardQuery keyboard,
+            ModifierKeys modifier, Func<ILocalDragger<T>, ILocalDragger<T>> whenPressed,
+            ILocalDragger<T> unpressed) where T : struct =>
+            new KeySwitcherDragger<T>(keyboard, modifier, whenPressed(unpressed), unpressed);
 
+        public static ILocalDragger<Point> FieldDragger(
+            double initialX, double initialY, ILocalDragger<Point> target) =>
+            FieldDragger(new KeyboardQuery(), new Point(initialX, initialY), target);
+        
+        private static ILocalDragger<Point> FieldDragger(Point initialPoint, ILocalDragger<Point> target) =>
+            FieldDragger(new KeyboardQuery(), initialPoint, target);
+        
+        public static ILocalDragger<Point> FieldDragger(IKeyboardQuery keyboard,
+            double initialX, double initialY, ILocalDragger<Point> target) =>
+            FieldDragger(keyboard, new Point(initialX, initialY), target);
+        
+        private static ILocalDragger<Point> FieldDragger(
+            IKeyboardQuery keyboard, Point initialPoint, ILocalDragger<Point> target) =>
+            InitialPoint(initialPoint,
+                OnKey(keyboard, ModifierKeys.Shift, i => new RestrictToAxis(i),
+                    OnKey(keyboard, ModifierKeys.Alt, i => GridSnapping(5, i), target)));
+
+        public static ILocalDragger<Point> Constrain(
+            double minX, double maxX, int minY, double maxY, ILocalDragger<Point> target) =>
+            Constrain(new Rect(new Point(minX, minY), new Point(maxX, maxY)), target);
+
+        private static ILocalDragger<Point> Constrain(Rect bounds, ILocalDragger<Point> target) =>
+            Action((type, pt) => target.NewPoint(type, bounds.ApplyConstraint(pt)));
+        public static Point ApplyConstraint(this Rect constraint, Point point) =>
+            new Point(point.X.Clamp(constraint.Left, constraint.Right),
+                point.Y.Clamp(constraint.Top, constraint.Bottom));
     }
+    
 }
