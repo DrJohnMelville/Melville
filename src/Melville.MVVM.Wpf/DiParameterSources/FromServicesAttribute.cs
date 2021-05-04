@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Reflection;
+using Melville.Generators.INPC.AstUtilities;
+using Melville.MVVM.Wpf.EventBindings;
 
 namespace Melville.MVVM.Wpf.DiParameterSources
 {
@@ -28,7 +30,14 @@ namespace Melville.MVVM.Wpf.DiParameterSources
     {
         public void Dispose() {}
         public object? Get(ParameterInfo info) => throw new NotSupportedException("Null DI container cannot create objects.");
-        public object? Get(Type type) => throw new NotSupportedException("Null DI container cannot create objects.");
+        public object? Get(Type type)
+        {
+            if (type == typeof(TargetListCompositeExpander))
+                return new TargetListCompositeExpander(Array.Empty<ITargetListExpander>());
+            if (type == typeof(ParameterListCompositeExpander))
+                return new ParameterListCompositeExpander(Array.Empty<IParameterListExpander>());
+            throw new NotSupportedException("Null DI container cannot create objects.");
+        }
         public IDIIntegration CreateScope() => this;
     }
 }

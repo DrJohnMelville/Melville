@@ -22,7 +22,7 @@ namespace Melville.MVVM.WPF.Test.EventBindings
       fact.SetupGet(i => i.TargetType).Returns(typeof(string));
       fact.Setup(i => i.Create(It.IsAny<IDIIntegration>(),par, inputParams)).Returns("FooBar");
 
-      var context = new VisualTreeRunContext(null!, par, "", inputParams);
+      var context = new VisualTreeRunContext(new EmptyScopeFactory(), par, "", inputParams);
       Assert.True(ParameterResolver.ResolveParameter(typeof(string), ref context, out var result));
       Assert.Equal("FooBar", result.Create(null, par, inputParams).ToString());
     }

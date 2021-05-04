@@ -44,5 +44,26 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
         public static ILocalDragger<CircularPoint> SnapMouseUpToAngle(
             int snapPoints, double width, ILocalDragger<CircularPoint> target) =>
             new MouseUpCircleSnapper(snapPoints, width, target);
+
+        public static ILocalDragger<Point> Delta(ILocalDragger<Point> target) =>
+            new DeltaDragger(target);
+
+        public static ILocalDragger<Point> InitialPoint(
+            double iX, double iY, ILocalDragger<Point> target) => InitialPoint(new Point(iX, iY), target);
+
+        public static ILocalDragger<Point> InitialPoint(Point origin, ILocalDragger<Point> target) =>
+            new InitialPointDragger(origin, target);
+
+        public static ILocalDragger<Point> GridSnapping(double snapSize, ILocalDragger<Point> target) =>
+            Action((type, point) => target.NewPoint(type,
+                new Point(SnapToGrid(snapSize, point.X), SnapToGrid(snapSize, point.Y))));
+
+        private static double SnapToGrid(double snapSize, double dimension) => 
+            snapSize * Math.Round(dimension / snapSize);
+
+
+        //next we need to build a grid snapping dragger and then compoose the field dragger from
+        // the RestrictToAxis, InitialPointDragger, new dragger, and the KeySwitching dragger
+
     }
 }

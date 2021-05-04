@@ -9,11 +9,11 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
     public class MinimumDraggerTest
     {
         private readonly Mock<ILocalDragger<Point>> target = new();
-        private readonly MinimumDragger sut;
+        private readonly ILocalDragger<Point> sut;
 
         public MinimumDraggerTest()
         {
-            sut = new MinimumDragger(10, target.Object);
+            sut = LocalDragger.MinimumDrag(10, target.Object);
         }
 
         [Theory]
