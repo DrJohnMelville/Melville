@@ -100,6 +100,21 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
         public static Point ApplyConstraint(this Rect constraint, Point point) =>
             new Point(point.X.Clamp(constraint.Left, constraint.Right),
                 point.Y.Clamp(constraint.Top, constraint.Bottom));
+
+        public static ILocalDragger<Point> InvertY(double max, ILocalDragger<Point> target) => 
+            Action((type, point) => target.NewPoint(type, new Point(point.X, max - point.Y))); 
+        
+        public static ILocalDragger<Point> ScaleDragger(
+            double scaleX, double scaleY, ILocalDragger<Point> target) => 
+            Action((type, point) => target.NewPoint(type, new Point(point.X*scaleX, point.Y*scaleY)));
+
+        public static ILocalDragger<T> MaxMoves<T>(int count, ILocalDragger<T> target) where T:struct
+        {
+            return new LambdaDragger<T>((type, pt) =>
+            {
+                if (count-- > 0) target.NewPoint(type, pt);
+            });
+        }
     }
     
 }

@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Documents;
+using Melville.INPC;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 
@@ -89,17 +90,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     }
   }
 
-  public static class DropBinding
+  public static partial class DropBinding
   {
     public static void ClearAdorners(this FrameworkElement target)
     {
-      //      var adornerLayer = AdornerLayer.GetAdornerLayer(target);
-      //      if (adornerLayer == null) return`;
-      //      foreach (var adorner in adornerLayer.GetAdorners(target) ?? new Adorner[0])
-      //      {
-      //        adornerLayer.Remove(adorner);
-      //      }
-
       oldLayer?.Remove(oldAdorner);
       oldLayer = null;
     }
@@ -118,30 +112,19 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 
     private static AdornerLayer? oldLayer = null;
     private static Adorner? oldAdorner = null;
-
-
-    public static string GetDropMethod(DependencyObject obj) => (string)obj.GetValue(DropMethodProperty);
-    public static void SetDropMethod(DependencyObject obj, string value) => obj.SetValue(DropMethodProperty, value);
-    public static readonly DependencyProperty DropMethodProperty =
-        DependencyProperty.RegisterAttached("DropMethod", typeof(string), typeof(DropBinding), 
-          new PropertyMetadata(null, RegisterDrop));
-
-    private static void RegisterDrop(DependencyObject d, DependencyPropertyChangedEventArgs e) => InnerRegisterDrop(d, e, false);
-
-    private static void InnerRegisterDrop(DependencyObject d, DependencyPropertyChangedEventArgs e, bool monitorDragContinue)
+    
+    [GenerateDP(Attached = true)]
+    public static void OnDropMethodChanged(FrameworkElement target, string dropName)
     {
-      if (e.NewValue == null) return;
-      new DropTarget((FrameworkElement) d, e.NewValue.ToString()??"").BindToTargetControl(monitorDragContinue);
+      SetupDragMethod(target, dropName, false);
     }
-
-    public static string GetDropWithDragMethod(DependencyObject obj) => (string)obj.GetValue(DropWithDragMethodProperty);
-    public static void SetDropWithDragMethod(DependencyObject obj, string value) => obj.SetValue(DropWithDragMethodProperty, value);
-    public static readonly DependencyProperty DropWithDragMethodProperty =
-        DependencyProperty.RegisterAttached("DropWithDragMethod", typeof(string), typeof(DropBinding), 
-          new PropertyMetadata(null, RegisterDropWithDrag));
-
-    private static void RegisterDropWithDrag(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      InnerRegisterDrop(d, e, true);
-
+    [GenerateDP(Attached = true)]
+    public static void OnDropWithDragMethodChanged(FrameworkElement target, string dropName)
+    {
+      SetupDragMethod(target, dropName, true);
+    }
+    private static void SetupDragMethod(
+      FrameworkElement target, string TargetName, bool monitorDragContinue) => 
+      new DropTarget(target, TargetName).BindToTargetControl(monitorDragContinue);
   }
 }

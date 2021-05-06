@@ -43,7 +43,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             if (sender is FrameworkElement fe && dropType.IsInstanceOfType(FindDraggedItem(fe)))
             {
                 CreateDragger(e, fe)
-                    .RequireInitialDelta()
                     .DragTarget(0.5)
                     .Drag(GetDataObject(fe), DragDropEffects.All,
                         RemoveMovedItemFromList);

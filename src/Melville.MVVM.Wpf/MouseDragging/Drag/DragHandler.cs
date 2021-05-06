@@ -7,37 +7,37 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
   public class DragHandler
   {
     private readonly IMouseDataSource source;
-    private readonly LocalDragEventArgs mouseDownArgs;
 
-    public DragHandler(IMouseDataSource source, LocalDragEventArgs mouseDownArgs)
+    public DragHandler(IMouseDataSource source)
     {
       this.source = source;
-      this.mouseDownArgs = mouseDownArgs;
     }
 
     public DragDropEffects InitiateDrag(IDataObject dataToDrag, DragDropEffects allowedEffects)
     {
-      DragDrop.AddGiveFeedbackHandler(mouseDownArgs.Target, GiveFeedback);
-      var ret=DragDrop.DoDragDrop(mouseDownArgs.Target, dataToDrag, allowedEffects);
-      DragDrop.RemoveGiveFeedbackHandler(mouseDownArgs.Target, GiveFeedback);
-      RaiseMouseUpMethod();
+      if (source.Target is not FrameworkElement src) return DragDropEffects.None;
+      DragDrop.AddGiveFeedbackHandler(src, GiveFeedback);
+      var ret=DragDrop.DoDragDrop(src, dataToDrag, allowedEffects);
+      DragDrop.RemoveGiveFeedbackHandler(src, GiveFeedback);
+      RaiseMouseUpMethod(src);
       return ret;
     }
 
     //Drag and drop blocks the mouse move and up events, so we will simulate them so the entire
     // local drag framework still works.
 
-    private void RaiseMouseUpMethod()
+    private void RaiseMouseUpMethod(FrameworkElement target)
     {
       var ea = new MouseEventArgs(Mouse.PrimaryDevice, Environment.TickCount);
-      source.Root.SendMousePosition(MouseMessageType.Up, ea.GetPosition(mouseDownArgs.Target));
-      source.Root.CancelMouseBinding();
+      source.SendMousePosition(MouseMessageType.Up, ea.GetPosition(target));
+      source.CancelMouseBinding();
     }
 
     private void GiveFeedback(object sender, GiveFeedbackEventArgs e)
     {
+      if (sender is not FrameworkElement target) return;
       var ea = new MouseEventArgs(Mouse.PrimaryDevice, Environment.TickCount);
-      source.Root.SendMousePosition(MouseMessageType.Move, ea.GetPosition(mouseDownArgs.Target));
+      source.SendMousePosition(MouseMessageType.Move, ea.GetPosition(target));
       e.UseDefaultCursors = true;
       e.Handled = true;
     }

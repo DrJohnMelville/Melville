@@ -47,7 +47,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
     private IMouseDataSource AttachToTarget(DependencyObject? target) =>
       target is FrameworkElement fe
         ? new WindowMouseDataSource(fe, initalArgs)
-        : new TestMouseDataSource();
+        : throw  new InvalidOperationException("Can only drag a framework Element");
 
     public MouseButton DraggedButton => initalArgs.ChangedButton;
     public int InitialClickCount => initalArgs.ClickCount;

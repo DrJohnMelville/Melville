@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
@@ -6,9 +7,14 @@ using Melville.MVVM.Wpf.WpfHacks;
 
 namespace Melville.MVVM.Wpf.MouseDragging
 {
-  public sealed class WindowMouseDataSource : MouseDataSource
+
+  public sealed class WindowMouseDataSource  : IMouseDataSource
   {
+    public IMouseDataSource Root => this;
+    public event EventHandler<LocalDragEventArgs>? MouseMoved;
+
     public FrameworkElement Target { get; }
+    object? IMouseDataSource.Target => Target;
 
     public WindowMouseDataSource(FrameworkElement target, MouseButtonEventArgs? args)
     {
@@ -20,13 +26,13 @@ namespace Melville.MVVM.Wpf.MouseDragging
     }
 
     // this is a test hook
-    public override void SendMousePosition(MouseMessageType type, Point position)
+    public void SendMousePosition(MouseMessageType type, Point position)
     {
       CheckInitialArgsSent();
-      base.SendMousePosition(type, position);
+      MouseMoved?.Invoke(this, CreateLocalDragEventArgs(type, position));
     }
 
-    protected override LocalDragEventArgs CreateLocalDragEventArgs(MouseMessageType type, Point position)
+    private LocalDragEventArgs CreateLocalDragEventArgs(MouseMessageType type, Point position)
     {
       return new LocalDragEventArgs(position, type, new Size(Target.ActualWidth, Target.ActualHeight), 
         buttonBeingDragged, Target);
@@ -70,7 +76,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
       CancelMouseBinding();
     }
 
-    public override void CancelMouseBinding()
+    public void CancelMouseBinding()
     {
       if (topElement == null) return;
       topElement.MouseMove -= OnMouseMoved;
@@ -88,10 +94,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
       e.Handled = true;
     }
 
-    public override DragDropEffects InitiateDrag(IDataObject draggedData, DragDropEffects allowedEffects,
-      LocalDragEventArgs args) =>  new DragHandler(this, args).InitiateDrag(draggedData, allowedEffects);
-
-    public override IDragUIWindow ConstructDragWindow(FrameworkElement target, double opacity) => 
-      new DragUIWindow(target, opacity);
+    public DragDropEffects InitiateDrag(IDataObject draggedData, DragDropEffects allowedEffects) =>  
+      new DragHandler(this).InitiateDrag(draggedData, allowedEffects);
   }
 }

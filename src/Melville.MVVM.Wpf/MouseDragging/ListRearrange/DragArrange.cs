@@ -45,7 +45,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
         this.instanceType = GetElementType(item);
       }
 
-      public Style ItemContainerStyle(Style baseStyle)
+      public Style ItemContainerStyle(Style? baseStyle)
       {
         var newStyle = baseStyle == null ? new Style() : new Style(baseStyle.TargetType, baseStyle);
 

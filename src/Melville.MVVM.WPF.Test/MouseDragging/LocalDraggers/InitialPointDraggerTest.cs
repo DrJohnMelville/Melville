@@ -93,5 +93,36 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
             target.VerifyNoOtherCalls();
         }
         
+        [Theory]
+        [InlineData(5,1,5,9)]
+        [InlineData(15,5,15,5)]
+        [InlineData(15,9,15,1)]
+        public void InvertYDragger(double iX, double iY, double fX, double fY)
+        {
+            var sut = LocalDragger.InvertY(10, target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(iX,iY));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
+            target.VerifyNoOtherCalls();
+        }
+        [Theory]
+        [InlineData(5,4,10,12)]
+        public void ScaleDragger(double iX, double iY, double fX, double fY)
+        {
+            var sut = LocalDragger.ScaleDragger(2,3, target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(iX,iY));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
+            target.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public void MaxMovesTest()
+        {
+            var sut = LocalDragger.MaxMoves(2, target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(1,2));
+            sut.NewPoint(MouseMessageType.Down, new Point(1,2));
+            sut.NewPoint(MouseMessageType.Down, new Point(1,2));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(1,2)), Times.Exactly(2));
+        }
+        
     }
 }

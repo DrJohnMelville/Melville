@@ -11,7 +11,8 @@ namespace Melville.MVVM.Wpf.MouseDragging
     public Size TargetSize { get; }
     public Point TransformedPoint { get; set; }
     public MouseButton ButtonUsed { get; }
-    public FrameworkElement Target { get; }
+    public FrameworkElement 
+      Target { get; }
 
     public LocalDragEventArgs(Point rawPoint, MouseMessageType messageType, Size targetSize, MouseButton buttonUsed,
       FrameworkElement target)

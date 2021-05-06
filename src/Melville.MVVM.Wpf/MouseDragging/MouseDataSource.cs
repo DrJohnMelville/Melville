@@ -11,37 +11,14 @@ namespace Melville.MVVM.Wpf.MouseDragging
     Up = 2
   }
 
-  public interface IMouseDataRoot
-  {
-    void SendMousePosition(MouseMessageType type, Point position);
-    void CancelMouseBinding();
-    DragDropEffects InitiateDrag(IDataObject draggedData, DragDropEffects allowedEffects, LocalDragEventArgs args);
-    IDragUIWindow ConstructDragWindow(FrameworkElement target, double opacity);
-  }
 
   public interface IMouseDataSource
   {
     event EventHandler<LocalDragEventArgs> MouseMoved;
-    IMouseDataRoot Root { get; }
-  }
-
-  public abstract class MouseDataSource : IMouseDataSource, IMouseDataRoot
-  {
-    public event EventHandler<LocalDragEventArgs>? MouseMoved;
-
-    // this is a test hook
-    public virtual void SendMousePosition(MouseMessageType type, Point position)
-    {
-      MouseMoved?.Invoke(this, CreateLocalDragEventArgs(type, position));
-    }
-
-    public abstract void CancelMouseBinding();
-    public abstract DragDropEffects InitiateDrag(IDataObject draggedData, DragDropEffects allowedEffects,
-      LocalDragEventArgs args);
-
-    public abstract IDragUIWindow ConstructDragWindow(FrameworkElement target, double opacity);
-    protected abstract LocalDragEventArgs CreateLocalDragEventArgs(MouseMessageType type, Point position);
-    public IMouseDataRoot Root => this;
-
+    IMouseDataSource Root { get; }
+    void SendMousePosition(MouseMessageType type, Point position);
+    void CancelMouseBinding();
+    DragDropEffects InitiateDrag(IDataObject draggedData, DragDropEffects allowedEffects);
+    object? Target { get; }
   }
 }

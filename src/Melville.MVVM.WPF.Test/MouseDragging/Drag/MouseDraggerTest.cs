@@ -1,6 +1,8 @@
 ﻿#nullable disable warnings
 using  System.Windows;
+using System.Windows.Input;
 using Melville.MVVM.Wpf.MouseDragging;
+using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 using Moq;
 using Xunit;
 
@@ -13,41 +15,20 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.Drag
     {
       int dragged = 0;
 
-      var mouse = new TestMouseDataSource();
+      var mouse = new Mock<IMouseDataSource>();
       
-      mouse.Bind((x, y) =>
+      mouse.Object.BindDragger(LocalDragger.Action((pt) =>
       {
         dragged++;
-        Assert.Equal(0.5, x);
-        Assert.Equal(0.7, y);
-      });
+        Assert.Equal(0.5, pt.X);
+        Assert.Equal(0.7, pt.Y);
+      }));
 
       Assert.Equal(0, dragged);
-      mouse.SendMousePosition(MouseMessageType.Move, new Point(0.5, 0.7));
+      mouse.Raise(i=>i.MouseMoved += null, 
+        new LocalDragEventArgs(new Point(0.5, 0.7), MouseMessageType.Move,
+          new Size(), MouseButton.Left, null!));
       Assert.Equal(1, dragged);
     }
-
-    [Fact]
-    public void BeginDrag()
-    {
-      var mouse = new TestMouseDataSource();
-
-      var dataSource = new Mock<IDataObject>();
-      mouse.Drag(dataSource.Object, DragDropEffects.Move);
-
-      Assert.Null(mouse.DataObject);
-      Assert.Equal(DragDropEffects.None, mouse.EffectsIn);
-
-      mouse.EffectsOut = DragDropEffects.Copy;
-
-      mouse.SendMousePosition(MouseMessageType.Down, new Point(0.5,0.5));
-
-      Assert.Equal(dataSource.Object, mouse.DataObject);
-      Assert.Equal(DragDropEffects.Move, mouse.EffectsIn);
-      Assert.Equal(0.5, mouse.DragArgs.TransformedPoint.X);
-      Assert.Equal(0.5, mouse.DragArgs.TransformedPoint.Y);
-      
-    }
-
   }
 }

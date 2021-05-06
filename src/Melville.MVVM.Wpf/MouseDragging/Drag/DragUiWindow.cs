@@ -5,6 +5,8 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
+using Serilog.Data;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drag
 {
@@ -12,40 +14,17 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
   {
     public static IMouseDataSource DragTarget(this IMouseDataSource src, double opacity = 1)
     {
-      IDragUIWindow? window = null;
-
-      Point HandleMouseMove(LocalDragEventArgs ea)
-      {
-        if (window == null)
-        {
-          if (ea.MessageType != MouseMessageType.Down) return ea.TransformedPoint;
-          window = src.Root.ConstructDragWindow(ea.Target, opacity);
-          window.Show();
-        }
-
-        window.MouseMoved(ea);
-        if (ea.MessageType == MouseMessageType.Up)
-        {
-          window = null;
-        }
-
-        return ea.TransformedPoint;
-      }
-
-      return LambdaMouseMonitor.FromFull(src, HandleMouseMove);
+      if (src.Target is not FrameworkElement target) return src;
+      src.BindDragger(new DragUiWindow(target, opacity));
+      return src;
     }
   }
 
-  public interface IDragUIWindow
+  public sealed class DragUiWindow : Window, ILocalDragger<Point>
   {
-    void MouseMoved(LocalDragEventArgs e);
-    void Show();
-  }
 
-  public sealed class DragUIWindow : Window, IDragUIWindow
-  {
     private readonly FrameworkElement target;
-    public DragUIWindow(FrameworkElement targetElement, double opacity)
+    public DragUiWindow(FrameworkElement targetElement, double opacity)
     {
       this.target = targetElement;
       WindowStyle = WindowStyle.None;
@@ -69,17 +48,16 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
 
     private static BitmapSource CaptureVisual(FrameworkElement target)
     {
-      RenderTargetBitmap bitmap = new RenderTargetBitmap((int) Math.Ceiling(target.ActualWidth),
+      var bitmap = new RenderTargetBitmap((int) Math.Ceiling(target.ActualWidth),
         (int) Math.Ceiling(target.ActualHeight), 96.0, 96.0, PixelFormats.Pbgra32);
-      DrawingVisual visual = new DrawingVisual();
-      using (DrawingContext context = visual.RenderOpen())
+      var visual = new DrawingVisual();
+      using (var context = visual.RenderOpen())
       {
-        VisualBrush brush = new VisualBrush(target);
-        Rect descendantBounds = VisualTreeHelper.GetDescendantBounds(target);
-        Rect rectangle = new Rect(new Point(0.0, 0.0), descendantBounds.Size);
+        var brush = new VisualBrush(target);
+        var descendantBounds = VisualTreeHelper.GetDescendantBounds(target);
+        var rectangle = new Rect(new Point(0.0, 0.0), descendantBounds.Size);
         context.DrawRectangle(brush, null, rectangle);
       }
-
       bitmap.Render(visual);
       bitmap.Freeze();
       return bitmap;
@@ -90,9 +68,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
     /// then drop will never happen because this window does not accept drops.  The window styles below
     /// make it so the drag and drop system ignores this window in picking a drop target.
     /// </summary>
-    /// <param name="sender">Ignored, required to call this as an event handler</param>
-    /// <param name="args">Ignored, required to call this as an event handler</param>
-    private void MakeWindowInvisibleToMouse(object? sender, EventArgs args)
+    private void MakeWindowInvisibleToMouse(object? _, EventArgs __)
     {
       PresentationSource windowSource = PresentationSource.FromVisual(this);
       IntPtr handle = ((HwndSource) windowSource).Handle;
@@ -107,23 +83,26 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
       target.Visibility = Visibility.Visible;
     }
 
-    public void MouseMoved(LocalDragEventArgs e)
+    public void NewPoint(MouseMessageType type, Point point)
     {
+      TryShowOrHideWindow(type, point);
       UpdateWindowLocation();
+    }
 
-      switch (e.MessageType)
+    private void TryShowOrHideWindow(MouseMessageType type, Point point)
+    {
+      switch (type)
       {
         case MouseMessageType.Down:
-          offset = e.RawPoint;
+          offset = point;
+          Show();
           break;
         case MouseMessageType.Up:
           FinishDrag();
           break;
       }
     }
-
-
-
+    
     private Point offset;
     private void UpdateWindowLocation()
     {
@@ -141,12 +120,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
       {
         public int X;
         public int Y;
-
-//        public Point(int x, int y)
-//        {
-//          this.X = x;
-//          this.Y = y;
-//        }
       }
 
       public static Int32 GWL_EXSTYLE = -20;

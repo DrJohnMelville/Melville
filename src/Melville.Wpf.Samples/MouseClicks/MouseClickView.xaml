@@ -5,10 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Melville.Wpf.Samples.MouseClicks"
              xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids;assembly=Melville.WpfControls"
+             xmlns:drop="clr-namespace:Melville.MVVM.Wpf.MouseDragging.Drop;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid Background="Transparent" MouseLeftButtonDown="{eventBindings:EventBinding MouseDownHandler}">
-        <TextBlock Text="{Binding Message}"></TextBlock>
-    </Grid>
+    <easyGrids:EasyGrid Background="Transparent" easyGrids:GridOperations.ColsAndRows="*,*/*,*">
+        <TextBlock Text="{Binding Message}" Grid.ColumnSpan="2"
+                   MouseLeftButtonDown="{eventBindings:EventBinding MouseDownHandler}"></TextBlock>
+        <Border Background="Red" BorderBrush="Black" BorderThickness="2" Width="80" Height="40"
+                MouseLeftButtonDown="{eventBindings:EventBinding BeginDrag}"></Border>
+        <TextBlock Text="{Binding DropAreaText}" drop:DropBinding.DropWithDragMethod="JdmDrop"/>
+    </easyGrids:EasyGrid>
 
 </UserControl>
