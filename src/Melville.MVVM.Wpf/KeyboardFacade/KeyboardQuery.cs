@@ -2,10 +2,9 @@
 
 namespace Melville.MVVM.Wpf.KeyboardFacade
 {
-  public interface IKeyboardQuery
+  public interface IHasModifiers
   {
     ModifierKeys Modifiers { get; }
-    bool IsDown(Key key);
     bool IsShiftDown => (Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift;
     bool IsAltDown => (Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt;
     bool IsControlDown => (Modifiers & ModifierKeys.Control) == ModifierKeys.Control;
@@ -14,6 +13,10 @@ namespace Melville.MVVM.Wpf.KeyboardFacade
     bool IsOnlyAltDown => Modifiers == ModifierKeys.Alt;
     bool IsOnlyControlDown => Modifiers == ModifierKeys.Control;
     bool IsOnlyWindowsDown => Modifiers == ModifierKeys.Windows;
+  }
+  public interface IKeyboardQuery: IHasModifiers
+  {
+    bool IsDown(Key key);
   }
 
   public sealed class KeyboardQuery : IKeyboardQuery
