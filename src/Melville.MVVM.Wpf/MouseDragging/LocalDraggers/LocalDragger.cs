@@ -94,10 +94,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
                     OnKey(keyboard, ModifierKeys.Alt, i => GridSnapping(5, i), target)));
 
         public static ILocalDragger<Point> Constrain(
-            double minX, double maxX, int minY, double maxY, ILocalDragger<Point> target) =>
+            double minX, double maxX, double minY, double maxY, ILocalDragger<Point> target) =>
             Constrain(new Rect(new Point(minX, minY), new Point(maxX, maxY)), target);
 
-        private static ILocalDragger<Point> Constrain(Rect bounds, ILocalDragger<Point> target) =>
+        public static ILocalDragger<Point> Constrain(Rect bounds, ILocalDragger<Point> target) =>
             Action((type, pt) => target.NewPoint(type, bounds.ApplyConstraint(pt)));
         public static Point ApplyConstraint(this Rect constraint, Point point) =>
             new Point(point.X.Clamp(constraint.Left, constraint.Right),
@@ -117,6 +117,20 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
                 if (count-- > 0) target.NewPoint(type, pt);
             });
         }
+        
+        public static ILocalDragger<T> Multiple<T>(params ILocalDragger<T>[] targets) where T : struct =>
+            new LambdaDragger<T>((type, pt) =>
+            {
+                foreach (var target in targets)
+                {
+                    target.NewPoint(type, pt);
+                }
+            });
+
+        
+        public static ILocalDragger<T> Transform<T>(Func<T, T> transformer, ILocalDragger<T> target)
+            where T : struct =>
+            new LambdaDragger<T>((type, pt) => target.NewPoint(type, transformer(pt)));
     }
     
 }

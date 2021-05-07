@@ -3,12 +3,13 @@ using System.Windows.Input;
 using Melville.MVVM.Wpf.KeyboardFacade;
 using Melville.MVVM.Wpf.MouseDragging;
 using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
+using Melville.MVVM.WPF.Test.EventBindings;
 using Moq;
 using Xunit;
 
 namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
 {
-    public class InitialPointDraggerTest
+    public class MultipleDraggerTests
     {
         private readonly Mock<ILocalDragger<Point>> target = new();
 
@@ -113,6 +114,15 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
             target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
             target.VerifyNoOtherCalls();
         }
+        [Theory]
+        [InlineData(5,4,10,12)]
+        public void TransformDragger(double iX, double iY, double fX, double fY)
+        {
+            var sut = LocalDragger.Transform(pt=>new Point(pt.X *2, pt.Y * 3), target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(iX,iY));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
+            target.VerifyNoOtherCalls();
+        }
 
         [Fact]
         public void MaxMovesTest()
@@ -122,6 +132,15 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
             sut.NewPoint(MouseMessageType.Down, new Point(1,2));
             sut.NewPoint(MouseMessageType.Down, new Point(1,2));
             target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(1,2)), Times.Exactly(2));
+        }
+        [Fact]
+        public void MultuMove()
+        {
+            var target2 = new Mock<ILocalDragger<Point>>();
+            var sut = LocalDragger.Multiple(target.Object, target2.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(1,2));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(1,2)), Times.Exactly(1));
+            target2.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(1,2)), Times.Exactly(1));
         }
         
     }
