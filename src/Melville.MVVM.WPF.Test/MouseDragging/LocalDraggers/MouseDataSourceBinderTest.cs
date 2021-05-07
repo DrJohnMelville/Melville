@@ -15,8 +15,7 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
         public void TransmitMessage()
         {
             source.Object.BindLocalDragger(destination.Object);
-            source.Raise(i=>i.MouseMoved += null, new LocalDragEventArgs(new Point(23,14),
-                MouseMessageType.Down));
+            source.Raise(i=>i.MouseMoved += null, MouseMessageType.Down, new Point(23,14));
             
             destination.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(23,14)));
         }

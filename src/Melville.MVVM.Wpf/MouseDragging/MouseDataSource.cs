@@ -12,9 +12,10 @@ namespace Melville.MVVM.Wpf.MouseDragging
     Up = 2
   }
 
+  public delegate void ReportMouseMove(MouseMessageType type, Point point);
   public interface IMouseDataSource
   {
-    event EventHandler<LocalDragEventArgs> MouseMoved;
+    event ReportMouseMove MouseMoved;
     void SendMousePosition(MouseMessageType type, Point position);
     void CancelMouseBinding();
     object? Target { get; }
@@ -41,6 +42,6 @@ namespace Melville.MVVM.Wpf.MouseDragging
       this IMouseDataSource source, Func<IMouseDataSource, ILocalDragger<Point>> dragger) =>
       BindLocalDragger(source, dragger(source));
     public static void BindLocalDragger(this IMouseDataSource source, ILocalDragger<Point> dragger) => 
-      source.MouseMoved += (s, e) => dragger.NewPoint(e.MessageType, e.RawPoint);
+      source.MouseMoved += dragger.NewPoint;
   }
 }

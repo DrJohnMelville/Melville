@@ -3,6 +3,7 @@ using System.Windows;
 
 namespace Melville.MVVM.Wpf.MouseDragging
 {
+  [Obsolete]
   public class LocalDragEventArgs : EventArgs
   {
     public Point RawPoint { get; }

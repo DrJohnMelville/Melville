@@ -11,7 +11,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
   public sealed class WindowMouseDataSource  : IMouseDataSource
   {
     private WindowMouseBinding? binding;
-    public event EventHandler<LocalDragEventArgs>? MouseMoved;
+    public event ReportMouseMove? MouseMoved;
     public FrameworkElement Target { get; }
     object? IMouseDataSource.Target => Target;
 
@@ -21,7 +21,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
     }
 
     public void SendMousePosition(MouseMessageType type, Point position) =>
-      MouseMoved?.Invoke(this, new LocalDragEventArgs(position, type));
+      MouseMoved?.Invoke(type, position);
 
 
     public void BindToPhysicalMouse(MouseButtonEventArgs args)

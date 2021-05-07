@@ -24,8 +24,7 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.Drag
       }));
 
       Assert.Equal(0, dragged);
-      mouse.Raise(i=>i.MouseMoved += null, 
-        new LocalDragEventArgs(new Point(0.5, 0.7), MouseMessageType.Move));
+      mouse.Raise(i=>i.MouseMoved += null, MouseMessageType.Move, new Point(0.5, 0.7));
       Assert.Equal(1, dragged);
     }
   }
