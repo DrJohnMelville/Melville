@@ -30,6 +30,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             where T: struct =>
             new UndoDragger<T>(undo, effector);
 
+        public static ILocalDragger<Point> MinimumDrag(ILocalDragger<Point> effector) =>
+            MinimumDrag(SystemParameters.MinimumVerticalDragDistance, effector);
         public static ILocalDragger<Point> MinimumDrag(double radius, ILocalDragger<Point> effector) =>
             new MinimumDragger(radius, effector);
 

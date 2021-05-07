@@ -63,7 +63,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
         private void SendMouseUp(object sender, MouseButtonEventArgs e)
         {
             if (!IsButtonThatInitiatedDrag(e)) return;
-            SendMouseMove(MouseMessageType.Up, e);
+            SendMouseMessage(MouseMessageType.Up, e);
             ReleaseBindings();
         }
 

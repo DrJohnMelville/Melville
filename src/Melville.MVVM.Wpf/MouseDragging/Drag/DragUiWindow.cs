@@ -78,7 +78,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
 
     public void FinishDrag()
     {
-      Close();
+      if (IsVisible) Close();
       target.Visibility = Visibility.Visible;
     }
 

@@ -30,7 +30,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
       Action<DragDropEffects>? onDragDone = null)
     {
       mon.BindLocalDragger(
-        LocalDragger.MinimumDrag(SystemParameters.MinimumVerticalDragDistance,
+        LocalDragger.MinimumDrag(
           LocalDragger.MaxMoves(1, LocalDragger.Action((_, __) =>
           {
             var ret = new DragHandler(mon).InitiateDrag(dataToDrag(), allowedEffects);
