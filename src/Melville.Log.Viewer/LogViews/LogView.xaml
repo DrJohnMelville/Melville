@@ -7,6 +7,7 @@
              xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
              xmlns:events="clr-namespace:Serilog.Events;assembly=Serilog"
              xmlns:filteredDataGrids="clr-namespace:Melville.WpfControls.FilteredDataGrids;assembly=Melville.WpfControls"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:LogViewModel}}">
     <Grid>
@@ -30,6 +31,7 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <Button Click="{eventBindings:EventBinding ClearLog}">Clear Log</Button>
         </StackPanel>
         <DataGrid Grid.Row="1" ItemsSource="{Binding Events}" IsReadOnly="True" AutoGenerateColumns="False"
                   filteredDataGrids:FilteredDataGrid.UseFilter="True">

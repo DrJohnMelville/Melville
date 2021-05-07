@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using Melville.INPC;
 using Melville.Lists;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.MVVM.BusinessObjects;
@@ -7,7 +8,7 @@ using Serilog.Events;
 
 namespace Melville.Log.Viewer.LogViews
 {
-    public class LogViewModel : NotifyBase, IHomeScreenPage
+    public partial class LogViewModel : NotifyBase, IHomeScreenPage
     {
         private string title;
         public string Title
@@ -28,6 +29,8 @@ namespace Melville.Log.Viewer.LogViews
                 }
             }
         }
+
+        public void ClearLog() => Events.Clear();
 
 
         private readonly ILogConnection logConnection;
