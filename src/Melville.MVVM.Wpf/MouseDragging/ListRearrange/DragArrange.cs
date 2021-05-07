@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Melville.MVVM.Wpf.MouseClicks;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
@@ -110,9 +111,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
       private void DragInitiate(object s, MouseButtonEventArgs e)
       {
-        new MouseDragger(s as DependencyObject, e).LeafTarget()
+        if (s is not FrameworkElement fe) return;
+        new MouseClickReport(fe, e).DragLeaf()
           .DragTarget(0.5)
-          .Drag(new DataObject(((FrameworkElement) s).DataContext), DragDropEffects.Copy);
+          .Drag(new DataObject(fe.DataContext), DragDropEffects.Copy);
       }
 
       private static Type GetElementType(object targetCollection)

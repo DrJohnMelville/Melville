@@ -53,8 +53,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
 
     #endregion
-
-
+    
     [GenerateDP(typeof(FrameworkElement), "VisualToDrag", Attached = true, Nullable = true)]
     [GenerateDP(typeof(object), "DraggedItem", Attached = true)]
     [GenerateDP(typeof(IAddSupplementalFormats), "SupplementalFormats", Attached = true, Nullable = true)]

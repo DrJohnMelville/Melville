@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Melville.MVVM.Wpf.MouseDragging;
+using Melville.MVVM.Wpf.WpfHacks;
 
 namespace Melville.MVVM.Wpf.MouseClicks
 {
@@ -14,9 +17,28 @@ namespace Melville.MVVM.Wpf.MouseClicks
         Point AbsoluteLocation();
         Point RelativeLocation();
         Point PointRelativeTo(IInputElement element);
-        IMouseDragger CreateDragger();
+
+        IMouseDataSource DragBy(Func<FrameworkElement, FrameworkElement> dragItemSelector);
     }
 
+    public static class MouseClickReportOperations
+    {
+        public static IMouseDataSource DragLeaf(this IMouseClickReport mcr) =>
+            mcr.DragBy(i => i);
+        public static IMouseDataSource DragTop(this IMouseClickReport mcr) =>
+            mcr.DragBy(i => i.Parents().OfType<FrameworkElement>().Last());
+        public static IMouseDataSource DragByName(this IMouseClickReport mcr, string name) =>
+            mcr.DragBy(i => i.Parents()
+                .OfType<FrameworkElement>()
+                .First(i => i.Name.Equals(name, StringComparison.Ordinal)));
+        public static IMouseDataSource DragByViewType<T>(this IMouseClickReport mcr) where T : FrameworkElement =>
+            mcr.DragBy(i => i.Parents().OfType<T>().First());
+
+        public static IMouseDataSource DragByViewType(this IMouseClickReport mcr, params Type[] dragTypes) =>
+            mcr.DragBy(fe =>
+                fe.Parents().OfType<FrameworkElement>().First(i => dragTypes.Any(j => j.IsInstanceOfType(i))));
+    }
+    
     public class MouseClickReport : IMouseClickReport
     {
         private readonly FrameworkElement target;
@@ -41,7 +63,11 @@ namespace Melville.MVVM.Wpf.MouseClicks
         }
         public Point PointRelativeTo(IInputElement element) => eventArgs.GetPosition(element);
 
-        public IMouseDragger CreateDragger() =>
-            new MouseDragger(target, eventArgs);
+        public IMouseDataSource DragBy(Func<FrameworkElement, FrameworkElement> dragItemSelector)
+        {
+            var ret = new WindowMouseDataSource(dragItemSelector(target));
+            ret.BindToPhysicalMouse(eventArgs);
+            return ret;
+        }
     }
 }

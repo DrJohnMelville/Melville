@@ -7,6 +7,7 @@ using Melville.MVVM.Wpf.MouseDragging;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
+using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
 namespace Melville.Wpf.Samples.MouseClicks
 {
@@ -17,12 +18,13 @@ namespace Melville.Wpf.Samples.MouseClicks
         public void MouseDownHandler(IMouseClickReport report)
         { 
             Message = $"Clicked ({report.AbsoluteLocation()}) / ({report.RelativeLocation()})";
+            report.DragLeaf().BindLocalDragger(LocalDragger.Action(p=>Message = $"Drag to {p}"));
+            
         }
 
         public void BeginDrag(IMouseClickReport click)
         {
-            click.CreateDragger()
-                .LeafTarget()
+            click.DragLeaf()
                 .DragTarget(0.5)
                 .Drag(()=>new DataObject("This is Dragged Text"), DragDropEffects.Copy);
         }
