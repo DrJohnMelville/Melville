@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Input;
 using Melville.MVVM.Wpf.MouseDragging;
 using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 using Moq;
@@ -15,9 +14,9 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
         [Fact]
         public void TransmitMessage()
         {
-            source.Object.BindDragger(destination.Object);
+            source.Object.BindLocalDragger(destination.Object);
             source.Raise(i=>i.MouseMoved += null, new LocalDragEventArgs(new Point(23,14),
-                MouseMessageType.Down, Size.Empty, MouseButton.Left, null!));
+                MouseMessageType.Down));
             
             destination.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(23,14)));
         }

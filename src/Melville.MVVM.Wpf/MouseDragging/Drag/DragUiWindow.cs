@@ -15,7 +15,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
     public static IMouseDataSource DragTarget(this IMouseDataSource src, double opacity = 1)
     {
       if (src.Target is not FrameworkElement target) return src;
-      src.BindDragger(new DragUiWindow(target, opacity));
+      src.BindLocalDragger(new DragUiWindow(target, opacity));
       return src;
     }
   }
@@ -43,7 +43,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
         Source = CaptureVisual(targetElement)
       };
       SourceInitialized += MakeWindowInvisibleToMouse;
-      target.Visibility = Visibility.Hidden;
     }
 
     private static BitmapSource CaptureVisual(FrameworkElement target)
@@ -94,23 +93,27 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
       switch (type)
       {
         case MouseMessageType.Down:
-          offset = point;
-          Show();
+          SwapTargetWithProxyWindow(point);
           break;
         case MouseMessageType.Up:
           FinishDrag();
           break;
       }
     }
-    
+
+    private void SwapTargetWithProxyWindow(Point point)
+    {
+      offset = point;
+      target.Visibility = Visibility.Hidden;
+      Show();
+    }
+
     private Point offset;
     private void UpdateWindowLocation()
     {
-      if (NativeMethods.GetCursorPos(out var p))
-      {
-        Left = -30 + ((double) p.X) - offset.X;
-        Top = ((double) p.Y) - offset.Y;
-      }
+      if (!NativeMethods.GetCursorPos(out var p)) return;
+      Left = -30 + ((double) p.X) - offset.X;
+      Top = ((double) p.Y) - offset.Y;
     }
 
     private class NativeMethods

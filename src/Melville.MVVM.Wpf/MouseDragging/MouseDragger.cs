@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using Melville.Linq;
 using Melville.MVVM.Wpf.WpfHacks;
 
 namespace Melville.MVVM.Wpf.MouseDragging
@@ -46,7 +47,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
 
     private IMouseDataSource AttachToTarget(DependencyObject? target) =>
       target is FrameworkElement fe
-        ? new WindowMouseDataSource(fe, initalArgs)
+        ? new WindowMouseDataSource(fe).Fix(i=>i.BindToPhysicalMouse(initalArgs))
         : throw  new InvalidOperationException("Can only drag a framework Element");
 
     public MouseButton DraggedButton => initalArgs.ChangedButton;

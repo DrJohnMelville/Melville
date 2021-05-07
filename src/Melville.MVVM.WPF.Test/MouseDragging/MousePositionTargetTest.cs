@@ -1,6 +1,5 @@
 ﻿#nullable disable warnings
 using  System.Windows;
-using System.Windows.Input;
 using Melville.MVVM.Wpf.MouseDragging;
 using Moq;
 using Xunit;
@@ -18,8 +17,7 @@ namespace Melville.MVVM.WPF.Test.MouseDragging
     }
 
     private LocalDragEventArgs CreateLdea(MouseMessageType type, (double X, double Y) pt) =>
-      new LocalDragEventArgs(new Point(pt.X, pt.Y), type, new Size(100, 1000), MouseButton.Left,
-        null);
+      new LocalDragEventArgs(new Point(pt.X, pt.Y), type);
 
     private readonly Mock<IMouseRecorder> Recorder = new Mock<IMouseRecorder>();
 

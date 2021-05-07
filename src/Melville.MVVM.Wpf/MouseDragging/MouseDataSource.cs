@@ -1,6 +1,7 @@
 ﻿using  System;
 using System.Windows;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
+using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
 namespace Melville.MVVM.Wpf.MouseDragging
 {
@@ -11,14 +12,35 @@ namespace Melville.MVVM.Wpf.MouseDragging
     Up = 2
   }
 
-
   public interface IMouseDataSource
   {
     event EventHandler<LocalDragEventArgs> MouseMoved;
-    IMouseDataSource Root { get; }
     void SendMousePosition(MouseMessageType type, Point position);
     void CancelMouseBinding();
-    DragDropEffects InitiateDrag(IDataObject draggedData, DragDropEffects allowedEffects);
     object? Target { get; }
+  }
+
+  public static class MouseDataSourceOperations
+  {
+    public static void Drag(this IMouseDataSource mon, IDataObject dataToDrag, DragDropEffects allowedEffects,
+      Action<DragDropEffects>? onDragDone = null) => 
+      Drag(mon, () => dataToDrag, allowedEffects, onDragDone);
+    public static void Drag(this IMouseDataSource mon, Func<IDataObject> dataToDrag, DragDropEffects allowedEffects,
+      Action<DragDropEffects>? onDragDone = null)
+    {
+      mon.BindLocalDragger(
+        LocalDragger.MinimumDrag(SystemParameters.MinimumVerticalDragDistance,
+          LocalDragger.MaxMoves(1, LocalDragger.Action((_, __) =>
+          {
+            var ret = new DragHandler(mon).InitiateDrag(dataToDrag(), allowedEffects);
+            onDragDone?.Invoke(ret);
+          }))));
+    }
+
+    public static void BindLocalDragger(
+      this IMouseDataSource source, Func<IMouseDataSource, ILocalDragger<Point>> dragger) =>
+      BindLocalDragger(source, dragger(source));
+    public static void BindLocalDragger(this IMouseDataSource source, ILocalDragger<Point> dragger) => 
+      source.MouseMoved += (s, e) => dragger.NewPoint(e.MessageType, e.RawPoint);
   }
 }
