@@ -26,9 +26,16 @@ namespace Melville.Log.Viewer.LogViews
             var reader = new LogEventReader(new StreamReader(waitStream));
             while (await waitStream.WaitForData())
             {
-                if (reader.TryRead(out var logEvent))
+                try
                 {
-                    HandleEvent(logEvent);
+                    if (reader.TryRead(out var logEvent))
+                    {
+                        HandleEvent(logEvent);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
                 }
             }
         }
