@@ -66,13 +66,13 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     public static void AdornLeftRightMiddle(this IDropQuery query) => query.AdornTarget(
       Select3Way(query.GetRelativeTargetLocation().X, DropAdornerKind.Left, DropAdornerKind.Right));
 
-    private static DropAdornerKind Select3Way(double d, DropAdornerKind preAdorner, DropAdornerKind postAdorner)
-    {
-      if (d < 0.25) return preAdorner;
-      if (d > 0.75) return postAdorner;
-      return DropAdornerKind.Rectangle;
-    }
-
+    private static DropAdornerKind Select3Way(double d, DropAdornerKind preAdorner, DropAdornerKind postAdorner) =>
+      d switch
+      {
+        < 0.25 => preAdorner,
+        > 0.75 => postAdorner,
+        _ => DropAdornerKind.Rectangle
+      };
   }
 
   public sealed class DropQuery : DropInfo, IDropQuery
