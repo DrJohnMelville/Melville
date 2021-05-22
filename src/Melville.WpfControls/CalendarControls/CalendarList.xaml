@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="Melville.WpfControls.CalendarControls.CalendarList"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.WpfControls.CalendarControls"
+             xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids"
+             Name="TopControl"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+     <easyGrids:EasyGrid Margin="3" easyGrids:GridOperations.ColsAndRows="*/auto,*">
+        <UniformGrid DockPanel.Dock="Top" Columns="7"
+                     HorizontalAlignment="Left"
+                     Width="{Binding ActualWidth, ElementName=CalendarItemsControl}">
+            <UniformGrid.Resources>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                </Style>
+            </UniformGrid.Resources>
+            <TextBlock>Sunday</TextBlock>
+            <TextBlock>Monday</TextBlock>
+            <TextBlock>Tuesday</TextBlock>
+            <TextBlock>Wednesday</TextBlock>
+            <TextBlock>Thursday</TextBlock>
+            <TextBlock>Friday</TextBlock>
+            <TextBlock>Saturday</TextBlock>
+        </UniformGrid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto"
+                      VerticalAlignment="Top">
+            <local:CalendarItemsControl x:Name="CalendarItemsControl"
+                          ItemsSource="{Binding Items,
+                           RelativeSource={RelativeSource AncestorType={x:Type local:CalendarList}}}"
+                          ItemContainerStyle="{Binding ItemContainerStyle, ElementName=TopControl}">
+                <local:CalendarItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <local:CalendarItemPanel IsItemsHost="True"
+                                                 DisplayDate="{Binding DisplayMonth, ElementName=TopControl}" />
+                    </ItemsPanelTemplate>
+                </local:CalendarItemsControl.ItemsPanel>
+                <local:CalendarItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type local:CalendarBar}">
+                            <easyGrids:EasyGrid easyGrids:GridOperations.ColsAndRows="auto,*,auto/auto">
+                                <TextBlock Text="{Binding LeftTime}" Name="LeftBox"/>
+                                <ContentPresenter Content="{Binding Item}" Margin="2 0"
+                                                  ContentTemplate="{Binding ItemTemplate, ElementName=TopControl}"
+                                                  ContentTemplateSelector="{Binding ItemTemplateSelector, ElementName=TopControl}" />
+                                <TextBlock Text="{Binding RightTime}" Name="RightBox"/>
+                            </easyGrids:EasyGrid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding LeftTime.Length}" Value="1">
+                                <Setter TargetName="LeftBox" Property="FontFamily" Value="Marlett"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding RightTime.Length}" Value="1">
+                                <Setter TargetName="RightBox" Property="FontFamily" Value="Marlett"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </local:CalendarItemsControl.ItemTemplate>
+            </local:CalendarItemsControl>
+        </ScrollViewer>
+    </easyGrids:EasyGrid>
+</UserControl>

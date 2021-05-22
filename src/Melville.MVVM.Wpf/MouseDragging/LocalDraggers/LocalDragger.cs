@@ -126,8 +126,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
                     target.NewPoint(type, pt);
                 }
             });
-
-        
         public static ILocalDragger<T> Transform<T>(Func<T, T> transformer, ILocalDragger<T> target)
             where T : struct =>
             new LambdaDragger<T>((type, pt) => target.NewPoint(type, transformer(pt)));

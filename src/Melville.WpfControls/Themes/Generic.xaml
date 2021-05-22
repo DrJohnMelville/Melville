@@ -4,61 +4,23 @@
     xmlns:capLockIndicator="clr-namespace:Melville.WpfControls.CapLockIndicator"
     xmlns:Buttons="clr-namespace:Melville.WpfControls.Buttons"
     xmlns:checkBoxLists="clr-namespace:Melville.WpfControls.CheckBoxLists"
-    xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf">
-
-<!--
-    <Style TargetType="{x:Type waitMessages:WaitMessageWrapper}">
+    xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
+    xmlns:calendarControl="clr-namespace:Melville.WpfControls.CalendarControls">
+    <Style TargetType="{x:Type calendarControl:CalendarItemContainer}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type waitMessages:WaitMessageWrapper}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock FontSize="18" HorizontalAlignment="Center" Grid.Row="1" Grid.ColumnSpan="3"
-                                   Text ="{TemplateBinding WaitMessage}"/>
-                        <ProgressBar Minimum="0" Maximum="{TemplateBinding Total}" Value="{TemplateBinding Progress}" Height="15"
-                                     wpfHacks:VisibilityHack.CollapseUnless="{Binding Total, RelativeSource={x:Static RelativeSource.TemplatedParent},
-                            Converter={x:Static waitMessages:WaitMessageWrapper.ShowProgress}}" Grid.Row="2" Grid.Column="1" />
-                    </Grid>
+                <ControlTemplate TargetType="{x:Type calendarControl:CalendarItemContainer}">
+                    <Border Background="{TemplateBinding Border.Background}"
+                            BorderBrush="{TemplateBinding Border.BorderBrush}"
+                            BorderThickness="{TemplateBinding Border.BorderThickness}"
+                            CornerRadius="{TemplateBinding Border.CornerRadius}">
+                        <ContentPresenter/>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-        <Style.Triggers>
-            <Trigger Property="WaitMessage" Value="{x:Null}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type waitMessages:WaitMessageWrapper}">
-                            <Border Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <ContentPresenter/>
-                                    <TextBlock HorizontalAlignment="Center" Foreground="Red" Margin="5 0 5 0" MinHeight="0"
-                                               Text="{TemplateBinding ErrorMessage}" TextWrapping="Wrap" Grid.Row="1"/>
-
-                                </Grid>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Trigger>
-        </Style.Triggers>
-
     </Style>
--->
+
     <Style TargetType="{x:Type capLockIndicator:ShowCapLock}">
         <Setter Property="Template">
             <Setter.Value>

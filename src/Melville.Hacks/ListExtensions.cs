@@ -81,9 +81,9 @@ namespace Melville.Hacks
     /// <typeparam name="T">Element type of the list</typeparam>
     /// <param name="list">List to add elements to</param>
     /// <param name="items">Items to add</param>
-    public static void AddRange<T>(this IList<T> list, IEnumerable<T> items)
+    public static void AddRange<T>(this ICollection<T> list, IEnumerable<T>? items)
     {
-      foreach (var item in items)
+      if (items is not null) foreach (var item in items)
       {
         list.Add(item);
       }
@@ -95,9 +95,9 @@ namespace Melville.Hacks
     /// <typeparam name="T">Element type of the list</typeparam>
     /// <param name="list">List to remove elements from</param>
     /// <param name="items">Items to remove</param>
-    public static void RemoveRange<T>(this IList<T> list, IEnumerable<T> items)
+    public static void RemoveRange<T>(this ICollection<T> list, IEnumerable<T>? items)
     {
-      foreach (var item in items)
+      if (items is not null) foreach (var item in items)
       {
         list.Remove(item);
       }
