@@ -86,8 +86,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     public void AdornTarget(DropAdornerKind kind) => Target.Adorn(kind);
     public void AdornBounds(Rect bounds) => Target.Adorn(new RectangleAdorner(Target, bounds));
 
-    IDropQuery IVisualTreeLocation<IDropQuery, FrameworkElement>.CreateNewChild(FrameworkElement target) =>
-      new DropQuery(eventArgs, target);
+    IDropQuery IVisualTreeLocation<IDropQuery, FrameworkElement>.CreateNewChild(FrameworkElement? target) =>
+      target == null ? this: new DropQuery(eventArgs, target);
   }
 
   public sealed class DropAction : DropInfo, IDropAction
@@ -102,7 +102,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 
     public bool HasBoxAdorner() => Target.GetAdorners().OfType<OutlineAdorner>().Any();
 
-    IDropAction IVisualTreeLocation<IDropAction, FrameworkElement>.CreateNewChild(FrameworkElement target) =>
-      new DropAction(eventArgs, target);
+    IDropAction IVisualTreeLocation<IDropAction, FrameworkElement>.CreateNewChild(FrameworkElement? target) =>
+      target == null? this : new DropAction(eventArgs, target);
   }
 }

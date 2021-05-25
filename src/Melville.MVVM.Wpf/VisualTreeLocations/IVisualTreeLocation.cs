@@ -12,7 +12,7 @@ namespace Melville.MVVM.Wpf.VisualTreeLocations
         [EditorBrowsable(EditorBrowsableState.Never)]
         TTarget Target { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
-        TChild CreateNewChild(TTarget target);
+        TChild CreateNewChild(TTarget? target);
     }
 
     public static class VisualTreeLocationOperations
@@ -24,25 +24,25 @@ namespace Melville.MVVM.Wpf.VisualTreeLocations
         public static TChild AttachToName<TChild, TTarget>(this IVisualTreeLocation<TChild, TTarget> holder, string name) 
             where TTarget : FrameworkElement =>
             holder.CreateNewChild(ElligibleParents(holder.Target)
-                .First(i => i.Name?.Equals(name, StringComparison.Ordinal)??false));
+                .FirstOrDefault(i => i.Name?.Equals(name, StringComparison.Ordinal)??false));
 
         public static TChild AttachToType<TChild, TTarget>(this IVisualTreeLocation<TChild, TTarget> holder, Type type) 
             where TTarget : DependencyObject =>
             holder.CreateNewChild(ElligibleParents(holder.Target)
-                .First(type.IsInstanceOfType));
+                .FirstOrDefault(type.IsInstanceOfType));
 
         public static TChild AttachToDataContextHolder<TChild, TTarget>(
             this IVisualTreeLocation<TChild, TTarget> holder, Type type) where TTarget : FrameworkElement =>
             holder.CreateNewChild(ElligibleParents(holder.Target)
-                .First(i=>type.IsInstanceOfType(i.DataContext)));
+                .FirstOrDefault(i=>type.IsInstanceOfType(i.DataContext)));
         public static TChild AttachToDataContextHolder<TChild, TTarget>(
             this IVisualTreeLocation<TChild, TTarget> holder, params Type[] type) where TTarget : FrameworkElement =>
             holder.CreateNewChild(ElligibleParents(holder.Target)
-                .First(i=>type.Any(j=>j.IsInstanceOfType(i.DataContext))));
+                .FirstOrDefault(i=>type.Any(j=>j.IsInstanceOfType(i.DataContext))));
 
-        private static IEnumerable<TTarget> ElligibleParents<TTarget>(TTarget target)
+        private static IEnumerable<TTarget> ElligibleParents<TTarget>(TTarget? target)
             where TTarget : DependencyObject =>
-            target.Parents().OfType<TTarget>();
+            target?.Parents().OfType<TTarget>() ?? Array.Empty<TTarget>();
 
     }
 }

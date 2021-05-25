@@ -32,7 +32,8 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 
         DependencyObject IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.Target => root;
         IVisualTreeRunner IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.CreateNewChild(
-            DependencyObject target) => new VisualTreeRunner(target);
+            DependencyObject? target) => 
+            target == null? this:new VisualTreeRunner(target);
 
         public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result)
         {

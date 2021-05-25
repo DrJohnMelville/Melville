@@ -75,6 +75,7 @@ namespace Melville.MVVM.Wpf.MouseClicks
         FrameworkElement IVisualTreeLocation<IMouseClickReport, FrameworkElement>.Target => target;
 
         IMouseClickReport IVisualTreeLocation<IMouseClickReport, FrameworkElement>.
-            CreateNewChild(FrameworkElement target) => new MouseClickReport(target, eventArgs);
+            CreateNewChild(FrameworkElement? target) => target == null? this:new MouseClickReport(target, eventArgs);
+            CreateNewChild(FrameworkElement? target) => target == null? this:new MouseClickReport(target, eventArgs);
     }
 }
