@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Melville.MVVM.Wpf.MouseDragging;
 using Melville.MVVM.Wpf.VisualTreeLocations;
-using Melville.MVVM.Wpf.WpfHacks;
 
 namespace Melville.MVVM.Wpf.MouseClicks
 {
@@ -18,12 +16,24 @@ namespace Melville.MVVM.Wpf.MouseClicks
         Point AbsoluteLocation();
         Point RelativeLocation();
         Point PointRelativeTo(IInputElement element);
+        Size TargetSize();
 
         IMouseDataSource DragSource();
     }
 
     public static class MouseClickReportOperations
     {
+        public static IMouseClickReport ExtractSize(this IMouseClickReport mds, out Size size)
+        {
+            size = mds.TargetSize();
+            return mds;
+        }
+        public static IMouseClickReport ExtractBounds(this IMouseClickReport mds, out Rect bounds)
+        {
+            bounds = new Rect(new Point(), mds.TargetSize());
+            return mds;
+        }
+        
         [Obsolete("Use AttachToXXX overrides")]
         public static IMouseDataSource DragLeaf(this IMouseClickReport mcr) =>
             mcr.DragSource();
@@ -75,7 +85,9 @@ namespace Melville.MVVM.Wpf.MouseClicks
         FrameworkElement IVisualTreeLocation<IMouseClickReport, FrameworkElement>.Target => target;
 
         IMouseClickReport IVisualTreeLocation<IMouseClickReport, FrameworkElement>.
-            CreateNewChild(FrameworkElement? target) => target == null? this:new MouseClickReport(target, eventArgs);
-            CreateNewChild(FrameworkElement? target) => target == null? this:new MouseClickReport(target, eventArgs);
+            CreateNewChild(FrameworkElement? otherTarget) => 
+            otherTarget == null? this:new MouseClickReport(otherTarget, eventArgs);
+
+        public Size TargetSize() => new Size(target.ActualWidth, target.ActualHeight);
     }
 }

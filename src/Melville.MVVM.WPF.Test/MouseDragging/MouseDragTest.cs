@@ -1,6 +1,7 @@
 ﻿using  System.Windows.Controls;
 using Melville.MVVM.Wpf.MouseClicks;
 using Melville.MVVM.Wpf.MouseDragging;
+using Melville.MVVM.Wpf.VisualTreeLocations;
 using Xunit;
 
 namespace Melville.MVVM.WPF.Test.MouseDragging
@@ -22,25 +23,25 @@ namespace Melville.MVVM.WPF.Test.MouseDragging
     [StaFact]
     public void FindImmediate()
     {
-      var dragger = sut.DragLeaf();
+      var dragger = sut.DragSource();
       Assert.Equal(child, ((WindowMouseDataSource)dragger).Target);
     }
     [StaFact]
     public void FindByName()
     {
-      var dragger = sut.DragByName("Middle");
+      var dragger = sut.AttachToName("Middle").DragSource();
       Assert.Equal(middle, ((WindowMouseDataSource)dragger).Target);
     }
     [StaFact]
     public void FindByType()
     {
-      var dragger = sut.DragByViewType<Grid>();
+      var dragger = sut.AttachToType(typeof(Grid)).DragSource();
       Assert.Equal(middle, ((WindowMouseDataSource)dragger).Target);
     }
     [StaFact]
     public void FindTop()
     {
-      var dragger = sut.DragTop();
+      var dragger = sut.AttachToTop().DragSource();
       Assert.Equal(root, ((WindowMouseDataSource)dragger).Target);
     }
   }

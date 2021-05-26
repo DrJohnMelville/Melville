@@ -21,6 +21,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             new LambdaDragger<Point>(action);
         public static ILocalDragger<Point> Action(Action<Point> action) =>
             Action((_, point)=>action(point));
+        
         public static ILocalDragger<CircularPoint> CircleAction(Action<MouseMessageType, CircularPoint> action) =>
             new LambdaDragger<CircularPoint>(action);
         public static ILocalDragger<CircularPoint> CircleAction(Action<CircularPoint> action) =>
@@ -97,6 +98,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             double minX, double maxX, double minY, double maxY, ILocalDragger<Point> target) =>
             Constrain(new Rect(new Point(minX, minY), new Point(maxX, maxY)), target);
 
+
+        public static ILocalDragger<Point> ConstrainToUnitSquare(ILocalDragger<Point> target) =>
+            Constrain(new Rect(0, 0, 1, 1), target);
         public static ILocalDragger<Point> Constrain(Rect bounds, ILocalDragger<Point> target) =>
             Action((type, pt) => target.NewPoint(type, bounds.ApplyConstraint(pt)));
         public static Point ApplyConstraint(this Rect constraint, Point point) =>
@@ -109,6 +113,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
         public static ILocalDragger<Point> ScaleDragger(
             double scaleX, double scaleY, ILocalDragger<Point> target) => 
             Action((type, point) => target.NewPoint(type, new Point(point.X*scaleX, point.Y*scaleY)));
+
+        public static ILocalDragger<Point> RelativeToSize(Size targetSize, ILocalDragger<Point> target) =>
+            ScaleDragger(1.0 / targetSize.Width, 1.0 / targetSize.Height, target);
 
         public static ILocalDragger<T> MaxMoves<T>(int count, ILocalDragger<T> target) where T:struct
         {

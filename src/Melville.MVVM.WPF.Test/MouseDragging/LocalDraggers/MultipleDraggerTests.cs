@@ -93,6 +93,15 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
             target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
             target.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public void ConstrainToUnitSquaere()
+        {
+            var sut = LocalDragger.ConstrainToUnitSquare(target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(5,5));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(1,1)));
+            target.VerifyNoOtherCalls();
+        }
         
         [Theory]
         [InlineData(5,1,5,9)]
@@ -112,6 +121,14 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.LocalDraggers
             var sut = LocalDragger.ScaleDragger(2,3, target.Object);
             sut.NewPoint(MouseMessageType.Down, new Point(iX,iY));
             target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(fX,fY)));
+            target.VerifyNoOtherCalls();
+        }
+        [Fact]
+        public void RelativeToSizeTest()
+        {
+            var sut = LocalDragger.RelativeToSize(new Size(10, 100), target.Object);
+            sut.NewPoint(MouseMessageType.Down, new Point(5,5));
+            target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point(0.5,0.05)));
             target.VerifyNoOtherCalls();
         }
         [Theory]
