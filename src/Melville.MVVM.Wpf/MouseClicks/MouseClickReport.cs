@@ -75,7 +75,9 @@ namespace Melville.MVVM.Wpf.MouseClicks
         }
         public Point PointRelativeTo(IInputElement element) => eventArgs.GetPosition(element);
 
-        public IMouseDataSource DragSource()
+        private IMouseDataSource? dragSource = null;
+        public IMouseDataSource DragSource() => dragSource ??= CreateDragSource();
+        private WindowMouseDataSource CreateDragSource()
         {
             var ret = new WindowMouseDataSource(target, eventArgs.GetPosition(target));
             ret.BindToPhysicalMouse(eventArgs);
