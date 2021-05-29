@@ -23,7 +23,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
                 return;
             }
 
-            if (triggered || CheckStillInsideDelta(point)) return;
+            if (!triggered && CheckStillInsideDelta(point)) return;
             effector.NewPoint(type, point);
         }
 

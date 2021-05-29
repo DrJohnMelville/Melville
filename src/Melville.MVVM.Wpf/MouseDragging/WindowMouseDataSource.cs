@@ -14,10 +14,12 @@ namespace Melville.MVVM.Wpf.MouseDragging
     public event ReportMouseMove? MouseMoved;
     public FrameworkElement Target { get; }
     object? IMouseDataSource.Target => Target;
+    public Point InitialPoint { get; }
 
-    public WindowMouseDataSource(FrameworkElement target)
+    public WindowMouseDataSource(FrameworkElement target, Point initialPoint)
     {
       Target = target;
+      InitialPoint = initialPoint;
     }
 
     public void SendMousePosition(MouseMessageType type, Point position) =>

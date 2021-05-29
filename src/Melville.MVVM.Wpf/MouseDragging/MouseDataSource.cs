@@ -19,6 +19,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
     void SendMousePosition(MouseMessageType type, Point position);
     void CancelMouseBinding();
     object? Target { get; }
+    Point InitialPoint { get; }
   }
 
   public static class MouseDataSourceOperations
@@ -49,6 +50,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
       this IMouseDataSource source, ILocalDragger<Point> dragger)
     {
        source.MouseMoved += dragger.NewPoint;
+       dragger.NewPoint(MouseMessageType.Down, source.InitialPoint);
        return source;
     }
   }

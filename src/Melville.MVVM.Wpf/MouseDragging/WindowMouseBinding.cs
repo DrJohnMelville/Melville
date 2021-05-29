@@ -39,18 +39,10 @@ namespace Melville.MVVM.Wpf.MouseDragging
         private void BindToMouse()
         {
             CaptureHost.CaptureMouse();
-            Mouse.AddMouseMoveHandler(clickSource, SendMouseDown);
             Mouse.AddMouseMoveHandler(clickSource, SendMouseMove);
             Mouse.AddMouseUpHandler(clickSource, SendMouseUp);
         }
-
-        private void SendMouseDown(object sender, MouseEventArgs e)
-        {
-            Mouse.RemoveMouseMoveHandler(clickSource, SendMouseDown);
-            SendMouseMessage(MouseMessageType.Down, initialArgs);
-            SendMouseMessage(MouseMessageType.Move, initialArgs);
-        }
-
+        
         private void SendMouseMessage(MouseMessageType type, MouseEventArgs args)
         {
             reportMove(type, args.GetPosition(target));
@@ -72,7 +64,6 @@ namespace Melville.MVVM.Wpf.MouseDragging
 
         public void ReleaseBindings()
         {
-            Mouse.RemoveMouseMoveHandler(clickSource, SendMouseDown);
             Mouse.RemoveMouseMoveHandler(clickSource, SendMouseMove);
             Mouse.RemoveMouseUpHandler(clickSource, SendMouseUp);
             CaptureHost.ReleaseMouseCapture();

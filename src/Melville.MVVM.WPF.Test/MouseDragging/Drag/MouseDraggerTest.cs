@@ -12,20 +12,18 @@ namespace Melville.MVVM.WPF.Test.MouseDragging.Drag
     [Fact]
     public void TestSimpleDrag()
     {
-      int dragged = 0;
-
       var mouse = new Mock<IMouseDataSource>();
+      var target = new Mock<ILocalDragger<Point>>();
       
-      mouse.Object.BindLocalDragger(LocalDragger.Action((pt) =>
-      {
-        dragged++;
-        Assert.Equal(0.5, pt.X);
-        Assert.Equal(0.7, pt.Y);
-      }));
-
-      Assert.Equal(0, dragged);
+      mouse.Object.BindLocalDragger(target.Object);
+      
+      target.Verify(i=>i.NewPoint(MouseMessageType.Down, new Point()));
+      target.VerifyNoOtherCalls();
+      
       mouse.Raise(i=>i.MouseMoved += null, MouseMessageType.Move, new Point(0.5, 0.7));
-      Assert.Equal(1, dragged);
+
+      target.Verify(i=>i.NewPoint(MouseMessageType.Move, new Point(0.5,0.7)));
+      target.VerifyNoOtherCalls();
     }
   }
 }

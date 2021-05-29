@@ -18,7 +18,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem? DefaultItem() =>
-            SearchTreeForSample<CalendarControlViewModel>();
+            SearchTreeForSample<MouseClickViewModel>();
 
         public SampleDirectory()
         {

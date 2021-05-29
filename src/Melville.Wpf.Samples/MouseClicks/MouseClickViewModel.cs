@@ -24,8 +24,9 @@ namespace Melville.Wpf.Samples.MouseClicks
                 .ExtractSize(out var size)
                 .DragSource()
                 .BindLocalDragger(
+                    LocalDragger.MinimumDrag(
                     LocalDragger.RelativeToSize(size,
-                    LocalDragger.Action(p=>Message = $"Drag to {p}")));
+                    LocalDragger.Action(p=>Message = $"Drag to {p}"))));
             
         }
 
