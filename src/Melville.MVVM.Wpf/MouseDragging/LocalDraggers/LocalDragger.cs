@@ -27,7 +27,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
         public static ILocalDragger<CircularPoint> CircleAction(Action<CircularPoint> action) =>
             CircleAction((_, point)=>action(point));
         
-        public static ILocalDragger<T> Undo<T>(UndoEngine undo, ILocalDragger<T> effector)
+        public static ILocalDragger<T> Undo<T>(IUndoEngine undo, ILocalDragger<T> effector)
             where T: struct =>
             new UndoDragger<T>(undo, effector);
 
