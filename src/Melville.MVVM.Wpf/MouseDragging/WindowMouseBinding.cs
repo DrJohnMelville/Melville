@@ -11,21 +11,20 @@ namespace Melville.MVVM.Wpf.MouseDragging
         private readonly Action<MouseMessageType, Point> reportMove;
         private readonly FrameworkElement target;
         private readonly DependencyObject clickSource;
-        private readonly MouseButtonEventArgs initialArgs;
+        private readonly MouseButton draggedButton;
 
         public WindowMouseBinding(
-            FrameworkElement target,MouseButtonEventArgs initialArgs, 
-            Action<MouseMessageType, Point> reportMove)
+            FrameworkElement target, 
+            Action<MouseMessageType, Point> reportMove, MouseButton draggedButton)
         {
             this.reportMove = reportMove;
             this.target = target;
             clickSource = TopmostMouseSource();
-            this.initialArgs = initialArgs;
-
+            this.draggedButton = draggedButton;
             BindToMouse();
         }
 
-        //The verifier cannot verify this is legal, and Rider report the cast as suspicious.
+        //The verifier cannot verify this is legal, and Rider reports the cast as suspicious.
         // however TopmostMouseSource ensures that the host implements both IInputElement and
         //DependencyObject
         private IInputElement CaptureHost => (IInputElement) clickSource;
@@ -60,7 +59,7 @@ namespace Melville.MVVM.Wpf.MouseDragging
         }
 
         private bool IsButtonThatInitiatedDrag(MouseButtonEventArgs e) => 
-            e.ChangedButton == initialArgs.ChangedButton;
+            e.ChangedButton == draggedButton;
 
         public void ReleaseBindings()
         {

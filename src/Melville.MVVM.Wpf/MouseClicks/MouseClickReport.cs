@@ -75,12 +75,12 @@ namespace Melville.MVVM.Wpf.MouseClicks
         }
         public Point PointRelativeTo(IInputElement element) => eventArgs.GetPosition(element);
 
-        private IMouseDataSource? dragSource = null;
+        private IMouseDataSource? dragSource;
         public IMouseDataSource DragSource() => dragSource ??= CreateDragSource();
         private WindowMouseDataSource CreateDragSource()
         {
             var ret = new WindowMouseDataSource(target, eventArgs.GetPosition(target));
-            ret.BindToPhysicalMouse(eventArgs);
+            ret.BindToPhysicalMouse(eventArgs.ChangedButton);
             return ret;
         }
 
@@ -90,6 +90,6 @@ namespace Melville.MVVM.Wpf.MouseClicks
             CreateNewChild(FrameworkElement? otherTarget) => 
             otherTarget == null? this:new MouseClickReport(otherTarget, eventArgs);
 
-        public Size TargetSize() => new Size(target.ActualWidth, target.ActualHeight);
+        public Size TargetSize() => new(target.ActualWidth, target.ActualHeight);
     }
 }

@@ -21,15 +21,11 @@ namespace Melville.MVVM.Wpf.MouseDragging
       Target = target;
       InitialPoint = initialPoint;
     }
-
     public void SendMousePosition(MouseMessageType type, Point position) =>
       MouseMoved?.Invoke(type, position);
 
-
-    public void BindToPhysicalMouse(MouseButtonEventArgs args)
-    {
-      binding = new WindowMouseBinding(Target, args, SendMousePosition);
-    }
+    public void BindToPhysicalMouse(MouseButton changedButton) => 
+      binding = new WindowMouseBinding(Target, SendMousePosition, changedButton);
 
     public void CancelMouseBinding() => binding?.ReleaseBindings();
   }
