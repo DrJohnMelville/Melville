@@ -140,6 +140,16 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
         public static ILocalDragger<T> Transform<T>(Func<T, T> transformer, ILocalDragger<T> target)
             where T : struct =>
             new LambdaDragger<T>((type, pt) => target.NewPoint(type, transformer(pt)));
+        
+        public static ILocalDragger<T> OnType<T>(MouseMessageType type, Action<T> action) where T : struct =>
+            new LambdaDragger<T>((mmt, pt) =>
+            {
+                if (mmt == type) action(pt);
+            });
+
+        public static ILocalDragger<Point> OnDown(Action<Point> action) => OnType(MouseMessageType.Down, action);
+        public static ILocalDragger<Point> OnMove(Action<Point> action) => OnType(MouseMessageType.Move, action);
+        public static ILocalDragger<Point> OnUp(Action<Point> action) => OnType(MouseMessageType.Up, action);
+        public static ILocalDragger<T> Nothing<T>() where T:struct => new LambdaDragger<T>((_,_) => { });
     }
-    
 }

@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
-    public class RestrictToAxis : ILocalDragger<Point>
+    public class RestrictToAxis : SegmentedDragger<Point>
     {
         private Point initialPoint;
         private readonly ILocalDragger<Point> target;
@@ -13,16 +13,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             this.target = target;
         }
 
-        public void NewPoint(MouseMessageType type, Point point)
-        {
-            TryRecordInitialPoint(type, point);
-            target.NewPoint(type, AdjustPoint(point));
-        }
+        protected override void MouseDown(Point point) => initialPoint = point;
 
-        private void TryRecordInitialPoint(MouseMessageType type, Point point)
-        {
-            if (type == MouseMessageType.Down) initialPoint = point;
-        }
+        public override void PostAllPoints(MouseMessageType type, Point point) => 
+            target.NewPoint(type, AdjustPoint(point));
 
         private Point AdjustPoint(Point point)
         {

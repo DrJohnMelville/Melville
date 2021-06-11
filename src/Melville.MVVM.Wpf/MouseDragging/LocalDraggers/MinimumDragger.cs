@@ -2,12 +2,12 @@
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
-    public class MinimumDragger : ILocalDragger<Point>
+    public class MinimumDragger : SegmentedDragger<Point>
     {
         private readonly double radiusSquared;
         private readonly ILocalDragger<Point> effector;
         private Point initialPoint;
-        private bool triggered;
+        private bool hasEscapedBefore;
 
         public MinimumDragger(double radius, ILocalDragger<Point> effector)
         {
@@ -15,25 +15,28 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             this.effector = effector;
         }
 
-        public void NewPoint(MouseMessageType type, Point point)
-        {
-            if (type == MouseMessageType.Down)
-            {
-                initialPoint = point;
-                return;
-            }
+        protected override void MouseDown(Point point) => initialPoint = point;
 
-            if (!triggered && CheckStillInsideDelta(point)) return;
-            effector.NewPoint(type, point);
+        public override void PostAllPoints(MouseMessageType type, Point point)
+        {
+            if (HasEscapedInitialRadius(point))
+                effector.NewPoint(type, point);
         }
 
-        private bool CheckStillInsideDelta(Point point)
+        private bool HasEscapedInitialRadius(Point point)
         {
-            if (IsInsideDelta(initialPoint - point)) return true;
-            triggered = true;
-            effector.NewPoint(MouseMessageType.Down, initialPoint);
-            return false;
+            if (hasEscapedBefore) return true;
+            if (IsInsideDelta(initialPoint - point)) return false;
+            OnFirstEscapeFromRadius();
+            return true;
         }
+
         private bool IsInsideDelta(Vector delta) => delta.LengthSquared < radiusSquared;
+
+        private void OnFirstEscapeFromRadius()
+        {
+            hasEscapedBefore = true;
+            effector.NewPoint(MouseMessageType.Down, initialPoint); // now we send the original point to start the drag
+        }
     }
 }

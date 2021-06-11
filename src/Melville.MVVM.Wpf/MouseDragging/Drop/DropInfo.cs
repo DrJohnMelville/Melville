@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.VisualTreeLocations;
 
@@ -75,6 +75,49 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         > 0.75 => postAdorner,
         _ => DropAdornerKind.Rectangle
       };
+    
+    public static DragDropEffects AdornIfType<T>(
+      this IDropQuery query, DragDropEffects desriedEffect, Action<IDropQuery>? doAdornment = null) =>
+      query.AdornIf(query.Item.GetDataPresent(typeof(T)), desriedEffect, doAdornment);
+
+    public static DragDropEffects AdornIf(this IDropQuery query, string dataType, DragDropEffects desriedEffect,
+      Action<IDropQuery>? doAdornment = null) =>
+      query.AdornIf(query.Item.GetDataPresent(dataType, true), desriedEffect, doAdornment);
+    public static DragDropEffects AdornIf(this IDropQuery query, bool canDrop, DragDropEffects desriedEffect,
+      Action<IDropQuery>? doAdornment = null)
+    {
+      if (!canDrop) return DragDropEffects.None;
+      AdornTarget(query, doAdornment);
+      return desriedEffect;
+    }
+
+    private static void AdornTarget(IDropQuery query, Action<IDropQuery>? doAdornment)
+    {
+      if (doAdornment == null)
+        query.AdornTarget(DropAdornerKind.Rectangle);
+      else
+        doAdornment(query);
+    }
+
+    public static DragDropEffects AcceptDrop<T>(
+      this IDropAction query, DragDropEffects desriedEffect, Action<T> doAct) =>
+      query.AcceptDrop(typeof(T).FullName ?? "Cannot resolve type", desriedEffect, doAct);
+    public static DragDropEffects AcceptDrop<T>(
+      this IDropAction query, string dataType, DragDropEffects desriedEffect, Action<T> doAct)
+    {
+      if (query.Item.GetData(dataType, true) is not T dropped) return DragDropEffects.None;
+      doAct(dropped);
+      return desriedEffect;
+    }
+
+    public static DragDropEffects AcceptDrop(this IDropAction query, bool canDrop, DragDropEffects desriedEffect,
+      Action doAct)
+    {
+      if (!canDrop) return DragDropEffects.None;
+      doAct();
+      return desriedEffect;
+    }
+
   }
 
   public sealed class DropQuery : DropInfo, IDropQuery

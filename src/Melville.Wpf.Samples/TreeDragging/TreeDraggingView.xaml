@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.TreeDragging.TreeDraggingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.TreeDragging"
+             xmlns:listRearrange="clr-namespace:Melville.MVVM.Wpf.MouseDragging.ListRearrange;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.Resources>
+            <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type local:TreeNode}">
+                <TextBlock Text="{Binding Name}" FontSize="32"
+                           listRearrange:TreeArrange.DragType="{x:Type local:TreeItem}"/>
+            </HierarchicalDataTemplate>
+            <DataTemplate DataType="{x:Type local:TreeItem}">
+                <TextBlock Text="{Binding Name}"
+                           listRearrange:TreeArrange.DragType="{x:Type local:TreeItem}"/>
+            </DataTemplate>
+        </Grid.Resources>
+        <TreeView ItemsSource="{Binding Data}">
+        </TreeView>
+    </Grid>
+</UserControl>
