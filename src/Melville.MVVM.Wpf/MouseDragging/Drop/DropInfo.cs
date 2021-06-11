@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 
@@ -12,13 +11,13 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     Point GetRelativeTargetLocation();
   }
 
-  public interface IDropQuery : IDropInfo
+  public interface IDropQuery : IDropInfo, IVisualTreeLocation<IDropQuery, FrameworkElement>
   {
     void AdornTarget(DropAdornerKind kind);
     void AdornBounds(Rect bounds);
   }
 
-  public interface IDropAction : IDropInfo
+  public interface IDropAction : IDropInfo, IVisualTreeLocation<IDropAction, FrameworkElement>
   {
     /// <summary>
     /// For dropping into a list, this will return 1 if the drop should be after the present item, or 0 if it should be before the present item.
@@ -44,7 +43,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 
     public IDataObject Item => eventArgs.Data;
     public FrameworkElement Target { get; }
-    public DragEventArgs eventArgs;
+    protected DragEventArgs eventArgs;
 
     public Point GetTargetLocation() => eventArgs.GetPosition(Target);
 
@@ -67,6 +66,13 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     public static void AdornLeftRightMiddle(this IDropQuery query) => query.AdornTarget(
       Select3Way(query.GetRelativeTargetLocation().X, DropAdornerKind.Left, DropAdornerKind.Right));
 
+    private static DropAdornerKind Select3Way(double d, DropAdornerKind preAdorner, DropAdornerKind postAdorner) =>
+      d switch
+      {
+        < 0.25 => preAdorner,
+        > 0.75 => postAdorner,
+        _ => DropAdornerKind.Rectangle
+      };
     private static DropAdornerKind Select3Way(double d, DropAdornerKind preAdorner, DropAdornerKind postAdorner)
     {
       if (d < 0.25) return preAdorner;
@@ -126,6 +132,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 
     public void AdornTarget(DropAdornerKind kind) => Target.Adorn(kind);
     public void AdornBounds(Rect bounds) => Target.Adorn(new RectangleAdorner(Target, bounds));
+
+    IDropQuery IVisualTreeLocation<IDropQuery, FrameworkElement>.CreateNewChild(FrameworkElement? target) =>
+      target == null ? this: new DropQuery(eventArgs, target);
   }
 
   public sealed class DropAction : DropInfo, IDropAction
@@ -139,5 +148,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
       (Target.GetAdorners().Any(i => i is RightAdorner || i is BottomAdorner)) ? 1 : 0;
 
     public bool HasBoxAdorner() => Target.GetAdorners().OfType<OutlineAdorner>().Any();
+
+    IDropAction IVisualTreeLocation<IDropAction, FrameworkElement>.CreateNewChild(FrameworkElement? target) =>
+      target == null? this : new DropAction(eventArgs, target);
   }
 }

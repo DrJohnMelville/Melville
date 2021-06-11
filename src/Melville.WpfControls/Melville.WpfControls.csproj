@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>   
-    <DebugType>Full</DebugType>   
-    
+    <DebugType>Full</DebugType>
+    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
   </PropertyGroup>
 
 
@@ -22,6 +22,8 @@
     <None Remove="TimePickers\DateTimePicker.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
     <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
   </ItemGroup>
   <ItemGroup>

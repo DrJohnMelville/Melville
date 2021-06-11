@@ -1,5 +1,6 @@
 ﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
+using Melville.Wpf.Samples.CalendarControls;
 using Melville.Wpf.Samples.DiBinding;
 using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
@@ -48,7 +49,9 @@ namespace Melville.Wpf.Samples
                     Page<MouseClickViewModel>("Mouse Clicks")
                 ),
                 Node("Statistics",
-                    Page<LinqGraphViewModel>("LinqPad Graphics Module"))
+                    Page<LinqGraphViewModel>("LinqPad Graphics Module")),
+                Node("Controls",
+                    Page<CalendarControlViewModel>("Calendar Control"))
             );
     }
 }

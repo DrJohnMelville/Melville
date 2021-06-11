@@ -20,13 +20,19 @@ namespace Melville.Wpf.Samples.MouseClicks
         public void MouseDownHandler(IMouseClickReport report)
         { 
             Message = $"Clicked ({report.AbsoluteLocation()}) / ({report.RelativeLocation()})";
-            report.DragLeaf().BindLocalDragger(LocalDragger.Action(p=>Message = $"Drag to {p}"));
+            report
+                .ExtractSize(out var size)
+                .DragSource()
+                .BindLocalDragger(
+                    LocalDragger.MinimumDrag(
+                    LocalDragger.RelativeToSize(size,
+                    LocalDragger.Action(p=>Message = $"Drag to {p}"))));
             
         }
 
         public void BeginDrag(IMouseClickReport click)
         {
-            click.DragLeaf()
+            click.DragSource()
                 .DragTarget(0.5)
                 .Drag(()=>new DataObject("This is Dragged Text"), DragDropEffects.Copy);
         }

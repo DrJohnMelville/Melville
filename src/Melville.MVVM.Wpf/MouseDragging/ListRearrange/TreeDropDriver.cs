@@ -8,6 +8,7 @@ using Melville.MVVM.Wpf.MouseClicks;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
+using Melville.MVVM.Wpf.VisualTreeLocations;
 using Melville.MVVM.Wpf.WpfHacks;
 
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
@@ -57,9 +58,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private static IMouseDataSource CreateDragger(MouseButtonEventArgs e, FrameworkElement fe) =>
             TreeArrange.GetVisualToDrag(fe) is {} dragTarget
-                ? new MouseClickReport(dragTarget, e).DragLeaf()
+                ? new MouseClickReport(dragTarget, e).DragSource()
                 : new MouseClickReport(fe, e)
-                    .DragByViewType(typeof(ListViewItem), typeof(TreeViewItem), typeof(ListBoxItem));
+                    .AttachToDataContextHolder(typeof(ListViewItem), typeof(TreeViewItem), typeof(ListBoxItem))
+                    .DragSource();
 
         private static object? FindDraggedItem(FrameworkElement fe) => 
             TreeArrange.GetDraggedItem(fe) ?? fe.DataContext;

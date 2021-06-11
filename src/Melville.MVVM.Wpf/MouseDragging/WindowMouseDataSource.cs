@@ -14,20 +14,18 @@ namespace Melville.MVVM.Wpf.MouseDragging
     public event ReportMouseMove? MouseMoved;
     public FrameworkElement Target { get; }
     object? IMouseDataSource.Target => Target;
+    public Point InitialPoint { get; }
 
-    public WindowMouseDataSource(FrameworkElement target)
+    public WindowMouseDataSource(FrameworkElement target, Point initialPoint)
     {
       Target = target;
+      InitialPoint = initialPoint;
     }
-
     public void SendMousePosition(MouseMessageType type, Point position) =>
       MouseMoved?.Invoke(type, position);
 
-
-    public void BindToPhysicalMouse(MouseButtonEventArgs args)
-    {
-      binding = new WindowMouseBinding(Target, args, SendMousePosition);
-    }
+    public void BindToPhysicalMouse(MouseButton changedButton) => 
+      binding = new WindowMouseBinding(Target, SendMousePosition, changedButton);
 
     public void CancelMouseBinding() => binding?.ReleaseBindings();
   }

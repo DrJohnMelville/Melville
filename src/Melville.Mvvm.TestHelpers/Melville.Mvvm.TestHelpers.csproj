@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     
     
     
@@ -44,6 +44,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Melville.FileSystem\Melville.FileSystem.csproj" />
     <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
+    <ProjectReference Include="..\Melville.MVVM.WPF\Melville.MVVM.WPF.csproj" />
   </ItemGroup>
 
 </Project>

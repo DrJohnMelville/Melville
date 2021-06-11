@@ -21,11 +21,12 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             new LambdaDragger<Point>(action);
         public static ILocalDragger<Point> Action(Action<Point> action) =>
             Action((_, point)=>action(point));
+        
         public static ILocalDragger<CircularPoint> CircleAction(Action<MouseMessageType, CircularPoint> action) =>
             new LambdaDragger<CircularPoint>(action);
         public static ILocalDragger<CircularPoint> CircleAction(Action<CircularPoint> action) =>
             CircleAction((_, point)=>action(point));
-
+        
         public static ILocalDragger<T> Undo<T>(UndoEngine undo, ILocalDragger<T> effector)
             where T: struct =>
             new UndoDragger<T>(undo, effector);
@@ -97,18 +98,28 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             double minX, double maxX, double minY, double maxY, ILocalDragger<Point> target) =>
             Constrain(new Rect(new Point(minX, minY), new Point(maxX, maxY)), target);
 
+
+        public static ILocalDragger<Point> ConstrainToUnitSquare(ILocalDragger<Point> target) =>
+            Constrain(new Rect(0, 0, 1, 1), target);
+
         public static ILocalDragger<Point> Constrain(Rect bounds, ILocalDragger<Point> target) =>
-            Action((type, pt) => target.NewPoint(type, bounds.ApplyConstraint(pt)));
+            Transform(pt => bounds.ApplyConstraint(pt), target);
+
         public static Point ApplyConstraint(this Rect constraint, Point point) =>
-            new Point(point.X.Clamp(constraint.Left, constraint.Right),
+            new(point.X.Clamp(constraint.Left, constraint.Right),
                 point.Y.Clamp(constraint.Top, constraint.Bottom));
 
-        public static ILocalDragger<Point> InvertY(double max, ILocalDragger<Point> target) => 
-            Action((type, point) => target.NewPoint(type, new Point(point.X, max - point.Y))); 
-        
+        public static ILocalDragger<Point> InvertY(double max, ILocalDragger<Point> target) =>
+            Transform(point => new Point(point.X, max - point.Y), target);
+        public static ILocalDragger<Point> Invert(Point max, ILocalDragger<Point> target) =>
+            Transform(point => (max-point).AsPoint(), target);
+
         public static ILocalDragger<Point> ScaleDragger(
-            double scaleX, double scaleY, ILocalDragger<Point> target) => 
-            Action((type, point) => target.NewPoint(type, new Point(point.X*scaleX, point.Y*scaleY)));
+            double scaleX, double scaleY, ILocalDragger<Point> target) =>
+            Transform(point => new Point(point.X * scaleX, point.Y * scaleY), target);
+
+        public static ILocalDragger<Point> RelativeToSize(Size targetSize, ILocalDragger<Point> target) =>
+            ScaleDragger(1.0 / targetSize.Width, 1.0 / targetSize.Height, target);
 
         public static ILocalDragger<T> MaxMoves<T>(int count, ILocalDragger<T> target) where T:struct
         {
@@ -126,8 +137,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
                     target.NewPoint(type, pt);
                 }
             });
-
-        
         public static ILocalDragger<T> Transform<T>(Func<T, T> transformer, ILocalDragger<T> target)
             where T : struct =>
             new LambdaDragger<T>((type, pt) => target.NewPoint(type, transformer(pt)));

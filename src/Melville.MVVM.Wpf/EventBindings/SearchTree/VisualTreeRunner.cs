@@ -9,11 +9,12 @@ using System.Windows.Input;
 using Melville.Hacks.Reflection;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
+using Melville.MVVM.Wpf.VisualTreeLocations;
 using Serilog;
 
 namespace Melville.MVVM.Wpf.EventBindings.SearchTree
 {
-    public interface IVisualTreeRunner
+    public interface IVisualTreeRunner: IVisualTreeLocation<IVisualTreeRunner, DependencyObject>
     {
         public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result);
         public bool RunOnTarget(object target, string targetMethodName, object?[] inputParams, out object? result);
@@ -28,6 +29,11 @@ namespace Melville.MVVM.Wpf.EventBindings.SearchTree
         {
             this.root = root;
         }
+
+        DependencyObject IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.Target => root;
+        IVisualTreeRunner IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.CreateNewChild(
+            DependencyObject? target) => 
+            target == null? this:new VisualTreeRunner(target);
 
         public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result)
         {
