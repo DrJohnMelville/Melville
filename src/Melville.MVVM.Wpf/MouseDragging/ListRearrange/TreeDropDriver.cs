@@ -51,7 +51,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
                 void RemoveMovedItemFromList(DragDropEffects operation)
                 {
-                    //    FindList(fe, FindDraggedItem(fe))?.Remove(fe.DataContext);
+                    if (operation == DragDropEffects.Move && FindDraggedItem(fe) is {} item)
+                      ListFinder.FindParentListContainingData(fe, item)?.Remove(fe.DataContext);
                 }
             }
         }
@@ -90,25 +91,42 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private void DragOver(object sender, DragEventArgs e)
         {
-            if (AdornmentTarget(sender) is FrameworkElement fe)
+            if (AdornmentTarget(sender) is {} droppedOnElement)
             {
-                fe.ClearAdorners();
-                if (e.Data.GetData(DragTypeName()) == null)
+                droppedOnElement.ClearAdorners();
+                if (ExtractDraggedData(e) is not {} droppedData)
                 {
-                    if (SupplementalDropTarget() is IDropTarget target)
-                    {
-                        target.DragOver(sender, e);
-                        return;
-                    }
-                    e.Effects = DragDropEffects.None;
-                    e.Handled = true;
+                    DelegateDragOverToSupplementalDrag(sender, e);
                     return;
                 };
-                var dropAdornerKind = DropTypeByPosition(e, fe);
-                fe.Adorn(dropAdornerKind);
+
+                double relativePosition = RelativePosition(e, droppedOnElement);
+                droppedOnElement.Adorn(ComputeAdornerType(droppedOnElement, droppedData, relativePosition));
+
                 e.Effects = DragDropEffects.Copy;
                 e.Handled = true;
             }
+        }
+
+        private DropAdornerKind ComputeAdornerType(FrameworkElement droppedOnElement, object droppedData, double relativePosition) =>
+            HasChildList(droppedOnElement, droppedData)
+                ? DropTypeByPositionThreeWay(relativePosition)
+                : DropTypeByPosition(relativePosition);
+
+        private static bool HasChildList(FrameworkElement droppedOnElement, object droppedData) => 
+            ListFinder.FindChildListToHoldData(droppedOnElement, droppedData) is not null;
+
+        private bool DelegateDragOverToSupplementalDrag(object sender, DragEventArgs e)
+        {
+            if (SupplementalDropTarget() is {} target)
+            {
+                target.DragOver(sender, e);
+                return true;
+            }
+
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+            return false;
         }
 
         private IDropTarget? SupplementalDropTarget() => TreeArrange.GetSupplementalDropTarget(rootElt);
@@ -129,8 +147,20 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
                 .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
 
 
-        private static DropAdornerKind DropTypeByPosition(DragEventArgs e, FrameworkElement fe) =>
-            e.GetPosition(fe).Y / fe.ActualHeight > 0.5 ? DropAdornerKind.Bottom : DropAdornerKind.Top;
+        private static DropAdornerKind DropTypeByPosition(double relativePosition) =>
+            relativePosition > 0.5 ? DropAdornerKind.Bottom : DropAdornerKind.Top;
+
+        private static double RelativePosition(DragEventArgs e, FrameworkElement fe) => 
+            e.GetPosition(fe).Y / fe.ActualHeight;
+
+        private DropAdornerKind DropTypeByPositionThreeWay(double relativePosition) =>
+            relativePosition switch
+            {
+                <= 0.25 => DropAdornerKind.Top,
+                >= 0.75 => DropAdornerKind.Bottom,
+                _ => DropAdornerKind.Rectangle
+            };
+
 
         #endregion
 
@@ -138,46 +168,46 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private void Drop(object sender, DragEventArgs e)
         {
-            if (AdornmentTarget(sender) is FrameworkElement fe)
+            if (AdornmentTarget(sender) is not { } fe) return;
+            fe.ClearAdorners();
+            if (ExtractDraggedData(e) is not {} draggedItem)
             {
-                fe.ClearAdorners();
-                var draggedItem = e.Data.GetData(DragTypeName());
-                if (draggedItem == null)
-                {
-                    if (SupplementalDropTarget() is IDropTarget innerTarget)
-                    {
-                        innerTarget.HandleDrop(sender, e);
-                    }
-                    return;
-                }
-                var target = FindDraggedItem(fe);
-                if (target == null || target == draggedItem)  return;
-                var items = FindList(fe, target);
-
-                if (items == null || items is Array) return;
-                if (items.Contains(draggedItem))
-                {
-                    items.Remove(draggedItem);
-                    e.Effects = DragDropEffects.Copy;
-                }
-                else
-                {
-                    e.Effects = DragDropEffects.Copy;
-                }
-
-                e.Handled = true;
-
-                var index = items.IndexOf(target) + (DropTypeByPosition(e, fe) == DropAdornerKind.Bottom ? 1 : 0);
-                items.Insert(index, draggedItem);
+                TrySendSupplementalDropMessage(sender, e);
+                return;
             }
+            if (FindDraggedItem(fe) is not {} target || target == draggedItem)  return;
+            if (ListFinder.FindParentListContainingData(fe, target) is not {} items) return;
+            e.Handled = true;
+
+            e.Effects = ComputeAdornerType(fe, draggedItem, RelativePosition(e, fe)) switch
+            {
+                DropAdornerKind.Top => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
+                DropAdornerKind.Bottom => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
+                _ => InsertDroppedItemIntoTarget(ListFinder.FindChildListToHoldData(fe, draggedItem) ?? items, null,
+                    draggedItem, 0)
+            };
         }
 
-        private IList? FindList(FrameworkElement targetElement, object targetData) =>
-            targetElement.Parents().OfType<ItemsControl>()
-                .Select(i => i.ItemsSource)
-                .OfType<IList>()
-                .FirstOrDefault(i => i.Contains(targetData));
+        private object? ExtractDraggedData(DragEventArgs e) => e.Data.GetData(DragTypeName());
 
+        private void TrySendSupplementalDropMessage(object sender, DragEventArgs e) => 
+            SupplementalDropTarget()?.HandleDrop(sender, e);
+
+        private static DragDropEffects TryRemoveSourceFromTargetList(IList items, object? draggedItem)
+        {
+            if (!items.Contains(draggedItem)) return DragDropEffects.Move;
+            items.Remove(draggedItem);
+            return DragDropEffects.Copy;
+        }
+        
+        private static DragDropEffects InsertDroppedItemIntoTarget(IList items, object? target,
+            object draggedItem, int dropItemPositionDelta)
+        {
+            var ret = TryRemoveSourceFromTargetList(items, draggedItem);
+            var index = target == null? items.Count: items.IndexOf(target) + (dropItemPositionDelta);
+            items.Insert(index, draggedItem);
+            return ret;
+        }
         #endregion
     }
 }
