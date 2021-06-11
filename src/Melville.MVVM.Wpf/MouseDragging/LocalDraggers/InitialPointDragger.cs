@@ -3,7 +3,7 @@ using System.Windows;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
-    public class InitialPointDragger : ILocalDragger<Point>
+    public class InitialPointDragger : SegmentedDragger<Point>
     {
         private readonly Point origin;
         private readonly ILocalDragger<Point> target;
@@ -15,13 +15,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             this.target = target;
         }
 
-        public void NewPoint(MouseMessageType type, Point point)
-        {
-            if (type == MouseMessageType.Down)
-            {
-                offset = origin - point;
-            }
+        protected override void MouseDown(Point point) => offset = origin - point;
+
+        public override void PostAllPoints(MouseMessageType type, Point point) => 
             target.NewPoint(type, point + offset);
-        }
     }
 }

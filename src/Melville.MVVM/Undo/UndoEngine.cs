@@ -8,6 +8,7 @@ namespace Melville.MVVM.Undo
 {
   public interface IUndoEngine
   {
+    void PushWithoutDoing(Action doAction, Action undoAction);
     void PushAndDoAction(Action doAction, Action undoAction);
     void CompositeUndo(Action act);
     void Undo();
@@ -57,13 +58,17 @@ namespace Melville.MVVM.Undo
 
     public void PushAndDoAction(Action doAction, Action undoAction)
     {
+      PushWithoutDoing(doAction, undoAction);
+      doAction();
+    }
+
+    public void PushWithoutDoing(Action doAction, Action undoAction)
+    {
       if (NoUndoOrRedoPending())
       {
         redoItems.Clear();
         undoItems.Push(new UndoItem(doAction, undoAction));
       }
-
-      doAction();
     }
 
     private bool NoUndoOrRedoPending() => insideUndoAction == 0;

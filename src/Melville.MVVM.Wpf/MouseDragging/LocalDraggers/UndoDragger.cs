@@ -3,7 +3,7 @@ using Melville.MVVM.Undo;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
-    public class UndoDragger<T>: ILocalDragger<T> where T : struct
+    public class UndoDragger<T>: SegmentedDragger<T> where T : struct
     {
         private readonly IUndoEngine undo;
         private readonly ILocalDragger<T> effector;
@@ -15,22 +15,13 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             this.effector = effector;
         }
 
-        public void NewPoint(MouseMessageType type, T point)
-        {
-            switch (type)
-            {
-                case MouseMessageType.Down:
-                    initialPoint = point;
-                    break;
-                case MouseMessageType.Move:
-                    break;
-                case MouseMessageType.Up:
-                    undo.PushAndDoAction(
-                        ()=>effector.NewPoint(MouseMessageType.Up, point),
-                        ()=>effector.NewPoint(MouseMessageType.Up, initialPoint));
-                    return;
-            }
-            effector.NewPoint(type, point);
-        }
+        protected override void MouseDown(T point) => initialPoint = point;
+
+        protected override void MouseUp(T point) =>
+            undo.PushWithoutDoing(
+                ()=>effector.NewPoint(MouseMessageType.Up, point),
+                ()=>effector.NewPoint(MouseMessageType.Up, initialPoint));
+
+        public override void PostAllPoints(MouseMessageType type, T point) => effector.NewPoint(type, point);
     }
 }

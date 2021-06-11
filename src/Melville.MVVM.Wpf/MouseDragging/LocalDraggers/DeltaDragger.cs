@@ -4,7 +4,7 @@ using Melville.Hacks.Reflection;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
-    public class DeltaDragger : ILocalDragger<Point>
+    public class DeltaDragger : SegmentedDragger<Point>
     {
         private readonly ILocalDragger<Point> target;
         private Point lastPoint;
@@ -14,20 +14,18 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             this.target = target;
         }
 
-        public void NewPoint(MouseMessageType type, Point point)
+        protected override void MouseDown(Point point)
         {
-            RecordLastPointIfDownMessage(type, point);
-            NotifyDeltaMove(type, point);
             RecordLastPoint(point);
         }
 
+        public override void PostAllPoints(MouseMessageType type, Point point)
+        {
+            NotifyDeltaMove(type, point);
+            RecordLastPoint(point);
+        }
         private void NotifyDeltaMove(MouseMessageType type, Point point) => 
             target.NewPoint(type, (point - lastPoint).AsPoint());
-
-        private void RecordLastPointIfDownMessage(MouseMessageType type, Point point)
-        {
-            if (type == MouseMessageType.Down) RecordLastPoint(point);
-        }
 
         private void RecordLastPoint(Point point) => lastPoint = point;
     }
