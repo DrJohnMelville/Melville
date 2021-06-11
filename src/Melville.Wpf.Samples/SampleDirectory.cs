@@ -10,6 +10,7 @@ using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.Wpf.Samples.ShellCommands;
 using Melville.Wpf.Samples.ThumbDrives;
 using Melville.Wpf.Samples.TranscriptionPedal;
+using Melville.Wpf.Samples.TreeDragging;
 using Melville.Wpf.Samples.WaitMessageTest;
 using Melville.Wpf.Samples.WebView2Integration;
 
@@ -18,7 +19,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem? DefaultItem() =>
-            SearchTreeForSample<MouseClickViewModel>();
+            SearchTreeForSample<TreeDraggingViewModel>();
 
         public SampleDirectory()
         {
@@ -46,7 +47,8 @@ namespace Melville.Wpf.Samples
                     Page<WebView2ViewModel>("WebView2 Events"),
                     Page<DiBindingViewModel>("DI Binding"),
                     Page<WaitSampleViewModel>("Waiting Screen"),
-                    Page<MouseClickViewModel>("Mouse Clicks")
+                    Page<MouseClickViewModel>("Mouse Clicks"),
+                    Page<TreeDraggingViewModel>("Tree Dragging")
                 ),
                 Node("Statistics",
                     Page<LinqGraphViewModel>("LinqPad Graphics Module")),
