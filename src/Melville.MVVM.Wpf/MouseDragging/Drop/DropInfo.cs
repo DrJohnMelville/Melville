@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
+using Melville.MVVM.Wpf.VisualTreeLocations;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drop
 {
@@ -73,12 +75,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         > 0.75 => postAdorner,
         _ => DropAdornerKind.Rectangle
       };
-    private static DropAdornerKind Select3Way(double d, DropAdornerKind preAdorner, DropAdornerKind postAdorner)
-    {
-      if (d < 0.25) return preAdorner;
-      if (d > 0.75) return postAdorner;
-      return DropAdornerKind.Rectangle;
-    }
     
     public static DragDropEffects AdornIfType<T>(
       this IDropQuery query, DragDropEffects desriedEffect, Action<IDropQuery>? doAdornment = null) =>

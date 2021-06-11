@@ -2,7 +2,7 @@
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
 {
-    public class MinimumDragger : ILocalDragger<Point>
+    public class MinimumDragger : SegmentedDragger<Point>
     {
         private readonly double radiusSquared;
         private readonly ILocalDragger<Point> effector;
@@ -14,20 +14,16 @@ namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers
             radiusSquared = radius * radius;
             this.effector = effector;
         }
-
-        public void NewPoint(MouseMessageType type, Point point)
-        {
-            if (type == MouseMessageType.Down)
-            {
-                initialPoint = point;
-                return;
-            }
+        
+        protected override void MouseDown(Point point) => initialPoint = point;
 
         public override void PostAllPoints(MouseMessageType type, Point point)
         {
-            if (triggered || CheckStillInsideDelta(point)) return;
-            effector.NewPoint(type, point);
+            if (HasEscapedInitialRadius(point)) 
+                effector.NewPoint(type, point);
         }
+
+        private bool HasEscapedInitialRadius(Point point) => triggered || CheckStillInsideDelta(point);
 
         private bool CheckStillInsideDelta(Point point)
         {
