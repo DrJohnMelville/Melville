@@ -84,8 +84,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
       object?[] inputParams = new[] { adapter };
       if (new VisualTreeRunner(target).RunTreeSearch(method, inputParams, out var result))
       {
+        var outputDrop = result as DragDropEffects? ?? DragDropEffects.None;
+        if (outputDrop == DropBinding.AllowParentDrop) return;
         e.Handled = true;
-        e.Effects = result as DragDropEffects? ?? DragDropEffects.None;
+        e.Effects = outputDrop;
       }
     }
   }
@@ -126,5 +128,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     private static void SetupDragMethod(
       FrameworkElement target, string TargetName, bool monitorDragContinue) => 
       new DropTarget(target, TargetName).BindToTargetControl(monitorDragContinue);
+
+    public const DragDropEffects AllowParentDrop = ((DragDropEffects) int.MaxValue);
   }
+  
 }

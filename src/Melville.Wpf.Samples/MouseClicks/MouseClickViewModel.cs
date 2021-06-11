@@ -36,17 +36,46 @@ namespace Melville.Wpf.Samples.MouseClicks
                 .DragTarget(0.5)
                 .Drag(()=>new DataObject("This is Dragged Text"), DragDropEffects.Copy);
         }
+        public void BeginDragInt(IMouseClickReport click)
+        {
+            click.DragSource()
+                .DragTarget(0.5)
+                .Drag(()=>new DataObject(12), DragDropEffects.Copy);
+        }
 
         public DragDropEffects Drop(IDropQuery info)
         {
-            if (!info.Item.GetDataPresent(typeof(string))) return DragDropEffects.None;
+            if (!info.Item.GetDataPresent(typeof(string))) return DropBinding.AllowParentDrop;
             info.AdornTarget(DropAdornerKind.Rectangle);
             DropAreaText = $"{info.GetTargetLocation()} ==> {info.GetRelativeTargetLocation()}";
             return DragDropEffects.All;
         }
-        public void Drop(IDropAction info)
+
+        public DragDropEffects Drop(IDropAction info)
         {
-            DropAreaText = info.Item.GetString()??"No Data";
+            
+            if (info.Item.GetString() is {} text)
+            {
+                DropAreaText = $"Dragged a string {text}";
+                return DragDropEffects.Copy;
+            }
+            return DropBinding.AllowParentDrop;
+        }
+
+        public DragDropEffects DropInt(IDropAction info)
+        {
+            if (info.Item.GetData(typeof(int)) is int number)
+            {
+                DropAreaText = $"Dragged an int {number}";
+                return DragDropEffects.Copy;
+            }
+
+            return DragDropEffects.None;
+        }
+
+        public DragDropEffects DropInt(IDropQuery info)
+        {
+            return info.AdornIfType<int>(DragDropEffects.All);
         }
 
         public void MapKeyDown(IKeyEventReport keyEvent)

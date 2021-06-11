@@ -16,11 +16,22 @@
         <TextBlock Text="{Binding Message}" Grid.ColumnSpan="2"
                    MouseLeftButtonDown="{eventBindings:EventBinding MouseDownHandler}">
         </TextBlock>
-        <Border Background="Red" BorderBrush="Black" BorderThickness="2" Width="80" Height="40"
-                MouseLeftButtonDown="{eventBindings:EventBinding BeginDrag}"
-                Focusable="True">
-        </Border>
-        <TextBlock Text="{Binding DropAreaText}" drop:DropBinding.DropWithDragMethod="Drop" />
+        <StackPanel>
+            <Border Background="Red" BorderBrush="Black" BorderThickness="2"
+                    MouseLeftButtonDown="{eventBindings:EventBinding BeginDrag}"
+                    Focusable="True">
+                <TextBlock>Drag String</TextBlock>
+            </Border>
+            <Border Background="Red" BorderBrush="Black" BorderThickness="2"
+                    MouseLeftButtonDown="{eventBindings:EventBinding BeginDragInt}"
+                    Focusable="True">
+                <TextBlock>Drag Int</TextBlock>
+            </Border>
+        </StackPanel>
+        <UniformGrid Columns="1" drop:DropBinding.DropWithDragMethod="DropInt">
+            <TextBlock Text="{Binding DropAreaText}" drop:DropBinding.DropWithDragMethod="Drop" />
+            <TextBlock >Can Drop Ints Here</TextBlock>
+        </UniformGrid>
         <TextBlock Grid.ColumnSpan="2">Key: <TextBlock Text="{Binding KeyText}" /></TextBlock>
 
     </easyGrids:EasyGrid>
