@@ -131,15 +131,12 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private IDropTarget? SupplementalDropTarget() => TreeArrange.GetSupplementalDropTarget(rootElt);
 
-        private FrameworkElement? AdornmentTarget(object elt)
-        {
-            return elt switch
+        private FrameworkElement? AdornmentTarget(object elt) => elt switch
             {
                 DependencyObject dobj when TreeArrange.GetVisualToDrag(dobj) is { } explicitTarget => explicitTarget,
                 FrameworkElement fe => TryGetContainingCollectionViewItem(fe),
                 _ => null
             };
-        }
 
         private static FrameworkElement TryGetContainingCollectionViewItem(FrameworkElement fe) =>
             DependencyObjectExtensions.Parents(fe)
@@ -147,11 +144,11 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
                 .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
 
 
-        private static DropAdornerKind DropTypeByPosition(double relativePosition) =>
-            relativePosition > 0.5 ? DropAdornerKind.Bottom : DropAdornerKind.Top;
-
         private static double RelativePosition(DragEventArgs e, FrameworkElement fe) => 
             e.GetPosition(fe).Y / fe.ActualHeight;
+
+        private static DropAdornerKind DropTypeByPosition(double relativePosition) =>
+            relativePosition > 0.5 ? DropAdornerKind.Bottom : DropAdornerKind.Top;
 
         private DropAdornerKind DropTypeByPositionThreeWay(double relativePosition) =>
             relativePosition switch
@@ -168,23 +165,23 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private void Drop(object sender, DragEventArgs e)
         {
-            if (AdornmentTarget(sender) is not { } fe) return;
-            fe.ClearAdorners();
+            if (AdornmentTarget(sender) is not { } droppedOnElement) return;
+            droppedOnElement.ClearAdorners();
             if (ExtractDraggedData(e) is not {} draggedItem)
             {
                 TrySendSupplementalDropMessage(sender, e);
                 return;
             }
-            if (FindDraggedItem(fe) is not {} target || target == draggedItem)  return;
-            if (ListFinder.FindParentListContainingData(fe, target) is not {} items) return;
+            if (FindDraggedItem(droppedOnElement) is not {} target || target == draggedItem)  return;
+            if (ListFinder.FindParentListContainingData(droppedOnElement, target) is not {} items) return;
             e.Handled = true;
 
-            e.Effects = ComputeAdornerType(fe, draggedItem, RelativePosition(e, fe)) switch
+            e.Effects = ComputeAdornerType(droppedOnElement, draggedItem, RelativePosition(e, droppedOnElement)) switch
             {
                 DropAdornerKind.Top => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
                 DropAdornerKind.Bottom => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
-                _ => InsertDroppedItemIntoTarget(ListFinder.FindChildListToHoldData(fe, draggedItem) ?? items, null,
-                    draggedItem, 0)
+                _ => InsertDroppedItemIntoTarget(
+                    ListFinder.FindChildListToHoldData(droppedOnElement, draggedItem) ?? items, null, draggedItem, 0)
             };
         }
 
@@ -204,10 +201,16 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             object draggedItem, int dropItemPositionDelta)
         {
             var ret = TryRemoveSourceFromTargetList(items, draggedItem);
-            var index = target == null? items.Count: items.IndexOf(target) + (dropItemPositionDelta);
-            items.Insert(index, draggedItem);
+            // cannot lift index computation out of this method because it has to be after the target may be removed from the list
+            items.Insert(ComputeTargetLocation(items, target, dropItemPositionDelta), draggedItem);
             return ret;
         }
+
+        private static int ComputeTargetLocation(IList items, object? target, int dropItemPositionDelta) => 
+            target == null? 
+                items.Count: 
+                items.IndexOf(target) + (dropItemPositionDelta);
+
         #endregion
     }
 }
