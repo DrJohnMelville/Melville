@@ -10,8 +10,12 @@
     <Grid>
         <Grid.Resources>
             <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type local:TreeNode}">
-                <TextBlock Text="{Binding Name}" FontSize="32"
-                           listRearrange:TreeArrange.DragTypeBackground="{x:Type local:TreeItem}"/>
+                <StackPanel Orientation="Horizontal"
+                            listRearrange:TreeArrange.DragTypeBackground="{x:Type local:TreeItem}">
+                    <TextBlock>Handle</TextBlock>
+                    <TextBox Text="{Binding Name, Mode=OneWay}" FontSize="32"
+                             />
+                </StackPanel>
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type local:TreeItem}">
                 <TextBlock Text="{Binding Name}"

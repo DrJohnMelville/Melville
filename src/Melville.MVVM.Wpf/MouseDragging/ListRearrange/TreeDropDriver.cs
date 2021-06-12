@@ -31,9 +31,21 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
         {
             elt.AddHandler(FrameworkElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler)InitiateDrag, dragInBackground);
             elt.AllowDrop = true;
+            elt.AddHandler(UIElement.DragOverEvent, WrapHandler(DragOver), true);
+            elt.AddHandler(UIElement.DragLeaveEvent, WrapHandler(DragLeave), true);
+            elt.AddHandler(UIElement.DropEvent, WrapHandler(Drop), true);
             elt.DragOver += DragOver;
             elt.DragLeave += DragLeave;
             elt.Drop += Drop;
+        }
+
+        private DragEventHandler WrapHandler(DragEventHandler inner)
+        {
+            return (s, e) =>
+            {
+                if (e.Handled && e.Effects != DragDropEffects.None) return;
+                inner.Invoke(s, e);
+            };
         }
 
         #endregion
@@ -173,6 +185,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
                 return;
             }
             if (FindDraggedItem(droppedOnElement) is not {} target || target == draggedItem)  return;
+            if (DroppingItemOnOwnChild(droppedOnElement, draggedItem)) return;
             if (ListFinder.FindParentListContainingData(droppedOnElement, target) is not {} items) return;
             e.Handled = true;
 
@@ -183,6 +196,12 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
                 _ => InsertDroppedItemIntoTarget(
                     ListFinder.FindChildListToHoldData(droppedOnElement, draggedItem) ?? items, null, draggedItem, 0)
             };
+        }
+
+        private static bool DroppingItemOnOwnChild(FrameworkElement? droppedOnElement, object? draggedItem)
+        {
+            return droppedOnElement.Parents()
+                .Any(i => (i is FrameworkElement fe && fe.DataContext == draggedItem));
         }
 
         private object? ExtractDraggedData(DragEventArgs e) => e.Data.GetData(DragTypeName());
