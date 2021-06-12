@@ -28,8 +28,8 @@
                 <TextBlock>Drag Int</TextBlock>
             </Border>
         </StackPanel>
-        <UniformGrid Columns="1" drop:DropBinding.DropWithDragMethod="DropInt">
-            <TextBlock Text="{Binding DropAreaText}" drop:DropBinding.DropWithDragMethod="Drop" />
+        <UniformGrid Columns="1" drop:DropBinding.DropMethod="DropInt!">
+            <TextBlock Text="{Binding DropAreaText}" drop:DropBinding.DropMethod="Drop?" />
             <TextBlock >Can Drop Ints Here</TextBlock>
         </UniformGrid>
         <TextBlock Grid.ColumnSpan="2">Key: <TextBlock Text="{Binding KeyText}" /></TextBlock>

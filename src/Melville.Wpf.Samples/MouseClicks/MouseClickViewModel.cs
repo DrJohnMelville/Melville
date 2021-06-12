@@ -45,7 +45,7 @@ namespace Melville.Wpf.Samples.MouseClicks
 
         public DragDropEffects Drop(IDropQuery info)
         {
-            if (!info.Item.GetDataPresent(typeof(string))) return DropBinding.AllowParentDrop;
+            if (!info.Item.GetDataPresent(typeof(string))) return DragDropEffects.None;
             info.AdornTarget(DropAdornerKind.Rectangle);
             DropAreaText = $"{info.GetTargetLocation()} ==> {info.GetRelativeTargetLocation()}";
             return DragDropEffects.All;
@@ -53,24 +53,14 @@ namespace Melville.Wpf.Samples.MouseClicks
 
         public DragDropEffects Drop(IDropAction info)
         {
-            
-            if (info.Item.GetString() is {} text)
-            {
-                DropAreaText = $"Dragged a string {text}";
-                return DragDropEffects.Copy;
-            }
-            return DropBinding.AllowParentDrop;
+            var str =  "";
+            return info.AcceptDrop((str = info.Item.GetString())!= null, DragDropEffects.Copy, 
+               ()=>DropAreaText = $"Dragged a string {str}");
         }
 
         public DragDropEffects DropInt(IDropAction info)
         {
-            if (info.Item.GetData(typeof(int)) is int number)
-            {
-                DropAreaText = $"Dragged an int {number}";
-                return DragDropEffects.Copy;
-            }
-
-            return DragDropEffects.None;
+           return info.AcceptDrop<int>(DragDropEffects.Copy, number =>DropAreaText = $"Dragged an int {number}"); 
         }
 
         public DragDropEffects DropInt(IDropQuery info)
