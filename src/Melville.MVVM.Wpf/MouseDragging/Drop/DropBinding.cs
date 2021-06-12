@@ -35,14 +35,12 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     {
       SetupDragMethod(target, dropName);
     }
-    [Obsolete("Use ? syntax with DragMethod")]
     [GenerateDP(Attached = true)]
     public static void OnDropWithDragMethodChanged(FrameworkElement target, string dropName)
     {
       SetupDragMethod(target, dropName+"?");
     }
-    private static void SetupDragMethod(
-      FrameworkElement target, string TargetName)
+    private static void SetupDragMethod(FrameworkElement target, string TargetName)
     {
       var match = Regex.Match(TargetName, @"^(\w+)([\?\!]*)$");
       new DropTarget(target, match.Groups[1].Value).BindToTargetControl(

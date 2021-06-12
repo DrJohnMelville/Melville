@@ -11,11 +11,11 @@
         <Grid.Resources>
             <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type local:TreeNode}">
                 <TextBlock Text="{Binding Name}" FontSize="32"
-                           listRearrange:TreeArrange.DragType="{x:Type local:TreeItem}"/>
+                           listRearrange:TreeArrange.DragTypeBackground="{x:Type local:TreeItem}"/>
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type local:TreeItem}">
                 <TextBlock Text="{Binding Name}"
-                           listRearrange:TreeArrange.DragType="{x:Type local:TreeItem}"/>
+                           listRearrange:TreeArrange.DragTypeBackground="{x:Type local:TreeItem}"/>
             </DataTemplate>
         </Grid.Resources>
         <TreeView ItemsSource="{Binding Data}">

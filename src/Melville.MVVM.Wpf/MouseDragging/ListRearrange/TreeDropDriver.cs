@@ -179,7 +179,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             e.Effects = ComputeAdornerType(droppedOnElement, draggedItem, RelativePosition(e, droppedOnElement)) switch
             {
                 DropAdornerKind.Top => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
-                DropAdornerKind.Bottom => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
+                DropAdornerKind.Bottom => InsertDroppedItemIntoTarget(items, target, draggedItem, 1),
                 _ => InsertDroppedItemIntoTarget(
                     ListFinder.FindChildListToHoldData(droppedOnElement, draggedItem) ?? items, null, draggedItem, 0)
             };
