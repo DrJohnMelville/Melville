@@ -29,23 +29,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         public void AttachEvents(FrameworkElement elt, bool dragInBackground)
         {
-            elt.AddHandler(FrameworkElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler)InitiateDrag, dragInBackground);
-            elt.AllowDrop = true;
-            elt.AddHandler(UIElement.DragOverEvent, WrapHandler(DragOver), true);
-            elt.AddHandler(UIElement.DragLeaveEvent, WrapHandler(DragLeave), true);
-            elt.AddHandler(UIElement.DropEvent, WrapHandler(Drop), true);
-            elt.DragOver += DragOver;
-            elt.DragLeave += DragLeave;
-            elt.Drop += Drop;
-        }
-
-        private DragEventHandler WrapHandler(DragEventHandler inner)
-        {
-            return (s, e) =>
-            {
-                if (e.Handled && e.Effects != DragDropEffects.None) return;
-                inner.Invoke(s, e);
-            };
+            elt.AddHandler(UIElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler)InitiateDrag, dragInBackground);
+            new HierarchicalDragBinder(elt, true, DragOver, DragOver, DragLeave, Drop);
         }
 
         #endregion
@@ -98,14 +83,12 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             {
                 target.DragLeave(sender, e);
             }
-            AdornmentTarget(sender)?.ClearAdorners();
         }
 
         private void DragOver(object sender, DragEventArgs e)
         {
             if (AdornmentTarget(sender) is {} droppedOnElement)
             {
-                droppedOnElement.ClearAdorners();
                 if (ExtractDraggedData(e) is not {} droppedData)
                 {
                     DelegateDragOverToSupplementalDrag(sender, e);
@@ -114,7 +97,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
                 double relativePosition = RelativePosition(e, droppedOnElement);
                 droppedOnElement.Adorn(ComputeAdornerType(droppedOnElement, droppedData, relativePosition));
-
                 e.Effects = DragDropEffects.Copy;
                 e.Handled = true;
             }
@@ -178,7 +160,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
         private void Drop(object sender, DragEventArgs e)
         {
             if (AdornmentTarget(sender) is not { } droppedOnElement) return;
-            droppedOnElement.ClearAdorners();
             if (ExtractDraggedData(e) is not {} draggedItem)
             {
                 TrySendSupplementalDropMessage(sender, e);
