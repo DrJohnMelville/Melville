@@ -26,9 +26,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         public void BindToTargetControl(bool monitorDragContinue, bool preview)
         {
             if (monitorDragContinue)
-                new HierarchicalDragBinder(target, preview, DragEnter, DragOver, DragLeave, HandleDrop);
+                new HierarchicalDropWithDragBinder(target, preview, DragEnter, DragOver, DragLeave, HandleDrop);
             else
-               new HierarchicalDragBinder(target, preview, DragEnter, DragLeave, HandleDrop);
+               new HierarchicalDropBinder(target, preview, DragEnter, DragLeave, HandleDrop);
         }
         
         public void DragEnter(object sender, DragEventArgs e)

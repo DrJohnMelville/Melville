@@ -30,7 +30,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
         public void AttachEvents(FrameworkElement elt, bool dragInBackground)
         {
             elt.AddHandler(UIElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler)InitiateDrag, dragInBackground);
-            new HierarchicalDragBinder(elt, true, DragOver, DragOver, DragLeave, Drop);
+            new HierarchicalDropWithDragBinder(elt, true, DragOver, DragOver, DragLeave, Drop);
         }
 
         #endregion
