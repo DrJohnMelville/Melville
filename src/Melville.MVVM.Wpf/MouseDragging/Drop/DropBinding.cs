@@ -2,7 +2,6 @@
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Documents;
-using System.Windows.Media;
 using Melville.INPC;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 
@@ -10,7 +9,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 {
   public static partial class DropBinding
   {
-    public static void ClearAdorners(this Visual target)
+    public static void ClearAdorners()
     {
       oldLayer?.Remove(oldAdorner);
       oldLayer = null;
@@ -23,6 +22,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
 
     public static void Adorn(this UIElement target, Adorner adorner)
     {
+      ClearAdorners();
       oldAdorner = adorner;
       oldLayer = AdornerLayer.GetAdornerLayer(target);
       oldLayer.Add(oldAdorner);
@@ -43,7 +43,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     }
     private static void SetupDropMethod(FrameworkElement target, string TargetName)
     {
-      var match = Regex.Match(TargetName, @"^(\w+)([\?\!]*)$");
+      var match = Regex.Match(TargetName, @"^([\.\w]+)([\?\!]*)$");
       new DropTarget(target, match.Groups[1].Value).BindToTargetControl(
         match.Groups[2].Value.Contains("?"),
         match.Groups[2].Value.Contains("!"));

@@ -64,7 +64,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
       {
         if (sender is FrameworkElement fe)
         {
-          fe.ClearAdorners();
+          DropBinding.ClearAdorners();
           var draggedItem = e.Data.GetData(instanceType);
           if (draggedItem == null) return;
           var target = fe.DataContext;
@@ -84,7 +84,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
       {
         if (sender is FrameworkElement fe)
         {
-          fe.ClearAdorners();
+          DropBinding.ClearAdorners();
         }
       }
 
@@ -92,7 +92,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
       {
         if (sender is FrameworkElement fe)
         {
-          fe.ClearAdorners();
+          DropBinding.ClearAdorners();
           if (e.Data.GetData(instanceType) == null)
           {
             e.Effects = DragDropEffects.None;
