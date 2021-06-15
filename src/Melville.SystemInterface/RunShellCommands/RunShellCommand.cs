@@ -23,7 +23,7 @@ namespace Melville.SystemInterface.RunShellCommands
             var psi = CreateInfo(command, parameters);
             psi.RedirectStandardOutput = true;
             psi.UseShellExecute = false;
-            psi.CreateNoWindow = false;
+            psi.CreateNoWindow = true;
             return new ProcessProxy(StartProcess(psi));
         }
 
