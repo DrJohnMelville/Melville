@@ -2,9 +2,7 @@
 using System.Collections;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
-using Melville.MVVM.Wpf.MouseDragging.Drag;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
 using Melville.MVVM.Wpf.WpfHacks;
 
@@ -12,7 +10,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 {
     public sealed class TreeDropDriver
     {
-
         private readonly FrameworkElement rootElt;
         private readonly Type dropType;
         private string DragTypeName() => dropType.FullName??"";
