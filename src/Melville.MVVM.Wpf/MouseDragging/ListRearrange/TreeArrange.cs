@@ -33,15 +33,23 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
       {
         switch (d)
         {
+          case TreeViewItem tvi:
+            BindToItem(dragInBackground, tvi, eltType);
+            break;
           case ItemsControl ic:
             ic.ItemContainerStyle = ItemContainerStyle(ic.ItemContainerStyle, eltType, dragInBackground);
             break;
           case FrameworkElement elt:
-            TreeDragDriver.BindToEvent(elt, dragInBackground, eltType);
-            new TreeDropDriver(elt, eltType).AttachEvents(elt);
+            BindToItem(dragInBackground, elt, eltType);
             break;
         }
       }
+    }
+
+    private static void BindToItem(bool dragInBackground, FrameworkElement elt, Type eltType)
+    {
+      TreeDragDriver.BindToEvent(elt, dragInBackground, eltType);
+      new TreeDropDriver(elt, eltType).AttachEvents(elt);
     }
 
     public static Style ItemContainerStyle(Style baseStyle, Type eltType, bool bindBackground)
