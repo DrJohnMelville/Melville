@@ -1,9 +1,11 @@
 ﻿using  System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Melville.INPC;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
+using Melville.MVVM.Wpf.WpfHacks;
 
 
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
@@ -35,7 +37,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             ic.ItemContainerStyle = ItemContainerStyle(ic.ItemContainerStyle, eltType, dragInBackground);
             break;
           case FrameworkElement elt:
-            new TreeDropDriver(elt, eltType).AttachEvents(elt, dragInBackground);
+            TreeDragDriver.BindToEvent(elt, dragInBackground, eltType);
+            new TreeDropDriver(elt, eltType).AttachEvents(elt);
             break;
         }
       }
@@ -66,5 +69,20 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
         SetSupplementalDropTarget(fe, new DropTarget(fe, newValue ?? ""));
       }
     }
+
+    public static object? FindDraggedItem(FrameworkElement fe) => GetDraggedItem(fe) ?? fe.DataContext;
+
+    public static FrameworkElement? AdornmentTarget(object elt) => elt switch
+    {
+      DependencyObject dobj when GetVisualToDrag(dobj) is { } explicitTarget => explicitTarget,
+      FrameworkElement fe => TryGetContainingCollectionViewItem(fe),
+      _ => elt as FrameworkElement
+    };
+
+    private static FrameworkElement TryGetContainingCollectionViewItem(FrameworkElement fe) =>
+      fe.Parents()
+        .OfType<FrameworkElement>()
+        .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
+    
   }
 }

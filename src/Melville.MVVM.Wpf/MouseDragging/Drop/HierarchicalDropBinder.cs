@@ -33,7 +33,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         public HierarchicalDropBinder(UIElement elt, bool preview, 
             DragEventHandler enter, DragEventHandler leave, DragEventHandler drop)
         {
-            this.Elt = elt;
+            Elt = elt;
             this.enter = enter;
             this.leave = leave;
             this.drop = drop;
@@ -60,7 +60,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         {
             if (ChildHandledDrop(e)) return;
             e.Handled = true;
-            LastDragEffect = LastDragEffect;
+            e.Effects = LastDragEffect;
         }
 
         private void HandleLeave(object sender, DragEventArgs e)

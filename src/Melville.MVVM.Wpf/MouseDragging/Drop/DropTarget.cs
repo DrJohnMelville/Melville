@@ -40,23 +40,15 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
             DragEnter(sender, e);
         }
         
-        public void DragLeave(object sender, DragEventArgs e)
-        {
-        }
+        public void DragLeave(object sender, DragEventArgs e) { }
 
-        public void HandleDrop(object sender, DragEventArgs e)
-        { 
-            HandleQueryOrDrop(new DropAction(e, target), e);
-        }
+        public void HandleDrop(object sender, DragEventArgs e) => HandleQueryOrDrop(new DropAction(e, target), e);
 
         private void HandleQueryOrDrop(IDropInfo adapter, DragEventArgs e)
         {
-            object?[] inputParams = new[] { adapter };
-            if (new VisualTreeRunner(target).RunTreeSearch(method, inputParams, out var result))
-            {
-                e.Handled = true;
-                e.Effects = result as DragDropEffects? ?? DragDropEffects.None;
-            }
+            if (!new VisualTreeRunner(target).RunTreeSearch(method, new object?[] {adapter}, out var result)) return;
+            e.Handled = true;
+            e.Effects = result as DragDropEffects? ?? DragDropEffects.None;
         }
     }
 }

@@ -3,19 +3,15 @@ using System.Collections;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using Melville.MVVM.Wpf.MouseClicks;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
-using Melville.MVVM.Wpf.VisualTreeLocations;
 using Melville.MVVM.Wpf.WpfHacks;
 
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 {
     public sealed class TreeDropDriver
     {
-        #region Construction and Binding
 
         private readonly FrameworkElement rootElt;
         private readonly Type dropType;
@@ -27,54 +23,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             this.dropType = dropType;
         }
 
-        public void AttachEvents(FrameworkElement elt, bool dragInBackground)
-        {
-            elt.AddHandler(UIElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler)InitiateDrag, dragInBackground);
+        public void AttachEvents(FrameworkElement elt) => 
             new HierarchicalDropWithDragBinder(elt, true, DragOver, DragOver, DragLeave, Drop);
-        }
 
-        #endregion
-
-        #region Drag
-
-        private void InitiateDrag(object sender, MouseButtonEventArgs e)
-        {
-            if (sender is FrameworkElement fe && dropType.IsInstanceOfType(FindDraggedItem(fe)))
-            {
-                CreateDragger(e, fe)
-                    .DragTarget(0.5)
-                    .Drag(GetDataObject(fe), DragDropEffects.All,
-                        RemoveMovedItemFromList);
-
-                void RemoveMovedItemFromList(DragDropEffects operation)
-                {
-                    if (operation == DragDropEffects.Move && FindDraggedItem(fe) is {} item)
-                      ListFinder.FindParentListContainingData(fe, item)?.Remove(fe.DataContext);
-                }
-            }
-        }
-
-        private static IMouseDataSource CreateDragger(MouseButtonEventArgs e, FrameworkElement fe) =>
-            TreeArrange.GetVisualToDrag(fe) is {} dragTarget
-                ? new MouseClickReport(dragTarget, e).DragSource()
-                : new MouseClickReport(fe, e)
-                    .AttachToDataContextHolder(typeof(ListViewItem), typeof(TreeViewItem), typeof(ListBoxItem))
-                    .DragSource();
-
-        private static object? FindDraggedItem(FrameworkElement fe) => 
-            TreeArrange.GetDraggedItem(fe) ?? fe.DataContext;
-
-        private DataObject GetDataObject(FrameworkElement fe)
-        {
-            var data = FindDraggedItem(fe);
-            if (data == null) return new DataObject();
-            var ret = new DataObject(DragTypeName(), data);
-            TreeArrange.GetSupplementalFormats(fe)?.AddFormats(ret, data);
-            return ret;
-        }
-
-        #endregion
-
+        
         #region Adorn on drag
 
         private void DragLeave(object sender, DragEventArgs e)
@@ -87,7 +39,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private void DragOver(object sender, DragEventArgs e)
         {
-            if (AdornmentTarget(sender) is {} droppedOnElement)
+            if (TreeArrange.AdornmentTarget(sender) is {} droppedOnElement)
             {
                 if (ExtractDraggedData(e) is not {} droppedData)
                 {
@@ -96,16 +48,19 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
                 };
 
                 double relativePosition = RelativePosition(e, droppedOnElement);
-                droppedOnElement.Adorn(ComputeAdornerType(droppedOnElement, droppedData, relativePosition));
+                droppedOnElement.Adorn(ComputeAdornerType(relativePosition, HasChildList(droppedOnElement, droppedData)));
                 e.Effects = DragDropEffects.Copy;
                 e.Handled = true;
             }
         }
 
-        private DropAdornerKind ComputeAdornerType(FrameworkElement droppedOnElement, object droppedData, double relativePosition) =>
-            HasChildList(droppedOnElement, droppedData)
-                ? DropTypeByPositionThreeWay(relativePosition)
-                : DropTypeByPosition(relativePosition);
+        private DropAdornerKind ComputeAdornerType(double relativePosition, bool hasChildList) =>
+            (hasChildList, relativePosition) switch
+            {
+                (true, > 0.25 and < 0.75) => DropAdornerKind.Rectangle,
+                (_, <= 0.5) => DropAdornerKind.Top,
+                _ => DropAdornerKind.Bottom
+            };
 
         private static bool HasChildList(FrameworkElement droppedOnElement, object droppedData) => 
             ListFinder.FindChildListToHoldData(droppedOnElement, droppedData) is not null;
@@ -125,33 +80,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private IDropTarget? SupplementalDropTarget() => TreeArrange.GetSupplementalDropTarget(rootElt);
 
-        private FrameworkElement? AdornmentTarget(object elt) => elt switch
-            {
-                DependencyObject dobj when TreeArrange.GetVisualToDrag(dobj) is { } explicitTarget => explicitTarget,
-                FrameworkElement fe => TryGetContainingCollectionViewItem(fe),
-                _ => null
-            };
-
-        private static FrameworkElement TryGetContainingCollectionViewItem(FrameworkElement fe) =>
-            DependencyObjectExtensions.Parents(fe)
-                .OfType<FrameworkElement>()
-                .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
-
 
         private static double RelativePosition(DragEventArgs e, FrameworkElement fe) => 
             e.GetPosition(fe).Y / fe.ActualHeight;
-
-        private static DropAdornerKind DropTypeByPosition(double relativePosition) =>
-            relativePosition > 0.5 ? DropAdornerKind.Bottom : DropAdornerKind.Top;
-
-        private DropAdornerKind DropTypeByPositionThreeWay(double relativePosition) =>
-            relativePosition switch
-            {
-                <= 0.25 => DropAdornerKind.Top,
-                >= 0.75 => DropAdornerKind.Bottom,
-                _ => DropAdornerKind.Rectangle
-            };
-
 
         #endregion
 
@@ -159,18 +90,19 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 
         private void Drop(object sender, DragEventArgs e)
         {
-            if (AdornmentTarget(sender) is not { } droppedOnElement) return;
+            if (TreeArrange.AdornmentTarget(sender) is not { } droppedOnElement) return;
             if (ExtractDraggedData(e) is not {} draggedItem)
             {
                 TrySendSupplementalDropMessage(sender, e);
                 return;
             }
-            if (FindDraggedItem(droppedOnElement) is not {} target || target == draggedItem)  return;
+            if (TreeArrange.FindDraggedItem(droppedOnElement) is not {} target || target == draggedItem)  return;
             if (DroppingItemOnOwnChild(droppedOnElement, draggedItem)) return;
             if (ListFinder.FindParentListContainingData(droppedOnElement, target) is not {} items) return;
             e.Handled = true;
 
-            e.Effects = ComputeAdornerType(droppedOnElement, draggedItem, RelativePosition(e, droppedOnElement)) switch
+            
+            e.Effects = ComputeAdornerType(RelativePosition(e, droppedOnElement), HasChildList(droppedOnElement, draggedItem)) switch
             {
                 DropAdornerKind.Top => InsertDroppedItemIntoTarget(items, target, draggedItem, 0),
                 DropAdornerKind.Bottom => InsertDroppedItemIntoTarget(items, target, draggedItem, 1),
@@ -179,11 +111,9 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             };
         }
 
-        private static bool DroppingItemOnOwnChild(FrameworkElement? droppedOnElement, object? draggedItem)
-        {
-            return droppedOnElement.Parents()
+        private static bool DroppingItemOnOwnChild(FrameworkElement droppedOnElement, object draggedItem) =>
+            droppedOnElement.Parents()
                 .Any(i => (i is FrameworkElement fe && fe.DataContext == draggedItem));
-        }
 
         private object? ExtractDraggedData(DragEventArgs e) => e.Data.GetData(DragTypeName());
 
