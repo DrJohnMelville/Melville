@@ -112,8 +112,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
     private void UpdateWindowLocation()
     {
       if (!NativeMethods.GetCursorPos(out var p)) return;
-      Left = -30 + ((double) p.X) - offset.X;
-      Top = ((double) p.Y) - offset.Y;
+      Left = p.X - offset.X;
+      Top = p.Y - offset.Y;
     }
 
     private class NativeMethods
