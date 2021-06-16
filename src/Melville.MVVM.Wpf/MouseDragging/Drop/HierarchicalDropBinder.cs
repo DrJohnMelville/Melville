@@ -16,7 +16,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         }
         protected override void HandleOver(object sender, DragEventArgs e)
         {
-            if (MayHavePriorAdorner()) DropBinding.ClearAdorners();
             if (ChildHandledDrop(e)) return;
             over(sender, e);
             LastDragEffect = e.Effects;

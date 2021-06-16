@@ -12,12 +12,15 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 {
     public static class TreeDragDriver
     {
+        private static MouseButtonEventArgs? previousDragEventArgs;
         public static void BindToEvent(FrameworkElement elt, bool dragInBackground, Type dropType)
         {
             elt.AddHandler(UIElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler) InitiateDrag, dragInBackground);
 
              void InitiateDrag(object sender, MouseButtonEventArgs e)
-             {
+             { 
+                 if (e == previousDragEventArgs) return;
+                 previousDragEventArgs = e;
                 TreeDragDriver.InitiateDrag(CreateDragger(e, (FrameworkElement)sender), dropType);
             }
         }
