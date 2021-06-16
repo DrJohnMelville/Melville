@@ -10,19 +10,20 @@
     <Grid>
         <Grid.Resources>
             <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type local:TreeNode}">
-                <StackPanel Orientation="Horizontal"
-                            >
+                <StackPanel Orientation="Horizontal" 
+                            Background="Transparent">
                     <TextBlock>Handle</TextBlock>
                     <TextBox Text="{Binding Name, Mode=OneWay}" FontSize="32"
                              />
                 </StackPanel>
             </HierarchicalDataTemplate>
             <DataTemplate DataType="{x:Type local:TreeItem}">
-                <TextBlock Text="{Binding Name}"/>
+                <TextBlock Text="{Binding Name}" Background="Transparent"/>
             </DataTemplate>
         </Grid.Resources>
         <TreeView ItemsSource="{Binding Data}"
-                  listRearrange:TreeArrange.DragTypeBackground="{x:Type local:TreeItem}">
+                  listRearrange:TreeArrange.DragTypeBackground="{x:Type local:TreeItem}"
+                  >
         </TreeView>
     </Grid>
 </UserControl>

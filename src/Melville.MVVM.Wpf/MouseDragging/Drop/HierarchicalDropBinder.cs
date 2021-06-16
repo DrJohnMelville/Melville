@@ -73,7 +73,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
         private void HandleDrop(object sender, DragEventArgs e)
         {
             if (!MayHavePriorAdorner()) return;
-            drop(sender, e);
+            if (!ChildHandledDrop(e)) drop(sender, e);
             DropBinding.ClearAdorners();
             LastDragEffect = DragDropEffects.None;
         }

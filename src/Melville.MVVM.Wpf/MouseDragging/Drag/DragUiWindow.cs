@@ -15,7 +15,8 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drag
     public static IMouseDataSource DragTarget(this IMouseDataSource src, double opacity = 1)
     {
       if (src.Target is not FrameworkElement target) return src;
-      src.BindLocalDragger(new DragUiWindow(target, opacity));
+      src.BindLocalDragger(
+        LocalDragger.MinimumDrag(new DragUiWindow(target, opacity)));
       return src;
     }
   }

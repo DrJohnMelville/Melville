@@ -17,7 +17,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
             elt.AddHandler(UIElement.MouseLeftButtonDownEvent, (MouseButtonEventHandler) InitiateDrag, dragInBackground);
 
              void InitiateDrag(object sender, MouseButtonEventArgs e)
-            {
+             {
                 TreeDragDriver.InitiateDrag(CreateDragger(e, (FrameworkElement)sender), dropType);
             }
         }

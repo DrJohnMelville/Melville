@@ -5,6 +5,7 @@ using System.Windows;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
 using Melville.MVVM.Wpf.WpfHacks;
+using Microsoft.VisualBasic.Devices;
 
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
 {
