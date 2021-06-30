@@ -41,9 +41,10 @@ namespace Melville.MVVM.Wpf.MouseDragging.Drop
     {
       SetupDropMethod(target, dropName+"?");
     }
-    private static void SetupDropMethod(FrameworkElement target, string TargetName)
+    private static void SetupDropMethod(FrameworkElement target, string targetName)
     {
-      var match = Regex.Match(TargetName, @"^([\.\w]+)([\?\!]*)$");
+      if (targetName == null) return; // should never happen, but I had a hard to replicate bug on 6/30/2021 where it did.
+      var match = Regex.Match(targetName, @"^([\.\w]+)([\?\!]*)$");
       new DropTarget(target, match.Groups[1].Value).BindToTargetControl(
         match.Groups[2].Value.Contains("?"),
         match.Groups[2].Value.Contains("!"));
