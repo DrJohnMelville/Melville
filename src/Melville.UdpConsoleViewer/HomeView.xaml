@@ -6,13 +6,15 @@
              xmlns:local="clr-namespace:Melville.UdpConsoleViewer"
              xmlns:easyGrids="clr-namespace:Melville.WpfControls.EasyGrids;assembly=Melville.WpfControls"
              xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             xmlns:filteredDataGrids="clr-namespace:Melville.WpfControls.FilteredDataGrids;assembly=Melville.WpfControls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid easyGrids:GridOperations.ColsAndRows="*/*,auto">
-        <DataGrid ItemsSource="{Binding List}" AutoGenerateColumns="False">
+        <DataGrid ItemsSource="{Binding List}" AutoGenerateColumns="False" 
+                  filteredDataGrids:FilteredDataGrid.UseFilter="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Time, StringFormat=hh:mm:ss}"/>
-                <DataGridTextColumn Binding="{Binding Text}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Binding="{Binding Time, StringFormat=hh:mm:ss}" Header="Time"/>
+                <DataGridTextColumn Binding="{Binding Text}" Width="*" Header="Message"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
         <Button Grid.Row="1" HorizontalAlignment="Right"
