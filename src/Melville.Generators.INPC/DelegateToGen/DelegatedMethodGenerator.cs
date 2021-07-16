@@ -17,13 +17,14 @@ namespace Melville.Generators.INPC.DelegateToGen
     public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     {
         protected readonly ITypeSymbol TargetType;
-        protected readonly string MethodPrefix;
+        private readonly string MethodPrefix;
 
         public static IDelegatedMethodGenerator Create(
             ITypeSymbol targetType, string methodPrefix, SyntaxNode location) =>
             targetType.TypeKind switch
             {
                 TypeKind.Interface => new InterfaceMethodGenerator(targetType, methodPrefix),
+                TypeKind.Class => new BaseClassMethodGenerator(targetType, methodPrefix),
                 _ => new InvalidParentMethodGenerator(targetType, location)
             };
 

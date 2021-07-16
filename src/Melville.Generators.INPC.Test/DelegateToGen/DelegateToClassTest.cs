@@ -21,7 +21,28 @@ namespace Outer
         public void DelegateToClass()
         {
             var res = RunTest("class", "public virtual int Foo()=>1;", "[DelegateTo] Delegated bar;");
-            res.FileContains("C.DelegateToGeneration.cs", "public override int Foo()=>bar.Foo()");            
+            res.FileContains("C.DelegateToGeneration.cs", "public override int Foo() => this.bar.Foo();");            
+
+        }
+        [Fact]
+        public void DelegateAbstractMethod()
+        {
+            var res = RunTest("abstract class", "public abstract int Foo();", "[DelegateTo] Delegated bar;");
+            res.FileContains("C.DelegateToGeneration.cs", "public override int Foo() => this.bar.Foo();");            
+
+        }
+        [Fact]
+        public void DelegateProtectedMethod()
+        {
+            var res = RunTest("class", "protected virtual int Foo()=>1;", "[DelegateTo] Delegated bar;");
+            res.FileContains("C.DelegateToGeneration.cs", "protected override int Foo() => this.bar.Foo();");            
+
+        }
+        [Fact]
+        public void DoNotDelegateNonVirtualMethods()
+        {
+            var res = RunTest("class", "public int Foo()=>1;", "[DelegateTo] Delegated bar;");
+            res.FileDoesNotContain("C.DelegateToGeneration.cs", "Foo");            
 
         }
         
