@@ -15,8 +15,7 @@ namespace Outer
     public interface IChildInterface: IInterface { void ChildMethod(); }
     public partial class C: IInterface {" + s + @"
 }
-}
-");
+}");
         [Theory]
         [InlineData("private IInterface Field;", "this.Field.A()")]
         [InlineData("public IInterface RProp{get;}", "this.RProp.A()")]
@@ -93,7 +92,6 @@ namespace Outer
             var res = RunTest("[DelegateTo] private IChildInterface field;", "int Parent();");
             res.FileContains("C.DelegateToGeneration.cs", "public void ChildMethod() => this.field.ChildMethod();");
             res.FileContains("C.DelegateToGeneration.cs", "public int Parent() => this.field.Parent();");
-
         }
     }
 }
