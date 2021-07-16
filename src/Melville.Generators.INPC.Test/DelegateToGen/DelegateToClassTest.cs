@@ -24,5 +24,7 @@ namespace Outer
             res.FileContains("C.DelegateToGeneration.cs", "public override int Foo()=>bar.Foo()");            
 
         }
+        
+        // need to be able to override protected members as protected
     }
 }
