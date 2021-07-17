@@ -54,8 +54,7 @@ namespace Melville.Generators.INPC.DelegateToGen
         private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
             TargetType.AllInterfaces.Cast<ITypeSymbol>().Append(TargetType);
 
-        private static bool ImplementationMissing(ITypeSymbol parentClass, ISymbol i) => 
-            parentClass.FindImplementationForInterfaceMember(i) == null;
+        protected abstract bool ImplementationMissing(ITypeSymbol parentClass, ISymbol i); 
 
         private void GenerateForwardingMember(CodeWriter cw, ISymbol member)
         {

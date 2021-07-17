@@ -24,6 +24,34 @@ namespace Outer
             res.FileContains("C.DelegateToGeneration.cs", "public override int Foo() => this.bar.Foo();");            
 
         }
+
+        [Fact] public void ForwardOverload()
+        {
+            var res = RunTest("class", "public virtual int Foo()=>1; public virtual int Foo(int i)=>i;", 
+                "[DelegateTo] Delegated bar; public override int Foo(int i)=>1;");
+            res.FileContains("C.DelegateToGeneration.cs", "public override int Foo() => this.bar.Foo();");            
+
+        }
+        [Fact] public void ForwardOverloadNumber()
+        {
+            var res = RunTest("class", "public virtual int Foo(int i, int j)=>1; public virtual int Foo(int i)=>i;", 
+                "[DelegateTo] Delegated bar; public override int Foo(int i)=>1;");
+            res.FileContains("C.DelegateToGeneration.cs", "public override int Foo(int i, int j) => this.bar.Foo(i, j);");            
+
+        }
+        [Fact] public void ForwardOverloadType()
+        {
+            var res = RunTest("class", "public virtual int Foo(double d)=>1; public virtual int Foo(int i)=>i;", 
+                "[DelegateTo] Delegated bar; public override int Foo(int i)=>1;");
+            res.FileContains("C.DelegateToGeneration.cs", "public override int Foo(double d) => this.bar.Foo(d);");            
+
+        }
+        [Fact]
+        public void DoNotForwardExistingMethod()
+        {
+            var res = RunTest("class", "public virtual int Foo()=>1;", "[DelegateTo] Delegated bar; public override int Foo()=>1;");
+            res.FileDoesNotContain("C.DelegateToGeneration.cs", "Foo");
+        }
         [Fact]
         public void DelegateAbstractMethod()
         {
@@ -35,7 +63,7 @@ namespace Outer
         public void DelegateProtectedMethod()
         {
             var res = RunTest("class", "protected virtual int Foo()=>1;", "[DelegateTo] Delegated bar;");
-            res.FileContains("C.DelegateToGeneration.cs", "protected override int Foo() => this.bar.Foo();");            
+            res.FileDoesNotContain("C.DelegateToGeneration.cs", "Foo");            
 
         }
         [Fact]
@@ -45,7 +73,5 @@ namespace Outer
             res.FileDoesNotContain("C.DelegateToGeneration.cs", "Foo");            
 
         }
-        
-        // need to be able to override protected members as protected
     }
 }
