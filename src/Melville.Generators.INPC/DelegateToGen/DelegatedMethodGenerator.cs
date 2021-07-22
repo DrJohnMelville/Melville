@@ -150,8 +150,15 @@ namespace Melville.Generators.INPC.DelegateToGen
         private string RenderParameter(IParameterSymbol i)
         {
             return $"{i.Type.FullyQualifiedName()} {i.Name}" +
-                   (i.HasExplicitDefaultValue?$" = {i.ExplicitDefaultValue?.ToString()??"default"}":"");
+                   (i.HasExplicitDefaultValue?$" = {ExplicitValue(i.ExplicitDefaultValue?.ToString())}":"");
         }
+
+		private string ExplicitValue(string? value) => value switch{
+			null => "default",
+			"True" => "true",
+            "False"=> "false",
+			var i => i
+		};
 
         private void ParameterList(
             CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, 
