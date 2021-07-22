@@ -48,6 +48,8 @@ namespace Outer
         [InlineData("int A {get;init;}", "init => this.Field.A = value;")]
         [InlineData("int A();", "public int A() => this.Field.A();")]
         [InlineData("int A(int a);", "public int A(int a) => this.Field.A(a);")]
+        [InlineData("int A(int a = 1);", "public int A(int a = 1) => this.Field.A(a);")]
+        [InlineData("int A(string? a = null);", "public int A(string? a = default) => this.Field.A(a);")]
         [InlineData("int A(int a, string b);", "public int A(int a, string b) => this.Field.A(a, b);")]
         [InlineData("T A<T>();", "public T A<T>() => this.Field.A<T>();")]
         [InlineData("T A<T,T2>();", "public T A<T,T2>() => this.Field.A<T,T2>();")]

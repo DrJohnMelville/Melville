@@ -81,7 +81,7 @@ namespace Melville.Generators.INPC.DelegateToGen
         private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
         {
             MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this" );
-            ParameterList(cw, ps.Parameters, i => $"{i.Type.FullyQualifiedName()} {i.Name}", "[", "]");
+            ParameterList(cw, ps.Parameters, RenderParameter, "[", "]");
             cw.AppendLine();
             PropertyBlock(ps, cw, $"[{string.Join(", ", ps.Parameters.Select(i=>i.Name))}]");
         }
@@ -137,7 +137,7 @@ namespace Melville.Generators.INPC.DelegateToGen
         {
             MemberPrefix(cw, ms.ReturnType.FullyQualifiedName(), ms.Name);
             AppendTypeParamList(cw, ms.TypeParameters);
-            ParameterList(cw, ms.Parameters, i => $"{i.Type.FullyQualifiedName()} {i.Name}", "(", ")");
+            ParameterList(cw, ms.Parameters, RenderParameter, "(", ")");
             cw.Append(" => ");
             cw.Append(MethodPrefix);
             cw.Append(".");
@@ -145,6 +145,12 @@ namespace Melville.Generators.INPC.DelegateToGen
             AppendTypeParamList(cw, ms.TypeParameters);
             ParameterList(cw, ms.Parameters, i => i.Name, "(", ")");
             cw.AppendLine(";");
+        }
+
+        private string RenderParameter(IParameterSymbol i)
+        {
+            return $"{i.Type.FullyQualifiedName()} {i.Name}" +
+                   (i.HasExplicitDefaultValue?$" = {i.ExplicitDefaultValue?.ToString()??"default"}":"");
         }
 
         private void ParameterList(
