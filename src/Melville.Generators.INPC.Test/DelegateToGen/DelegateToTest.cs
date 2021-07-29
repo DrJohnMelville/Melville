@@ -15,8 +15,7 @@ namespace Outer
     public interface IChildInterface: IInterface { void ChildMethod(); }
     public partial class C: IInterface {" + s + @"
 }
-}
-");
+}");
         [Theory]
         [InlineData("private IInterface Field;", "this.Field.A()")]
         [InlineData("public IInterface RProp{get;}", "this.RProp.A()")]
@@ -49,6 +48,8 @@ namespace Outer
         [InlineData("int A {get;init;}", "init => this.Field.A = value;")]
         [InlineData("int A();", "public int A() => this.Field.A();")]
         [InlineData("int A(int a);", "public int A(int a) => this.Field.A(a);")]
+        [InlineData("int A(int a = 1);", "public int A(int a = 1) => this.Field.A(a);")]
+        [InlineData("int A(string? a = null);", "public int A(string? a = default) => this.Field.A(a);")]
         [InlineData("int A(int a, string b);", "public int A(int a, string b) => this.Field.A(a, b);")]
         [InlineData("T A<T>();", "public T A<T>() => this.Field.A<T>();")]
         [InlineData("T A<T,T2>();", "public T A<T,T2>() => this.Field.A<T,T2>();")]
@@ -93,7 +94,6 @@ namespace Outer
             var res = RunTest("[DelegateTo] private IChildInterface field;", "int Parent();");
             res.FileContains("C.DelegateToGeneration.cs", "public void ChildMethod() => this.field.ChildMethod();");
             res.FileContains("C.DelegateToGeneration.cs", "public int Parent() => this.field.Parent();");
-
         }
     }
 }
