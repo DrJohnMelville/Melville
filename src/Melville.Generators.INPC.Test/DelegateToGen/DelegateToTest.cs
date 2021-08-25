@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.DelegateToGen;
+﻿using System;
+using Melville.Generators.INPC.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Xunit;
 
@@ -41,15 +42,20 @@ namespace Outer
         }
         [Theory]
         [InlineData("int A {get;}", "public int A")]
+        [InlineData("[System.Obsolete( \"xxyy\")] int A {get;}", "[System.ObsoleteAttribute(\"xxyy\")] public int A")]
         [InlineData("int A {get;}", "get => this.Field.A;")]
         [InlineData("int A {get;set;}", "get => this.Field.A;")]
         [InlineData("int A {get;set;}", "set => this.Field.A = value;")]
         [InlineData("int A {set;}", "set => this.Field.A = value;")]
         [InlineData("int A {get;init;}", "init => this.Field.A = value;")]
         [InlineData("int A();", "public int A() => this.Field.A();")]
+        [InlineData("int A(ref int b);", "public int A(ref int b) => this.Field.A(ref b);")]
+        [InlineData("int A(out int b);", "public int A(out int b) => this.Field.A(out b);")]
+        [InlineData("int A(in int b);", "public int A(in int b) => this.Field.A(in b);")]
         [InlineData("int A(int a);", "public int A(int a) => this.Field.A(a);")]
         [InlineData("int A(int a = 1);", "public int A(int a = 1) => this.Field.A(a);")]
         [InlineData("int A(string? a = null);", "public int A(string? a = default) => this.Field.A(a);")]
+        [InlineData("int A([System.NotNullIf(true)] out string? a);", "public int A([System.NotNullIf(true)] out string? a) => this.Field.A(out a);")]
         [InlineData("int A(bool a = true);", "public int A(bool a = true) => this.Field.A(a);")]
         [InlineData("int A(bool a = false);", "public int A(bool a = false) => this.Field.A(a);")]
         [InlineData("int A(int a, string b);", "public int A(int a, string b) => this.Field.A(a, b);")]

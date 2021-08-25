@@ -58,6 +58,7 @@ namespace Melville.Generators.INPC.DelegateToGen
 
         private void GenerateForwardingMember(CodeWriter cw, ISymbol member)
         {
+            RenderAttributes(cw, member.GetAttributes());
             switch (member)
             {
                 case IPropertySymbol {IsIndexer: true} ps:
@@ -75,6 +76,16 @@ namespace Melville.Generators.INPC.DelegateToGen
                 default:
                     cw.AppendLine($"// call {member.Name} using : {MethodPrefix}");
                     break;                    
+            }
+        }
+
+        private void RenderAttributes(CodeWriter cw, ImmutableArray<AttributeData> attributes)
+        {
+            foreach (var attribute in attributes)
+            {
+                cw.Append("[");
+                cw.Append(attribute.ToString());
+                cw.Append("] ");
             }
         }
 
@@ -143,17 +154,30 @@ namespace Melville.Generators.INPC.DelegateToGen
             cw.Append(".");
             cw.Append(ms.Name);
             AppendTypeParamList(cw, ms.TypeParameters);
-            ParameterList(cw, ms.Parameters, i => i.Name, "(", ")");
+            ParameterList(cw, ms.Parameters, RenderArgument, "(", ")");
             cw.AppendLine(";");
+        }
+
+        private string RenderArgument(IParameterSymbol i)
+        {
+            return HandleRefKind(i.RefKind) + i.Name;
         }
 
         private string RenderParameter(IParameterSymbol i)
         {
-            return $"{i.Type.FullyQualifiedName()} {i.Name}" +
+            return $"{HandleRefKind(i.RefKind)}{i.Type.FullyQualifiedName()} {i.Name}" +
                    (i.HasExplicitDefaultValue?$" = {ExplicitValue(i.ExplicitDefaultValue?.ToString())}":"");
         }
 
-		private string ExplicitValue(string? value) => value switch{
+        private string HandleRefKind(RefKind refKind) => refKind switch
+        {
+            RefKind.Ref => "ref ",
+            RefKind.Out => "out ",
+            RefKind.In => "in ",
+            _ => ""
+        };
+
+        private string ExplicitValue(string? value) => value switch{
 			null => "default",
 			"True" => "true",
             "False"=> "false",
