@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Net.Http.Headers;
 using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
@@ -158,15 +159,24 @@ namespace Melville.Generators.INPC.DelegateToGen
             cw.AppendLine(";");
         }
 
-        private string RenderArgument(IParameterSymbol i)
+        private void RenderArgument(CodeWriter cw, IParameterSymbol i)
         {
-            return HandleRefKind(i.RefKind) + i.Name;
+            cw.Append(HandleRefKind(i.RefKind));
+            cw.Append(i.Name);
         }
 
-        private string RenderParameter(IParameterSymbol i)
+        private void RenderParameter(CodeWriter cw, IParameterSymbol i)
         {
-            return $"{HandleRefKind(i.RefKind)}{i.Type.FullyQualifiedName()} {i.Name}" +
-                   (i.HasExplicitDefaultValue?$" = {ExplicitValue(i.ExplicitDefaultValue?.ToString())}":"");
+            RenderAttributes(cw, i.GetAttributes());
+            cw.Append(HandleRefKind(i.RefKind));
+            cw.Append(i.Type.FullyQualifiedName());
+            cw.Append(" ");
+            cw.Append(i.Name);
+            if (i.HasExplicitDefaultValue)
+            {
+                cw.Append(" = ");
+                cw.Append(ExplicitValue(i.ExplicitDefaultValue?.ToString()));
+            }
         }
 
         private string HandleRefKind(RefKind refKind) => refKind switch
@@ -186,7 +196,7 @@ namespace Melville.Generators.INPC.DelegateToGen
 
         private void ParameterList(
             CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, 
-            Func<IParameterSymbol, string> display, string open, string close)
+            Action<CodeWriter, IParameterSymbol> display, string open, string close)
         {
             cw.Append(open);
             AppendArgumentList(cw, parameters, display);
@@ -197,8 +207,16 @@ namespace Melville.Generators.INPC.DelegateToGen
         // we generate those using higher level constructs.
         private bool IsSpecialExcludedMethod(IMethodSymbol ms) => !ms.CanBeReferencedByName;
 
-        private void AppendArgumentList(CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, Func<IParameterSymbol, string> ParamPrinter) => 
-            cw.Append(string.Join(", ", parameters.Select(ParamPrinter)));
+        private void AppendArgumentList(CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, Action<CodeWriter, IParameterSymbol> paramPrinter)
+        {
+            if (parameters.Length == 0) return;
+            paramPrinter(cw, parameters[0]);
+            foreach (var parameter in parameters.Skip(1))
+            {
+                cw.Append(", ");
+                paramPrinter(cw, parameter);
+            }
+        }
 
         private void AppendTypeParamList(
             CodeWriter cw, ImmutableArray<ITypeParameterSymbol> parameters)

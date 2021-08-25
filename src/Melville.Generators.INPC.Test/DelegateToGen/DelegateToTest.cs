@@ -55,7 +55,7 @@ namespace Outer
         [InlineData("int A(int a);", "public int A(int a) => this.Field.A(a);")]
         [InlineData("int A(int a = 1);", "public int A(int a = 1) => this.Field.A(a);")]
         [InlineData("int A(string? a = null);", "public int A(string? a = default) => this.Field.A(a);")]
-        [InlineData("int A([System.NotNullIf(true)] out string? a);", "public int A([System.NotNullIf(true)] out string? a) => this.Field.A(out a);")]
+        [InlineData("int A([System.Obsolete(\"xxx\")] out string? a);", "public int A([System.ObsoleteAttribute(\"xxx\")] out string? a) => this.Field.A(out a);")]
         [InlineData("int A(bool a = true);", "public int A(bool a = true) => this.Field.A(a);")]
         [InlineData("int A(bool a = false);", "public int A(bool a = false) => this.Field.A(a);")]
         [InlineData("int A(int a, string b);", "public int A(int a, string b) => this.Field.A(a, b);")]
