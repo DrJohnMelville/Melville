@@ -43,6 +43,7 @@ namespace Outer
         [Theory]
         [InlineData("int A {get;}", "public int A")]
         [InlineData("[System.Obsolete( \"xxyy\")] int A {get;}", "[System.ObsoleteAttribute(\"xxyy\")] public int A")]
+        [InlineData("[System.Obsolete( \"xxyy\")][System.Runtime.CompilerServices.NullableContext(2] int A {get;}", "[System.ObsoleteAttribute(\"xxyy\")] public int A")]
         [InlineData("int A {get;}", "get => this.Field.A;")]
         [InlineData("int A {get;set;}", "get => this.Field.A;")]
         [InlineData("int A {get;set;}", "set => this.Field.A = value;")]

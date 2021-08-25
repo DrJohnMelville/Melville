@@ -84,10 +84,18 @@ namespace Melville.Generators.INPC.DelegateToGen
         {
             foreach (var attribute in attributes)
             {
-                cw.Append("[");
-                cw.Append(attribute.ToString());
-                cw.Append("] ");
+                var text = attribute.ToString();
+                if (!IsInternalCompilerAttribute(text)) RenderSingleAttribute(cw, text);
             }
+        }
+
+        private static bool IsInternalCompilerAttribute(string text) => text.StartsWith("System.Runtime.CompilerServices");
+
+        private static void RenderSingleAttribute(CodeWriter cw, string text)
+        {
+            cw.Append("[");
+            cw.Append(text);
+            cw.Append("] ");
         }
 
         private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
