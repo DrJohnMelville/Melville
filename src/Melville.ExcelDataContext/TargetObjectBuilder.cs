@@ -22,7 +22,6 @@ namespace Melville.ExcelDataContext
                 name.CodeBase??"C:\\");
               static CompilationOutput Compile(string cSharpSourceCode, string outputFile)
         {
-            File.WriteAllText(@"C:\Users\jom252\Desktop\pdf\fileOut.txt", cSharpSourceCode);
             var compileResult = DataContextDriver.CompileSource(new CompilationInput
             {
                 FilePathsToReference = AssembliesToReference(),
