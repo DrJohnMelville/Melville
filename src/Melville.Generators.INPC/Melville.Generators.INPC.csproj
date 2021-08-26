@@ -1,10 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
+<Project Sdk="Microsoft.NET.Sdk" >
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>preview</LangVersion>
-        
-        <NoWarn>$(NoWarn);NU5128</NoWarn>
+        <LangVersion>9.0</LangVersion>
     </PropertyGroup>
     <PropertyGroup>
         
@@ -16,12 +14,11 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0" PrivateAssets="all" />
+        <PackageReference Include=" Microsoft.CodeAnalysis.CSharp" Version="3.8.0"  />
         <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(PkgMelville_Generators_Tools)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    </ItemGroup>
+    </ItemGroup> 
 </Project>
