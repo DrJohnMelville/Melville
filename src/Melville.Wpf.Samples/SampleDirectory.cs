@@ -1,6 +1,7 @@
 ﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.CalendarControls;
+using Melville.Wpf.Samples.DialogBox;
 using Melville.Wpf.Samples.DiBinding;
 using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
@@ -19,7 +20,7 @@ namespace Melville.Wpf.Samples
     public class SampleDirectory : SampleDirectoryDsl
     {
         public ISampleTreeItem? DefaultItem() =>
-            SearchTreeForSample<TreeDraggingViewModel>();
+            SearchTreeForSample<DialogBoxSheetViewModel>();
 
         public SampleDirectory()
         {
@@ -53,7 +54,8 @@ namespace Melville.Wpf.Samples
                 Node("Statistics",
                     Page<LinqGraphViewModel>("LinqPad Graphics Module")),
                 Node("Controls",
-                    Page<CalendarControlViewModel>("Calendar Control"))
+                    Page<CalendarControlViewModel>("Calendar Control"),
+                    Page<DialogBoxSheetViewModel>("Dialog Box"))
             );
     }
 }
