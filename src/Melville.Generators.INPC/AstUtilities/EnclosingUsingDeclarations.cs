@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.Sockets;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -12,7 +15,7 @@ namespace Melville.Generators.INPC.AstUtilities
         
         public static IEnumerable<SyntaxList<UsingDirectiveSyntax>> UsingDeclarationListsForSurroundingScopes(
             this SyntaxNode context)
-        {
+        { 
             var currentNode = context.Parent;
             while (currentNode != null)
             {
