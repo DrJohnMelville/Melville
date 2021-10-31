@@ -62,6 +62,7 @@ namespace Melville.IOC.IocContainers
         private static string RequestedTypeName(IBindingRequest requestedType)
         {
             return requestedType.DesiredType.FullName??requestedType.DesiredType.Name;
+            
         }
 
     }

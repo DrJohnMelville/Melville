@@ -71,7 +71,7 @@ namespace Melville.Lists.PersistentLinq
     private IDictionary<TSource, TDest> cache;
     public TDest? Map(TSource input)
     {
-      TDest ret;
+      TDest? ret;
       if (cache == null)
       {
         return default!;

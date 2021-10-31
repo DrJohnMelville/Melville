@@ -22,7 +22,7 @@ namespace Melville.MVVM.Wpf.DiParameterSources
 
     public static class DIIntegrationOperations
     {
-        public static T GetRequired<T>(this IDIIntegration di) => (T) di.Get(typeof(T)) ??
+        public static T GetRequired<T>(this IDIIntegration di) => (T?) di.Get(typeof(T)) ??
            throw new InvalidOperationException("Cannot Create a: " + typeof(T).Name);
     }
     
