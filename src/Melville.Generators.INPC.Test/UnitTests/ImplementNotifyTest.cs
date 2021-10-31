@@ -298,6 +298,44 @@ namespace NM
         }
 
         [Fact]
+        public void NameSpaceBlock()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                $@"
+using Melville.INPC;
+namespace NM
+{{
+  public class C
+  {{ 
+    [AutoNotify] private int ip;
+  }}
+}}");
+            tb.FileContains("C.INPC.cs", "namespace NM\r\n{");
+            tb.FileDoesNotContain("C.INPC.cs", "namespace NM;");
+            
+        }
+        /// <summary>
+        /// For right now we will convert namespace declarations to namespace blocks because (a) it already works
+        /// (b) this is generated code, which we read infrequently, and (c)namespace blocks work on a larger subset
+        /// of compilers, so there is no need to exclude C# 9.0 from playing for right now.
+        /// </summary>
+        [Fact]
+        public void NameSpaceDecl()
+        {
+            var tb = new GeneratorTestBed(new INPCGenerator(),
+                $@"
+using Melville.INPC;
+namespace NM;
+public class C
+{{ 
+  [AutoNotify] private int ip;
+}}");
+            tb.FileContains("C.INPC.cs", "namespace NM\r\n{");
+            tb.FileDoesNotContain("C.INPC.cs", "namespace NM;");
+            
+        }
+
+        [Fact]
         public void ClassMustBePartial()
         {
             var tb = new GeneratorTestBed(new INPCGenerator(),
