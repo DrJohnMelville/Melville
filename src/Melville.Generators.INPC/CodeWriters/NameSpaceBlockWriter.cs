@@ -11,16 +11,30 @@ namespace Melville.Generators.INPC.CodeWriters
         public static IDisposable GeneratePartialClassContext(this CodeWriter outerWriter, SyntaxNode node)
         {
             DuplicateEnclosingUsingDeclarations(outerWriter, node);
-            foreach (var fsd in node.Ancestors().OfType<FileScopedNamespaceDeclarationSyntax>())
-            {
-                outerWriter.Append("namespace ");
-                outerWriter.Append(fsd.Name.ToString());
-                outerWriter.AppendLine(";");
-            }
-            return GenerateEnclosingNamemspaces(outerWriter, node);
+            GenerateFileScopedNamespace(outerWriter, node);
+            return GenerateEnclosingNamemspaceBlockss(outerWriter, node);
         }
 
-        private static IDisposable GenerateEnclosingNamemspaces(CodeWriter outerWriter, SyntaxNode node) => 
+        private static void GenerateFileScopedNamespace(CodeWriter outerWriter, SyntaxNode node)
+        {
+            if (TryFindFileScopedNamespace(node) is {} fsd)
+                OutputFileScopedNamespaceDeclaration(outerWriter, fsd);
+        }
+
+        private static FileScopedNamespaceDeclarationSyntax? TryFindFileScopedNamespace(SyntaxNode node) => 
+            node.Ancestors()
+                .OfType<FileScopedNamespaceDeclarationSyntax>()
+                .FirstOrDefault();
+
+        private static void OutputFileScopedNamespaceDeclaration(CodeWriter outerWriter,
+            FileScopedNamespaceDeclarationSyntax fsd)
+        {
+            outerWriter.Append("namespace ");
+            outerWriter.Append(fsd.Name.ToString());
+            outerWriter.AppendLine(";");
+        }
+
+        private static IDisposable GenerateEnclosingNamemspaceBlockss(CodeWriter outerWriter, SyntaxNode node) => 
             outerWriter.EnclosingBlockWriter<NamespaceDeclarationSyntax>(node, EminNamespaceDeclaratioText);
 
         private static void EminNamespaceDeclaratioText(CodeWriter writer, NamespaceDeclarationSyntax ns)
