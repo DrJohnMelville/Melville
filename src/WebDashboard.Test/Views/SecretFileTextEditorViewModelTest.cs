@@ -5,24 +5,23 @@ using WebDashboard.SecretManager.Models;
 using WebDashboard.SecretManager.Views;
 using Xunit;
 
-namespace WebDashboard.Test.Views
+namespace WebDashboard.Test.Views;
+
+public class SecretFileTextEditorViewModelTest
 {
-    public class SecretFileTextEditorViewModelTest
+    private SecretFileTextEditorViewModel CreateHolder(string jsonText)
     {
-        private SecretFileTextEditorViewModel CreateHolder(string jsonText)
-        {
-            var holder = new SecretFileHolder(Mock.Of<IFile>(), JsonDocument.Parse(jsonText));
-            return new SecretFileTextEditorViewModel(holder);
-        }
-
-        [Fact]
-        public void Parse()
-        {
-            var holder = CreateHolder("{\"A\": \"AAAA\"}");
-            Assert.Equal("{\r\n  \"A\": \"AAAA\"\r\n}", holder.Text);
-        }
-
-        
-        
+        var holder = new SecretFileHolder(Mock.Of<IFile>(), JsonDocument.Parse(jsonText));
+        return new SecretFileTextEditorViewModel(holder);
     }
+
+    [Fact]
+    public void Parse()
+    {
+        var holder = CreateHolder("{\"A\": \"AAAA\"}");
+        Assert.Equal("{\r\n  \"A\": \"AAAA\"\r\n}", holder.Text);
+    }
+
+        
+        
 }

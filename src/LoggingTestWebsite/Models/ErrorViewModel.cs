@@ -1,9 +1,8 @@
-namespace LoggingTestWebsite.Models
-{
-    public class ErrorViewModel
-    {
-        public string? RequestId { get; set; }
+namespace LoggingTestWebsite.Models;
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-    }
+public class ErrorViewModel
+{
+    public string? RequestId { get; set; }
+
+    public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 }

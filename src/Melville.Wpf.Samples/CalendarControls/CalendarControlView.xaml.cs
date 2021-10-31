@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.CalendarControls
+namespace Melville.Wpf.Samples.CalendarControls;
+
+public partial class CalendarControlView : UserControl
 {
-    public partial class CalendarControlView : UserControl
+    public CalendarControlView()
     {
-        public CalendarControlView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

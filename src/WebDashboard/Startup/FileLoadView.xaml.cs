@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace WebDashboard.Startup
+namespace WebDashboard.Startup;
+
+public partial class FileLoadView : UserControl
 {
-    public partial class FileLoadView : UserControl
+    public FileLoadView()
     {
-        public FileLoadView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

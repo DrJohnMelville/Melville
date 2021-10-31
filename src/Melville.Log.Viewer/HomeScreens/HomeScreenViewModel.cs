@@ -7,69 +7,68 @@ using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.BusinessObjects;
 
-namespace Melville.Log.Viewer.HomeScreens
+namespace Melville.Log.Viewer.HomeScreens;
+
+public interface IHomeScreenPage
 {
-    public interface IHomeScreenPage
+    string Title { get; }
+    void Stop();
+}
+public class HomeScreenViewModel: NotifyBase
+{
+    private IHomeScreenPage currentPage;
+    public IHomeScreenPage CurrentPage
     {
-        string Title { get; }
-        void Stop();
+        get => currentPage;
+        set => AssignAndNotify(ref currentPage, value);
     }
-    public class HomeScreenViewModel: NotifyBase
+
+    public ICollection<IHomeScreenPage> Pages { get; } = new ThreadSafeBindableCollection<IHomeScreenPage>();
+
+    public HomeScreenViewModel(WelcomePageViewModel welcomePage, IPipeListener pipeListener,
+        Func<ILogConnection, LogViewModel> modelCreator)
     {
-        private IHomeScreenPage currentPage;
-        public IHomeScreenPage CurrentPage
+        Pages.Add(welcomePage);
+        currentPage = welcomePage;
+        pipeListener.NewClientConnection += (_, e) =>
+            AddNewPage(modelCreator(new StreamLogConnection(e.ClientConnection)));
+    }
+
+    public void Remove(IHomeScreenPage page)
+    {
+        Pages.Remove(page);
+        page.Stop();
+    }
+
+    public bool ShellKeyHandler(KeyEventArgs e)
+    {
+        if (e.Key == Key.F4 && e.KeyboardDevice.Modifiers == ModifierKeys.Control &&
+            CurrentPage is LogViewModel)
         {
-            get => currentPage;
-            set => AssignAndNotify(ref currentPage, value);
+            Remove(CurrentPage);
+            return true;
         }
 
-        public ICollection<IHomeScreenPage> Pages { get; } = new ThreadSafeBindableCollection<IHomeScreenPage>();
-
-        public HomeScreenViewModel(WelcomePageViewModel welcomePage, IPipeListener pipeListener,
-            Func<ILogConnection, LogViewModel> modelCreator)
-        {
-            Pages.Add(welcomePage);
-            currentPage = welcomePage;
-            pipeListener.NewClientConnection += (_, e) =>
-                AddNewPage(modelCreator(new StreamLogConnection(e.ClientConnection)));
-        }
-
-        public void Remove(IHomeScreenPage page)
-        {
-            Pages.Remove(page);
-            page.Stop();
-        }
-
-        public bool ShellKeyHandler(KeyEventArgs e)
-        {
-            if (e.Key == Key.F4 && e.KeyboardDevice.Modifiers == ModifierKeys.Control &&
-                CurrentPage is LogViewModel)
-            {
-                Remove(CurrentPage);
-                return true;
-            }
-
-            return false;
-        }
+        return false;
+    }
         
-        public void ConnectToWeb(IHasTargetUrl targetHolder)
+    public void ConnectToWeb(IHasTargetUrl targetHolder)
+    {
+        try
         {
-            try
-            {
-                if (targetHolder.CurrentSite == null) return;
-                AddNewPage(new LogViewModel(
-                    new HubLogConnection(targetHolder.CurrentSite), targetHolder.CurrentSite.Name));
-            }
-            catch (Exception)
-            {
-                // failed to connect to website
-            }
+            if (targetHolder.CurrentSite == null) return;
+            AddNewPage(new LogViewModel(
+                new HubLogConnection(targetHolder.CurrentSite), targetHolder.CurrentSite.Name));
         }
+        catch (Exception)
+        {
+            // failed to connect to website
+        }
+    }
 
-        private void AddNewPage(LogViewModel page)
-        {
-            Pages.Add(page);
-            CurrentPage = page;
-        }
+    private void AddNewPage(LogViewModel page)
+    {
+        Pages.Add(page);
+        CurrentPage = page;
     }
 }

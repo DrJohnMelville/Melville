@@ -8,91 +8,91 @@ using WebDashboard.SecretManager.Models;
 using WebDashboard.SystemInterface;
 using Xunit;
 
-namespace WebDashboard.Test.Models
+namespace WebDashboard.Test.Models;
+
+public class RootModelFactoryTest
 {
-    public class RootModelFactoryTest
+    private readonly IDirectory root;
+    private readonly IDirectory pubProfiles;
+    private readonly IFile pubXmlFile;
+    private readonly IFile projFile;
+    private readonly IFile secretFile;
+    private readonly IFile pubSecretFile;
+    private readonly Mock<IEnvironmentExpander> expander = new Mock<IEnvironmentExpander>();
+    private readonly IRootModelFactory sut;
+
+    public RootModelFactoryTest()
     {
-        private readonly IDirectory root;
-        private readonly IDirectory pubProfiles;
-        private readonly IFile pubXmlFile;
-        private readonly IFile projFile;
-        private readonly IFile secretFile;
-        private readonly IFile pubSecretFile;
-        private readonly Mock<IEnvironmentExpander> expander = new Mock<IEnvironmentExpander>();
-        private readonly IRootModelFactory sut;
+        root = new MockDirectory("c:\\projdirr");
+        projFile = root.File("proj.csproj");
+        projFile.Create(ProjText);
+        var prop = root.SubDirectory("Properties");
+        prop.Create();
+        pubProfiles = prop.SubDirectory("PublishProfiles");
+        pubProfiles.Create();
+        pubXmlFile = pubProfiles.File("Publish.pubxml");
+        pubXmlFile.Create(PubXmlText);
+        expander.Setup(i => i.Expand(It.IsAny<String>()))
+            .Returns((string s) => s.Replace("%APPDATA%", "C:\\Profile"));
 
-        public RootModelFactoryTest()
-        {
-            root = new MockDirectory("c:\\projdirr");
-            projFile = root.File("proj.csproj");
-            projFile.Create(ProjText);
-            var prop = root.SubDirectory("Properties");
-            prop.Create();
-            pubProfiles = prop.SubDirectory("PublishProfiles");
-            pubProfiles.Create();
-            pubXmlFile = pubProfiles.File("Publish.pubxml");
-            pubXmlFile.Create(PubXmlText);
-            expander.Setup(i => i.Expand(It.IsAny<String>()))
-                .Returns((string s) => s.Replace("%APPDATA%", "C:\\Profile"));
+        secretFile = MockSecretFile("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", SecretText);
+        pubSecretFile = MockSecretFile("thisisthesecretkey", PubSecretText);
+        sut = new RootModelFactory(expander.Object);
+    }
 
-            secretFile = MockSecretFile("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", SecretText);
-            pubSecretFile = MockSecretFile("thisisthesecretkey", PubSecretText);
-            sut = new RootModelFactory(expander.Object);
-        }
+    private IFile MockSecretFile(string secretKey, string text)
+    {
+        var file = new MockFile("c:\\sss\\secret.txt", null);
+        file.Create(text);
+        ((MockDirectory) pubProfiles).AddRawFile(
+            $@"C:\Profile\Microsoft\UserSecrets\{secretKey}\secrets.json",
+            file);
+        return file;
+    }
 
-        private IFile MockSecretFile(string secretKey, string text)
-        {
-            var file = new MockFile("c:\\sss\\secret.txt", null);
-            file.Create(text);
-            ((MockDirectory) pubProfiles).AddRawFile(
-                $@"C:\Profile\Microsoft\UserSecrets\{secretKey}\secrets.json",
-                file);
-            return file;
-        }
+    public Task<RootModel> ConstructedModel() => sut.Create(pubXmlFile);
 
-        public Task<RootModel> ConstructedModel() => sut.Create(pubXmlFile);
+    [Fact]
+    public async Task Create()
+    {
+        var ret = await sut.Create(pubXmlFile);
+        Assert.Equal("Ewd.drjohnmelville.com", ret.PublishFile.DeployedPath);
+        Assert.Equal("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", ret.ProjectFile.UserSecretId);
+        Assert.Equal(2, ret.RootSecretFile.Root.Children.Count());
+    }
 
-        [Fact]
-        public async Task Create()
-        {
-            var ret = await sut.Create(pubXmlFile);
-            Assert.Equal("Ewd.drjohnmelville.com", ret.PublishFile.DeployedPath);
-            Assert.Equal("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", ret.ProjectFile.UserSecretId);
-            Assert.Equal(2, ret.RootSecretFile.Root.Children.Count());
-        }
+    [Fact]
+    public async Task CreateSecretFile()
+    {
+        secretFile.Delete();
+        Assert.False(secretFile.Exists());
+        Assert.False(secretFile.Directory.Exists());
+        var ret = await sut.Create(pubXmlFile);
+        Assert.True(secretFile.Directory.Exists());
+        Assert.True(secretFile.Exists());
+    }
 
-        [Fact]
-        public async Task CreateSecretFile()
-        {
-            secretFile.Delete();
-            Assert.False(secretFile.Exists());
-            Assert.False(secretFile.Directory.Exists());
-            var ret = await sut.Create(pubXmlFile);
-            Assert.True(secretFile.Directory.Exists());
-            Assert.True(secretFile.Exists());
-        }
-
-        [Fact]
-        public async Task LoadFromProjectFile()
-        {
-            var ret = await sut.Create(projFile);
-            Assert.Equal("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", ret.ProjectFile.UserSecretId);
-            Assert.Null(ret.PublishFile);            
-        }
+    [Fact]
+    public async Task LoadFromProjectFile()
+    {
+        var ret = await sut.Create(projFile);
+        Assert.Equal("5e7f3d51-4b7a-41f8-a32a-8f6c11c29274", ret.ProjectFile.UserSecretId);
+        Assert.Null(ret.PublishFile);            
+    }
 
  
-        private const string SecretText = @"{
+    private const string SecretText = @"{
   ""root:Secret"": ""secret 1"",
   ""root:child:s2"": ""s 2"",
   ""root:child:s3"": ""s 3"",
   ""NoTree"":""No Tree"",
   ""root:"": ""blank""
 }";
-        private const string PubSecretText = @"{
+    private const string PubSecretText = @"{
   ""root:Secret"": ""secret 2"",
   ""SupplementalSecret"": ""Supplement""
 }";
-        private const string ProjText = @"<?xml version=""1.0"" encoding=""utf-8""?>
+    private const string ProjText = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Project Sdk=""Microsoft.NET.Sdk.Web"">
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -128,8 +128,8 @@ namespace WebDashboard.Test.Models
     <Folder Include=""PostedContent"" />
   </ItemGroup>
 </Project>";
-        private const string PubXmlText =
-            @"<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
+    private const string PubXmlText =
+        @"<Project ToolsVersion=""4.0"" xmlns=""http://schemas.microsoft.com/developer/msbuild/2003"">
     <PropertyGroup>
         <WebPublishMethod>MSDeploy</WebPublishMethod>
         <ExcludeApp_Data>False</ExcludeApp_Data>
@@ -149,5 +149,4 @@ namespace WebDashboard.Test.Models
         <UserSecretsId>thisisthesecretkey</UserSecretsId>
     </PropertyGroup>
 </Project>";
-    }
 }

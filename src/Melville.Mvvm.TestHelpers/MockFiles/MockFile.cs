@@ -2,16 +2,15 @@
 using  System.Runtime.CompilerServices;
 using Melville.FileSystem;
 
-namespace Melville.Mvvm.TestHelpers.MockFiles
+namespace Melville.Mvvm.TestHelpers.MockFiles;
+
+public class MockFile : MemoryFile
 {
-  public class MockFile : MemoryFile
+
+  public MockFile(string path, MemoryDirectory directory = null) : base(path, directory ?? new MockDirectory("z:\\Fake\\Mock\\Dir"))
   {
-
-    public MockFile(string path, MemoryDirectory directory = null) : base(path, directory ?? new MockDirectory("z:\\Fake\\Mock\\Dir"))
-    {
-    }
-
-    protected override void CheckFileThrow([CallerMemberName] string memberName = "") =>
-      (Directory as MockDirectory)?.ThrowOnNextFileOperation?.Invoke(memberName);
   }
+
+  protected override void CheckFileThrow([CallerMemberName] string memberName = "") =>
+    (Directory as MockDirectory)?.ThrowOnNextFileOperation?.Invoke(memberName);
 }

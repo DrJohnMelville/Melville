@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.TranscriptionPedal
+namespace Melville.Wpf.Samples.TranscriptionPedal;
+
+public partial class ChYokeView : UserControl
 {
-    public partial class ChYokeView : UserControl
+    public ChYokeView()
     {
-        public ChYokeView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

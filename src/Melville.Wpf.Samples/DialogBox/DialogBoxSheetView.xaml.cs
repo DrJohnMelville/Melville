@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.DialogBox
+namespace Melville.Wpf.Samples.DialogBox;
+
+public partial class DialogBoxSheetView : UserControl
 {
-    public partial class DialogBoxSheetView : UserControl
+    public DialogBoxSheetView()
     {
-        public DialogBoxSheetView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

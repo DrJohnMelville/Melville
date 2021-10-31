@@ -12,203 +12,202 @@ using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
 using Melville.MVVM.Wpf.VisualTreeLocations;
 using Serilog;
 
-namespace Melville.MVVM.Wpf.EventBindings.SearchTree
+namespace Melville.MVVM.Wpf.EventBindings.SearchTree;
+
+public interface IVisualTreeRunner: IVisualTreeLocation<IVisualTreeRunner, DependencyObject>
 {
-    public interface IVisualTreeRunner: IVisualTreeLocation<IVisualTreeRunner, DependencyObject>
+    public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result);
+    public bool RunOnTarget(object target, string targetMethodName, object?[] inputParams, out object? result);
+    public bool RunMethod(Delegate function, object?[] parameters, out object? result);
+}
+
+public class VisualTreeRunner : IVisualTreeRunner
+{
+    private readonly DependencyObject root;
+
+    public VisualTreeRunner(DependencyObject root)
     {
-        public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result);
-        public bool RunOnTarget(object target, string targetMethodName, object?[] inputParams, out object? result);
-        public bool RunMethod(Delegate function, object?[] parameters, out object? result);
+        this.root = root;
     }
 
-    public class VisualTreeRunner : IVisualTreeRunner
+    DependencyObject IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.Target => root;
+    IVisualTreeRunner IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.CreateNewChild(
+        DependencyObject? target) => 
+        target == null? this:new VisualTreeRunner(target);
+
+    public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result)
     {
-        private readonly DependencyObject root;
+        Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
+        var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
+        var methodName = pathComponents.LastOrDefault() ?? "";
+        var context = CreateContext(inputParams, methodName);
+        var targets = AddPathFollowing(context.Targets, pathComponents);
 
-        public VisualTreeRunner(DependencyObject root)
+        foreach (var target in targets)
         {
-            this.root = root;
-        }
-
-        DependencyObject IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.Target => root;
-        IVisualTreeRunner IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.CreateNewChild(
-            DependencyObject? target) => 
-            target == null? this:new VisualTreeRunner(target);
-
-        public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result)
-        {
-            Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
-            var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
-            var methodName = pathComponents.LastOrDefault() ?? "";
-            var context = CreateContext(inputParams, methodName);
-            var targets = AddPathFollowing(context.Targets, pathComponents);
-
-            foreach (var target in targets)
-            {
-                if (target == null) continue;
-                Log.Debug("Searching Object: {target}", target.ToString());
-                if (RunOnTarget(target, ref context, out result)) return true;
-            }
-
-            Log.Error("Failed to bind method: {MethodName}", targetMethodName);
-            result = null;
-            return false;
-        }
-
-        private VisualTreeRunContext CreateContext(object?[] inputParams, string methodName) =>
-            new(DiIntegration.SearchForContainer(root), root, methodName, 
-                inputParams.Append(this));
-
-        public bool RunOnTarget(object? target, string targetMethodName, object?[] inputParams, out object? result)
-        {
-            var context = CreateContext(inputParams, targetMethodName);
-            return RunOnTarget(target, ref context, out result);
-        }
-
-        private bool RunOnTarget(object? target, ref VisualTreeRunContext context, out object? result)
-        {
-            result = null;
-            if (target == null) return false;
+            if (target == null) continue;
             Log.Debug("Searching Object: {target}", target.ToString());
-            return 
-                TryInvokeMethod(ref context, target, out result) || 
-                TryInvokeCommand(ref context, target);
+            if (RunOnTarget(target, ref context, out result)) return true;
         }
 
-        public bool RunMethod(Delegate function, object?[] parameters, out object? result)
+        Log.Error("Failed to bind method: {MethodName}", targetMethodName);
+        result = null;
+        return false;
+    }
+
+    private VisualTreeRunContext CreateContext(object?[] inputParams, string methodName) =>
+        new(DiIntegration.SearchForContainer(root), root, methodName, 
+            inputParams.Append(this));
+
+    public bool RunOnTarget(object? target, string targetMethodName, object?[] inputParams, out object? result)
+    {
+        var context = CreateContext(inputParams, targetMethodName);
+        return RunOnTarget(target, ref context, out result);
+    }
+
+    private bool RunOnTarget(object? target, ref VisualTreeRunContext context, out object? result)
+    {
+        result = null;
+        if (target == null) return false;
+        Log.Debug("Searching Object: {target}", target.ToString());
+        return 
+            TryInvokeMethod(ref context, target, out result) || 
+            TryInvokeCommand(ref context, target);
+    }
+
+    public bool RunMethod(Delegate function, object?[] parameters, out object? result)
+    {
+        var context = CreateContext(parameters, "");
+        return InnerRunSingleMethod(ref context, function.Target, function.Method, out result);
+    }
+
+    private bool TryInvokeCommand(ref VisualTreeRunContext context, object target)
+    {
+        var commandCandidate = string.IsNullOrWhiteSpace(context.TargetMethodName) ? target : 
+            target.GetPath(context.TargetMethodName, true);
+        if (commandCandidate is ICommand command)
         {
-            var context = CreateContext(parameters, "");
-            return InnerRunSingleMethod(ref context, function.Target, function.Method, out result);
+            InvokeCommand(context.InputParameters.ToArray(), command);
+            return true;
         }
+        return false;
+    }
 
-        private bool TryInvokeCommand(ref VisualTreeRunContext context, object target)
+    private void InvokeCommand(object?[] inputParams, ICommand command)
+    {
+        var param = inputParams.Length >= 2 ? inputParams[0] : inputParams;
+        if (command.CanExecute(param))
         {
-            var commandCandidate = string.IsNullOrWhiteSpace(context.TargetMethodName) ? target : 
-                target.GetPath(context.TargetMethodName, true);
-            if (commandCandidate is ICommand command)
-            {
-                InvokeCommand(context.InputParameters.ToArray(), command);
-                return true;
-            }
-            return false;
+            command.Execute(param);
+            MarkReturn(true, inputParams);
         }
+    }
 
-        private void InvokeCommand(object?[] inputParams, ICommand command)
+    private  bool TryInvokeMethod(ref VisualTreeRunContext context, object target, out object? o)
+    {
+        o = null;
+        if (string.IsNullOrWhiteSpace(context.TargetMethodName)) return false;
+
+        foreach (var candidate in CandidateMethods(target, context.TargetMethodName))
         {
-            var param = inputParams.Length >= 2 ? inputParams[0] : inputParams;
-            if (command.CanExecute(param))
-            {
-                command.Execute(param);
-                MarkReturn(true, inputParams);
-            }
+            if (InnerRunSingleMethod(ref context, target, candidate, out o)) return true;
         }
 
-        private  bool TryInvokeMethod(ref VisualTreeRunContext context, object target, out object? o)
+        return false;
+    }
+
+    private bool InnerRunSingleMethod(ref VisualTreeRunContext context, object? target, MethodInfo candidate,
+        out object? o)
+    {
+        o = null;
+        Log.Debug("Trying Method {methodName} on {Type}", candidate.Name, candidate.DeclaringType?.Name);
+        var parameters = ParameterResolver.Resolve(candidate.GetParameters(), ref context);
+        if (parameters != null)
         {
-            o = null;
-            if (string.IsNullOrWhiteSpace(context.TargetMethodName)) return false;
-
-            foreach (var candidate in CandidateMethods(target, context.TargetMethodName))
-            {
-                if (InnerRunSingleMethod(ref context, target, candidate, out o)) return true;
-            }
-
-            return false;
+            var scope = parameters.Value.GetValues(ref context, out var arguments);
+            var ret = candidate.Invoke(target, arguments);
+            o = ProcessMethodReturn(ret, context.InputParameters, scope);
+            return true;
         }
-
-        private bool InnerRunSingleMethod(ref VisualTreeRunContext context, object? target, MethodInfo candidate,
-            out object? o)
+        else
         {
-            o = null;
-            Log.Debug("Trying Method {methodName} on {Type}", candidate.Name, candidate.DeclaringType?.Name);
-            var parameters = ParameterResolver.Resolve(candidate.GetParameters(), ref context);
-            if (parameters != null)
-            {
-                var scope = parameters.Value.GetValues(ref context, out var arguments);
-                var ret = candidate.Invoke(target, arguments);
-                o = ProcessMethodReturn(ret, context.InputParameters, scope);
-                return true;
-            }
-            else
-            {
-                Log.Error($"Failed to bind parameters for: {candidate.Name} on {candidate.DeclaringType?.Name}");
-            }
-
-            return false;
+            Log.Error($"Failed to bind parameters for: {candidate.Name} on {candidate.DeclaringType?.Name}");
         }
 
+        return false;
+    }
 
-        private IEnumerable<MethodInfo> CandidateMethods(object sender, string methodName) =>
-            sender
-                .GetType()
-                .GetMethods()
-                .Where(j => j.Name.Equals(methodName, StringComparison.Ordinal));
 
-        private static IEnumerable<object?> AddPathFollowing(IEnumerable<object> targets, List<string> pathComponents)
+    private IEnumerable<MethodInfo> CandidateMethods(object sender, string methodName) =>
+        sender
+            .GetType()
+            .GetMethods()
+            .Where(j => j.Name.Equals(methodName, StringComparison.Ordinal));
+
+    private static IEnumerable<object?> AddPathFollowing(IEnumerable<object> targets, List<string> pathComponents)
+    {
+        if (pathComponents.Count < 2)
         {
-            if (pathComponents.Count < 2)
-            {
-                return targets;
-            }
-
-            return targets.Select(i => i.FollowPathComponents(pathComponents.Take(pathComponents.Count - 1), true))
-                .Where(i => i != null);
+            return targets;
         }
 
-        private object? ProcessMethodReturn(object? ret, object?[] inputParams, IDisposable scope)
+        return targets.Select(i => i.FollowPathComponents(pathComponents.Take(pathComponents.Count - 1), true))
+            .Where(i => i != null);
+    }
+
+    private object? ProcessMethodReturn(object? ret, object?[] inputParams, IDisposable scope)
+    {
+        switch (ret)
         {
-            switch (ret)
-            {
-                case null:
-                    scope.Dispose();
-                    return null;
-                case bool b:
-                    scope.Dispose();
-                    return MarkReturn(b, inputParams);
-                case Task t: return AwaitAndDispose(t, scope);
-                case ValueTask t: return AwaitAndDispose(t, scope);
-                case var _ when IsValueTaskOfT(ret.GetType()): return DisposeOfValueTask(ret, scope);
-                default:
-                    scope.Dispose();
-                    return ret;
-            }
+            case null:
+                scope.Dispose();
+                return null;
+            case bool b:
+                scope.Dispose();
+                return MarkReturn(b, inputParams);
+            case Task t: return AwaitAndDispose(t, scope);
+            case ValueTask t: return AwaitAndDispose(t, scope);
+            case var _ when IsValueTaskOfT(ret.GetType()): return DisposeOfValueTask(ret, scope);
+            default:
+                scope.Dispose();
+                return ret;
         }
+    }
 
-        private object DisposeOfValueTask(object ret, IDisposable scope)
+    private object DisposeOfValueTask(object ret, IDisposable scope)
+    {
+        return AwaitAndDispose((Task) (ret.Call("AsTask") ??
+                                       throw new InvalidOperationException("Method did not return a value.")),
+            scope);
+    }
+
+    private bool IsValueTaskOfT(Type type) =>
+        type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>);
+
+    private static Task AwaitAndDispose(ValueTask task, IDisposable scope) => AwaitAndDispose(task.AsTask(), scope);
+
+    private static Task AwaitAndDispose(Task task, IDisposable scope)
+    {
+        task.ContinueWith(i => scope.Dispose());
+        return task;
+    }
+
+    private bool MarkReturn(bool funcReturn, object?[] parameters)
+    {
+        foreach (var rea in parameters.OfType<RoutedEventArgs>())
         {
-            return AwaitAndDispose((Task) (ret.Call("AsTask") ??
-                                           throw new InvalidOperationException("Method did not return a value.")),
-                scope);
+            rea.Handled = funcReturn;
         }
+        return funcReturn;
+    }
 
-        private bool IsValueTaskOfT(Type type) =>
-            type.IsConstructedGenericType && type.GetGenericTypeDefinition() == typeof(ValueTask<>);
-
-        private static Task AwaitAndDispose(ValueTask task, IDisposable scope) => AwaitAndDispose(task.AsTask(), scope);
-
-        private static Task AwaitAndDispose(Task task, IDisposable scope)
-        {
-            task.ContinueWith(i => scope.Dispose());
-            return task;
-        }
-
-        private bool MarkReturn(bool funcReturn, object?[] parameters)
-        {
-            foreach (var rea in parameters.OfType<RoutedEventArgs>())
-            {
-                rea.Handled = funcReturn;
-            }
-            return funcReturn;
-        }
-
-        private object? RunDelegate(Delegate function)
-        {
-            var decl = function.GetInvocationList().First();
-            if (decl.Target == null || decl.Method == null)
-                throw new InvalidOperationException("Must be a Func or Action to execute.");
-            var context = CreateContext(Array.Empty<object>(), "");
-            InnerRunSingleMethod(ref context, decl.Target, decl.Method, out var result);
-            return result;
-        }
+    private object? RunDelegate(Delegate function)
+    {
+        var decl = function.GetInvocationList().First();
+        if (decl.Target == null || decl.Method == null)
+            throw new InvalidOperationException("Must be a Func or Action to execute.");
+        var context = CreateContext(Array.Empty<object>(), "");
+        InnerRunSingleMethod(ref context, decl.Target, decl.Method, out var result);
+        return result;
     }
 }

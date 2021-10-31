@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace WebDashboard.ConsoleWindows
+namespace WebDashboard.ConsoleWindows;
+
+public partial class ConsoleWindowView : UserControl
 {
-    public partial class ConsoleWindowView : UserControl
+    public ConsoleWindowView()
     {
-        public ConsoleWindowView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

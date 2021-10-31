@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.ApplicationBinding
+namespace Melville.Wpf.Samples.ApplicationBinding;
+
+public partial class CallMethodOnApplicationView : UserControl
 {
-    public partial class CallMethodOnApplicationView : UserControl
+    public CallMethodOnApplicationView()
     {
-        public CallMethodOnApplicationView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

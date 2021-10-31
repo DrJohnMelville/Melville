@@ -7,74 +7,73 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MimeKit;
 
-namespace SendMailService
+namespace SendMailService;
+
+public sealed class SendEmailService:ISendEmailService
 {
-  public sealed class SendEmailService:ISendEmailService
-  {
-    // config Data
-    public string SourceAccount { get; set; } = "";
-    public string SourceName { get; set; } = "CapWeb Account Robot";
-    public string SmtpServer { get; set; } = "";
-    public string Password { get; set; } = "";
-    public int SmtpPort { get; set; }
+  // config Data
+  public string SourceAccount { get; set; } = "";
+  public string SourceName { get; set; } = "CapWeb Account Robot";
+  public string SmtpServer { get; set; } = "";
+  public string Password { get; set; } = "";
+  public int SmtpPort { get; set; }
 
-    private readonly ILogger log;
+  private readonly ILogger log;
     
-    public SendEmailService(ILogger<SendEmailService> log, IConfiguration configuration)
-     {
-      this.log = log;
-      configuration.GetSection("Email").Bind(this);
-     }
+  public SendEmailService(ILogger<SendEmailService> log, IConfiguration configuration)
+  {
+    this.log = log;
+    configuration.GetSection("Email").Bind(this);
+  }
 
-    public async Task SendEmail(string emailAddress, string subject, string htmlBody)
+  public async Task SendEmail(string emailAddress, string subject, string htmlBody)
+  {
+    // retry failed sending up to 5 times, with an increasing delay.
+    for (int i = 0; i < 5; i++)
     {
-      // retry failed sending up to 5 times, with an increasing delay.
-      for (int i = 0; i < 5; i++)
+      try
       {
-        try
-        {
-          await DoSend(emailAddress, subject, htmlBody);
-          return;
-        }
-        catch (Exception )
-        {
-          if (i == 4) throw;  /// preserve the final exception
-        }
-        await Task.Delay(TimeSpan.FromSeconds(1 + (2 * i)));
+        await DoSend(emailAddress, subject, htmlBody);
+        return;
       }
-    }
-
-    private Task DoSend(string emailAddress, string subject, string htmlBody)
-    {
-      log.Log(LogLevel.Information, $"Email sent to {emailAddress}: Subject");
-      log.Log(LogLevel.Trace, $"Message Text: {htmlBody}");
-      return Send(CreateMimeMessage(emailAddress, subject, htmlBody));
-    }
-
-    private async Task Send(MimeMessage mimeMessage)
-    {
-      using var client = new SmtpClient
+      catch (Exception )
       {
-        ServerCertificateValidationCallback = AcceptAnySSLCertificate,
-        CheckCertificateRevocation = false
-      };
-      await client.ConnectAsync(SmtpServer, SmtpPort, true);
-      await client.AuthenticateAsync(SourceAccount, Password);
-      await client.SendAsync(mimeMessage);
-      await client.DisconnectAsync(true);
+        if (i == 4) throw;  /// preserve the final exception
+      }
+      await Task.Delay(TimeSpan.FromSeconds(1 + (2 * i)));
     }
+  }
 
-    private bool AcceptAnySSLCertificate(object s, X509Certificate c, X509Chain h, SslPolicyErrors e) 
-      => true;
+  private Task DoSend(string emailAddress, string subject, string htmlBody)
+  {
+    log.Log(LogLevel.Information, $"Email sent to {emailAddress}: Subject");
+    log.Log(LogLevel.Trace, $"Message Text: {htmlBody}");
+    return Send(CreateMimeMessage(emailAddress, subject, htmlBody));
+  }
 
-    private MimeMessage CreateMimeMessage(string email, string subject, string htmlMessage)
+  private async Task Send(MimeMessage mimeMessage)
+  {
+    using var client = new SmtpClient
     {
-      var mimeMessage = new MimeMessage();
-      mimeMessage.From.Add(new MailboxAddress(SourceName, SourceAccount));
-      mimeMessage.To.Add(MailboxAddress.Parse(email));
-      mimeMessage.Subject = subject;
-      mimeMessage.Body = new TextPart("html"){Text = htmlMessage};
-      return mimeMessage;
-    }
+      ServerCertificateValidationCallback = AcceptAnySSLCertificate,
+      CheckCertificateRevocation = false
+    };
+    await client.ConnectAsync(SmtpServer, SmtpPort, true);
+    await client.AuthenticateAsync(SourceAccount, Password);
+    await client.SendAsync(mimeMessage);
+    await client.DisconnectAsync(true);
+  }
+
+  private bool AcceptAnySSLCertificate(object s, X509Certificate c, X509Chain h, SslPolicyErrors e) 
+    => true;
+
+  private MimeMessage CreateMimeMessage(string email, string subject, string htmlMessage)
+  {
+    var mimeMessage = new MimeMessage();
+    mimeMessage.From.Add(new MailboxAddress(SourceName, SourceAccount));
+    mimeMessage.To.Add(MailboxAddress.Parse(email));
+    mimeMessage.Subject = subject;
+    mimeMessage.Body = new TextPart("html"){Text = htmlMessage};
+    return mimeMessage;
   }
 }

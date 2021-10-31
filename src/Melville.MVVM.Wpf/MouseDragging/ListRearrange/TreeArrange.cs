@@ -8,99 +8,98 @@ using Melville.MVVM.Wpf.MouseDragging.Drop;
 using Melville.MVVM.Wpf.WpfHacks;
 
 
-namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange
+namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange;
+
+public interface IAddSupplementalFormats
 {
-  public interface IAddSupplementalFormats
+  void AddFormats(IDataObject dataObject, object sourceObject);
+}
+
+public static partial class TreeArrange
+{
+  #region DragTypeProperty
+
+  [GenerateDP(typeof(Type))]
+  private static void OnDragTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
+    BindTreeArrange(d, e, false);
+
+  [GenerateDP(typeof(Type))]
+  private static void OnDragTypeBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
+    BindTreeArrange(d, e, true);
+
+  private static void BindTreeArrange(DependencyObject d, DependencyPropertyChangedEventArgs e, bool dragInBackground)
   {
-    void AddFormats(IDataObject dataObject, object sourceObject);
-  }
-
-  public static partial class TreeArrange
-  {
-    #region DragTypeProperty
-
-    [GenerateDP(typeof(Type))]
-    private static void OnDragTypeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      BindTreeArrange(d, e, false);
-
-    [GenerateDP(typeof(Type))]
-    private static void OnDragTypeBackgroundChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
-      BindTreeArrange(d, e, true);
-
-    private static void BindTreeArrange(DependencyObject d, DependencyPropertyChangedEventArgs e, bool dragInBackground)
+    if (e.NewValue is Type eltType)
     {
-      if (e.NewValue is Type eltType)
+      switch (d)
       {
-        switch (d)
-        {
-          case TreeViewItem tvi:
-            BindToItem(dragInBackground, tvi, eltType);
-            BindContainerStyle(dragInBackground, tvi, eltType);
-            break;
-          case ItemsControl ic:
-            BindContainerStyle(dragInBackground, ic, eltType);
-            break;
-          case FrameworkElement elt:
-            BindToItem(dragInBackground, elt, eltType);
-            break;
-        }
+        case TreeViewItem tvi:
+          BindToItem(dragInBackground, tvi, eltType);
+          BindContainerStyle(dragInBackground, tvi, eltType);
+          break;
+        case ItemsControl ic:
+          BindContainerStyle(dragInBackground, ic, eltType);
+          break;
+        case FrameworkElement elt:
+          BindToItem(dragInBackground, elt, eltType);
+          break;
       }
     }
-
-    private static void BindContainerStyle(bool dragInBackground, ItemsControl ic, Type eltType)
-    {
-      ic.ItemContainerStyle = ItemContainerStyle(ic.ItemContainerStyle, eltType, dragInBackground);
-    }
-   private static void BindContainerStyle(bool dragInBackground, HeaderedItemsControl ic, Type eltType)
-    {
-      ic.ItemContainerStyle = ItemContainerStyle(ic.ItemContainerStyle, eltType, dragInBackground);
-    }
-
-    private static void BindToItem(bool dragInBackground, FrameworkElement elt, Type eltType)
-    {
-      TreeDragDriver.BindToEvent(elt, dragInBackground, eltType);
-      new TreeDropDriver(elt, eltType).AttachEvents(elt);
-    }
-
-    public static Style ItemContainerStyle(Style baseStyle, Type eltType, bool bindBackground)
-    {
-      var newStyle = baseStyle == null ? new Style() : new Style(baseStyle.TargetType, baseStyle);
-
-      newStyle.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Transparent));
-      newStyle.Setters.Add(new Setter(bindBackground ? DragTypeBackgroundProperty : DragTypeProperty, eltType));
-
-      return newStyle;
-    }
-
-
-    #endregion
-    
-    [GenerateDP(typeof(FrameworkElement), "VisualToDrag", Attached = true, Nullable = true)]
-    [GenerateDP(typeof(object), "DraggedItem", Attached = true)]
-    [GenerateDP(typeof(IAddSupplementalFormats), "SupplementalFormats", Attached = true, Nullable = true)]
-    [GenerateDP(typeof(IDropTarget), "SupplementalDropTarget", Attached = true, Nullable = true)]
-    [GenerateDP]
-    private static void OnSupplementalDropStringChanged(DependencyObject d, string? newValue)
-    {
-      if (d is FrameworkElement fe)
-      {
-        SetSupplementalDropTarget(fe, new DropTarget(fe, newValue ?? ""));
-      }
-    }
-
-    public static object? FindDraggedItem(FrameworkElement fe) => GetDraggedItem(fe) ?? fe.DataContext;
-
-    public static FrameworkElement? AdornmentTarget(object elt) => elt switch
-    {
-      DependencyObject dobj when GetVisualToDrag(dobj) is { } explicitTarget => explicitTarget,
-      FrameworkElement fe => TryGetContainingCollectionViewItem(fe),
-      _ => elt as FrameworkElement
-    };
-
-    private static FrameworkElement TryGetContainingCollectionViewItem(FrameworkElement fe) =>
-      fe.Parents()
-        .OfType<FrameworkElement>()
-        .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
-    
   }
+
+  private static void BindContainerStyle(bool dragInBackground, ItemsControl ic, Type eltType)
+  {
+    ic.ItemContainerStyle = ItemContainerStyle(ic.ItemContainerStyle, eltType, dragInBackground);
+  }
+  private static void BindContainerStyle(bool dragInBackground, HeaderedItemsControl ic, Type eltType)
+  {
+    ic.ItemContainerStyle = ItemContainerStyle(ic.ItemContainerStyle, eltType, dragInBackground);
+  }
+
+  private static void BindToItem(bool dragInBackground, FrameworkElement elt, Type eltType)
+  {
+    TreeDragDriver.BindToEvent(elt, dragInBackground, eltType);
+    new TreeDropDriver(elt, eltType).AttachEvents(elt);
+  }
+
+  public static Style ItemContainerStyle(Style baseStyle, Type eltType, bool bindBackground)
+  {
+    var newStyle = baseStyle == null ? new Style() : new Style(baseStyle.TargetType, baseStyle);
+
+    newStyle.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Transparent));
+    newStyle.Setters.Add(new Setter(bindBackground ? DragTypeBackgroundProperty : DragTypeProperty, eltType));
+
+    return newStyle;
+  }
+
+
+  #endregion
+    
+  [GenerateDP(typeof(FrameworkElement), "VisualToDrag", Attached = true, Nullable = true)]
+  [GenerateDP(typeof(object), "DraggedItem", Attached = true)]
+  [GenerateDP(typeof(IAddSupplementalFormats), "SupplementalFormats", Attached = true, Nullable = true)]
+  [GenerateDP(typeof(IDropTarget), "SupplementalDropTarget", Attached = true, Nullable = true)]
+  [GenerateDP]
+  private static void OnSupplementalDropStringChanged(DependencyObject d, string? newValue)
+  {
+    if (d is FrameworkElement fe)
+    {
+      SetSupplementalDropTarget(fe, new DropTarget(fe, newValue ?? ""));
+    }
+  }
+
+  public static object? FindDraggedItem(FrameworkElement fe) => GetDraggedItem(fe) ?? fe.DataContext;
+
+  public static FrameworkElement? AdornmentTarget(object elt) => elt switch
+  {
+    DependencyObject dobj when GetVisualToDrag(dobj) is { } explicitTarget => explicitTarget,
+    FrameworkElement fe => TryGetContainingCollectionViewItem(fe),
+    _ => elt as FrameworkElement
+  };
+
+  private static FrameworkElement TryGetContainingCollectionViewItem(FrameworkElement fe) =>
+    fe.Parents()
+      .OfType<FrameworkElement>()
+      .FirstOrDefault(i => i is ListViewItem || i is TreeViewItem || i is ListBoxItem) ?? fe;
+    
 }

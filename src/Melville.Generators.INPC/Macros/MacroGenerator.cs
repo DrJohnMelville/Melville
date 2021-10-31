@@ -4,26 +4,25 @@ using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.Macros
+namespace Melville.Generators.INPC.Macros;
+
+[Generator]
+public class MacroGenerator:PartialTypeGenerator
 {
-    [Generator]
-    public class MacroGenerator:PartialTypeGenerator
+    public MacroGenerator() : base("MacroGen", 
+        "Melville.INPC.MacroCodeAttribute", "Melville.INPC.MacroCodeAttribute")
     {
-        public MacroGenerator() : base("MacroGen", 
-            "Melville.INPC.MacroCodeAttribute", "Melville.INPC.MacroCodeAttribute")
-        {
-        }
+    }
 
-        protected override bool GlobalDeclarations(CodeWriter cw) => false;
+    protected override bool GlobalDeclarations(CodeWriter cw) => false;
 
-        protected override bool GenerateClassContents(
-            IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, CodeWriter cw)
+    protected override bool GenerateClassContents(
+        IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, CodeWriter cw)
+    {
+        foreach (var node in input)
         {
-            foreach (var node in input)
-            {
-                MacroSyntaxInterpreter.ExpandSingleMacroSet(node, cw);
-            }
-            return true;
+            MacroSyntaxInterpreter.ExpandSingleMacroSet(node, cw);
         }
+        return true;
     }
 }

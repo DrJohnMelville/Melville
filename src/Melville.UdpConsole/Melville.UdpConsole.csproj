@@ -4,7 +4,7 @@
         <TargetFramework>net5.0-windows</TargetFramework>
         <UseWpf>true</UseWpf>
         
-        <LangVersion>10.0</LangVersion>
+
     </PropertyGroup>
 
 </Project>

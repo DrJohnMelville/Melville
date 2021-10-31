@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.TranscriptionPedal
+namespace Melville.Wpf.Samples.TranscriptionPedal;
+
+public partial class TranscriptionPedalView : UserControl
 {
-    public partial class TranscriptionPedalView : UserControl
+    public TranscriptionPedalView()
     {
-        public TranscriptionPedalView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

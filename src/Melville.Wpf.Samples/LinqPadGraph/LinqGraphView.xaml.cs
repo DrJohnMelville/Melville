@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.LinqPadGraph    
+namespace Melville.Wpf.Samples.LinqPadGraph;
+
+public partial class LinqGraphView : UserControl
 {
-    public partial class LinqGraphView : UserControl
+    public LinqGraphView()
     {
-        public LinqGraphView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -6,70 +6,69 @@ using Melville.MVVM.Wpf.RootWindows;
 using WebDashboard.ConsoleWindows;
 using WebDashboard.SecretManager.Models;
 
-namespace WebDashboard.SecretManager.Views
+namespace WebDashboard.SecretManager.Views;
+
+public interface IRootViewModel
 {
-    public interface IRootViewModel
+    string WebConfig { get; }
+    IFile ProjectFile();
+    IFile? PublishFile();
+}
+
+public class RootViewModel : NotifyBase, IRootViewModel
+{
+    private ISecretFileEditorViewModel? projectSecrets = null;
+    public ISecretFileEditorViewModel? ProjectSecrets
     {
-        string WebConfig { get; }
-        IFile ProjectFile();
-        IFile? PublishFile();
+        get => projectSecrets;
+        set => AssignAndNotify(ref projectSecrets, value);
     }
 
-    public class RootViewModel : NotifyBase, IRootViewModel
+    private ISecretFileEditorViewModel? deploymentSecrets = null;
+    public ISecretFileEditorViewModel? DeploymentSecrets
     {
-        private ISecretFileEditorViewModel? projectSecrets = null;
-        public ISecretFileEditorViewModel? ProjectSecrets
+        get => deploymentSecrets;
+        set => AssignAndNotify(ref deploymentSecrets, value);
+    }
+
+    public RootModel Model { get; }
+
+    public RootViewModel(RootModel model)
+    {
+        Model = model;
+        projectSecrets = CreateSecretEditor(model.RootSecretFile);
+        deploymentSecrets = CreateSecretEditor(model.DeploymentSecretFile);
+    }
+
+    private static SecretFileEditorViewModel? CreateSecretEditor(SecretFileHolder? secretFile) => 
+        secretFile==null?null: new SecretFileEditorViewModel(secretFile);
+
+    public void UpdateWebConfig() => WebConfig = Model.ComputeWebConfig();
+
+    private string webConfig = "";
+
+    public string WebConfig
+    {
+        get => webConfig;
+        set => AssignAndNotify(ref webConfig, value);
+    }
+
+    public IFile ProjectFile() => Model.ProjectFile.File;
+    public IFile? PublishFile() => Model.PublishFile?.File;
+
+    public void Deploy([FromServices] Func<RootViewModel, IHasPassword, DeploymentCommandSource> createDeployment,
+        INavigationWindow navigationWindow, IHasPassword password) =>
+        navigationWindow.NavigateTo(new ConsoleWindowViewModel(createDeployment(this, password)));
+
+    public void SwapView(ISecretFileEditorViewModel view)
+    {
+        if (ProjectSecrets == view)
         {
-            get => projectSecrets;
-            set => AssignAndNotify(ref projectSecrets, value);
+            ProjectSecrets = view.CreateSwappedView();
         }
-
-        private ISecretFileEditorViewModel? deploymentSecrets = null;
-        public ISecretFileEditorViewModel? DeploymentSecrets
+        if (DeploymentSecrets == view)
         {
-            get => deploymentSecrets;
-            set => AssignAndNotify(ref deploymentSecrets, value);
-        }
-
-        public RootModel Model { get; }
-
-        public RootViewModel(RootModel model)
-        {
-            Model = model;
-            projectSecrets = CreateSecretEditor(model.RootSecretFile);
-            deploymentSecrets = CreateSecretEditor(model.DeploymentSecretFile);
-        }
-
-        private static SecretFileEditorViewModel? CreateSecretEditor(SecretFileHolder? secretFile) => 
-            secretFile==null?null: new SecretFileEditorViewModel(secretFile);
-
-        public void UpdateWebConfig() => WebConfig = Model.ComputeWebConfig();
-
-        private string webConfig = "";
-
-        public string WebConfig
-        {
-            get => webConfig;
-            set => AssignAndNotify(ref webConfig, value);
-        }
-
-        public IFile ProjectFile() => Model.ProjectFile.File;
-        public IFile? PublishFile() => Model.PublishFile?.File;
-
-        public void Deploy([FromServices] Func<RootViewModel, IHasPassword, DeploymentCommandSource> createDeployment,
-            INavigationWindow navigationWindow, IHasPassword password) =>
-            navigationWindow.NavigateTo(new ConsoleWindowViewModel(createDeployment(this, password)));
-
-        public void SwapView(ISecretFileEditorViewModel view)
-        {
-            if (ProjectSecrets == view)
-            {
-                ProjectSecrets = view.CreateSwappedView();
-            }
-            if (DeploymentSecrets == view)
-            {
-                DeploymentSecrets = view.CreateSwappedView();
-            }
+            DeploymentSecrets = view.CreateSwappedView();
         }
     }
 }

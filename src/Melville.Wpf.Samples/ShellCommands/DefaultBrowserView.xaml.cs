@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.ShellCommands
+namespace Melville.Wpf.Samples.ShellCommands;
+
+public partial class DefaultBrowserView : UserControl
 {
-    public partial class DefaultBrowserView : UserControl
+    public DefaultBrowserView()
     {
-        public DefaultBrowserView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.1</TargetFramework>
-        <LangVersion>10.0</LangVersion>
+
         <Title>Melville.FileSystem</Title>
         <PackageDescription>Injectable file system facade with transactions</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

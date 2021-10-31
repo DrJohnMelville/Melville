@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace WebDashboard.SecretManager.Views
+namespace WebDashboard.SecretManager.Views;
+
+public partial class SecretFileEditorView : UserControl
 {
-    public partial class SecretFileEditorView : UserControl
+    public SecretFileEditorView()
     {
-        public SecretFileEditorView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

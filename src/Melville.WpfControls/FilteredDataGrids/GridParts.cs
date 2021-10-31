@@ -1,10 +1,9 @@
-﻿namespace Melville.WpfControls.FilteredDataGrids
+﻿namespace Melville.WpfControls.FilteredDataGrids;
+
+public partial class GridParts
 {
-    public partial class GridParts
+    public GridParts()
     {
-        public GridParts()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

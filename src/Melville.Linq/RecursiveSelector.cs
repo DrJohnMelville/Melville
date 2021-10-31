@@ -2,74 +2,73 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Melville.Linq
+namespace Melville.Linq;
+
+public class RecursiveSelector<T> : IEnumerable<T>
 {
-    public class RecursiveSelector<T> : IEnumerable<T>
+    private static readonly EnumerateEmpty<T> enumerateEmpty = new ();
+    private readonly IEnumerable<T> basis;
+    private readonly Func<T, IEnumerable<T>?> children;
+
+    public RecursiveSelector(IEnumerable<T> basis, Func<T, IEnumerable<T>?> children)
     {
-        private static readonly EnumerateEmpty<T> enumerateEmpty = new ();
-        private readonly IEnumerable<T> basis;
-        private readonly Func<T, IEnumerable<T>?> children;
+        this.basis = basis;
+        this.children = children;
+    }
 
-        public RecursiveSelector(IEnumerable<T> basis, Func<T, IEnumerable<T>?> children)
-        {
-            this.basis = basis;
-            this.children = children;
-        }
+    public IEnumerator<T> GetEnumerator() =>
+        new RecursiveEnumerator(basis.GetEnumerator(),
+            i => children(i)?.GetEnumerator() ?? enumerateEmpty);
 
-        public IEnumerator<T> GetEnumerator() =>
-            new RecursiveEnumerator(basis.GetEnumerator(),
-                i => children(i)?.GetEnumerator() ?? enumerateEmpty);
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-        public class RecursiveEnumerator : IEnumerator<T>
-        {
-            private readonly Stack<IEnumerator<T>> context = new();
-            private readonly Func<T, IEnumerator<T>> selector;
+    public class RecursiveEnumerator : IEnumerator<T>
+    {
+        private readonly Stack<IEnumerator<T>> context = new();
+        private readonly Func<T, IEnumerator<T>> selector;
 
             
-            public RecursiveEnumerator(IEnumerator<T> firstEnumerator, Func<T, IEnumerator<T>> selector)
-            {
-                this.selector = selector;
-                Current = default!;
-                context.Push(firstEnumerator);
-            }
+        public RecursiveEnumerator(IEnumerator<T> firstEnumerator, Func<T, IEnumerator<T>> selector)
+        {
+            this.selector = selector;
+            Current = default!;
+            context.Push(firstEnumerator);
+        }
 
-            public bool MoveNext()
+        public bool MoveNext()
+        {
+            while (context.TryPeek(out var top))
             {
-                while (context.TryPeek(out var top))
+                if (top.MoveNext())
                 {
-                    if (top.MoveNext())
-                    {
-                        SetCurrentAndPushChildren(top.Current);
-                        return true;
-                    }
-                    PopCompletedEnumerator();
+                    SetCurrentAndPushChildren(top.Current);
+                    return true;
                 }
-
-                return false;
+                PopCompletedEnumerator();
             }
 
-            private void PopCompletedEnumerator() => context.Pop().Dispose();
+            return false;
+        }
 
-            private void SetCurrentAndPushChildren(T nextValue)
+        private void PopCompletedEnumerator() => context.Pop().Dispose();
+
+        private void SetCurrentAndPushChildren(T nextValue)
+        {
+            Current = nextValue!;
+            context.Push(selector(nextValue));
+        }
+
+        public void Reset() => throw new NotSupportedException();
+
+        public T Current { get; private set; }
+
+        object IEnumerator.Current => Current!;
+
+        public void Dispose()
+        {
+            while (context.TryPop(out var item))
             {
-                Current = nextValue!;
-                context.Push(selector(nextValue));
-            }
-
-            public void Reset() => throw new NotSupportedException();
-
-            public T Current { get; private set; }
-
-            object IEnumerator.Current => Current!;
-
-            public void Dispose()
-            {
-                while (context.TryPop(out var item))
-                {
-                    item.Dispose();
-                }
+                item.Dispose();
             }
         }
     }

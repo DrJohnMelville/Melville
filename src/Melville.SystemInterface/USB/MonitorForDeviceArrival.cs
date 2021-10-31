@@ -1,32 +1,31 @@
 ﻿using System;
 using Melville.SystemInterface.WindowMessages;
 
-namespace Melville.SystemInterface.USB
+namespace Melville.SystemInterface.USB;
+
+public interface IMonitorForDeviceArrival
 {
-    public interface IMonitorForDeviceArrival
-    {
-        event EventHandler<WindowMessageEventArgs> DeviceArrived;
-    }
-    public sealed class MonitorForDeviceArrival : IMonitorForDeviceArrival,  IDisposable
-    {
-        private IWindowMessageSource source;
-        const int wmDeviceChanged = 537;
-        const int deviceNodesChanged = 7;
+    event EventHandler<WindowMessageEventArgs> DeviceArrived;
+}
+public sealed class MonitorForDeviceArrival : IMonitorForDeviceArrival,  IDisposable
+{
+    private IWindowMessageSource source;
+    const int wmDeviceChanged = 537;
+    const int deviceNodesChanged = 7;
 
-        public MonitorForDeviceArrival(IWindowMessageSource source)
-        {
-            this.source = source;
-            source.RegisterForMessage(wmDeviceChanged).MessageReceived += CheckMessage;
-        }
-
-        private void CheckMessage(object? sender, WindowMessageEventArgs e)
-        {
-            if ((int) e.WParam == deviceNodesChanged)
-            {
-                DeviceArrived?.Invoke(sender, e);
-            }
-        }
-        public event EventHandler<WindowMessageEventArgs>? DeviceArrived;
-        public void Dispose() => source.RegisterForMessage(wmDeviceChanged).MessageReceived -= CheckMessage;
+    public MonitorForDeviceArrival(IWindowMessageSource source)
+    {
+        this.source = source;
+        source.RegisterForMessage(wmDeviceChanged).MessageReceived += CheckMessage;
     }
+
+    private void CheckMessage(object? sender, WindowMessageEventArgs e)
+    {
+        if ((int) e.WParam == deviceNodesChanged)
+        {
+            DeviceArrived?.Invoke(sender, e);
+        }
+    }
+    public event EventHandler<WindowMessageEventArgs>? DeviceArrived;
+    public void Dispose() => source.RegisterForMessage(wmDeviceChanged).MessageReceived -= CheckMessage;
 }

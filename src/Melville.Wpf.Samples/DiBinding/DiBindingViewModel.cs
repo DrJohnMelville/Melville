@@ -1,15 +1,14 @@
-﻿namespace Melville.Wpf.Samples.DiBinding
+﻿namespace Melville.Wpf.Samples.DiBinding;
+
+public interface IBoundInt
 {
-    public interface IBoundInt
-    {
-    }
+}
 
-    public class BoundInt : IBoundInt
-    {
+public class BoundInt : IBoundInt
+{
         
-    }
+}
 
-    public class DiBindingViewModel
-    {
-    }
+public class DiBindingViewModel
+{
 }

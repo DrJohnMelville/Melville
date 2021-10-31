@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.HIDExplore
+namespace Melville.Wpf.Samples.HIDExplore;
+
+public partial class HIDMonitorView : UserControl
 {
-    public partial class HIDMonitorView : UserControl
+    public HIDMonitorView()
     {
-        public HIDMonitorView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

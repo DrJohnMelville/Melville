@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace SendMailService
+namespace SendMailService;
+
+public static class ConfigureSendEmailService
 {
-    public static class ConfigureSendEmailService
-    {
-        public static void AddSendEmailService(this IServiceCollection services) =>
-            services.AddTransient<ISendEmailService, SendEmailService>();
-    }
+    public static void AddSendEmailService(this IServiceCollection services) =>
+        services.AddTransient<ISendEmailService, SendEmailService>();
 }

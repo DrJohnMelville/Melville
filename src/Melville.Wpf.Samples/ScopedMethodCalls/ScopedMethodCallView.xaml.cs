@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.ScopedMethodCalls
+namespace Melville.Wpf.Samples.ScopedMethodCalls;
+
+public partial class ScopedMethodCallView : UserControl
 {
-    public partial class ScopedMethodCallView : UserControl
+    public ScopedMethodCallView()
     {
-        public ScopedMethodCallView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

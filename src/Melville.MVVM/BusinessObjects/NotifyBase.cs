@@ -4,90 +4,90 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Melville.Hacks;
 
-namespace Melville.MVVM.BusinessObjects
+namespace Melville.MVVM.BusinessObjects;
+
+/// <summary>
+///   A base class that implements the infrastructure for property change notification and automatically performs UI thread marshalling.
+/// </summary>
+public class NotifyBase : INotifyPropertyChanged
 {
   /// <summary>
-  ///   A base class that implements the infrastructure for property change notification and automatically performs UI thread marshalling.
+  ///   Occurs when a property value changes.
   /// </summary>
-  public class NotifyBase : INotifyPropertyChanged
+  public event PropertyChangedEventHandler? PropertyChanged;
+
+  /// <summary>
+  ///   Raises a change notification indicating that all bindings should be refreshed.
+  /// </summary>
+  public void Refresh()
   {
-    /// <summary>
-    ///   Occurs when a property value changes.
-    /// </summary>
-    public event PropertyChangedEventHandler? PropertyChanged;
+    OnPropertyChanged("");
+  }
 
-    /// <summary>
-    ///   Raises a change notification indicating that all bindings should be refreshed.
-    /// </summary>
-    public void Refresh()
+  /// <summary>
+  ///   Notifies subscribers of the property change.
+  /// </summary>
+  /// <param name = "propertyName">SheetName of the property.</param>
+  protected void OnPropertyChanged(string propertyName)
+  {
+    VerifyPropertyExists.InDebugBuilds(this, propertyName);
+    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+  }
+
+  protected void OnPropertyChanged(params string[] otherParams)
+  {
+    foreach (var param in otherParams)
     {
-      OnPropertyChanged("");
+      OnPropertyChanged(param);
     }
+  }
 
-    /// <summary>
-    ///   Notifies subscribers of the property change.
-    /// </summary>
-    /// <param name = "propertyName">SheetName of the property.</param>
-    protected void OnPropertyChanged(string propertyName)
+
+  protected bool AssignAndNotify<T>(ref T target, T value, string propertyName, params string[] otherParams)
+  {
+    var ret = AssignAndNotify(ref target, value, propertyName);
+    if (ret)
     {
-      VerifyPropertyExists.InDebugBuilds(this, propertyName);
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      OnPropertyChanged(otherParams);
     }
+    return ret;
+  }
 
-    protected void OnPropertyChanged(params string[] otherParams)
+  protected bool AssignAndNotify<T>(ref T target, T value, [CallerMemberName] string propertyName = "")
+  {
+    if (Equals(target, value)) return false;
+    target = value;
+    OnPropertyChanged(propertyName);
+    return true;
+  }
+
+  public IDisposable DelegatePropertyChangeFrom(INotifyPropertyChanged? foreignObject,
+    string foreignProperty, params string[] localProperties)
+  {
+    if (foreignObject == null) return new ActionOnDispose(() => { });
+    VerifyValidDelegation(foreignObject, foreignProperty, localProperties);
+
+    PropertyChangedEventHandler foreignObjectOnPropertyChanged = (s, e) =>
     {
-      foreach (var param in otherParams)
+      if (e.PropertyName?.Equals(foreignProperty, StringComparison.Ordinal) ?? true)
       {
-         OnPropertyChanged(param);
-      }
-    }
-
-
-    protected bool AssignAndNotify<T>(ref T target, T value, string propertyName, params string[] otherParams)
-    {
-      var ret = AssignAndNotify(ref target, value, propertyName);
-      if (ret)
-      {
-        OnPropertyChanged(otherParams);
-      }
-      return ret;
-    }
-
-    protected bool AssignAndNotify<T>(ref T target, T value, [CallerMemberName] string propertyName = "")
-    {
-      if (Equals(target, value)) return false;
-      target = value;
-      OnPropertyChanged(propertyName);
-      return true;
-    }
-
-    public IDisposable DelegatePropertyChangeFrom(INotifyPropertyChanged? foreignObject,
-      string foreignProperty, params string[] localProperties)
-    {
-      if (foreignObject == null) return new ActionOnDispose(() => { });
-      VerifyValidDelegation(foreignObject, foreignProperty, localProperties);
-
-      PropertyChangedEventHandler foreignObjectOnPropertyChanged = (s, e) =>
-      {
-        if (e.PropertyName?.Equals(foreignProperty, StringComparison.Ordinal) ?? true)
+        foreach (var property in localProperties)
         {
-          foreach (var property in localProperties)
-          {
-            OnPropertyChanged(property);
-          }
+          OnPropertyChanged(property);
         }
-      };
+      }
+    };
 
-      foreignObject.PropertyChanged += foreignObjectOnPropertyChanged;
+    foreignObject.PropertyChanged += foreignObjectOnPropertyChanged;
 
 
-      return new ActionOnDispose(() => foreignObject.PropertyChanged -= foreignObjectOnPropertyChanged);
-    }
+    return new ActionOnDispose(() => foreignObject.PropertyChanged -= foreignObjectOnPropertyChanged);
+  }
 
-    [Conditional("DEBUG")]
-    protected void VerifyValidDelegation(INotifyPropertyChanged foreignObject, string foreignProperty,
-      string[] localProperties)
-    {
+  [Conditional("DEBUG")]
+  protected void VerifyValidDelegation(INotifyPropertyChanged foreignObject, string foreignProperty,
+    string[] localProperties)
+  {
 #if DEBUG
       VerifyPropertyExists.InDebugBuilds(this, localProperties);
       if (foreignObject == null)
@@ -96,6 +96,5 @@ namespace Melville.MVVM.BusinessObjects
       }
       VerifyPropertyExists.InDebugBuilds(foreignObject, foreignProperty);
 #endif
-    }
   }
 }

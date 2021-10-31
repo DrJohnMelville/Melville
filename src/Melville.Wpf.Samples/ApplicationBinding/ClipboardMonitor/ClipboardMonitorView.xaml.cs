@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor
+namespace Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
+
+public partial class ClipboardMonitorView : UserControl
 {
-    public partial class ClipboardMonitorView : UserControl
+    public ClipboardMonitorView()
     {
-        public ClipboardMonitorView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -7,88 +7,87 @@ using Melville.IOC.TypeResolutionPolicy;
 using Microsoft.Extensions.DependencyInjection;
 
 
-namespace Melville.IOC.AspNet.RegisterFromServiceCollection
+namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
+
+public static class RegisterServiceCollectionWithContainer
 {
-    public static class RegisterServiceCollectionWithContainer
+    public static void BindServiceCollection(this IBindableIocService container,
+        Action<IServiceCollection> collectionConfig)
     {
-        public static void BindServiceCollection(this IBindableIocService container,
-            Action<IServiceCollection> collectionConfig)
+        var sc = new ServiceCollection();
+        collectionConfig(sc);
+        container.BindServiceCollection(sc);
+    }
+    public static void BindServiceCollection(this IBindableIocService container, IServiceCollection services)
+    {
+        foreach (var service in services)
         {
-            var sc = new ServiceCollection();
-            collectionConfig(sc);
-            container.BindServiceCollection(sc);
+            BindSingleService(container, service);
         }
-        public static void BindServiceCollection(this IBindableIocService container, IServiceCollection services)
-        {
-            foreach (var service in services)
-            {
-                BindSingleService(container, service);
-            }
-        }
+    }
 
-        private static void BindSingleService(IBindableIocService container, ServiceDescriptor service)
+    private static void BindSingleService(IBindableIocService container, ServiceDescriptor service)
+    {
+        if (service.ImplementationType?.IsGenericTypeDefinition ?? false)
         {
-            if (service.ImplementationType?.IsGenericTypeDefinition ?? false)
-            {
-                BindOpenGeneric(container, service);
-                return;
-            }
-
-            BindConcreteType(container, service);
+            BindOpenGeneric(container, service);
+            return;
         }
 
-        private static void BindOpenGeneric(IBindableIocService container, ServiceDescriptor service)
-        {
-            if (service.ImplementationType is {} implementationType)
+        BindConcreteType(container, service);
+    }
+
+    private static void BindOpenGeneric(IBindableIocService container, ServiceDescriptor service)
+    {
+        if (service.ImplementationType is {} implementationType)
             container.BindGeneric(service.ServiceType,
                 implementationType, ConstructorSelectors.EmulateDotNet, 
                 i => SetLifetime(i, service));
-        }
-
-        private static void BindConcreteType(IBindableIocService container, ServiceDescriptor service)
-        {
-            var bindingTarget = CreateBindingTarget(container, service);
-            var activator = CreateActivator(bindingTarget, service);
-            SetLifetime(activator, service);
-        }
-
-        private static void SetLifetime(ITypesafeActivationOptions<object> activator, ServiceDescriptor service)
-        {
-            switch (service.Lifetime)
-            {
-                case ServiceLifetime.Singleton:
-                    activator.AsSingleton();
-                    break;
-                case ServiceLifetime.Scoped:
-                    activator.AsScoped();
-                    break;
-                case ServiceLifetime.Transient:
-                    //Intentionally do nothing, services default to transient.
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("Invalid Service Lifetime");
-            }
-        }
-
-        private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
-        {
-            return container.ConfigurePolicy<IPickBindingTargetSource>()
-                .Bind(service.ServiceType, false);
-        }
-
-        private static ITypesafeActivationOptions<object> CreateActivator(IPickBindingTarget<object> target, ServiceDescriptor service) =>
-            service switch
-            {
-                var x when x.ImplementationType != null => 
-                              target.ToType(x.ImplementationType, ConstructorSelectors.EmulateDotNet),
-                var x when x.ImplementationInstance != null => 
-                              target.DoBinding(new ConstantActivationStrategy(service.ImplementationInstance)),
-                var x when x.ImplementationFactory != null => 
-                              target.DoBinding(new MethodActivationStrategy<object>
-                                  ((container, _)=>x.ImplementationFactory(
-                                  new ServiceProviderAdapter(container)))),
-                _=>throw new InvalidOperationException(
-                    "ServiceDescriptor must define one of ImplementationType, ImplementationInstance, or ImplementationFactory.")
-            };
     }
+
+    private static void BindConcreteType(IBindableIocService container, ServiceDescriptor service)
+    {
+        var bindingTarget = CreateBindingTarget(container, service);
+        var activator = CreateActivator(bindingTarget, service);
+        SetLifetime(activator, service);
+    }
+
+    private static void SetLifetime(ITypesafeActivationOptions<object> activator, ServiceDescriptor service)
+    {
+        switch (service.Lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                activator.AsSingleton();
+                break;
+            case ServiceLifetime.Scoped:
+                activator.AsScoped();
+                break;
+            case ServiceLifetime.Transient:
+                //Intentionally do nothing, services default to transient.
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("Invalid Service Lifetime");
+        }
+    }
+
+    private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
+    {
+        return container.ConfigurePolicy<IPickBindingTargetSource>()
+            .Bind(service.ServiceType, false);
+    }
+
+    private static ITypesafeActivationOptions<object> CreateActivator(IPickBindingTarget<object> target, ServiceDescriptor service) =>
+        service switch
+        {
+            var x when x.ImplementationType != null => 
+                target.ToType(x.ImplementationType, ConstructorSelectors.EmulateDotNet),
+            var x when x.ImplementationInstance != null => 
+                target.DoBinding(new ConstantActivationStrategy(service.ImplementationInstance)),
+            var x when x.ImplementationFactory != null => 
+                target.DoBinding(new MethodActivationStrategy<object>
+                ((container, _)=>x.ImplementationFactory(
+                    new ServiceProviderAdapter(container)))),
+            _=>throw new InvalidOperationException(
+                "ServiceDescriptor must define one of ImplementationType, ImplementationInstance, or ImplementationFactory.")
+        };
 }

@@ -3,34 +3,33 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 
-namespace Melville.MVVM.Wpf.USB
+namespace Melville.MVVM.Wpf.USB;
+
+[Obsolete("Use WindowMessageSource-- may disappear very soon")]
+public static class WindowHookMessages
 {
-    [Obsolete("Use WindowMessageSource-- may disappear very soon")]
-    public static class WindowHookMessages
-    {
-        public static void AttachWindowHook(this Visual vis, int msg, Action<IntPtr, IntPtr> method) =>
-            (PresentationSource.FromVisual(vis) as HwndSource)?.AddHook(new HWndRegistration(msg, (a,b)=>
-            {
-                method(a,b);
-                return false;
-            }).Method);
-
-        private class HWndRegistration
+    public static void AttachWindowHook(this Visual vis, int msg, Action<IntPtr, IntPtr> method) =>
+        (PresentationSource.FromVisual(vis) as HwndSource)?.AddHook(new HWndRegistration(msg, (a,b)=>
         {
-            private int message;
-            private Func<IntPtr, IntPtr, bool> method;
+            method(a,b);
+            return false;
+        }).Method);
 
-            public HWndRegistration(int message, Func<IntPtr, IntPtr, bool> method)
-            {
-                this.message = message;
-                this.method = method;
-            }
+    private class HWndRegistration
+    {
+        private int message;
+        private Func<IntPtr, IntPtr, bool> method;
 
-            public IntPtr Method(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
-            {
-                handled = msg==message && method(wparam, lparam);
-                return IntPtr.Zero;
-            }
+        public HWndRegistration(int message, Func<IntPtr, IntPtr, bool> method)
+        {
+            this.message = message;
+            this.method = method;
+        }
+
+        public IntPtr Method(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
+        {
+            handled = msg==message && method(wparam, lparam);
+            return IntPtr.Zero;
         }
     }
 }

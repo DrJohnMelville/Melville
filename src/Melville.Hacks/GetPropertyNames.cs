@@ -3,34 +3,33 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Melville.Hacks
+namespace Melville.Hacks;
+
+public static class GetPropertyNames
 {
-  public static class GetPropertyNames
+  public static IEnumerable<string> FromExpression(Expression e)
   {
-    public static IEnumerable<string> FromExpression(Expression e)
-    {
-      var ret = new HashSet<String>();
-      new PropertyNameVisitor(ret).Visit(e);
-      return ret;
-    }
+    var ret = new HashSet<String>();
+    new PropertyNameVisitor(ret).Visit(e);
+    return ret;
+  }
     
-    private sealed class PropertyNameVisitor : ExpressionVisitor
+  private sealed class PropertyNameVisitor : ExpressionVisitor
+  {
+    private ICollection<string> fieldNames;
+
+    public PropertyNameVisitor(ICollection<string> fieldNames)
     {
-      private ICollection<string> fieldNames;
+      this.fieldNames = fieldNames;
+    }
 
-      public PropertyNameVisitor(ICollection<string> fieldNames)
+    protected override Expression VisitMember(MemberExpression node)
+    {
+      if (node.Member is PropertyInfo)
       {
-        this.fieldNames = fieldNames;
+        fieldNames.Add(node.Member.Name);
       }
-
-      protected override Expression VisitMember(MemberExpression node)
-      {
-        if (node.Member is PropertyInfo)
-        {
-          fieldNames.Add(node.Member.Name);
-        }
-        return base.VisitMember(node);
-      }
+      return base.VisitMember(node);
     }
   }
 }

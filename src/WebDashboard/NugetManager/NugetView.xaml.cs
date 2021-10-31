@@ -1,10 +1,9 @@
-﻿namespace WebDashboard.NugetManager
+﻿namespace WebDashboard.NugetManager;
+
+public partial class NugetView 
 {
-    public partial class NugetView 
+    public NugetView()
     {
-        public NugetView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

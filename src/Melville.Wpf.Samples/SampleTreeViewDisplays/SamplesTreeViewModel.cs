@@ -1,23 +1,22 @@
 ﻿using System.Collections.Generic;
 using Melville.MVVM.BusinessObjects;
 
-namespace Melville.Wpf.Samples.SampleTreeViewDisplays
-{
-    public class SamplesTreeViewModel: NotifyBase
-    {
-        private ISampleTreeItem? currentItem;
-        public ISampleTreeItem? CurrentItem 
-        {
-            get => currentItem;
-            set => AssignAndNotify(ref currentItem, value);
-        }
-        
-        public List<ISampleTreeItem> AllSamples { get; }
+namespace Melville.Wpf.Samples.SampleTreeViewDisplays;
 
-        public SamplesTreeViewModel(SampleDirectory directory)
-        {
-            AllSamples = directory.Items;
-            CurrentItem = directory.DefaultItem();
-        }
+public class SamplesTreeViewModel: NotifyBase
+{
+    private ISampleTreeItem? currentItem;
+    public ISampleTreeItem? CurrentItem 
+    {
+        get => currentItem;
+        set => AssignAndNotify(ref currentItem, value);
+    }
+        
+    public List<ISampleTreeItem> AllSamples { get; }
+
+    public SamplesTreeViewModel(SampleDirectory directory)
+    {
+        AllSamples = directory.Items;
+        CurrentItem = directory.DefaultItem();
     }
 }

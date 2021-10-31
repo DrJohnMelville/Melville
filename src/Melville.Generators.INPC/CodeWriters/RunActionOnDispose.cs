@@ -1,19 +1,18 @@
 ﻿using System;
 
-namespace Melville.Generators.INPC.CodeWriters
+namespace Melville.Generators.INPC.CodeWriters;
+
+public class RunActionOnDispose: IDisposable
 {
-    public class RunActionOnDispose: IDisposable
+    private readonly Action disposeAction;
+
+    public RunActionOnDispose(Action disposeAction)
     {
-        private readonly Action disposeAction;
+        this.disposeAction = disposeAction;
+    }
 
-        public RunActionOnDispose(Action disposeAction)
-        {
-            this.disposeAction = disposeAction;
-        }
-
-        public void Dispose()
-        {
-            disposeAction();
-        }
+    public void Dispose()
+    {
+        disposeAction();
     }
 }

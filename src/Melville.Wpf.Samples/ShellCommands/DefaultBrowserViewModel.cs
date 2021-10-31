@@ -1,19 +1,18 @@
 ﻿using Melville.SystemInterface.RunShellCommands;
 
-namespace Melville.Wpf.Samples.ShellCommands
+namespace Melville.Wpf.Samples.ShellCommands;
+
+public class DefaultBrowserViewModel
 {
-    public class DefaultBrowserViewModel
+    private readonly IRunShellCommand runner;
+
+    public DefaultBrowserViewModel(IRunShellCommand runner)
     {
-        private readonly IRunShellCommand runner;
+        this.runner = runner;
+    }
 
-        public DefaultBrowserViewModel(IRunShellCommand runner)
-        {
-            this.runner = runner;
-        }
-
-        public void LaunchGoogle()
-        {
-            runner.ShellExecute("https://www.google.com");
-        }
+    public void LaunchGoogle()
+    {
+        runner.ShellExecute("https://www.google.com");
     }
 }

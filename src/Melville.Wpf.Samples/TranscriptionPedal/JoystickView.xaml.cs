@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.TranscriptionPedal
+namespace Melville.Wpf.Samples.TranscriptionPedal;
+
+public partial class JoystickView : UserControl
 {
-    public partial class JoystickView : UserControl
+    public JoystickView()
     {
-        public JoystickView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

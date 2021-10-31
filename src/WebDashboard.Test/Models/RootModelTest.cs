@@ -1,16 +1,16 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace WebDashboard.Test.Models
-{
-    public class RootModelTest
-    {
-        [Fact]
-        public async Task WebConfigFile()
-        {
-            var sut = await new RootModelFactoryTest().ConstructedModel();
+namespace WebDashboard.Test.Models;
 
-            Assert.Equal(@"<?xml version=""1.0"" encoding=""utf-8""?>
+public class RootModelTest
+{
+  [Fact]
+  public async Task WebConfigFile()
+  {
+    var sut = await new RootModelFactoryTest().ConstructedModel();
+
+    Assert.Equal(@"<?xml version=""1.0"" encoding=""utf-8""?>
 <configuration>
   <location path=""."" inheritInChildApplications=""false"">
     <system.webServer>
@@ -33,25 +33,24 @@ namespace WebDashboard.Test.Models
     </system.webServer>
   </location>
 </configuration>", sut.ComputeWebConfig());
-        }
+  }
 
-        [Fact]
-        public async Task WebDavModel()
-        {
-          var sut = await new RootModelFactoryTest().ConstructedModel();
-          sut.SuppressWebDavModule = false;
-          Assert.DoesNotContain("WebDAVModule", sut.ComputeWebConfig());
-        }
-        [Fact]
-        public async Task DevelopmentMode()
-        {
-          var sut = await new RootModelFactoryTest().ConstructedModel();
-          sut.DevelopmentMode = false;
-          Assert.DoesNotContain(@"<environmentVariable name=""ASPNETCORE_ENVIRONMENT"" value=""Development"" />", 
-            sut.ComputeWebConfig());
-          sut.DevelopmentMode = true;
-          Assert.Contains(@"<environmentVariable name=""ASPNETCORE_ENVIRONMENT"" value=""Development"" />", 
-            sut.ComputeWebConfig());
-        }
-    }
+  [Fact]
+  public async Task WebDavModel()
+  {
+    var sut = await new RootModelFactoryTest().ConstructedModel();
+    sut.SuppressWebDavModule = false;
+    Assert.DoesNotContain("WebDAVModule", sut.ComputeWebConfig());
+  }
+  [Fact]
+  public async Task DevelopmentMode()
+  {
+    var sut = await new RootModelFactoryTest().ConstructedModel();
+    sut.DevelopmentMode = false;
+    Assert.DoesNotContain(@"<environmentVariable name=""ASPNETCORE_ENVIRONMENT"" value=""Development"" />", 
+      sut.ComputeWebConfig());
+    sut.DevelopmentMode = true;
+    Assert.Contains(@"<environmentVariable name=""ASPNETCORE_ENVIRONMENT"" value=""Development"" />", 
+      sut.ComputeWebConfig());
+  }
 }

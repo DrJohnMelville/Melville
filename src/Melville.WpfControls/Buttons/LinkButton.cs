@@ -1,13 +1,12 @@
 ﻿using  System.Windows;
 using System.Windows.Controls;
 
-namespace Melville.WpfControls.Buttons
+namespace Melville.WpfControls.Buttons;
+
+public class LinkButton : Button
 {
-  public class LinkButton : Button
+  static LinkButton()
   {
-    static LinkButton()
-    {
-      DefaultStyleKeyProperty.OverrideMetadata(typeof(LinkButton), new FrameworkPropertyMetadata(typeof(LinkButton)));
-    }
+    DefaultStyleKeyProperty.OverrideMetadata(typeof(LinkButton), new FrameworkPropertyMetadata(typeof(LinkButton)));
   }
 }

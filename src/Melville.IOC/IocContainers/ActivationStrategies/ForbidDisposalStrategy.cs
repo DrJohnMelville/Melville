@@ -1,31 +1,30 @@
 ﻿using System.Linq;
 using Melville.IOC.BindingRequests;
 
-namespace Melville.IOC.IocContainers.ActivationStrategies
+namespace Melville.IOC.IocContainers.ActivationStrategies;
+
+public sealed class ForbidDisposalStrategy : ForwardingActivationStrategy
 {
-    public sealed class ForbidDisposalStrategy : ForwardingActivationStrategy
+    private readonly bool forbidDisposeEvenIfInScope;
+
+    public ForbidDisposalStrategy(IActivationStrategy inner, bool forbidDisposeEvenIfInScope): base(inner)
     {
-        private readonly bool forbidDisposeEvenIfInScope;
+        this.forbidDisposeEvenIfInScope = forbidDisposeEvenIfInScope;
+    }
 
-        public ForbidDisposalStrategy(IActivationStrategy inner, bool forbidDisposeEvenIfInScope): base(inner)
+    public override object? Create(IBindingRequest bindingRequest)
+    {
+        if ((!bindingRequest.IocService.ScopeList().OfType<IRegisterDispose>().Any()) ||
+            forbidDisposeEvenIfInScope)
         {
-            this.forbidDisposeEvenIfInScope = forbidDisposeEvenIfInScope;
+            SetDisposalContextToAContextThatWillNeverGetDisposed(bindingRequest);
         }
 
-        public override object? Create(IBindingRequest bindingRequest)
-        {
-            if ((!bindingRequest.IocService.ScopeList().OfType<IRegisterDispose>().Any()) ||
-                forbidDisposeEvenIfInScope)
-            {
-                SetDisposalContextToAContextThatWillNeverGetDisposed(bindingRequest);
-            }
+        return InnerActivationStrategy.Create(bindingRequest);
+    }
 
-            return InnerActivationStrategy.Create(bindingRequest);
-        }
-
-        private static void SetDisposalContextToAContextThatWillNeverGetDisposed(IBindingRequest bindingRequest)
-        {
-            bindingRequest.IocService = new DisposableIocService(bindingRequest.IocService);
-        }
+    private static void SetDisposalContextToAContextThatWillNeverGetDisposed(IBindingRequest bindingRequest)
+    {
+        bindingRequest.IocService = new DisposableIocService(bindingRequest.IocService);
     }
 }

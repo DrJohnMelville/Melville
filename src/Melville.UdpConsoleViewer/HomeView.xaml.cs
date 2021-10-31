@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.UdpConsoleViewer
+namespace Melville.UdpConsoleViewer;
+
+public partial class HomeView : UserControl
 {
-    public partial class HomeView : UserControl
+    public HomeView()
     {
-        public HomeView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

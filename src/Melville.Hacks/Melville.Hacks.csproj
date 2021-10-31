@@ -5,7 +5,7 @@
         <Title>Melville.Hacks</Title>
         <PackageDescription>Little C# snippets I use a lot and like.</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <LangVersion>10.0</LangVersion>
+
     </PropertyGroup>
 
 </Project>

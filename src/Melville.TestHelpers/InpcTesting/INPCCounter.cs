@@ -6,51 +6,50 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Melville.TestHelpers.InpcTesting
+namespace Melville.TestHelpers.InpcTesting;
+
+public sealed class INPCCounter : IDisposable
 {
-    public sealed class INPCCounter : IDisposable
+    private INotifyPropertyChanged target;
+    private string[] propertySequence;
+    private List<string> calls = new List<string>();
+    private TaskCompletionSource<int> notificationDone;
+    public Task NotificationsDone { get { return notificationDone.Task; } }
+
+    public INPCCounter(INotifyPropertyChanged target, string[] propertySequence)
     {
-        private INotifyPropertyChanged target;
-        private string[] propertySequence;
-        private List<string> calls = new List<string>();
-        private TaskCompletionSource<int> notificationDone;
-        public Task NotificationsDone { get { return notificationDone.Task; } }
+        this.target = target;
+        this.propertySequence = propertySequence;
+        notificationDone = new TaskCompletionSource<int>();
 
-        public INPCCounter(INotifyPropertyChanged target, string[] propertySequence)
+        this.target.PropertyChanged += InpcCalled;
+    }
+
+    private void InpcCalled(object sender, PropertyChangedEventArgs e)
+    {
+        calls.Add(e.PropertyName);
+        if (calls.Count >= propertySequence.Length)
         {
-            this.target = target;
-            this.propertySequence = propertySequence;
-            notificationDone = new TaskCompletionSource<int>();
-
-            this.target.PropertyChanged += InpcCalled;
+            notificationDone.SetResult(0);
         }
+    }
 
-        private void InpcCalled(object sender, PropertyChangedEventArgs e)
-        {
-            calls.Add(e.PropertyName);
-            if (calls.Count >= propertySequence.Length)
-            {
-                notificationDone.SetResult(0);
-            }
-        }
-
-        #region Implementation of IDisposable
-        public void Dispose()
-        {
-            Assert.Equal(FormatCalls(propertySequence), FormatCalls(calls));
+    #region Implementation of IDisposable
+    public void Dispose()
+    {
+        Assert.Equal(FormatCalls(propertySequence), FormatCalls(calls));
             
-            target.PropertyChanged -= InpcCalled;
-        }
+        target.PropertyChanged -= InpcCalled;
+    }
 
-        private string FormatCalls(IEnumerable<string> elts) => string.Join(", ", elts);
+    private string FormatCalls(IEnumerable<string> elts) => string.Join(", ", elts);
 
-        #endregion
+    #endregion
 
-        public static INPCCounter VerifyInpcFired<TTarget>(TTarget target,
-          params Expression<Func<TTarget, object>>[] otherProperties) 
-        {
-            return new INPCCounter((INotifyPropertyChanged)target,
-              otherProperties.Select(accessor => accessor.Body.GetAccessedMemberName()).ToArray());
-        }
+    public static INPCCounter VerifyInpcFired<TTarget>(TTarget target,
+        params Expression<Func<TTarget, object>>[] otherProperties) 
+    {
+        return new INPCCounter((INotifyPropertyChanged)target,
+            otherProperties.Select(accessor => accessor.Body.GetAccessedMemberName()).ToArray());
     }
 }

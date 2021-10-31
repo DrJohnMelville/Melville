@@ -1,37 +1,36 @@
 ﻿using System.Threading.Tasks;
 using Melville.P2P.Raw.NetworkPrimatives;
 
-namespace Melville.P2P.Raw.Discovery
+namespace Melville.P2P.Raw.Discovery;
+
+public interface IDiscoveryServer
 {
-    public interface IDiscoveryServer
-    {
-        Task AcceptConnections();
-    }
+    Task AcceptConnections();
+}
     
-    public class DiscoveryServer : IDiscoveryServer
+public class DiscoveryServer : IDiscoveryServer
+{
+    private readonly IUdpBroadcaster broadcast;
+    private readonly IUdpReceiver receiver;
+    private readonly byte[] targetAddress;
+
+    public DiscoveryServer(IUdpBroadcaster broadcast, IUdpReceiver receiver, byte[] targetAddress)
     {
-        private readonly IUdpBroadcaster broadcast;
-        private readonly IUdpReceiver receiver;
-        private readonly byte[] targetAddress;
+        this.broadcast = broadcast;
+        this.receiver = receiver;
+        this.targetAddress = targetAddress;
+    }
 
-        public DiscoveryServer(IUdpBroadcaster broadcast, IUdpReceiver receiver, byte[] targetAddress)
+    public async Task AcceptConnections()
+    {
+        await SendServerAddress();
+        await foreach (var packet in receiver.WaitForReads())
         {
-            this.broadcast = broadcast;
-            this.receiver = receiver;
-            this.targetAddress = targetAddress;
-        }
-
-        public async Task AcceptConnections()
-        {
-            await SendServerAddress();
-            await foreach (var packet in receiver.WaitForReads())
+            if (packet.IsEmptyTargetAddress())
             {
-                if (packet.IsEmptyTargetAddress())
-                {
-                    await SendServerAddress();
-                }
+                await SendServerAddress();
             }
         }
-        private Task<int> SendServerAddress() => broadcast.Send(targetAddress);
     }
+    private Task<int> SendServerAddress() => broadcast.Send(targetAddress);
 }

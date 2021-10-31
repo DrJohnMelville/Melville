@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.MouseClicks
+namespace Melville.Wpf.Samples.MouseClicks;
+
+public partial class MouseClickView : UserControl
 {
-    public partial class MouseClickView : UserControl
+    public MouseClickView()
     {
-        public MouseClickView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

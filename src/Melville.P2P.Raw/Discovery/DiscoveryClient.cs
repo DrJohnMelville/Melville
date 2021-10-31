@@ -2,43 +2,42 @@
 using System.Threading.Tasks;
 using Melville.P2P.Raw.NetworkPrimatives;
 
-namespace Melville.P2P.Raw.Discovery
+namespace Melville.P2P.Raw.Discovery;
+
+public interface IDiscoveryClient
 {
-    public interface IDiscoveryClient
+    Task<byte[]> Connect();
+}
+
+public class DiscoveryClient : IDiscoveryClient
+{
+    private readonly IUdpBroadcaster broadcast;
+    private readonly IUdpReceiver receiver;
+
+    public DiscoveryClient(IUdpBroadcaster broadcast, IUdpReceiver receiver)
     {
-        Task<byte[]> Connect();
+        this.broadcast = broadcast;
+        this.receiver = receiver;
     }
 
-    public class DiscoveryClient : IDiscoveryClient
+    public async Task<byte[]> Connect()
     {
-        private readonly IUdpBroadcaster broadcast;
-        private readonly IUdpReceiver receiver;
+        var serverTask = ListenForServerAddress();
+        await RequestServerAddress();
+        return await serverTask;
+    }
 
-        public DiscoveryClient(IUdpBroadcaster broadcast, IUdpReceiver receiver)
+    private async Task<byte[]> ListenForServerAddress()
+    {
+        await foreach (var packet in receiver.WaitForReads())
         {
-            this.broadcast = broadcast;
-            this.receiver = receiver;
-        }
-
-        public async Task<byte[]> Connect()
-        {
-            var serverTask = ListenForServerAddress();
-            await RequestServerAddress();
-            return await serverTask;
-        }
-
-        private async Task<byte[]> ListenForServerAddress()
-        {
-            await foreach (var packet in receiver.WaitForReads())
+            if (!packet.IsEmptyTargetAddress())
             {
-                if (!packet.IsEmptyTargetAddress())
-                {
-                    return packet.Buffer;
-                }
+                return packet.Buffer;
             }
-            return Array.Empty<byte>();
         }
-
-        private Task RequestServerAddress() => broadcast.Send(new byte[6]);
+        return Array.Empty<byte>();
     }
+
+    private Task RequestServerAddress() => broadcast.Send(new byte[6]);
 }

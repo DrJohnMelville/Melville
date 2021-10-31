@@ -1,33 +1,32 @@
 ﻿using System.Collections.Generic;
 
-namespace Melville.Generators.INPC.CodeWriters
+namespace Melville.Generators.INPC.CodeWriters;
+
+public class GeneratedFileUniqueNamer
 {
-    public class GeneratedFileUniqueNamer
+    private Dictionary<string, int> seenItems = new();
+    private string generatorSuffix;
+
+    public GeneratedFileUniqueNamer(string generatorSuffix)
     {
-        private Dictionary<string, int> seenItems = new();
-        private string generatorSuffix;
+        this.generatorSuffix = generatorSuffix;
+    }
 
-        public GeneratedFileUniqueNamer(string generatorSuffix)
-        {
-            this.generatorSuffix = generatorSuffix;
-        }
+    private int IndexForName(string name)
+    {
+        int ret;
+        if (!seenItems.TryGetValue(name, out ret)) ret = 0;
+        seenItems[name] = ret + 1;
+        return ret;
+    }
 
-        private int IndexForName(string name)
-        {
-            int ret;
-            if (!seenItems.TryGetValue(name, out ret)) ret = 0;
-            seenItems[name] = ret + 1;
-            return ret;
-        }
+    private string Suffix(int ordinal) => ordinal == 0 ? "" : $".{ordinal}";
 
-        private string Suffix(int ordinal) => ordinal == 0 ? "" : $".{ordinal}";
+    public string CreateFileName(string className) => 
+        $"{className}.{generatorSuffix}{Suffix(IndexForName(className))}.cs";
 
-        public string CreateFileName(string className) => 
-            $"{className}.{generatorSuffix}{Suffix(IndexForName(className))}.cs";
-
-        public void Clear()
-        {
-            seenItems.Clear();
-        }
+    public void Clear()
+    {
+        seenItems.Clear();
     }
 }

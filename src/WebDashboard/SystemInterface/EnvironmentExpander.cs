@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace WebDashboard.SystemInterface
-{
-    public interface IEnvironmentExpander
-    {
-        string Expand(string input);
-    }
+namespace WebDashboard.SystemInterface;
 
-    public class EnvironmentExpander: IEnvironmentExpander
+public interface IEnvironmentExpander
+{
+    string Expand(string input);
+}
+
+public class EnvironmentExpander: IEnvironmentExpander
+{
+    public string Expand(string input)
     {
-        public string Expand(string input)
-        {
-            return Environment.ExpandEnvironmentVariables(input);
-        }
+        return Environment.ExpandEnvironmentVariables(input);
     }
 }

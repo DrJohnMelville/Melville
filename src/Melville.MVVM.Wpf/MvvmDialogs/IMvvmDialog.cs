@@ -1,34 +1,33 @@
 ﻿using  System.Windows;
 
-namespace Melville.MVVM.Wpf.MvvmDialogs
+namespace Melville.MVVM.Wpf.MvvmDialogs;
+
+public interface IMvvmDialog
 {
-  public interface IMvvmDialog
+  bool? ShowModalDialog(object viewModel, double width, double height, string title);
+}
+
+public sealed class MvvmDialog : IMvvmDialog
+{
+  private readonly Window parent;
+
+  public MvvmDialog(Window parent)
   {
-    bool? ShowModalDialog(object viewModel, double width, double height, string title);
+    this.parent = parent;
   }
 
-  public sealed class MvvmDialog : IMvvmDialog
+  public bool? ShowModalDialog(object viewModel, double width, double height, string title)
   {
-    private readonly Window parent;
-
-    public MvvmDialog(Window parent)
+    var window = new WrapperDialog
     {
-      this.parent = parent;
-    }
+      Owner = parent,
+      Width = width,
+      Height = height,
+      Title = title,
+      DataContext = viewModel
+    };
 
-    public bool? ShowModalDialog(object viewModel, double width, double height, string title)
-    {
-      var window = new WrapperDialog
-      {
-        Owner = parent,
-        Width = width,
-        Height = height,
-        Title = title,
-        DataContext = viewModel
-      };
-
-      return window.ShowDialog();
-    }
-
+    return window.ShowDialog();
   }
+
 }

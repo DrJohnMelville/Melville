@@ -3,28 +3,28 @@ using System.Linq;
 using System.Xml.Linq;
 using Melville.FileSystem;
 
-namespace WebDashboard.SecretManager.Models
+namespace WebDashboard.SecretManager.Models;
+
+public class RootModel
 {
-    public class RootModel
+    public PublishFileHolder? PublishFile { get; }
+    public ProjectFileHolder ProjectFile { get; }
+    public SecretFileHolder? RootSecretFile { get; }
+    public SecretFileHolder? DeploymentSecretFile { get; }
+
+    public bool SuppressWebDavModule { get; set; } = true;
+    public bool DevelopmentMode { get; set; } 
+
+    public RootModel(PublishFileHolder? publishFile, ProjectFileHolder projectFile, SecretFileHolder? rootSecretFile, 
+        SecretFileHolder? deploymentSecretFile)
     {
-        public PublishFileHolder? PublishFile { get; }
-        public ProjectFileHolder ProjectFile { get; }
-        public SecretFileHolder? RootSecretFile { get; }
-        public SecretFileHolder? DeploymentSecretFile { get; }
+        PublishFile = publishFile;
+        ProjectFile = projectFile;
+        RootSecretFile = rootSecretFile;
+        DeploymentSecretFile = deploymentSecretFile;
+    }
 
-        public bool SuppressWebDavModule { get; set; } = true;
-        public bool DevelopmentMode { get; set; } 
-
-        public RootModel(PublishFileHolder? publishFile, ProjectFileHolder projectFile, SecretFileHolder? rootSecretFile, 
-            SecretFileHolder? deploymentSecretFile)
-        {
-            PublishFile = publishFile;
-            ProjectFile = projectFile;
-            RootSecretFile = rootSecretFile;
-            DeploymentSecretFile = deploymentSecretFile;
-        }
-
-        public string ComputeWebConfig() => 
+    public string ComputeWebConfig() => 
         "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"+
         new XElement("configuration",
             new XElement("location",
@@ -52,71 +52,70 @@ namespace WebDashboard.SecretManager.Models
             )
         );
 
-        private XElement? WebDavSupression() =>
-            SuppressWebDavModule?
+    private XElement? WebDavSupression() =>
+        SuppressWebDavModule?
             new XElement("modules",
                 new XAttribute("runAllManagedModulesForAllRequests", "false"),
                 new XElement("remove", new XAttribute("name", "WebDAVModule"))
             ): null;
 
-        private IEnumerable<XElement> SecretsToEnviornment()
-        {
-            var dict = new Dictionary<string, string>();
-            RootSecretFile?.AddSecrets(dict);
-            DeploymentSecretFile?.AddSecrets(dict);
-            AddDevelopmentIfRequested(dict);
-            return FormatAsEnviornmentXmlElements(dict);
-        }
-
-        private void AddDevelopmentIfRequested(Dictionary<string, string> dict)
-        {
-            if (DevelopmentMode)
-            {
-                dict["ASPNETCORE_ENVIRONMENT"] = "Development";
-            }
-        }
-
-        private static IEnumerable<XElement> FormatAsEnviornmentXmlElements(Dictionary<string, string> dict) =>
-            dict.Select(i => new XElement("environmentVariable",
-                new XAttribute("name", i.Key),
-                new XAttribute("value", i.Value)
-            ));
-    }
-
-    public abstract class XmlFileHolder
+    private IEnumerable<XElement> SecretsToEnviornment()
     {
-        public IFile File { get; }
-        protected XElement Xml;
+        var dict = new Dictionary<string, string>();
+        RootSecretFile?.AddSecrets(dict);
+        DeploymentSecretFile?.AddSecrets(dict);
+        AddDevelopmentIfRequested(dict);
+        return FormatAsEnviornmentXmlElements(dict);
+    }
 
-        protected XmlFileHolder(IFile file, XElement xml)
+    private void AddDevelopmentIfRequested(Dictionary<string, string> dict)
+    {
+        if (DevelopmentMode)
         {
-            File = file;
-            Xml = xml;
+            dict["ASPNETCORE_ENVIRONMENT"] = "Development";
         }
     }
+
+    private static IEnumerable<XElement> FormatAsEnviornmentXmlElements(Dictionary<string, string> dict) =>
+        dict.Select(i => new XElement("environmentVariable",
+            new XAttribute("name", i.Key),
+            new XAttribute("value", i.Value)
+        ));
+}
+
+public abstract class XmlFileHolder
+{
+    public IFile File { get; }
+    protected XElement Xml;
+
+    protected XmlFileHolder(IFile file, XElement xml)
+    {
+        File = file;
+        Xml = xml;
+    }
+}
     
-    public sealed class PublishFileHolder: XmlFileHolder
+public sealed class PublishFileHolder: XmlFileHolder
+{
+    private static readonly XNamespace msBuildNamespace =
+        XNamespace.Get("http://schemas.microsoft.com/developer/msbuild/2003");
+
+    public PublishFileHolder(IFile file, XElement xml) : base(file, xml)
     {
-        private static readonly XNamespace msBuildNamespace =
-            XNamespace.Get("http://schemas.microsoft.com/developer/msbuild/2003");
+    }
+    public string DeployedPath => Xml.Descendants(msBuildNamespace+"DeployIisAppPath")
+        .FirstOrDefault()?.Value ??"No Path Found";
 
-        public PublishFileHolder(IFile file, XElement xml) : base(file, xml)
-        {
-        }
-        public string DeployedPath => Xml.Descendants(msBuildNamespace+"DeployIisAppPath")
-                                          .FirstOrDefault()?.Value ??"No Path Found";
+    public string UserSecretId => Xml
+        .Descendants(msBuildNamespace+"UserSecretsId")
+        .FirstOrDefault()?.Value ?? "";
+}
 
-        public string UserSecretId => Xml
-            .Descendants(msBuildNamespace+"UserSecretsId")
-            .FirstOrDefault()?.Value ?? "";
+public sealed class ProjectFileHolder : XmlFileHolder
+{
+    public ProjectFileHolder(IFile file, XElement xml) : base(file, xml)
+    {
     }
 
-    public sealed class ProjectFileHolder : XmlFileHolder
-    {
-        public ProjectFileHolder(IFile file, XElement xml) : base(file, xml)
-        {
-        }
-
-        public string UserSecretId => Xml.Descendants("UserSecretsId").FirstOrDefault()?.Value ?? ""; 
-    }
+    public string UserSecretId => Xml.Descendants("UserSecretsId").FirstOrDefault()?.Value ?? ""; 
 }

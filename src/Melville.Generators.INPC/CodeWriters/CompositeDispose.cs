@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Melville.Generators.INPC.CodeWriters
+namespace Melville.Generators.INPC.CodeWriters;
+
+public class CompositeDispose : IDisposable
 {
-    public class CompositeDispose : IDisposable
+    public static IDisposable DisposeInReverseOrder(IList<IDisposable> candidates)
     {
-        public static IDisposable DisposeInReverseOrder(IList<IDisposable> candidates)
-        {
-            if (candidates.Count == 1) return candidates[0];
-            return new CompositeDispose(candidates.Reverse());
-        }
-        private readonly IEnumerable<IDisposable> items;
+        if (candidates.Count == 1) return candidates[0];
+        return new CompositeDispose(candidates.Reverse());
+    }
+    private readonly IEnumerable<IDisposable> items;
 
-        public CompositeDispose(IEnumerable<IDisposable> items)
-        {
-            this.items = items;
-        }
+    public CompositeDispose(IEnumerable<IDisposable> items)
+    {
+        this.items = items;
+    }
 
-        public void Dispose()
+    public void Dispose()
+    {
+        foreach (var item in items)
         {
-            foreach (var item in items)
-            {
-                item.Dispose();
-            }
+            item.Dispose();
         }
     }
 }

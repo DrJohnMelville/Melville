@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.DiBinding
+namespace Melville.Wpf.Samples.DiBinding;
+
+public partial class DiBindingView : UserControl
 {
-    public partial class DiBindingView : UserControl
+    public DiBindingView()
     {
-        public DiBindingView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

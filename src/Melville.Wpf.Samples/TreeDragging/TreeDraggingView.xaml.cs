@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.TreeDragging
+namespace Melville.Wpf.Samples.TreeDragging;
+
+public partial class TreeDraggingView : UserControl
 {
-    public partial class TreeDraggingView : UserControl
+    public TreeDraggingView()
     {
-        public TreeDraggingView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

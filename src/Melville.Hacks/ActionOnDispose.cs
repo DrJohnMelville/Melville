@@ -1,23 +1,22 @@
 ﻿using System;
 
-namespace Melville.Hacks
+namespace Melville.Hacks;
+
+public sealed class ActionOnDispose : IDisposable
 {
-  public sealed class ActionOnDispose : IDisposable
+  private Action? action;
+
+  public ActionOnDispose(Action action)
   {
-    private Action? action;
+    this.action = action;
+  }
 
-    public ActionOnDispose(Action action)
-    {
-      this.action = action;
-    }
-
-    public void Dispose()
-    {
+  public void Dispose()
+  {
       
-      var localAction = action;
-      action = null;
-      if (localAction == null) return;
-      localAction();
-    }
+    var localAction = action;
+    action = null;
+    if (localAction == null) return;
+    localAction();
   }
 }

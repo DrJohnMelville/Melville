@@ -2,43 +2,42 @@
 using Melville.IOC.Activation;
 using Xunit;
 
-namespace Melville.IOC.Test.Activation
+namespace Melville.IOC.Test.Activation;
+
+public class FuncFactoryTest
 {
-    public class FuncFactoryTest
+    public class ObjectTarget
     {
-        public class ObjectTarget
+        private object[] Destination { get; set; }
+
+        public object SetDestination(object[] values)
         {
-            private object[] Destination { get; set; }
+            Destination = values;
 
-            public object SetDestination(object[] values)
-            {
-                Destination = values;
-
-                return "Return Value:" + values[0].ToString();
-            }
+            return "Return Value:" + values[0].ToString();
         }
+    }
 
-        [Fact]
-        public void CompileFactory()
-        {
-            var target = new ObjectTarget();
-            var fact = new ForwardFuncToMethodCall(typeof(Func<string,string>), nameof(ObjectTarget.SetDestination),
-                typeof(ObjectTarget));
+    [Fact]
+    public void CompileFactory()
+    {
+        var target = new ObjectTarget();
+        var fact = new ForwardFuncToMethodCall(typeof(Func<string,string>), nameof(ObjectTarget.SetDestination),
+            typeof(ObjectTarget));
 
-            var f = (Func<string, string>) fact.CreateFuncDelegate(target);
+        var f = (Func<string, string>) fact.CreateFuncDelegate(target);
 
-            Assert.Equal("Return Value:Hello World", f("Hello World"));
-        }
-        [Fact]
-        public void CompileIntFactory()
-        {
-            var target = new ObjectTarget();
-            var fact = new ForwardFuncToMethodCall(typeof(Func<int,string>), nameof(ObjectTarget.SetDestination),
-                typeof(ObjectTarget));
+        Assert.Equal("Return Value:Hello World", f("Hello World"));
+    }
+    [Fact]
+    public void CompileIntFactory()
+    {
+        var target = new ObjectTarget();
+        var fact = new ForwardFuncToMethodCall(typeof(Func<int,string>), nameof(ObjectTarget.SetDestination),
+            typeof(ObjectTarget));
 
-            var f = (Func<int, string>) fact.CreateFuncDelegate(target);
+        var f = (Func<int, string>) fact.CreateFuncDelegate(target);
 
-            Assert.Equal("Return Value:101", f(101));
-        }
+        Assert.Equal("Return Value:101", f(101));
     }
 }

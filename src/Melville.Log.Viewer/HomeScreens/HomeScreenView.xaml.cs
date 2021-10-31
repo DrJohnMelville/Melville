@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Log.Viewer.HomeScreens
+namespace Melville.Log.Viewer.HomeScreens;
+
+public partial class HomeScreenView : UserControl
 {
-    public partial class HomeScreenView : UserControl
+    public HomeScreenView()
     {
-        public HomeScreenView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

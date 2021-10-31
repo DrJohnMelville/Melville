@@ -7,73 +7,72 @@ using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 
-namespace Melville.IOC.TypeResolutionPolicy
+namespace Melville.IOC.TypeResolutionPolicy;
+
+public sealed class TuplesToScopeResolutionPolicy: ITypeResolutionPolicy
 {
-    public sealed class TuplesToScopeResolutionPolicy: ITypeResolutionPolicy
+    public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) => 
+        IsTupleScopePattern(request.DesiredType) ?
+            new ScopedTupleActivationStrategy(request.DesiredType) : 
+            null;
+
+    private bool IsTupleScopePattern(Type type)
     {
-        public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) => 
-            IsTupleScopePattern(request.DesiredType) ?
-                new ScopedTupleActivationStrategy(request.DesiredType) : 
-                null;
+        return type.IsConstructedGenericType &&
+               ValueTupleTypes.Contains(type.GetGenericTypeDefinition()) &&
+               IsDisposableType(type.GetGenericArguments()[0]);
+    }
 
-        private bool IsTupleScopePattern(Type type)
-        {
-            return type.IsConstructedGenericType &&
-                   ValueTupleTypes.Contains(type.GetGenericTypeDefinition()) &&
-                   IsDisposableType(type.GetGenericArguments()[0]);
-        }
+    private static bool IsDisposableType(Type type)
+    {
+        return type == typeof(IDisposable) || type == typeof(IAsyncDisposable);
+    }
 
-        private static bool IsDisposableType(Type type)
-        {
-            return type == typeof(IDisposable) || type == typeof(IAsyncDisposable);
-        }
+    private static readonly Type[] ValueTupleTypes =
+    {
+        typeof(ValueTuple<,>),
+        typeof(ValueTuple<,,>),
+        typeof(ValueTuple<,,,>),
+        typeof(ValueTuple<,,,,>),
+        typeof(ValueTuple<,,,,,>),
+        typeof(ValueTuple<,,,,,,>),
+        typeof(ValueTuple<,,,,,,,>),
+        typeof(Tuple<,>),
+        typeof(Tuple<,,>),
+        typeof(Tuple<,,,>),
+        typeof(Tuple<,,,,>),
+        typeof(Tuple<,,,,,>),
+        typeof(Tuple<,,,,,,>),
+        typeof(Tuple<,,,,,,,>),
+    };
+}
+    
+public sealed class ScopedTupleActivationStrategy : IActivationStrategy  
+{
+    private readonly Type desiredType;
+    private readonly Func<object?[], object> funcCreator;
 
-        private static readonly Type[] ValueTupleTypes =
-        {
-            typeof(ValueTuple<,>),
-            typeof(ValueTuple<,,>),
-            typeof(ValueTuple<,,,>),
-            typeof(ValueTuple<,,,,>),
-            typeof(ValueTuple<,,,,,>),
-            typeof(ValueTuple<,,,,,,>),
-            typeof(ValueTuple<,,,,,,,>),
-            typeof(Tuple<,>),
-            typeof(Tuple<,,>),
-            typeof(Tuple<,,,>),
-            typeof(Tuple<,,,,>),
-            typeof(Tuple<,,,,,>),
-            typeof(Tuple<,,,,,,>),
-            typeof(Tuple<,,,,,,,>),
-        };
+    public ScopedTupleActivationStrategy(Type desiredType)
+    {
+        this.desiredType = desiredType;
+        funcCreator = ActivationCompiler.Compile(desiredType, desiredType.GetGenericArguments().ToArray());
     }
     
-        public sealed class ScopedTupleActivationStrategy : IActivationStrategy  
-        {
-            private readonly Type desiredType;
-            private readonly Func<object?[], object> funcCreator;
-
-            public ScopedTupleActivationStrategy(Type desiredType)
-            {
-                this.desiredType = desiredType;
-                funcCreator = ActivationCompiler.Compile(desiredType, desiredType.GetGenericArguments().ToArray());
-            }
+    public bool CanCreate(IBindingRequest bindingRequest) =>
+        bindingRequest.IocService.CanGet(RequestsForInnerItems(bindingRequest));
     
-            public bool CanCreate(IBindingRequest bindingRequest) =>
-                bindingRequest.IocService.CanGet(RequestsForInnerItems(bindingRequest));
+    private IEnumerable<IBindingRequest> RequestsForInnerItems(IBindingRequest bindingRequest) => 
+        desiredType.GetGenericArguments().Skip(1).Select(bindingRequest.CreateSubRequest);
     
-            private IEnumerable<IBindingRequest> RequestsForInnerItems(IBindingRequest bindingRequest) => 
-                desiredType.GetGenericArguments().Skip(1).Select(bindingRequest.CreateSubRequest);
+    public object? Create(IBindingRequest bindingRequest)
+    {
+        var values = new object[desiredType.GetGenericArguments().Length];
+        var scope = bindingRequest.IocService.CreateScope();
+        values[0] = scope;
+        scope.Fill(values.AsSpan<object?>()[1..], RequestsForInnerItems(bindingRequest));
+        return funcCreator(values);
+    }
     
-            public object? Create(IBindingRequest bindingRequest)
-            {
-                var values = new object[desiredType.GetGenericArguments().Length];
-                var scope = bindingRequest.IocService.CreateScope();
-                values[0] = scope;
-                scope.Fill(values.AsSpan<object?>()[1..], RequestsForInnerItems(bindingRequest));
-                return funcCreator(values);
-            }
-    
-            public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
-            public bool ValidForRequest(IBindingRequest request) => true;
-        }
+    public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
+    public bool ValidForRequest(IBindingRequest request) => true;
 }

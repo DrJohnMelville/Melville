@@ -4,12 +4,8 @@
         
     </PropertyGroup>
     <PropertyGroup>
-        
-        
-        
         <Title>Melville.IOC</Title>
         <PackageDescription>A highly configurable IOC Container</PackageDescription>
-        
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>

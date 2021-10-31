@@ -1,50 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Melville.Linq
+namespace Melville.Linq;
+
+public class EnumerateSingle<T> : IEnumerable<T>
 {
-    public class EnumerateSingle<T> : IEnumerable<T>
+    private T value;
+
+    public EnumerateSingle(T value)
     {
-        private T value;
+        this.value = value;
+    }
 
-        public EnumerateSingle(T value)
+    public IEnumerator<T> GetEnumerator()
+    {
+        return new SingleEnumerator(value);
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+
+    private class SingleEnumerator: IEnumerator<T>
+    {
+        public T Current { get; }
+        object IEnumerator.Current => Current!;
+        private byte state = 0;
+
+        public SingleEnumerator(T value)
         {
-            this.value = value;
+            Current = value;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return new SingleEnumerator(value);
-        }
+        public bool MoveNext() => (++state) == 1;
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void Reset()
         {
-            return GetEnumerator();
+            state = 0;
         }
 
 
-        private class SingleEnumerator: IEnumerator<T>
+        public void Dispose()
         {
-            public T Current { get; }
-            object IEnumerator.Current => Current!;
-            private byte state = 0;
-
-            public SingleEnumerator(T value)
-            {
-                Current = value;
-            }
-
-            public bool MoveNext() => (++state) == 1;
-
-            public void Reset()
-            {
-                state = 0;
-            }
-
-
-            public void Dispose()
-            {
-            }
         }
     }
 }

@@ -3,156 +3,152 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Melville.FileSystem
+namespace Melville.FileSystem;
+
+public sealed class ExtendedCloseStream : DelegatingStream
 {
-  public sealed class ExtendedCloseStream : DelegatingStream
+  private Action? closeAction;
+  public ExtendedCloseStream(Stream inner, Action closeAction) : base(inner)
   {
-    private Action? closeAction;
-    public ExtendedCloseStream(Stream inner, Action closeAction) : base(inner)
-    {
-      this.closeAction = closeAction;
-    }
-
-    public override void Close()
-    {
-      base.Close();
-      GC.SuppressFinalize(this);
-      closeAction?.Invoke();
-      closeAction = null;
-    }
-
-    ~ExtendedCloseStream()
-    {
-      Close();
-    }
+    this.closeAction = closeAction;
   }
 
-  public abstract class DelegatingStream : Stream
+  public override void Close()
   {
-    protected Stream Inner;
-    public DelegatingStream(Stream inner)
-    {
-      Inner = inner;
-    }
+    base.Close();
+    GC.SuppressFinalize(this);
+    closeAction?.Invoke();
+    closeAction = null;
+  }
 
-    #region delegating functions
+  ~ExtendedCloseStream()
+  {
+    Close();
+  }
+}
 
-    protected override void Dispose(bool disposing)
-    {
-      Inner.Dispose();
-      base.Dispose(disposing);
-    }
-    public override void Close()
-    {
-      Inner.Close();
-      base.Close();
-    }
+public abstract class DelegatingStream : Stream
+{
+  protected Stream Inner;
+  public DelegatingStream(Stream inner)
+  {
+    Inner = inner;
+  }
 
-    public override void Flush()
-    {
-      Inner.Flush();
-    }
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-      return Inner.Seek(offset, origin);
-    }
-    public override void SetLength(long value)
-    {
-      Inner.SetLength(value);
-    }
-    public override int Read(byte[] buffer, int offset, int count)
-    {
-      return Inner.Read(buffer, offset, count);
-    }
-    public override void Write(byte[] buffer, int offset, int count)
-    {
-      Inner.Write(buffer, offset, count);
-    }
-    public override bool CanRead
-    {
-      get { return Inner.CanRead; }
-    }
-    public override bool CanSeek
-    {
-      get { return Inner.CanSeek; }
-    }
-    public override bool CanWrite
-    {
-      get { return Inner.CanWrite; }
-    }
-    public override long Length
-    {
-      get { return Inner.Length; }
-    }
-    public override long Position
-    {
-      get { return Inner.Position; }
-      set { Inner.Position = value; }
-    }
-    public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-    {
-      return Inner.ReadAsync(buffer, offset, count, cancellationToken);
-    }
-    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-    {
-      return Inner.WriteAsync(buffer, offset, count, cancellationToken);
-    }
-    public override Task FlushAsync(CancellationToken cancellationToken)
-    {
-      return Inner.FlushAsync(cancellationToken);
-    }
-    public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
-    {
-      var readBufer = new byte[bufferSize];
-      var writeBuffer = new byte[bufferSize];
-      int bytesToWrite = 0;
+  #region delegating functions
 
-      do
+  protected override void Dispose(bool disposing)
+  {
+    Inner.Dispose();
+    base.Dispose(disposing);
+  }
+  public override void Close()
+  {
+    Inner.Close();
+    base.Close();
+  }
+
+  public override void Flush()
+  {
+    Inner.Flush();
+  }
+  public override long Seek(long offset, SeekOrigin origin)
+  {
+    return Inner.Seek(offset, origin);
+  }
+  public override void SetLength(long value)
+  {
+    Inner.SetLength(value);
+  }
+  public override int Read(byte[] buffer, int offset, int count)
+  {
+    return Inner.Read(buffer, offset, count);
+  }
+  public override void Write(byte[] buffer, int offset, int count)
+  {
+    Inner.Write(buffer, offset, count);
+  }
+  public override bool CanRead
+  {
+    get { return Inner.CanRead; }
+  }
+  public override bool CanSeek
+  {
+    get { return Inner.CanSeek; }
+  }
+  public override bool CanWrite
+  {
+    get { return Inner.CanWrite; }
+  }
+  public override long Length
+  {
+    get { return Inner.Length; }
+  }
+  public override long Position
+  {
+    get { return Inner.Position; }
+    set { Inner.Position = value; }
+  }
+  public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+  {
+    return Inner.ReadAsync(buffer, offset, count, cancellationToken);
+  }
+  public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+  {
+    return Inner.WriteAsync(buffer, offset, count, cancellationToken);
+  }
+  public override Task FlushAsync(CancellationToken cancellationToken)
+  {
+    return Inner.FlushAsync(cancellationToken);
+  }
+  public override async Task CopyToAsync(Stream destination, int bufferSize, CancellationToken cancellationToken)
+  {
+    var readBufer = new byte[bufferSize];
+    var writeBuffer = new byte[bufferSize];
+    int bytesToWrite = 0;
+
+    do
+    {
+      var readHandle = ReadAsync(readBufer, 0, bufferSize);
+      if (bytesToWrite > 0)
       {
-        var readHandle = ReadAsync(readBufer, 0, bufferSize);
-        if (bytesToWrite > 0)
-        {
-          await destination.WriteAsync(writeBuffer, 0, bytesToWrite);
-        }
-        bytesToWrite = await readHandle;
-        var temp = writeBuffer;
-        writeBuffer = readBufer;
-        readBufer = temp;
-      } while (bytesToWrite > 0);
-    }
-    public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
-    {
-      return Inner.BeginRead(buffer, offset, count, callback, state);
-    }
-    public override int EndRead(IAsyncResult asyncResult)
-    {
-      return Inner.EndRead(asyncResult);
-    }
-    public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
-    {
-      return Inner.BeginWrite(buffer, offset, count, callback, state);
-    }
-    public override void EndWrite(IAsyncResult asyncResult)
-    {
-      Inner.EndWrite(asyncResult);
-    }
-    public override bool CanTimeout
-    {
-      get { return Inner.CanTimeout; }
-    }
-    public override int ReadTimeout
-    {
-      get { return Inner.ReadTimeout; }
-      set { Inner.ReadTimeout = value; }
-    }
-    public override int WriteTimeout
-    {
-      get { return Inner.WriteTimeout; }
-      set { Inner.WriteTimeout = value; }
-    }
-    #endregion
+        await destination.WriteAsync(writeBuffer, 0, bytesToWrite);
+      }
+      bytesToWrite = await readHandle;
+      var temp = writeBuffer;
+      writeBuffer = readBufer;
+      readBufer = temp;
+    } while (bytesToWrite > 0);
   }
-
-
-
+  public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
+  {
+    return Inner.BeginRead(buffer, offset, count, callback, state);
+  }
+  public override int EndRead(IAsyncResult asyncResult)
+  {
+    return Inner.EndRead(asyncResult);
+  }
+  public override IAsyncResult BeginWrite(byte[] buffer, int offset, int count, AsyncCallback? callback, object? state)
+  {
+    return Inner.BeginWrite(buffer, offset, count, callback, state);
+  }
+  public override void EndWrite(IAsyncResult asyncResult)
+  {
+    Inner.EndWrite(asyncResult);
+  }
+  public override bool CanTimeout
+  {
+    get { return Inner.CanTimeout; }
+  }
+  public override int ReadTimeout
+  {
+    get { return Inner.ReadTimeout; }
+    set { Inner.ReadTimeout = value; }
+  }
+  public override int WriteTimeout
+  {
+    get { return Inner.WriteTimeout; }
+    set { Inner.WriteTimeout = value; }
+  }
+  #endregion
 }

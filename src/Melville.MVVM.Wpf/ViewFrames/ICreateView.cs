@@ -1,9 +1,8 @@
 ﻿using  System.Windows;
 
-namespace Melville.MVVM.Wpf.ViewFrames
+namespace Melville.MVVM.Wpf.ViewFrames;
+
+public interface ICreateView
 {
-  public interface ICreateView
-  {
-    UIElement View();
-  }
+  UIElement View();
 }

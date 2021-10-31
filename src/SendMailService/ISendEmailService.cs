@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace SendMailService
+namespace SendMailService;
+
+public interface ISendEmailService
 {
-    public interface ISendEmailService
-    {
-        Task SendEmail(string emailAddress, string subject, string htmlBody);
-    }
+    Task SendEmail(string emailAddress, string subject, string htmlBody);
 }

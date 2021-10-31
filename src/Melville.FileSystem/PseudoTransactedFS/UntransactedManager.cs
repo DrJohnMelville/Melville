@@ -1,12 +1,11 @@
 ﻿
-namespace Melville.FileSystem.PseudoTransactedFS
-{
-  public sealed class UntransactedStore: TransactionStoreBase, ITransactableStore
-  {
-    public UntransactedStore(IDirectory innerFileSystem) : base(innerFileSystem)
-    {
-    }
+namespace Melville.FileSystem.PseudoTransactedFS;
 
-    public ITransactedDirectory BeginTransaction() => new PassthroughTransactedDirectory(innerFileSystem);
+public sealed class UntransactedStore: TransactionStoreBase, ITransactableStore
+{
+  public UntransactedStore(IDirectory innerFileSystem) : base(innerFileSystem)
+  {
   }
+
+  public ITransactedDirectory BeginTransaction() => new PassthroughTransactedDirectory(innerFileSystem);
 }

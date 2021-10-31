@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace Melville.WpfControls.CalendarControls
+namespace Melville.WpfControls.CalendarControls;
+
+public interface ICalendarItem
 {
-    public interface ICalendarItem
-    {
-        object Content { get; }
-        DateTime Begin { get; }
-        DateTime End { get; }
-        DateTime LastDisplayDate { get; }
-    }
+    object Content { get; }
+    DateTime Begin { get; }
+    DateTime End { get; }
+    DateTime LastDisplayDate { get; }
 }

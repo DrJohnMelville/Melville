@@ -1,12 +1,11 @@
 ﻿using System.Windows.Controls;
 
-namespace Melville.Wpf.Samples.ThumbDrives
+namespace Melville.Wpf.Samples.ThumbDrives;
+
+public partial class ThumbDriveView : UserControl
 {
-    public partial class ThumbDriveView : UserControl
+    public ThumbDriveView()
     {
-        public ThumbDriveView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

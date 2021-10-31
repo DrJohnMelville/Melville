@@ -1,51 +1,50 @@
 ﻿using System;
 
-namespace Melville.Mvvm.TestHelpers.MockFiles
+namespace Melville.Mvvm.TestHelpers.MockFiles;
+
+internal class MockDirectoryTreeBuilderParent
 {
-    internal class MockDirectoryTreeBuilderParent
-    {
         
-    }
-    public class MockDirectoryTreeBuilder
+}
+public class MockDirectoryTreeBuilder
+{
+    private MockDirectory dir;
+
+    public MockDirectoryTreeBuilder(MockDirectory dir)
     {
-        private MockDirectory dir;
+        this.dir = dir;
+        dir.Create();
+    }
 
-        public MockDirectoryTreeBuilder(MockDirectory dir)
+    public MockDirectory Object => dir;
+
+    public MockDirectoryTreeBuilder(string path):this(new MockDirectory(path))
+    {
+    }
+
+    public MockDirectoryTreeBuilder():this("Q:\\Fake\\Dir")
+    {
+    }
+
+    public MockDirectoryTreeBuilder Folder(string name, 
+        Func<MockDirectoryTreeBuilder, object>? children = null)
+    {
+        var sub = (MockDirectory)dir.SubDirectory(name); 
+        // the cast has to succed because MockDirectory always creates mock subdirectories
+        sub.Create();
+        if (children != null)
         {
-            this.dir = dir;
-            dir.Create();
+            children(new MockDirectoryTreeBuilder(sub));
         }
+        return this;
+    }
 
-        public MockDirectory Object => dir;
+    public MockDirectoryTreeBuilder File(string name) =>
+        File(name, "Fake file content.");
 
-        public MockDirectoryTreeBuilder(string path):this(new MockDirectory(path))
-        {
-        }
-
-        public MockDirectoryTreeBuilder():this("Q:\\Fake\\Dir")
-        {
-        }
-
-        public MockDirectoryTreeBuilder Folder(string name, 
-            Func<MockDirectoryTreeBuilder, object>? children = null)
-        {
-            var sub = (MockDirectory)dir.SubDirectory(name); 
-              // the cast has to succed because MockDirectory always creates mock subdirectories
-            sub.Create();
-            if (children != null)
-            {
-                children(new MockDirectoryTreeBuilder(sub));
-            }
-            return this;
-        }
-
-        public MockDirectoryTreeBuilder File(string name) =>
-            File(name, "Fake file content.");
-
-        public MockDirectoryTreeBuilder File(string name, string fileContent)
-        {
-            dir.File(name).Create(fileContent);
-            return this;
-        }
+    public MockDirectoryTreeBuilder File(string name, string fileContent)
+    {
+        dir.File(name).Create(fileContent);
+        return this;
     }
 }

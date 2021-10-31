@@ -5,36 +5,35 @@ using Melville.Generators.INPC.Test.UnitTests;
 using Melville.INPC;
 using Xunit;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests
+namespace Melville.Generators.INPC.Test.IntegrationTests;
+
+public partial class GenericTest
 {
-    public partial class GenericTest
-    {
-        [AutoNotify] private List<int> numbers = new List<int>();
+    [AutoNotify] private List<int> numbers = new List<int>();
     
-        [Fact]
-        public void PropExists()
-        {
-            Assert.NotNull(Numbers);
-        }
-
-        [AutoNotify] private IDictionary<Lazy<OuterClass.InnerClass?>,
-            Task<IComparable<CodeWriterTests>>>? complexProp;
-
-        [Fact]
-        public void TestName()
-        {
-            Assert.Null(ComplexProp);
-            Assert.Equal(ComplexProp, complexProp); // will always succeed, but if it compiles, they
-              // the two items are the same static type
-
-        }
+    [Fact]
+    public void PropExists()
+    {
+        Assert.NotNull(Numbers);
     }
 
-    public class OuterClass
+    [AutoNotify] private IDictionary<Lazy<OuterClass.InnerClass?>,
+        Task<IComparable<CodeWriterTests>>>? complexProp;
+
+    [Fact]
+    public void TestName()
     {
-        public class InnerClass
-        {
+        Assert.Null(ComplexProp);
+        Assert.Equal(ComplexProp, complexProp); // will always succeed, but if it compiles, they
+        // the two items are the same static type
+
+    }
+}
+
+public class OuterClass
+{
+    public class InnerClass
+    {
             
-        }
     }
 }

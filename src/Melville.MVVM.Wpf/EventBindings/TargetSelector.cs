@@ -8,39 +8,38 @@ using System.Windows.Media.Media3D;
 using Melville.INPC;
 using Melville.Linq;
 
-namespace Melville.MVVM.Wpf.EventBindings
+namespace Melville.MVVM.Wpf.EventBindings;
+
+public interface IAdditionlTargets
 {
-  public interface IAdditionlTargets
-  {
-    IEnumerable<object> Targets();
-  }
-  [GenerateDP(typeof(object), "Target", Attached = true, Nullable = true)]
-  public static partial class TargetSelector
-  {
-    public static IList<object> ResolveTarget(DependencyObject sender, 
-      TargetListCompositeExpander expander) =>
-      expander.Expand(AugmentedTargetList(sender));
+  IEnumerable<object> Targets();
+}
+[GenerateDP(typeof(object), "Target", Attached = true, Nullable = true)]
+public static partial class TargetSelector
+{
+  public static IList<object> ResolveTarget(DependencyObject sender, 
+    TargetListCompositeExpander expander) =>
+    expander.Expand(AugmentedTargetList(sender));
 
-    private static IEnumerable<object?> AugmentedTargetList(DependencyObject sender) =>
-      ItemAndAllParents(sender)
-        .Append(Application.Current)
-        .Prepend(GetTarget(sender));
+  private static IEnumerable<object?> AugmentedTargetList(DependencyObject sender) =>
+    ItemAndAllParents(sender)
+      .Append(Application.Current)
+      .Prepend(GetTarget(sender));
 
-    private static IEnumerable<object?> ItemAndAllParents(DependencyObject sender) => 
-      FunctionalMethods.Sequence<DependencyObject?>(sender, AggressiveSearchForParent);
+  private static IEnumerable<object?> ItemAndAllParents(DependencyObject sender) => 
+    FunctionalMethods.Sequence<DependencyObject?>(sender, AggressiveSearchForParent);
 
-    private static DependencyObject? AggressiveSearchForParent(DependencyObject? current) =>
-      current == null?null:
+  private static DependencyObject? AggressiveSearchForParent(DependencyObject? current) =>
+    current == null?null:
       VisualParent(current) ??
       LogicalTreeHelper.GetParent(current) ??
       (current as Popup)?.PlacementTarget;
 
-    private static DependencyObject? VisualParent(DependencyObject current) =>
-      current switch
-      {
-        Visual or Visual3D => VisualTreeHelper.GetParent(current),
-        _ => null
-      };
+  private static DependencyObject? VisualParent(DependencyObject current) =>
+    current switch
+    {
+      Visual or Visual3D => VisualTreeHelper.GetParent(current),
+      _ => null
+    };
     
-  }
 }

@@ -1,9 +1,8 @@
 ﻿using  System.ComponentModel;
 
-namespace Melville.MVVM.BusinessObjects
+namespace Melville.MVVM.BusinessObjects;
+
+public interface IFirstClassProperty<T> : INotifyPropertyChanged
 {
-  public interface IFirstClassProperty<T> : INotifyPropertyChanged
-  {
-    T Value { get; set; }
-  }
+  T Value { get; set; }
 }

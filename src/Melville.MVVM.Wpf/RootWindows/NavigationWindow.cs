@@ -1,54 +1,53 @@
 ﻿using Melville.MVVM.BusinessObjects;
 
-namespace Melville.MVVM.Wpf.RootWindows
+namespace Melville.MVVM.Wpf.RootWindows;
+
+public interface INavigationWindow
 {
-    public interface INavigationWindow
+    void NavigateTo(object content);
+    void NavigateToPriorPage();
+}
+
+public interface IAcceptNavigationNotifications
+{
+    void NavigatedTo();
+    void NavigatedAwayFrom();
+}
+
+public class NavigationWindow : NotifyBase, INavigationWindow
+{
+    private readonly INavigationHistory history;
+
+    public NavigationWindow(INavigationHistory? history = null)
     {
-        void NavigateTo(object content);
-        void NavigateToPriorPage();
+        this.history = history ?? new NoNavigationHistory();
     }
 
-    public interface IAcceptNavigationNotifications
+    private object content = "No Content";
+    public object Content
     {
-        void NavigatedTo();
-        void NavigatedAwayFrom();
+        get => content;
+        private set => AssignAndNotify(ref content, value);
     }
 
-    public class NavigationWindow : NotifyBase, INavigationWindow
+    public void NavigateTo(object target)
     {
-        private readonly INavigationHistory history;
+        history.Push(Content);
+        NavigateWithoutRecordingHistory(target);
+    }
 
-        public NavigationWindow(INavigationHistory? history = null)
-        {
-            this.history = history ?? new NoNavigationHistory();
-        }
+    private void NavigateWithoutRecordingHistory(object target)
+    {
+        (Content as IAcceptNavigationNotifications)?.NavigatedAwayFrom();
+        Content = target;
+        (Content as IAcceptNavigationNotifications)?.NavigatedTo();
+    }
 
-        private object content = "No Content";
-        public object Content
+    public void NavigateToPriorPage()
+    {
+        if (history.Pop() is {} last)
         {
-            get => content;
-            private set => AssignAndNotify(ref content, value);
-        }
-
-        public void NavigateTo(object target)
-        {
-            history.Push(Content);
-            NavigateWithoutRecordingHistory(target);
-        }
-
-        private void NavigateWithoutRecordingHistory(object target)
-        {
-            (Content as IAcceptNavigationNotifications)?.NavigatedAwayFrom();
-            Content = target;
-            (Content as IAcceptNavigationNotifications)?.NavigatedTo();
-        }
-
-        public void NavigateToPriorPage()
-        {
-            if (history.Pop() is {} last)
-            {
-                NavigateWithoutRecordingHistory(last);
-            }
+            NavigateWithoutRecordingHistory(last);
         }
     }
 }
