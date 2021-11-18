@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0-Windows</TargetFramework>
+    <TargetFramework>net6.0-Windows</TargetFramework>
 
     <IsPackable>false</IsPackable>
 

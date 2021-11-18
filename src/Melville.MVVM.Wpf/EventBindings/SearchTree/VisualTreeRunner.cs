@@ -75,6 +75,12 @@ public class VisualTreeRunner : IVisualTreeRunner
             TryInvokeCommand(ref context, target);
     }
 
+    public object Run(Delegate target, params object?[] parameters)
+    {
+        RunMethod(target, parameters, out var result);
+        return result;
+    }
+    
     public bool RunMethod(Delegate function, object?[] parameters, out object? result)
     {
         var context = CreateContext(parameters, "");
