@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.CodeWriters;
 
 public class CodeWriter
 {
-    public GeneratorExecutionContext Context { get; }
+    private GeneratorExecutionContext Context { get; }
     private readonly HashSet<string> prefixLines = new();
     private readonly IndentedStringBuilder target = new();
 

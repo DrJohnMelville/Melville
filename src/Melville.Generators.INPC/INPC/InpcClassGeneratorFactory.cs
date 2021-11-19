@@ -9,8 +9,12 @@ public class InpcClassGeneratorFactory
 {
     private readonly INamedTypeSymbol stringSymbol;
 
+    //Warning is spurious in this context
+    //https://github.com/dotnet/roslyn-analyzers/issues/4845
+    #pragma warning disable RS1024
     private readonly ISet<INamedTypeSymbol> allTypes = new HashSet<INamedTypeSymbol>(
-        SymbolEqualityComparer.Default);
+        SymbolEqualityComparer.IncludeNullability);
+#pragma warning restore RS1024
 
     public InpcClassGeneratorFactory(IEnumerable<ClassToImplement> allClasses,
         INamedTypeSymbol stringSymbol)

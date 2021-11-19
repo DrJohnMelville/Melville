@@ -15,7 +15,7 @@ public record DpGenerationRequest(
     IEnumerable<MemberDeclarationSyntax> Members);
 
 [Generator]
-public class DependencyPropertyGenerator: PartialTypeGenerator
+public class DependencyPropertyGenerator: PartialTypeGenerator<DpGenerationRequest?>
 {
     public DependencyPropertyGenerator() : 
         base("DependencyPropertyGeneration",
@@ -28,26 +28,33 @@ public class DependencyPropertyGenerator: PartialTypeGenerator
         return false;
     }
 
-    protected override bool 
-        GenerateClassContents(IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, 
-            CodeWriter cw)
+    protected override DpGenerationRequest? PreProcess(IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, GeneratorExecutionContext context)
     {
-        var semanticModel = cw.Context.Compilation.GetSemanticModel(input.Key.SyntaxTree);
+        var semanticModel = context.Compilation.GetSemanticModel(input.Key.SyntaxTree);
         var symbolInfo = semanticModel.GetDeclaredSymbol(input.Key);
         if (!(symbolInfo is ITypeSymbol classSymbol))
         {
-            cw.ReportDiagnosticAt(input.Key, "DPGen0001", "Cannot find symbol info",
-                $"No symbol info for {input.Key.Identifier}", DiagnosticSeverity.Error);
-            return false;
+            context.ReportDiagnostic(Diagnostic.Create(
+                new DiagnosticDescriptor("DPGen0001", "Cannot find symbol info", 
+                    $"No symbol info for {input.Key.Identifier}", "Generation", 
+                    DiagnosticSeverity.Error, true),
+                Location.Create(input.Key.SyntaxTree, input.Key.Span)));
+            return null;
         }
 
-        var req = new DpGenerationRequest(classSymbol, semanticModel, input);
-        GenerateAttributes(req, cw);
+        return new DpGenerationRequest(classSymbol, semanticModel, input);
+    }
 
+    private static readonly SearchForAttribute searcher = new("Melville.INPC.GenerateDPAttribute");
+
+
+    protected override bool GenerateClassContents(DpGenerationRequest? input, CodeWriter cw)
+    {
+        if (input is null) return false;
+        GenerateAttributes(input, cw);
         return true;
     }
 
-    private static readonly SearchForAttribute searcher = new("Melville.INPC.GenerateDPAttribute"); 
     private static void GenerateAttributes(DpGenerationRequest request, CodeWriter cw)
     {
         foreach (var node in request.Members)
