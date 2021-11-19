@@ -32,8 +32,7 @@ public static class MacroSyntaxInterpreter
     {
         foreach (var template in templates.Select(i=>i.ArgumentList).Where(i=>i!=null))
         {
-            var exp = new MacroExpander(template!);
-            exp.Expand(codeWriter, attrs);
+            new MacroExpander(template!).Expand(codeWriter, attrs);
         }
     }
 }

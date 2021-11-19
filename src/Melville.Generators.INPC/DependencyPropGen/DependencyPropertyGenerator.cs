@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
 using Melville.Generators.INPC.PartialTypeGenerators;
@@ -6,6 +8,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.DependencyPropGen;
+
+public record DpGenerationRequest(
+    ITypeSymbol TypeSymbol,
+    SemanticModel SemanticModel,
+    IEnumerable<MemberDeclarationSyntax> Members);
 
 [Generator]
 public class DependencyPropertyGenerator: PartialTypeGenerator
@@ -33,32 +40,29 @@ public class DependencyPropertyGenerator: PartialTypeGenerator
                 $"No symbol info for {input.Key.Identifier}", DiagnosticSeverity.Error);
             return false;
         }
-            
-        GenerateAttributes(input, cw, semanticModel, classSymbol);
+
+        var req = new DpGenerationRequest(classSymbol, semanticModel, input);
+        GenerateAttributes(req, cw);
 
         return true;
     }
 
-    private static readonly SearchForAttribute searcher =
-        new("Melville.INPC.GenerateDPAttribute"); 
-    private static void GenerateAttributes(
-        IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, CodeWriter cw, 
-        SemanticModel semanticModel, ITypeSymbol classSymbol)
+    private static readonly SearchForAttribute searcher = new("Melville.INPC.GenerateDPAttribute"); 
+    private static void GenerateAttributes(DpGenerationRequest request, CodeWriter cw)
     {
-        foreach (var node in input)
+        foreach (var node in request.Members)
         {
             foreach (var attribute in searcher.FindAllAttributes(node))
             {
-                GenerateSingleDependencyProperty(cw, attribute, semanticModel, classSymbol, node);
+                GenerateSingleDependencyProperty(cw, attribute, node, request);
             }
         }
     }
 
     private static void GenerateSingleDependencyProperty(CodeWriter cw, AttributeSyntax attribute,
-        SemanticModel semanticModel,
-        ITypeSymbol classSymbol, MemberDeclarationSyntax targetMember)
+        MemberDeclarationSyntax targetMember, DpGenerationRequest request)
     { 
-        if (ParseAttribute(attribute, semanticModel, classSymbol, targetMember) is { } parser &&
+        if (ParseAttribute(attribute, request, targetMember) is { } parser &&
             EnsureValidAttribute(cw, attribute, parser))
         {
             parser.Generate(cw);
@@ -74,10 +78,9 @@ public class DependencyPropertyGenerator: PartialTypeGenerator
         return false;
     }
 
-    private static RequestParser ParseAttribute(AttributeSyntax attribute, SemanticModel semanticModel,
-        ITypeSymbol classSymbol, MemberDeclarationSyntax targetMember)
+    private static RequestParser ParseAttribute(AttributeSyntax attribute, DpGenerationRequest request, MemberDeclarationSyntax targetMember)
     {
-        var parser = new RequestParser(semanticModel, classSymbol);
+        var parser = new RequestParser(request.SemanticModel, request.TypeSymbol);
         parser.ParseAttributeTarget(targetMember);
         // we parse the target before the parameters, because the parameters override the conventions.
         parser.ParseAllParams(attribute.ArgumentList);

@@ -8,10 +8,10 @@ namespace Melville.Generators.INPC.PartialTypeGenerators;
 
 public abstract class PartialTypeGenerator<T> : ISourceGenerator
 {
+    protected abstract bool GlobalDeclarations(CodeWriter cw);
     protected abstract T PreProcess(
         IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input,
         GeneratorExecutionContext context);
-    protected abstract bool GlobalDeclarations(CodeWriter cw);
     protected abstract bool GenerateClassContents(T input, CodeWriter cw);
     protected virtual string ClassSuffix(T input) => "";
 
