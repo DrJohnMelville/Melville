@@ -174,10 +174,10 @@ namespace Outer
                 System.Windows.DependencyProperty.Register(""Novel"", typeof(int),
                 typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
             
-        res.FileDoesNotContain("C.DependencyPropertyGeneration.cs", ".Register");
-        res.FileContains("C.DependencyPropertyGeneration.cs", 
+        res.LastFileDoesNotContain( ".Register");
+        res.LastFileContains( 
             "get => (int)this.GetValue(Outer.C.NovelProperty);");
-        res.FileContains("C.DependencyPropertyGeneration.cs", 
+        res.LastFileContains( 
             "set => this.SetValue(Outer.C.NovelProperty, value);");
     }
 
@@ -190,7 +190,7 @@ namespace Outer
     public void GeneratePropWithDefault(string prompt, string defaultText)
     {
         var res = RunTest(prompt);
-        res.FileContains("C.DependencyPropertyGeneration.cs", defaultText);
+        res.LastFileContains( defaultText);
             
     }
     [Fact]
@@ -201,14 +201,14 @@ namespace Outer
                 System.Windows.DependencyProperty.RegisterAttached(""Novel"", typeof(int),
                 typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
             
-        res.FileDoesNotContain("C.DependencyPropertyGeneration.cs", ".Register");
-        res.FileContains("C.DependencyPropertyGeneration.cs", 
+        res.LastFileDoesNotContain(".Register");
+        res.LastFileContains( 
             "public static int GetNovel(System.Windows.DependencyObject obj) =>");
-        res.FileContains("C.DependencyPropertyGeneration.cs", 
+        res.LastFileContains( 
             "(int)obj.GetValue(Outer.C.NovelProperty);");
-        res.FileContains("C.DependencyPropertyGeneration.cs", 
+        res.LastFileContains( 
             "public static void SetNovel(System.Windows.DependencyObject obj, int value) =>");
-        res.FileContains("C.DependencyPropertyGeneration.cs", 
+        res.LastFileContains( 
             "obj.SetValue(Outer.C.NovelProperty, value);");
     }
 
@@ -217,7 +217,7 @@ namespace Outer
         var res = RunTest(source);
         foreach (var content in contents)
         {
-            res.FileContains("C.DependencyPropertyGeneration.cs", content);
+            res.LastFileContains(content);
         }
             
     }

@@ -79,6 +79,16 @@ public class GeneratorTestBed
         Assert.DoesNotContain(fileContent, TreeFromName(fileName).ToString());
             
     }
+    public void LastFileContains(string fileContent)
+    {
+        Assert.Contains(fileContent, compilation.SyntaxTrees.Last().ToString());
+            
+    }
+    public void LastFileDoesNotContain(string fileContent)
+    {
+        Assert.DoesNotContain(fileContent,  compilation.SyntaxTrees.Last().ToString());
+            
+    }
 
     public void FileEqual(string fileName, string fileContent)
     {
