@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.Macros;
 public class MacroGenerator:PartialTypeGenerator
 {
     public MacroGenerator() : base("MacroGen", 
-        "Melville.INPC.MacroCodeAttribute", "Melville.INPC.MacroCodeAttribute")
+        "Melville.INPC.MacroCodeAttribute")
     {
     }
 
