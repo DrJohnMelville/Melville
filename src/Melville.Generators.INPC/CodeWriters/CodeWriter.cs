@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Melville.Generators.INPC.CodeWriters;
 
@@ -22,37 +21,6 @@ public abstract  class CodeWriter
     
     public abstract void PublishCodeInFile(string fileName);
     public abstract void ReportDiagnostic(Diagnostic diagnostic);
-}
-
-public class PostInitializationCodeWriter: CodeWriter
-{
-    private readonly IncrementalGeneratorPostInitializationContext context;
-
-    public PostInitializationCodeWriter(IncrementalGeneratorPostInitializationContext context)
-    {
-        this.context = context;
-    }
-
-    public override void PublishCodeInFile(string fileName) => 
-        context.AddSource(fileName, SourceText.From(ToString(), Encoding.UTF8));
-
-    public override void ReportDiagnostic(Diagnostic diagnostic) =>
-        throw new NotSupportedException("Cannot generate diagnostics in post initialization");
-}
-public class SourceProductionCodeWriter: CodeWriter
-{
-    private readonly SourceProductionContext context;
-
-    public SourceProductionCodeWriter(SourceProductionContext context)
-    {
-        this.context = context;
-    }
-
-    public override void PublishCodeInFile(string fileName) => 
-        context.AddSource(fileName, SourceText.From(ToString(), Encoding.UTF8));
-
-    public override void ReportDiagnostic(Diagnostic diagnostic) =>
-        throw new NotSupportedException("Cannot generate diagnostics in post initialization");
 }
 
 public static class CodeWriterOperations
@@ -76,6 +44,37 @@ public static class CodeWriterOperations
                 cw.AppendLine($"[{attr}]");
             }
         }
-
     }
+
+    public static void PublishCodeInFile(this CodeWriter cw, SyntaxNode namedAfter, string prefix)
+    {
+        cw.PublishCodeInFile(FileNameForMember(namedAfter, prefix));
+    }
+    
+    private static string FileNameForMember(SyntaxNode member, string postfix)
+    {
+        var sb = new StringBuilder();
+        foreach (var symbol in member.AncestorsAndSelf().Reverse())
+        {
+            sb.Append(NameForNode(symbol, postfix));
+            sb.Append('.');
+        }
+        sb.Append("cs");
+        return sb.ToString();
+    }
+
+    private static string NameForNode(SyntaxNode symbol, string prefix) => symbol switch
+    {
+        MethodDeclarationSyntax mds => mds.Identifier.ToString(),
+        PropertyDeclarationSyntax pds => pds.Identifier.ToString(),
+        EventDeclarationSyntax pds => pds.Identifier.ToString(),
+        IndexerDeclarationSyntax pds => "Indexer",
+        FieldDeclarationSyntax fds => string.Join(
+            "", fds.Declaration.Variables.Select(i => i.Identifier.ToString())),
+        BaseTypeDeclarationSyntax btds => btds.Identifier.ToString(),
+        BaseNamespaceDeclarationSyntax nds => nds.Name.ToString(),
+        CompilationUnitSyntax => prefix,
+        _ => "Unnamed"
+    };
+
 }
