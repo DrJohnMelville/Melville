@@ -1,30 +1,23 @@
 ﻿using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
+using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.Macros;
 
 [Generator]
-public class MacroGenerator : IIncrementalGenerator
+public class MacroGenerator : LabeledMemberGenerator
 {
     private static readonly SearchForAttribute attrFinder = new("Melville.INPC.MacroCodeAttribute");
-    public void Initialize(IncrementalGeneratorInitializationContext context)
+
+    public MacroGenerator() : base(attrFinder, "MacroGen")
     {
-        context.RegisterSourceOutput(
-            context.SyntaxProvider.CreateSyntaxProvider(
-                static (sn, _) => sn is MemberDeclarationSyntax mds && attrFinder.HasAttribute(mds),
-                static (gsc, _) => (MemberDeclarationSyntax)gsc.Node
-            ), GenerateCode);
     }
 
-    private void GenerateCode(SourceProductionContext context, MemberDeclarationSyntax member)
+    protected override bool GenerateCodeForMember(GeneratorSyntaxContext member, CodeWriter cw)
     {
-        var cw = new SourceProductionCodeWriter(context);
-        using (WriteCodeNear.Symbol(member, cw))
-        {
-            MacroSyntaxInterpreter.ExpandSingleMacroSet(member, cw);
-        }
-        cw.PublishCodeInFile(member, "MacroGen");
+        MacroSyntaxInterpreter.ExpandSingleMacroSet(member.Node, cw);
+        return true;
+
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -8,20 +6,8 @@ namespace Melville.Generators.INPC.DelegateToGen;
 
 public static class DelegationRequestParser
 {
-    public static DelegationRequest Parse(
-        SemanticModel model, TypeDeclarationSyntax type, IEnumerable<MemberDeclarationSyntax> members)
-    {
-        if (!(model.GetDeclaredSymbol(type) is INamedTypeSymbol classSymbol))
-            throw new InvalidProgramException("Class decl must resolve to a type");
-        return new DelegationRequest(classSymbol, ParseItems(model, members));
-    }
-
-    private static List<IDelegatedMethodGenerator> ParseItems(
-        SemanticModel model, IEnumerable<MemberDeclarationSyntax> members) =>
-        members.Select(i=>ParseItem(model, i)).OfType<IDelegatedMethodGenerator>().ToList();
-
-    private static IDelegatedMethodGenerator? ParseItem(
-        SemanticModel model, MemberDeclarationSyntax member) =>
+    public static IDelegatedMethodGenerator? ParseItem(
+        SemanticModel model, SyntaxNode member) =>
         member switch
         {
             FieldDeclarationSyntax fs => ParseFromField(model, fs),

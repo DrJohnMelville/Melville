@@ -1,34 +1,27 @@
-﻿using System.Linq;
+﻿using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
 using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.DelegateToGen;
 
 [Generator]
-public class DelegateToGenerator: PartialTypeGenerator<DelegationRequest>
+public class DelegateToGenerator: LabeledMemberGenerator
 {
-    public DelegateToGenerator() : 
-        base("DelegateToGeneration", "Melville.INPC.DelegateToAttribute")
+    private static readonly SearchForAttribute attrFinder = new("Melville.INPC.DelegateToAttribute");
+
+    public DelegateToGenerator() : base(attrFinder, "GeneratedDelegator")
     {
     }
-    
-    protected override DelegationRequest PreProcess(
-        IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, 
-        GeneratorExecutionContext context) =>
-        DelegationRequestParser.Parse(GetSemanticModel(input, context), input.Key, input);
 
-    private static SemanticModel GetSemanticModel(
-        IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, 
-        GeneratorExecutionContext context) => 
-        context.Compilation.GetSemanticModel(input.Key.SyntaxTree);
-
-    protected override bool GlobalDeclarations(CodeWriter cw) => true;
-
-    protected override bool GenerateClassContents(DelegationRequest input, CodeWriter cw)
+    protected override bool GenerateCodeForMember(GeneratorSyntaxContext member, CodeWriter cw)
     {
-        input.GenerateForwardingMethods(cw);
+        if (DelegationRequestParser.ParseItem(member.SemanticModel, member.Node) is not { } methodGenerator)
+            return false;
+        if (member.Node.Parent is not {} parentSyntax ||
+            member.SemanticModel.GetDeclaredSymbol(parentSyntax) is not ITypeSymbol parent)
+            return false;
+        methodGenerator.GenerateForwardingMethods(parent, cw);
         return true;
     }
 }

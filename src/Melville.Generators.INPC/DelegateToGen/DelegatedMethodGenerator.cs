@@ -11,7 +11,6 @@ namespace Melville.Generators.INPC.DelegateToGen;
 
 public interface IDelegatedMethodGenerator
 {
-    string? InheritFrom();
     void GenerateForwardingMethods(ITypeSymbol parentClass, CodeWriter cw);
 }
     

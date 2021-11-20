@@ -19,15 +19,15 @@ namespace Outer
 }");
     [Theory]
     [InlineData("private IInterface Field;", "this.Field.A()")]
-    [InlineData("public IInterface RProp{get;}", "this.RProp.A()")]
-    [InlineData("public IInterface RProp => null", "this.RProp.A()")]
-    [InlineData("public IInterface Prop{get;set;}", "this.Prop.A()")]
-    [InlineData("public IInterface Method() => null", "this.Method().A()")]
+    [InlineData("public IInterface Field{get;}", "this.Field.A()")]
+    [InlineData("public IInterface Field => null", "this.Field.A()")]
+    [InlineData("public IInterface Field{get;set;}", "this.Field.A()")]
+    [InlineData("public IInterface Field() => null", "this.Field().A()")]
     public void InheritFromDelegatedInterface(string member, string methodCall)
     {
         var res = RunTest("[DelegateTo] "+member, @"int A();");
-        res.FileContains("C.DelegateToGeneration.cs", "public partial class C");            
-        res.FileContains("C.DelegateToGeneration.cs", methodCall);            
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "public partial class C");            
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", methodCall);            
     }
 
     [Theory]
@@ -37,7 +37,7 @@ namespace Outer
     public void DelegationPrefixes(string targetMember, string output)
     {
         var res = RunTest(targetMember, "int A {get;}");
-        res.FileContains("C.DelegateToGeneration.cs",
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
             output);
     }
     [Theory]
@@ -74,7 +74,7 @@ namespace Outer
     public void ImplementsMembers(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FileContains("C.DelegateToGeneration.cs",
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
             output);
     }
 
@@ -83,8 +83,8 @@ namespace Outer
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; public int A()=>1;",
             "int A(); int B(int b1);");
-        res.FileContains("C.DelegateToGeneration.cs", "int B(int b1)");
-        res.FileDoesNotContain("C.DelegateToGeneration.cs", "int A(");
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "int B(int b1)");
+        res.FileDoesNotContain("GeneratedDelegator.Outer.C.Field.cs", "int A(");
     }
         
     [Theory]
@@ -93,15 +93,15 @@ namespace Outer
     public void DoNotImplementHiddenMethods(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FileDoesNotContain("C.DelegateToGeneration.cs",
+        res.FileDoesNotContain("GeneratedDelegator.Outer.C.Field.cs",
             output);
     }
         
     [Fact]
     public void InheritedInterface()
     {
-        var res = RunTest("[DelegateTo] private IChildInterface field;", "int Parent();");
-        res.FileContains("C.DelegateToGeneration.cs", "public void ChildMethod() => this.field.ChildMethod();");
-        res.FileContains("C.DelegateToGeneration.cs", "public int Parent() => this.field.Parent();");
+        var res = RunTest("[DelegateTo] private IChildInterface Field;", "int Parent();");
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "public void ChildMethod() => this.Field.ChildMethod();");
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "public int Parent() => this.Field.Parent();");
     }
 }
