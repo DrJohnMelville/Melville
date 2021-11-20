@@ -12,7 +12,7 @@ public static class NameSpaceBlockWriter
     {
         DuplicateEnclosingUsingDeclarations(outerWriter, node);
         GenerateFileScopedNamespace(outerWriter, node);
-        return GenerateEnclosingNamemspaceBlockss(outerWriter, node);
+        return GenerateEnclosingNamemspaceBlocks(outerWriter, node);
     }
 
     private static void GenerateFileScopedNamespace(CodeWriter outerWriter, SyntaxNode node)
@@ -34,10 +34,10 @@ public static class NameSpaceBlockWriter
         outerWriter.AppendLine(";");
     }
 
-    private static IDisposable GenerateEnclosingNamemspaceBlockss(CodeWriter outerWriter, SyntaxNode node) => 
-        outerWriter.EnclosingBlockWriter<NamespaceDeclarationSyntax>(node, EminNamespaceDeclaratioText);
+    private static IDisposable GenerateEnclosingNamemspaceBlocks(CodeWriter outerWriter, SyntaxNode node) => 
+        outerWriter.EnclosingBlockWriter<NamespaceDeclarationSyntax>(node, EmitNamespaceDeclarationText);
 
-    private static void EminNamespaceDeclaratioText(CodeWriter writer, NamespaceDeclarationSyntax ns)
+    private static void EmitNamespaceDeclarationText(CodeWriter writer, NamespaceDeclarationSyntax ns)
     {
         writer.Append("namespace ");
         writer.AppendLine(ns.Name.ToString());

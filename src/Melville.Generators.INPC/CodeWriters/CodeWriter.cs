@@ -39,6 +39,21 @@ public class PostInitializationCodeWriter: CodeWriter
     public override void ReportDiagnostic(Diagnostic diagnostic) =>
         throw new NotSupportedException("Cannot generate diagnostics in post initialization");
 }
+public class SourceProductionCodeWriter: CodeWriter
+{
+    private readonly SourceProductionContext context;
+
+    public SourceProductionCodeWriter(SourceProductionContext context)
+    {
+        this.context = context;
+    }
+
+    public override void PublishCodeInFile(string fileName) => 
+        context.AddSource(fileName, SourceText.From(ToString(), Encoding.UTF8));
+
+    public override void ReportDiagnostic(Diagnostic diagnostic) =>
+        throw new NotSupportedException("Cannot generate diagnostics in post initialization");
+}
 
 public static class CodeWriterOperations
 {

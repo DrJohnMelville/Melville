@@ -7,19 +7,18 @@ namespace Melville.Generators.INPC.Test.Macros;
 
 public class TextTest
 {
-    private GeneratorTestBed RunTest(string s) =>
+    protected GeneratorTestBed RunTest(string s) =>
         new(new MacroGenerator(), @"
 using Melville.INPC;
 namespace Outer
 {
     public partial class C {" +
-                                  s +
-                                  @"
+                                   s +
+                                   @"
     private void Func();
 }
 }
 ");
-
     [Theory]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "namespace Outer")]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "class C")]
@@ -32,7 +31,7 @@ namespace Outer
     [InlineData("[MacroCode(\"// Macro: ~0~\", Postfix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// 233")]
         
     public void SimpleSub(string input, string output) => 
-        RunTest(input).FileContains("C.MacroGen.cs", output);
+        RunTest(input).FileContains("MacroGen.Outer.C.Func.cs", output);
 
     [Fact]
     public void Prefix()
@@ -43,8 +42,8 @@ namespace Outer
     [Fact]
     public void RepeatedUsing()
     {
-        RunTest(@"[MacroCode(""// Code: ~0~/~1~"", Prefix = ""public void Generated() {"", Postfix = ""}"")]")
-            .FileContains("C.MacroGen.cs", "using Melville.INPC");
+        var gen = RunTest(@"[MacroCode(""// Code: ~0~/~1~"", Prefix = ""public void Generated() {"", Postfix = ""}"")]");
+        gen.FileContains("MacroGen.Outer.C.Func.cs", "using Melville.INPC");
     }    
     [Fact]
     public void Gen()
@@ -53,7 +52,7 @@ namespace Outer
         [MacroItem(1, ""One"")]
         [MacroItem(2, ""Two"")]
         [MacroItem(3, ""Three"")]
-").FileContains("C.MacroGen.cs", "// Code: 1/One");
+").FileContains("MacroGen.Outer.C.Func.cs", "// Code: 1/One");
     }
 }
 public partial class WithMacro

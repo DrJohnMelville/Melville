@@ -10,20 +10,20 @@ public static class EnclosingClassWriter
 {
 
     public static IDisposable GenerateEnclosingClasses(this CodeWriter writer, SyntaxNode node,
-        string innermostSuffix) =>
+        string baseDeclaration) =>
         writer.EnclosingBlockWriter<TypeDeclarationSyntax>(node, 
             (cw,cd)=>WriteSingleClassDecl(cw, cd, ""),
-            (cw,cd)=>WriteSingleClassDecl(cw,cd, innermostSuffix));
+            (cw,cd)=>WriteSingleClassDecl(cw,cd, baseDeclaration));
 
     private static void WriteSingleClassDecl(CodeWriter writer, TypeDeclarationSyntax classDecl,
-        string suffix)
+        string baseDeclaration)
     {
         CheckForPartialDeclaration(writer, classDecl);
-        CopyClassDeclarationBeforeOpeningBrace(writer, classDecl, suffix);
+        CopyClassDeclarationBeforeOpeningBrace(writer, classDecl, baseDeclaration);
     }
 
     private static void CopyClassDeclarationBeforeOpeningBrace(CodeWriter writer, 
-        TypeDeclarationSyntax classDecl, string suffix)
+        TypeDeclarationSyntax classDecl, string baseDeclaration)
     {
         writer.Append(classDecl.Modifiers.ToString());
         writer.Append(" ");
@@ -31,7 +31,7 @@ public static class EnclosingClassWriter
         writer.Append(" ");
         writer.Append(classDecl.Identifier.ToString());
         if (classDecl.TypeParameterList is { } tpl) writer.Append(tpl.ToString());
-        writer.Append(suffix);
+        writer.Append(baseDeclaration);
         writer.Append(" ");
         writer.Append(classDecl.ConstraintClauses.ToString());
         writer.AppendLine();

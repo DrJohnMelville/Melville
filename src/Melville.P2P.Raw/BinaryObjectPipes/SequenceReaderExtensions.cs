@@ -14,14 +14,14 @@ public static partial class SequenceReaderExtensions
     [MacroItem("System.Single", "ToSingle")]
     [MacroCode(
         @"public static bool TryReadLittleEndian(this ref System.Buffers.SequenceReader<byte> reader, out ~0~ value)
-{
-    value = 0;
-    var baseSpan = reader.UnreadSpan;
-    if (baseSpan.Length < sizeof(~0~)) return false;
-    value = System.BitConverter.~1~(baseSpan);
-    reader.Advance(sizeof(~0~));
-    return true;
-}")]
+    {
+        value = 0;
+        var baseSpan = reader.UnreadSpan;
+        if (baseSpan.Length < sizeof(~0~)) return false;
+        value = System.BitConverter.~1~(baseSpan);
+        reader.Advance(sizeof(~0~));
+        return true;
+    }")]
     public static bool TryReadLittleEndian(this ref SequenceReader<byte> reader, out byte value) => 
         reader.TryRead(out value);
 

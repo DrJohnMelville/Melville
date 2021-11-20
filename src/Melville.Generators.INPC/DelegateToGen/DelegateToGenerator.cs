@@ -13,9 +13,7 @@ public class DelegateToGenerator: PartialTypeGenerator<DelegationRequest>
         base("DelegateToGeneration", "Melville.INPC.DelegateToAttribute")
     {
     }
-        
-    protected override string ClassSuffix(DelegationRequest input) => "";
-
+    
     protected override DelegationRequest PreProcess(
         IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input, 
         GeneratorExecutionContext context) =>

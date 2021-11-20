@@ -13,7 +13,7 @@ public abstract class PartialTypeGenerator<T> : ISourceGenerator
         IGrouping<TypeDeclarationSyntax, MemberDeclarationSyntax> input,
         GeneratorExecutionContext context);
     protected abstract bool GenerateClassContents(T input, CodeWriter cw);
-    protected virtual string ClassSuffix(T input) => "";
+    private string ClassSuffix(T input) => "";
 
     private readonly string[] targetAttributes;
     private readonly string suffix;
@@ -52,10 +52,20 @@ public abstract class PartialTypeGenerator<T> : ISourceGenerator
 
     private void GenerateCodeForAllClasses(GeneratorExecutionContext context, PartialTypeReceiver ptr)
     {
-        TryGenerateCode($"{suffix}Attributes", context, InnerGlobalDeclarations);
+        TryGenerateConstantContent(context);
+
         foreach (var (group, intermed) in ptr.ItemsByType().Select(i=>(i, PreProcess(i,context))).ToList())
         {
             TryGeneratePartialClass(group.Key, context, intermed);
+        }
+    }
+
+    private void TryGenerateConstantContent(GeneratorExecutionContext context)
+    {
+        var codeWriter = new GeneratorContextCodeWriter(context);
+        if (InnerGlobalDeclarations(codeWriter))
+        {
+            codeWriter.PublishCodeInFile(namer.CreateFileName($"{suffix}Attributes"));
         }
     }
 
@@ -69,23 +79,13 @@ public abstract class PartialTypeGenerator<T> : ISourceGenerator
     private void TryGeneratePartialClass(
         TypeDeclarationSyntax parent, GeneratorExecutionContext context, T input)
     {
-        TryGenerateCode(parent.Identifier.ToString(), context, cw =>
+        var cw = new GeneratorContextCodeWriter(context);
+        using (WriteCodeNear.Symbol(parent, cw))
         {
-            using (cw.GeneratePartialClassContext(parent))
-            using (cw.GenerateEnclosingClasses(parent, ClassSuffix(input)))
-            {
-                return GenerateClassContents(input, cw);
-            }
-        });
-    }
-    private void TryGenerateCode(
-        string proposedNamePrefix,
-        GeneratorExecutionContext context, 
-        Func<CodeWriter, bool> contentFunc)
-    {
-        var codeWriter = (CodeWriter)new GeneratorContextCodeWriter(context);
-        if (!contentFunc(codeWriter)) return; // no code to generate
-        codeWriter.PublishCodeInFile(namer.CreateFileName(proposedNamePrefix));
+            if (!GenerateClassContents(input, cw)) return;
+        }
+        cw.PublishCodeInFile(namer.CreateFileName(parent.Identifier.ToString()));
+        
     }
 }
     

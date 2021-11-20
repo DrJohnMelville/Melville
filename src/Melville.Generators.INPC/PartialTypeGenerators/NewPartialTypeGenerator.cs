@@ -52,10 +52,8 @@ public abstract class NewPartialTypeGenerator<T>: IIncrementalGenerator
     }
 
     private int num = 0;
-    private bool HasAttributes(SyntaxNode member, CancellationToken arg2)
-    {
-        return member is MemberDeclarationSyntax mds && mds.AttributeLists.Count > 0;
-    }
+    private bool HasAttributes(SyntaxNode member, CancellationToken arg2) => 
+        member is MemberDeclarationSyntax mds && mds.AttributeLists.Count > 0;
 
     private void GenerateStaticOutput(IncrementalGeneratorPostInitializationContext context)
     {
