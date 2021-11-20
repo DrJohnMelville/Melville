@@ -18,7 +18,7 @@ public sealed class InpcClassGenerator
     {
         this.target = target;
         this.notifyStrategy = notifyStrategy;
-        codeWriter = new CodeWriter(context);
+        codeWriter = new GeneratorContextCodeWriter(context);
     }
 
     public void Generate(GeneratedFileUniqueNamer namer)

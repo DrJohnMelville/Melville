@@ -83,7 +83,7 @@ public abstract class PartialTypeGenerator<T> : ISourceGenerator
         GeneratorExecutionContext context, 
         Func<CodeWriter, bool> contentFunc)
     {
-        var codeWriter = new CodeWriter(context);
+        var codeWriter = (CodeWriter)new GeneratorContextCodeWriter(context);
         if (!contentFunc(codeWriter)) return; // no code to generate
         codeWriter.PublishCodeInFile(namer.CreateFileName(proposedNamePrefix));
     }

@@ -8,17 +8,25 @@ namespace Melville.Generators.INPC.Test.UnitTests;
 
 public class GeneratorTestBed
 {
-    public GeneratorTestBed(ISourceGenerator sut, string code)
+    public GeneratorTestBed(ISourceGenerator sut, string code) : this(
+        CSharpGeneratorDriver.Create(ImmutableArray.Create(sut), ImmutableArray<AdditionalText>.Empty,
+            CSharpParseOptions), code)
+    {
+    }
+
+    public GeneratorTestBed(IIncrementalGenerator sut, string code): this(
+        CSharpGeneratorDriver.Create(sut), code)
+    {
+    }
+    public GeneratorTestBed(CSharpGeneratorDriver driver, string code)
     {
         var sourceCompilation = CompileCode(code);
-        var opt = new CSharpParseOptions(kind: SourceCodeKind.Regular, documentationMode: DocumentationMode.Parse);
-        var driver = CSharpGeneratorDriver.Create(ImmutableArray.Create<ISourceGenerator>(sut), 
-            ImmutableArray<AdditionalText>.Empty, opt);
         driver.RunGeneratorsAndUpdateCompilation(sourceCompilation, out compilation, out diagnostics);
     }
 
-    private Compilation compilation;
+    private readonly Compilation compilation;
     private ImmutableArray<Diagnostic> diagnostics;
+    private static readonly CSharpParseOptions CSharpParseOptions = new CSharpParseOptions(kind: SourceCodeKind.Regular, documentationMode: DocumentationMode.Parse);
 
 
     private static CSharpCompilation CompileCode(string code)
