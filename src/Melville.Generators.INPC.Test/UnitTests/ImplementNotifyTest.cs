@@ -22,8 +22,8 @@ namespace NM
 }
 }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "namespace Outer");
-        tb.FileContains("C.INPC.cs", "namespace NM");
+        tb.FileContains("INPC.Outer.NM.C.cs", "namespace Outer");
+        tb.FileContains("INPC.Outer.NM.C.cs", "namespace NM");
     }
 
     [Fact]
@@ -37,8 +37,8 @@ namespace NM
     [AutoNotify] private int intProp,ip2;
   }}");
         tb.AssertNoDiagnostics();
-        tb.FileContains("D.INPC.cs", "public partial class C");
-        tb.FileContains("D.INPC.cs",
+        tb.FileContains("INPC.C.D.cs", "public partial class C");
+        tb.FileContains("INPC.C.D.cs",
             "public partial class D: Melville.INPC.IExternalNotifyPropertyChanged");
     }
 
@@ -53,8 +53,8 @@ using Melville.INPC;
     [AutoNotify] private int intProp,ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "public int IntProp");
-        tb.FileContains("C.INPC.cs", "public int Ip2");
+        tb.FileContains("INPC.C.cs", "public int IntProp");
+        tb.FileContains("INPC.C.cs", "public int Ip2");
 
     }
 
@@ -69,7 +69,7 @@ using Melville.INPC;
      private int intProp,ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.NoSuchFile("C.INPC.cs");
+        tb.NoSuchFile("INPC.C.cs");
     }
     [Fact]
     public void ElaborateMarkedClass()
@@ -83,8 +83,8 @@ using Melville.INPC;
      private int intProp,ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileDoesNotContain("C.INPC.cs", "AutoNotify");
-        tb.FileContains("C.INPC.cs", 
+        tb.FileDoesNotContain("INPC.C.cs", "AutoNotify");
+        tb.FileContains("INPC.C.cs", 
             "void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)");
     }
 
@@ -101,7 +101,7 @@ using Melville.INPC;
      [A2.AutoNotify] private int intProp,ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.NoSuchFile("C.INPC.cs");
+        tb.NoSuchFile("INPC.C.cs");
     }
 
     [Fact]
@@ -116,8 +116,8 @@ using Melville.INPC;
      [AutoNotify] private int ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "public int Ip2");
-        tb.FileDoesNotContain("C.INPC.cs", "public int IntProp");
+        tb.FileContains("INPC.C.cs", "public int Ip2");
+        tb.FileDoesNotContain("INPC.C.cs", "public int IntProp");
     }
 
     [Fact]
@@ -132,7 +132,7 @@ using Melville.INPC;
      [Melville.INPC.AutoNotify] private int ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "public int Ip2");
+        tb.FileContains("INPC.C.cs", "public int Ip2");
     }
 
     [Fact]
@@ -146,8 +146,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotify] private int ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "public int Ip2");
-        tb.FileDoesNotContain("C.INPC.cs", "public int IntProp");
+        tb.FileContains("INPC.C.cs", "public int Ip2");
+        tb.FileDoesNotContain("INPC.C.cs", "public int IntProp");
     }
 
     [Fact]
@@ -161,8 +161,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "public int Ip2");
-        tb.FileDoesNotContain("C.INPC.cs", "public int IntProp");
+        tb.FileContains("INPC.C.cs", "public int Ip2");
+        tb.FileDoesNotContain("INPC.C.cs", "public int IntProp");
     }
 
     [Fact]
@@ -177,7 +177,7 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileDoesNotContain("C.INPC.cs", "IExternalNotifyPropertyChange");
+        tb.FileDoesNotContain("INPC.C.cs", "IExternalNotifyPropertyChange");
     }
 
     [Fact]
@@ -194,8 +194,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "void INot.OnPropertyChanged(string");
-        tb.FileDoesNotContain("C.INPC.cs", "IExternalNotifyPropertyChange");
+        tb.FileContains("INPC.C.cs", "void INot.OnPropertyChanged(string");
+        tb.FileDoesNotContain("INPC.C.cs", "IExternalNotifyPropertyChange");
     }
 
     [Fact]
@@ -213,9 +213,9 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}}}");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "((NS.INot)this).OnPropertyChanged(\"Ip2\")");
-        tb.FileDoesNotContain("C.INPC.cs", "void NS.INot.OnPropertyChanged(string");
-        tb.FileDoesNotContain("C.INPC.cs", "IExternalNotifyPropertyChange");
+        tb.FileContains("INPC.NS.C.cs", "((NS.INot)this).OnPropertyChanged(\"Ip2\")");
+        tb.FileDoesNotContain("INPC.NS.C.cs", "void NS.INot.OnPropertyChanged(string");
+        tb.FileDoesNotContain("INPC.NS.C.cs", "IExternalNotifyPropertyChange");
     }
     [Fact]
     public void UseInheritedInterfaceMethod()
@@ -232,8 +232,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}}}");
         tb.AssertNoDiagnostics();
-        tb.FileDoesNotContain("C.INPC.cs", "IExternalNotifyPropertyChange");
-        tb.FileContains("C.INPC.cs", "((NS.I)this).OnPropertyChanged");
+        tb.FileDoesNotContain("INPC.NS.C.cs", "IExternalNotifyPropertyChange");
+        tb.FileContains("INPC.NS.C.cs", "((NS.I)this).OnPropertyChanged");
     }
     [Fact]
     public void Generate()
@@ -247,7 +247,7 @@ using Melville.INPC;
   }
 ");
         tb.AssertNoDiagnostics();
-        tb.FileEqual("C.INPC.cs",
+        tb.FileEqual("INPC.C.cs",
             @"#nullable enable
 using Melville.INPC;
 public partial class C: Melville.INPC.IExternalNotifyPropertyChanged 
@@ -293,8 +293,8 @@ namespace NM
     [AutoNotify] private int ip;
   }}
 }}");
-        tb.FileContains("C.INPC.cs", included);
-        tb.FileDoesNotContain("C.INPC.cs", excluded);
+        tb.FileContains("INPC.NM.C.cs", included);
+        tb.FileDoesNotContain("INPC.NM.C.cs", excluded);
     }
 
     [Fact]
@@ -310,8 +310,8 @@ namespace NM
     [AutoNotify] private int ip;
   }
 }");
-        tb.FileContains("C.INPC.cs", "namespace NM\r\n{");
-        tb.FileDoesNotContain("C.INPC.cs", "namespace NM;");
+        tb.FileContains("INPC.NM.C.cs", "namespace NM\r\n{");
+        tb.FileDoesNotContain("INPC.NM.C.cs", "namespace NM;");
             
     }
     [Fact]
@@ -325,8 +325,8 @@ public class C
 { 
   [AutoNotify] private int ip;
 }");
-        tb.FileDoesNotContain("C.INPC.cs", "namespace NM.A.B\r\n{");
-        tb.FileContains("C.INPC.cs", "namespace NM.A.B;");
+        tb.FileDoesNotContain("INPC.NM.A.B.C.cs", "namespace NM.A.B\r\n{");
+        tb.FileContains("INPC.NM.A.B.C.cs", "namespace NM.A.B;");
             
     }
 
@@ -359,7 +359,7 @@ namespace NM
     {
         [AutoNotify] private int y;
     }");
-        tb.FileContains("ImplementInheritedINPC.INPC.cs",
+          tb.FileContains("INPC.ImplementInheritedINPC.cs",
             "public partial class ImplementInheritedINPC \r\n{");
     }
 
@@ -376,7 +376,7 @@ namespace NM
     {
         [AutoNotify] private int y;
     }");
-        tb.FileContains("ImplementInheritedINPC.INPC.cs",
+        tb.FileContains("INPC.ImplementInheritedINPC.cs",
             "public partial class ImplementInheritedINPC \r\n{");
     }
 
@@ -390,7 +390,7 @@ namespace NM
         protected void OnPropertyChanged(string property) {}
         [AutoNotify] private int y;
     }");
-        tb.FileContains("ImplementInheritedINPC.INPC.cs",
+        tb.FileContains("INPC.ImplementInheritedINPC.cs",
             "public partial class ImplementInheritedINPC \r\n{");
     }
 
@@ -409,7 +409,7 @@ namespace NM
         [AutoNotify] private int y;
         "+propDecl+@"
     }");
-        tb.FileContains("ImplementInheritedINPC.INPC.cs",
+        tb.FileContains("INPC.ImplementInheritedINPC.cs",
             @"OnPropertyChanged(""FindY"");");
     }
 
@@ -425,7 +425,7 @@ namespace NM
         private ImplementInheritedINPC other;
         [AutoNotify] public int FindY {get {return other?.Y;}}
     }");
-        tb.FileDoesNotContain("ImplementInheritedINPC.INPC.cs",
+        tb.FileDoesNotContain("INPC.ImplementInheritedINPC.cs",
             @"OnPropertyChanged(""FindY"");");
     }
         
@@ -440,7 +440,7 @@ namespace NM
     [AutoNotify] private List<int> ints;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "System.Collections.Generic.List<int>");
+        tb.FileContains("INPC.C.cs", "System.Collections.Generic.List<int>");
     }
     [Fact]
     public void Nullable()
@@ -454,8 +454,8 @@ namespace NM
     [AutoNotify] private string? stringProp;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "int? IntProp");
-        tb.FileContains("C.INPC.cs", "string? StringProp");
+        tb.FileContains("INPC.C.cs", "int? IntProp");
+        tb.FileContains("INPC.C.cs", "string? StringProp");
     }
     [Fact]
     public void AmbigiousFileNames()
@@ -470,8 +470,8 @@ namespace NM
      [AutoNotify] private T tProp;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "int? IntProp");
-        tb.FileContains("C.INPC.1.cs", "T TProp");
+        tb.FileContains("INPC.C.cs", "int? IntProp");
+        tb.FileContains("INPC.C_T_.cs", "T TProp");
     }
     [Fact]
     public void IncludeAttribute()
@@ -484,8 +484,8 @@ namespace NM
     [AutoNotify(Attributes=""[NewProp(1)]"")]private int integer;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "[NewProp(1)]\r\n    public int Integer");
-        tb.FileDoesNotContain("C.INPC.cs", "[AutoNotify]");
+        tb.FileContains("INPC.C.cs", "[NewProp(1)]\r\n    public int Integer");
+        tb.FileDoesNotContain("INPC.C.cs", "[AutoNotify]");
     }
     [Fact]
     public void SetFilter()
@@ -499,7 +499,7 @@ namespace NM
     private int IntegerSetFilter(int i) => i;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "this.integer = this.IntegerSetFilter(value);");
+        tb.FileContains("INPC.C.cs", "this.integer = this.IntegerSetFilter(value);");
     }
     [Fact]
     public void GetFilter()
@@ -513,7 +513,7 @@ namespace NM
     private int IntegerGetFilter(int i) => i;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", "=> this.IntegerGetFilter(this.integer);");
+        tb.FileContains("INPC.C.cs", "=> this.IntegerGetFilter(this.integer);");
     }
     [Fact]
     public void ClassWithGenericConstraint()
@@ -526,7 +526,7 @@ namespace NM
     [AutoNotify] private int integer;
   }");
         tb.AssertNoDiagnostics();
-        tb.FileContains("C.INPC.cs", 
+        tb.FileContains("INPC.C_T_.cs", 
             "public partial class C<T>: Melville.INPC.IExternalNotifyPropertyChanged where T: IInt");
     }
 

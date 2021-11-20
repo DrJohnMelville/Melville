@@ -26,8 +26,8 @@ namespace Outer
     public void InheritFromDelegatedInterface(string member, string methodCall)
     {
         var res = RunTest("[DelegateTo] "+member, @"int A();");
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "public partial class C");            
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", methodCall);            
+        res.LastFileContains( "public partial class C");            
+        res.LastFileContains( methodCall);            
     }
 
     [Theory]
@@ -37,8 +37,7 @@ namespace Outer
     public void DelegationPrefixes(string targetMember, string output)
     {
         var res = RunTest(targetMember, "int A {get;}");
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
-            output);
+        res.LastFileContains(output);
     }
     [Theory]
     [InlineData("int A {get;}", "public int A")]

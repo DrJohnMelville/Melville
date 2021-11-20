@@ -14,9 +14,11 @@ public class SourceProductionCodeWriter: CodeWriter
         this.context = context;
     }
 
-    public override void PublishCodeInFile(string fileName) => 
+    public override void PublishCodeInFile(string fileName)
+    {
         context.AddSource(fileName, SourceText.From(ToString(), Encoding.UTF8));
+    }
 
     public override void ReportDiagnostic(Diagnostic diagnostic) =>
-        throw new NotSupportedException("Cannot generate diagnostics in post initialization");
+        context.ReportDiagnostic(diagnostic);
 }

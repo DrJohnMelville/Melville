@@ -1,30 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.INPC;
 
 public class ClassFieldRecord{
-    public List<FieldDeclarationSyntax> FieldsToWrap { get; } = new List<FieldDeclarationSyntax>();
-    public List<PropertyDeclarationSyntax> ProperteisToMap { get; } = new List<PropertyDeclarationSyntax>();
+    public List<FieldDeclarationSyntax> FieldsToWrap { get; } = new();
+    public List<PropertyDeclarationSyntax> ProperteisToMap { get; } = new();
     public TypeDeclarationSyntax ClassDeclaration { get; }
-    private SemanticModel? semanticModel;
-
-    public SemanticModel SemanticModel
-    {
-        get => semanticModel ??
-               throw new InvalidOperationException("Semantic model is not yet initialized;");
-        set
-        {
-            semanticModel = value;
-            var def = semanticModel.GetTypeInfo(ClassDeclaration);
-        }
-    }
 
     public ClassFieldRecord(TypeDeclarationSyntax classDeclaration)
     {
-        this.ClassDeclaration = classDeclaration;
+        ClassDeclaration = classDeclaration;
     }
 
     public void AddField(FieldDeclarationSyntax field)
@@ -36,10 +23,10 @@ public class ClassFieldRecord{
         ProperteisToMap.Add(prop);
     }
 
-    public ClassToImplement ElaborateSemanticInfo(Compilation compilation)
+    public ClassToImplement ElaborateSemanticInfo(SemanticModel semanticModel)
     {
         return new ClassToImplement(FieldsToWrap, ClassDeclaration,
-            compilation.GetSemanticModel(ClassDeclaration.SyntaxTree), 
+            semanticModel, 
             MapPropertyDependencies());
     }
 

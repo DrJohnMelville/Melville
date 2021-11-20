@@ -1,40 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.AstUtilities;
+using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.INPC;
 
-public class InpcClassGeneratorFactory
+public static class InpcClassGeneratorFactory
 {
-    private readonly INamedTypeSymbol stringSymbol;
 
-    //Warning is spurious in this context
-    //https://github.com/dotnet/roslyn-analyzers/issues/4845
-    #pragma warning disable RS1024
-    private readonly ISet<INamedTypeSymbol> allTypes = new HashSet<INamedTypeSymbol>(
-        SymbolEqualityComparer.IncludeNullability);
-#pragma warning restore RS1024
-
-    public InpcClassGeneratorFactory(IEnumerable<ClassToImplement> allClasses,
-        INamedTypeSymbol stringSymbol)
-    {
-        this.stringSymbol = stringSymbol;
-        CatalogAllClassesToBeEnhanced(allClasses);
-    }
-
-    private void CatalogAllClassesToBeEnhanced(IEnumerable<ClassToImplement> allClasses)
-    {
-        foreach (var implClass in allClasses)
-        {
-            allTypes.Add(implClass.TypeInfo);
-        }
-    }
-
-    public InpcClassGenerator CreateGenerator(ClassToImplement target, GeneratorExecutionContext context) => 
+    public static InpcClassGenerator CreateGenerator(ClassToImplement target, CodeWriter context) => 
         new(target, StrategyForClass(target.TypeInfo), context);
 
-    private INotifyImplementationStategy StrategyForClass(INamedTypeSymbol target)
+    private static INotifyImplementationStategy StrategyForClass(INamedTypeSymbol target)
     {
         if (HasOnPropertyChangedMethod(target)) return new HasMethodStrategy();
         if (CompatibleExplicitInterfaceDeclaration(target.BaseType) is {} baseName)
@@ -42,7 +21,7 @@ public class InpcClassGeneratorFactory
         return DeclareOrUseNotificationInterface(target);
     }
 
-    private INotifyImplementationStategy DeclareOrUseNotificationInterface(INamedTypeSymbol target)
+    private static INotifyImplementationStategy DeclareOrUseNotificationInterface(INamedTypeSymbol target)
     {
         var generatedRoot = MostGeneralAncestorThatWillBeGenerated(target) ?? target;
         var intName = ExplicitlyDeclaredInterfaceName(generatedRoot)??
@@ -52,29 +31,45 @@ public class InpcClassGeneratorFactory
             : new UseInterfaceStrategy(intName);
     }
 
-    private string? ExplicitlyDeclaredInterfaceName(INamedTypeSymbol generatedRoot) => 
+    private static string? ExplicitlyDeclaredInterfaceName(INamedTypeSymbol generatedRoot) => 
         CompatibleExplicitInterfaceDeclaration(generatedRoot)?.FullyQualifiedName();
 
-    private bool NeedToImplementINPC(INamedTypeSymbol target, INamedTypeSymbol generatedRoot, 
+    private static bool NeedToImplementINPC(INamedTypeSymbol target, INamedTypeSymbol generatedRoot, 
         string intName) =>
         SymbolEqualityComparer.Default.Equals(generatedRoot, target)
         && MemberIsMissing(generatedRoot, intName + ".OnPropertyChanged");
 
-    private bool MemberIsMissing(INamedTypeSymbol generatedRoot, string methodName) =>
+    private static bool MemberIsMissing(INamedTypeSymbol generatedRoot, string methodName) =>
         !generatedRoot.HasMethod(null,methodName, typeof(string));
        
-    private INamedTypeSymbol? MostGeneralAncestorThatWillBeGenerated(INamedTypeSymbol? child)
+    private static INamedTypeSymbol? MostGeneralAncestorThatWillBeGenerated(INamedTypeSymbol? child)
     {
         if (child == null) return null;
         return MostGeneralAncestorThatWillBeGenerated(child.BaseType) ??
-               (allTypes.Contains(child) ? child : null);
+               (RequiresInpcGeneration(child) ? child : null);
     }
 
-    private INamedTypeSymbol? CompatibleExplicitInterfaceDeclaration(INamedTypeSymbol? target) => 
+    private static bool RequiresInpcGeneration(INamedTypeSymbol child) =>
+        TypeAndAllItsMembers(child).Any(NeedsAutoINPCImplementation);
+
+    private static IEnumerable<SyntaxReference> TypeAndAllItsMembers(INamedTypeSymbol child) =>
+        child.GetMembers()
+            .SelectMany(i => i.DeclaringSyntaxReferences)
+            .Concat(child.DeclaringSyntaxReferences);
+
+    private static bool NeedsAutoINPCImplementation(SyntaxReference i) => 
+        GetDeclarationSyntax(i.GetSyntax()) is { } mds && attrFinder.HasAttribute(mds);
+
+    private static MemberDeclarationSyntax? GetDeclarationSyntax(SyntaxNode node) =>
+        node.AncestorsAndSelf().OfType<MemberDeclarationSyntax>().FirstOrDefault();
+
+    private static readonly SearchForAttribute attrFinder = new("Melville.INPC.AutoNotifyAttribute");
+
+    private static INamedTypeSymbol? CompatibleExplicitInterfaceDeclaration(INamedTypeSymbol? target) => 
         target?.Interfaces
             .Where(HasOnPropertyChangedMethod)
             .FirstOrDefault();
 
-    private bool HasOnPropertyChangedMethod(INamedTypeSymbol target) => 
+    private static bool HasOnPropertyChangedMethod(INamedTypeSymbol target) => 
         target.HasMethod(null, "OnPropertyChanged", typeof(string));
 }

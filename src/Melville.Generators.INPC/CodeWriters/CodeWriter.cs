@@ -49,32 +49,70 @@ public static class CodeWriterOperations
     public static void PublishCodeInFile(this CodeWriter cw, SyntaxNode namedAfter, string prefix)
     {
         cw.PublishCodeInFile(FileNameForMember(namedAfter, prefix));
+       
     }
     
     private static string FileNameForMember(SyntaxNode member, string postfix)
     {
         var sb = new StringBuilder();
+        AddIdentifierPath(member, postfix, sb);
+        ReplaceForbiddenCharacters(sb);
+        return sb.ToString();
+    }
+
+    private static void AddIdentifierPath(SyntaxNode member, string postfix, StringBuilder sb)
+    {
         foreach (var symbol in member.AncestorsAndSelf().Reverse())
         {
             sb.Append(NameForNode(symbol, postfix));
             sb.Append('.');
         }
+
         sb.Append("cs");
-        return sb.ToString();
     }
+
+    private static void ReplaceForbiddenCharacters(StringBuilder sb)
+    {
+        for (int i = 0; i < sb.Length; i++)
+        {
+            if (!IsValidChar(sb[i])) sb[i] = '_';
+        }
+    }
+
+    private static bool IsValidChar(char c) => c switch
+    {
+        >= 'a' and <= 'z' => true,
+        >= 'A' and <= 'Z' => true,
+        >= '0' and <= '9' => true,
+        '.' => true,
+        ',' => true,
+        '-' => true,
+        '_' => true,
+        ' ' => true,
+        '(' => true,
+        ')' => true,
+        '[' => true,
+        ']' => true,
+        '{' => true,
+        '}' => true,
+        _ => false
+    };
 
     private static string NameForNode(SyntaxNode symbol, string prefix) => symbol switch
     {
-        MethodDeclarationSyntax mds => mds.Identifier.ToString(),
+        MethodDeclarationSyntax mds => Concat(mds.Identifier, mds.TypeParameterList, mds.ParameterList),
         PropertyDeclarationSyntax pds => pds.Identifier.ToString(),
-        EventDeclarationSyntax pds => pds.Identifier.ToString(),
-        IndexerDeclarationSyntax pds => "Indexer",
+        EventDeclarationSyntax eds => eds.Identifier.ToString(),
+        IndexerDeclarationSyntax ids => Concat("Indexer", ids.ParameterList),
         FieldDeclarationSyntax fds => string.Join(
             "", fds.Declaration.Variables.Select(i => i.Identifier.ToString())),
+        TypeDeclarationSyntax tds => Concat(tds.Identifier, tds.TypeParameterList),
         BaseTypeDeclarationSyntax btds => btds.Identifier.ToString(),
         BaseNamespaceDeclarationSyntax nds => nds.Name.ToString(),
         CompilationUnitSyntax => prefix,
         _ => "Unnamed"
     };
 
+    private static string Concat(object identifier, object? trailer1 = null, object? trailer2 = null) => 
+        string.Concat(identifier.ToString(), trailer1?.ToString() ?? "", trailer2?.ToString() ?? "");
 }

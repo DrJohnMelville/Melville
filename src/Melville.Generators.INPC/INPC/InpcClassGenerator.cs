@@ -14,19 +14,25 @@ public sealed class InpcClassGenerator
     public InpcClassGenerator(
         ClassToImplement target, 
         INotifyImplementationStategy notifyStrategy, 
-        GeneratorExecutionContext context)
+        CodeWriter writer)
     {
         this.target = target;
         this.notifyStrategy = notifyStrategy;
-        codeWriter = new GeneratorContextCodeWriter(context);
+        codeWriter = writer;
     }
 
     public void Generate(GeneratedFileUniqueNamer namer)
     {
-        codeWriter.AppendLine("#nullable enable");
-        GenerateCodeForClass();
+        WriteToCodeWriter();
         codeWriter.PublishCodeInFile(namer.CreateFileName(ClassName()));
     }
+
+    public void WriteToCodeWriter()
+    {
+        codeWriter.AppendLine("#nullable enable");
+        GenerateCodeForClass();
+    }
+
     private string ClassName() => target.ClassDeclaration.Identifier.ToString();
 
     private void GenerateCodeForClass()
