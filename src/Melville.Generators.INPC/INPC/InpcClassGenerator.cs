@@ -21,19 +21,11 @@ public sealed class InpcClassGenerator
         codeWriter = writer;
     }
 
-    public void Generate(GeneratedFileUniqueNamer namer)
-    {
-        WriteToCodeWriter();
-        codeWriter.PublishCodeInFile(namer.CreateFileName(ClassName()));
-    }
-
     public void WriteToCodeWriter()
     {
         codeWriter.AppendLine("#nullable enable");
         GenerateCodeForClass();
     }
-
-    private string ClassName() => target.ClassDeclaration.Identifier.ToString();
 
     private void GenerateCodeForClass()
     {

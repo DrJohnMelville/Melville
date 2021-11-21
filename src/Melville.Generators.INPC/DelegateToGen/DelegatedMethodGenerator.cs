@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using Melville.Generators.INPC.AstUtilities;
 using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.DelegateToGen;
 
@@ -17,24 +18,30 @@ public interface IDelegatedMethodGenerator
 public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 {
     protected readonly ITypeSymbol TargetType;
-    private readonly string MethodPrefix;
+    private readonly string methodPrefix;
 
     public static IDelegatedMethodGenerator Create(
-        ITypeSymbol targetType, string methodPrefix, SyntaxNode location) =>
-        targetType.TypeKind switch
+        ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location) =>
+        (targetType.TypeKind, UseExplicit(location)) switch
         {
-            TypeKind.Interface => new InterfaceMethodGenerator(targetType, methodPrefix),
-            TypeKind.Class => new BaseClassMethodGenerator(targetType, methodPrefix),
+            (TypeKind.Interface, true) =>
+                new ExplicitMethodGenerator(targetType, methodPrefix, targetType.FullyQualifiedName()+"."),
+            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix),
+            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix),
             _ => new InvalidParentMethodGenerator(targetType, location)
         };
 
+    private static bool UseExplicit(MemberDeclarationSyntax location) => 
+        location.AttributeLists.ToString().Contains("true");
+
     protected abstract string MemberDeclarationPrefix();
+    protected virtual string MemberNamePrefix() => "";
     protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded(ITypeSymbol parentClass);
  
     protected DelegatedMethodGenerator(ITypeSymbol targetType, string methodPrefix)
     {
         this.TargetType = targetType;
-        this.MethodPrefix = methodPrefix;
+        this.methodPrefix = methodPrefix;
     }
 
     public string InheritFrom() => TargetType.FullyQualifiedName();
@@ -74,7 +81,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
                 GenerateEvent(es, cw);
                 break;
             default:
-                cw.AppendLine($"// call {member.Name} using : {MethodPrefix}");
+                cw.AppendLine($"// call {member.Name} using : {methodPrefix}");
                 break;                    
         }
     }
@@ -118,12 +125,12 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         {
             if (ps.GetMethod != null)
             {
-                cw.AppendLine($"get => {MethodPrefix}{propertyCall};");
+                cw.AppendLine($"get => {methodPrefix}{propertyCall};");
             }
 
             if (ps.SetMethod is { } setMethod)
             {
-                cw.AppendLine($"{setMethodKeyword(setMethod)} => {MethodPrefix}{propertyCall} = value;");
+                cw.AppendLine($"{setMethodKeyword(setMethod)} => {methodPrefix}{propertyCall} = value;");
             }
         }
     }
@@ -137,11 +144,11 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         {
             if (es.AddMethod != null)
             {
-                cw.AppendLine($"add => {MethodPrefix}.{es.Name} += value;");
+                cw.AppendLine($"add => {methodPrefix}.{es.Name} += value;");
             }
             if (es.RemoveMethod != null)
             {
-                cw.AppendLine($"remove => {MethodPrefix}.{es.Name} -= value;");
+                cw.AppendLine($"remove => {methodPrefix}.{es.Name} -= value;");
             }
         }
     }
@@ -158,7 +165,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         AppendTypeParamList(cw, ms.TypeParameters);
         ParameterList(cw, ms.Parameters, RenderParameter, "(", ")");
         cw.Append(" => ");
-        cw.Append(MethodPrefix);
+        cw.Append(methodPrefix);
         cw.Append(".");
         cw.Append(ms.Name);
         AppendTypeParamList(cw, ms.TypeParameters);
@@ -239,6 +246,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         cw.Append(MemberDeclarationPrefix());
         cw.Append(typeName);
         cw.Append(" ");
+        cw.Append(MemberNamePrefix());
         cw.Append(memberName);
     }
 

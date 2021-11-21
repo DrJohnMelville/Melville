@@ -76,6 +76,29 @@ namespace Outer
         res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
             output);
     }
+    
+    [Theory]
+    [InlineData("int A(ref int b);", "int Outer.IInterface.A(ref int b) => this.Field.A(ref b);")]
+    [InlineData("int A(out int b);", "int Outer.IInterface.A(out int b) => this.Field.A(out b);")]
+    [InlineData("int A(in int b);", "int Outer.IInterface.A(in int b) => this.Field.A(in b);")]
+    [InlineData("int A(int a);", "int Outer.IInterface.A(int a) => this.Field.A(a);")]
+    [InlineData("int A(int a = 1);", "int Outer.IInterface.A(int a = 1) => this.Field.A(a);")]
+    [InlineData("int A(string? a = null);", "int Outer.IInterface.A(string? a = default) => this.Field.A(a);")]
+    [InlineData("int A([System.Obsolete(\"xxx\")] out string? a);", "int Outer.IInterface.A([System.ObsoleteAttribute(\"xxx\")] out string? a) => this.Field.A(out a);")]
+    [InlineData("int A(bool a = true);", "int Outer.IInterface.A(bool a = true) => this.Field.A(a);")]
+    [InlineData("int A(bool a = false);", "int Outer.IInterface.A(bool a = false) => this.Field.A(a);")]
+    [InlineData("int A(int a, string b);", "int Outer.IInterface.A(int a, string b) => this.Field.A(a, b);")]
+    [InlineData("T A<T>();", "T Outer.IInterface.A<T>() => this.Field.A<T>();")]
+    [InlineData("T A<T,T2>();", "T Outer.IInterface.A<T,T2>() => this.Field.A<T,T2>();")]
+    [InlineData("IList<T> A<T>(T a);", "IList<T> Outer.IInterface.A<T>(T a) => this.Field.A<T>(a);")]
+    [InlineData("void A();", "void Outer.IInterface.A() => this.Field.A();")]
+    public void ExplicitImplementation(string intMember, string output)
+    {
+        var res = RunTest(" [DelegateTo(true)] private IInterface Field; ", intMember);
+        res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
+            output);
+    }
+
 
     [Fact]
     public void DoNotGenerateExistingMembers()
