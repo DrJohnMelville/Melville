@@ -175,7 +175,7 @@ public sealed class EventBindingTest: TestWithServiceProvider
   public void RunStaticArbitraryAction()
   {
     var realTB = new TextBlock();
-    new VisualTreeRunner(realTB).Run<TextBlock>(StaticModifyTb);
+    new VisualTreeRunner(realTB).Run(StaticModifyTb);
     Assert.Equal("Static Set", realTB.Text);
   }
 

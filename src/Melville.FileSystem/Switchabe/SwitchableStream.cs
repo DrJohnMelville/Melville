@@ -112,10 +112,10 @@ public sealed class SwitchableStream : DelegatingStream
     if (isClosed) return;
     try
     {
-      await readerLock.WaitAsync();
-      var pos = Inner.Position;
       var newInner = await streamFactory();
       if (Inner == newInner) throw new InvalidOperationException("fdgq");
+      await readerLock.WaitAsync();
+      var pos = Inner.Position;
       newInner.Seek(pos, SeekOrigin.Begin);
       var oldInner = Inner;
       Inner = newInner;

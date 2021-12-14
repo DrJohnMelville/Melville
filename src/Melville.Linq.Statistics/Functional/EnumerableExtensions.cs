@@ -95,51 +95,6 @@ namespace Melville.Linq.Statistics.Functional
       return Enumerable.Concat(collection, items);
     }
 
-
-    public static T FirstOrDefault<T>(this IEnumerable<T> items, T defaultValue)
-    {
-      Contract.Requires(items != null);
-      foreach (var item in items)
-      {
-        return item;
-      }
-      // only reach here if there are no items in the collection
-      return defaultValue;
-    }
-
-    /// <summary>
-    /// Separate the given enumeration into "chunks" of a givens size.  The last chunk may be shorter than ChunkLength
-    /// </summary>
-    /// <typeparam name="T">Tye type the enumerable is enumerating</typeparam>
-    /// <param name="input">The enumerable to chunk.</param>
-    /// <param name="chunkLength">Desired length of each chunk.</param>
-    /// <returns></returns>
-    public static IEnumerable<T[]> Chunks<T>(this IEnumerable<T> input, int chunkLength)
-    {
-      Contract.Requires(input != null);
-      Contract.Requires(chunkLength > 0);
-      Contract.Ensures(Contract.Result<IEnumerable<T[]>>() != null);
-      return InnerChunks(input, chunkLength);
-    }
-
-    private static IEnumerable<T[]> InnerChunks<T>(IEnumerable<T> input, int chunkLength)
-    {
-      using (var enumerator = input.GetEnumerator())
-      {
-        int i;
-        do
-        {
-          var ret = new T[chunkLength];
-          for (i = 0; i < chunkLength && enumerator.MoveNext(); i++)
-          {
-            ret[i] = enumerator.Current;
-          }
-          if (i > 0)
-            yield return chunkLength == i ? ret : ret.Take(i).ToArray();
-        } while (i > 0);
-      }
-    }
-
     /// <summary>
     /// This returns an enumerable of n enumerables of T.  it will put one element in each enumerable before the Item1
     /// gets a second and so forth untill all the elements are exhausted.
