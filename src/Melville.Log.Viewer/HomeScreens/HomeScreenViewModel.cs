@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Input;
 using Melville.Lists;
 using Melville.Log.Viewer.LogViews;
 using Melville.Log.Viewer.NamedPipeServers;
+using Melville.Log.Viewer.UdpServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.BusinessObjects;
 
@@ -64,6 +66,35 @@ public class HomeScreenViewModel: NotifyBase
         {
             // failed to connect to website
         }
+    }
+
+    public void ConnectToUdp()
+    {
+        AddNewPage(new LogViewModel(new UdpLogConnection(), "Udp Logger"));
+    }
+
+    public void CopyUdpSender()
+    {
+        Clipboard.SetText(@"
+public static class UdpConsole
+{
+    private static UdpClient? client = null;
+    private static UdpClient Client
+    {
+        get
+        {
+            client ??= new UdpClient();
+            return client ;
+        }
+    }
+
+    public static string WriteLine(string str)
+    {
+        var bytes = Encoding.UTF8.GetBytes(str);
+        Client.Send(bytes, bytes.Length, ""127.0.0.1"", 15321);
+        return str;
+    }
+}");
     }
 
     private void AddNewPage(LogViewModel page)
