@@ -22,6 +22,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="LINQPad.Reference" Version="1.1.0" />
     <Reference Include="Linqpad">
       <HintPath>C:\Program Files\LINQPad6\LINQPad.Runtime.dll</HintPath>
     </Reference>
