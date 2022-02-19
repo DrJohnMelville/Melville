@@ -44,6 +44,10 @@ public class AsyncToSyncProgressStream : Stream
         {
             return false;
         }
+        catch (OperationCanceledException)
+        {
+            return false;
+        }
     }
 
     public bool HasDataToRead => buffer.Count > 0 || HasDataInCurrentBuffer();

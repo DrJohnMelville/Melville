@@ -76,6 +76,11 @@ public abstract class UsbDevice: IDisposable
       throw new IOException("Task cancelled exception here usually means that the" +
                             "USB device got disposed prematurely", tce);
     }
+    catch (OperationCanceledException tce)
+    {
+      throw new IOException("Task cancelled exception here usually means that the" +
+                            "USB device got disposed prematurely", tce);
+    }
     catch (IOException e)
     {
       if (e.HResult != -2147023729) // device not connected

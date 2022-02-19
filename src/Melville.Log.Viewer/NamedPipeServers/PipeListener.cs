@@ -68,6 +68,10 @@ public class PipeListener: IPipeListener
         {
             // we are closing so go away quietly
         }
+        catch (OperationCanceledException)
+        {
+            // we are closing so go away quietly
+        }
     }
 
     // wait 5 seconds for the client to connect on the private channel
