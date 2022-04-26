@@ -20,7 +20,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<DialogBoxSheetViewModel>();
+        SearchTreeForSample<PopupWindowSheetViewModel>();
 
     public SampleDirectory()
     {
@@ -55,6 +55,7 @@ public class SampleDirectory : SampleDirectoryDsl
                 Page<LinqGraphViewModel>("LinqPad Graphics Module")),
             Node("Controls",
                 Page<CalendarControlViewModel>("Calendar Control"),
-                Page<DialogBoxSheetViewModel>("Dialog Box"))
+                Page<DialogBoxSheetViewModel>("Dialog Box"),
+                Page<PopupWindowSheetViewModel>("Popup Box"))
         );
 }
