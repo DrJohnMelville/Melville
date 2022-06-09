@@ -5,6 +5,7 @@ namespace Melville.MVVM.Wpf.MvvmDialogs;
 public interface IMvvmDialog
 {
   bool? ShowModalDialog(object viewModel, double width, double height, string title);
+  void ShowPopupWindow(object viewModel, double width, double height, string title);
 }
 
 public sealed class MvvmDialog : IMvvmDialog
@@ -30,4 +31,17 @@ public sealed class MvvmDialog : IMvvmDialog
     return window.ShowDialog();
   }
 
+  public void ShowPopupWindow(object viewModel, double width, double height, string title)
+  {
+    var window = new WrapperWindow()
+    {
+      Owner = parent,
+      Width = width,
+      Height = height,
+      Title = title,
+      DataContext = viewModel
+    };
+
+    window.Show();
+  }
 }

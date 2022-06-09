@@ -1,0 +1,11 @@
+﻿<Window x:Class="Melville.MVVM.Wpf.MvvmDialogs.WrapperWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:Melville.MVVM.Wpf.MvvmDialogs"
+        xmlns:viewFrames="clr-namespace:Melville.MVVM.Wpf.ViewFrames"
+        mc:Ignorable="d"
+        Title="WrapperWindow" Height="450" Width="800">
+    <viewFrames:ViewFrame Content="{Binding}"  Grid.ColumnSpan="3"/>
+</Window>
