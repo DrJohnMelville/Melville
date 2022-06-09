@@ -22,13 +22,9 @@
 
 
   <ItemGroup>
-    <PackageReference Include="LINQPad.Reference" Version="1.1.0" />
-    <Reference Include="Linqpad">
-      <HintPath>C:\Program Files\LINQPad6\LINQPad.Runtime.dll</HintPath>
-    </Reference>
+    <PackageReference Include="LINQPad.Reference" Version="1.3.0" />
     <PackageReference Include="Accord.Statistics" Version="3.8.0" />
-    <PackageReference Include="Castle.Core" Version="4.4.1" />
-  
+    <PackageReference Include="Castle.Core" Version="5.0.0" />
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
   </ItemGroup>
 
