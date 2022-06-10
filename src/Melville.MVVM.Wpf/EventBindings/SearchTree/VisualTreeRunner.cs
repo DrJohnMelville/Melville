@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Melville.Hacks.Reflection;
+using Melville.INPC;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
 using Melville.MVVM.Wpf.VisualTreeLocations;
@@ -21,15 +22,10 @@ public interface IVisualTreeRunner: IVisualTreeLocation<IVisualTreeRunner, Depen
     public bool RunMethod(Delegate function, object?[] parameters, out object? result);
 }
 
-public class VisualTreeRunner : IVisualTreeRunner
+public partial class VisualTreeRunner : IVisualTreeRunner
 {
-    private readonly DependencyObject root;
-
-    public VisualTreeRunner(DependencyObject root)
-    {
-        this.root = root;
-    }
-
+    [FromConstructor] private readonly DependencyObject root;
+    
     DependencyObject IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.Target => root;
     IVisualTreeRunner IVisualTreeLocation<IVisualTreeRunner, DependencyObject>.CreateNewChild(
         DependencyObject? target) => 

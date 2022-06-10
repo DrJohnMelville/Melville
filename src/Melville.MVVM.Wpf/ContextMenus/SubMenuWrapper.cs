@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Windows.Controls;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.ContextMenus;
 
-public class SubMenuWrapper : IContextMenuWrapper
+public partial class SubMenuWrapper : IContextMenuWrapper
 {
-    private readonly IList menu;
-
-    protected SubMenuWrapper(IList menu)
-    {
-        this.menu = menu;
-    }
-
+    [FromConstructor] private readonly IList menu;
+    
     public void ClearMenu() => menu.Clear();
 
     public void ClearAfter(int itemsToKeep)

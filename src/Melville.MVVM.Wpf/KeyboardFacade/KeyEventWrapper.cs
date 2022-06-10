@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using Melville.INPC;
 using Melville.MVVM.Wpf.EventBindings;
 
 namespace Melville.MVVM.Wpf.KeyboardFacade;
@@ -29,13 +30,9 @@ public interface IKeyEventReport: IHasModifiers
     bool IsRepeat { get; }
     bool IsToggled { get; }
 }
-public class KeyEventReport: IKeyEventReport
+public partial class KeyEventReport: IKeyEventReport
 {
-    private readonly KeyEventArgs keyEvent;
-    public KeyEventReport(KeyEventArgs keyEvent)
-    {
-        this.keyEvent = keyEvent;
-    }
+    [FromConstructor] private readonly KeyEventArgs keyEvent;
 
     public ModifierKeys Modifiers => keyEvent.KeyboardDevice.Modifiers;
     public Key RawKey => keyEvent.Key;

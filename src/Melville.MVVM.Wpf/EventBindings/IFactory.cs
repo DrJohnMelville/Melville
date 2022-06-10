@@ -1,6 +1,7 @@
 ﻿using  System;
 using System.Reflection;
 using System.Windows;
+using Melville.INPC;
 using Melville.MVVM.Wpf.DiParameterSources;
 
 namespace Melville.MVVM.Wpf.EventBindings;
@@ -49,15 +50,10 @@ public class DiFactory : IFactory
   }
 }
   
-public class ConstantFactory: IFactory
+public partial class ConstantFactory: IFactory
 {
-  private readonly object? value;
-
-  public ConstantFactory(object? value)
-  {
-    this.value = value;
-  }
-
+  [FromConstructor] private readonly object? value;
+  
   public Type TargetType => (value?.GetType()) ?? typeof(object);
 
   public object? Create(IDIIntegration di, DependencyObject sender, object?[] args)

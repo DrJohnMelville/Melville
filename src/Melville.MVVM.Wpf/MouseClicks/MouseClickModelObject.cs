@@ -1,24 +1,18 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using Melville.INPC;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.MouseClicks;
 
-public sealed class MouseClickModelObject
+public sealed partial class MouseClickModelObject
 {
-    private readonly string method;
-    private readonly int targetClickCount;
-    private readonly UIElement target;
+    [FromConstructor] private readonly UIElement target;
+    [FromConstructor] private readonly int targetClickCount;
+    [FromConstructor] private readonly string method;
     private RoutedEvent? up;
-
-    public MouseClickModelObject(int targetClickCount, UIElement target, string method)
-    {
-        this.method = method;
-        this.target = target;
-        this.targetClickCount = targetClickCount;
-    }
-
+    
     public void Bind(RoutedEvent down, RoutedEvent up)
     { 
         target.AddHandler(down, (MouseButtonEventHandler) ClickDown);
