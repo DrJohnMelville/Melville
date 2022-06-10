@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Melville.Generators.INPC.AstUtilities;
+using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.AstUtilities;

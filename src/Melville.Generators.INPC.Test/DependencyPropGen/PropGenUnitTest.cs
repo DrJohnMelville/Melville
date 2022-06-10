@@ -1,4 +1,4 @@
-﻿using Melville.Generators.INPC.DependencyPropGen;
+﻿using Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Xunit;
 

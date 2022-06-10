@@ -1,4 +1,4 @@
-﻿using Melville.Generators.INPC.CodeWriters;
+﻿using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Xunit;
 

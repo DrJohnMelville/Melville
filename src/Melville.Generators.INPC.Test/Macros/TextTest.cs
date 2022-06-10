@@ -1,4 +1,4 @@
-﻿using Melville.Generators.INPC.Macros;
+﻿using Melville.Generators.INPC.ProductionGenerators.Macros;
 using Melville.Generators.INPC.Test.UnitTests;
 using Melville.INPC;
 using Xunit;

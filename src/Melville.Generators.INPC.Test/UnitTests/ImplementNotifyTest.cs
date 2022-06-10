@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Melville.Generators.INPC.INPC;
+using Melville.Generators.INPC.ProductionGenerators.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.UnitTests;
