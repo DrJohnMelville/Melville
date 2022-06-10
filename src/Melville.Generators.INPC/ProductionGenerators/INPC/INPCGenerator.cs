@@ -13,8 +13,6 @@ public class INPCGenerator : ClassWithLabeledMembersGenerator
     public INPCGenerator() : base(attrFinder)
     {
     }
-    protected override ILabeledMembersSyntaxModel CreateMemberRecord(TypeDeclarationSyntax targetTypeDecl)
-    {
-        return new InpcSyntaxModel(targetTypeDecl);
-    }
+    protected override ILabeledMembersSyntaxModel CreateMemberRecord(TypeDeclarationSyntax targetTypeDecl) => 
+        new InpcSyntaxModel(targetTypeDecl);
 }
