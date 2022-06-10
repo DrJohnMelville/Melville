@@ -8,13 +8,13 @@ namespace Melville.MVVM.Wpf.MouseClicks;
 
 public sealed partial class MouseClickModelObject
 {
-    [FromConstructor] private readonly UIElement target;
     [FromConstructor] private readonly int targetClickCount;
+    [FromConstructor] private readonly UIElement target;
     [FromConstructor] private readonly string method;
     private RoutedEvent? up;
     
     public void Bind(RoutedEvent down, RoutedEvent up)
-    { 
+    {
         target.AddHandler(down, (MouseButtonEventHandler) ClickDown);
         this.up = up;
     }

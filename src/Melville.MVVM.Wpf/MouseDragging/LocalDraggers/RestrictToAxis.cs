@@ -1,18 +1,14 @@
 using System;
 using System.Windows;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
-public class RestrictToAxis : SegmentedDragger<Point>
+public partial class RestrictToAxis : SegmentedDragger<Point>
 {
     private Point initialPoint;
-    private readonly ILocalDragger<Point> target;
-
-    public RestrictToAxis(ILocalDragger<Point> target)
-    {
-        this.target = target;
-    }
-
+    [FromConstructor]private readonly ILocalDragger<Point> target;
+    
     protected override void MouseDown(Point point) => initialPoint = point;
 
     public override void PostAllPoints(MouseMessageType type, Point point) => 

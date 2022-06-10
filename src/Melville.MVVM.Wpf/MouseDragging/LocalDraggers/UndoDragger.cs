@@ -1,19 +1,14 @@
 using System.Windows;
+using Melville.INPC;
 using Melville.MVVM.Undo;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
-public class UndoDragger<T>: SegmentedDragger<T> where T : struct
+public partial class UndoDragger<T>: SegmentedDragger<T> where T : struct
 {
-    private readonly IUndoEngine undo;
-    private readonly ILocalDragger<T> effector;
+    [FromConstructor]private readonly IUndoEngine undo;
+    [FromConstructor]private readonly ILocalDragger<T> effector;
     private T initialPoint;
-
-    public UndoDragger(IUndoEngine undo, ILocalDragger<T> effector)
-    {
-        this.undo = undo;
-        this.effector = effector;
-    }
 
     protected override void MouseDown(T point) => initialPoint = point;
 

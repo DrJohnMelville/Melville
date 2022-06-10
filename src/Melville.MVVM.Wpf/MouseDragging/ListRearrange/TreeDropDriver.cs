@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using System.Windows;
+using Melville.INPC;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
 using Melville.MVVM.Wpf.WpfHacks;
@@ -9,17 +10,12 @@ using Microsoft.VisualBasic.Devices;
 
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange;
 
-public sealed class TreeDropDriver
+public sealed partial class TreeDropDriver
 {
-    private readonly FrameworkElement rootElt;
-    private readonly Type dropType;
+    [FromConstructor]private readonly FrameworkElement rootElt;
+    [FromConstructor]private readonly Type dropType;
     private string DragTypeName() => dropType.FullName??"";
 
-    public TreeDropDriver(FrameworkElement  rootElt, Type dropType)
-    {
-        this.rootElt = rootElt;
-        this.dropType = dropType;
-    }
 
     public void AttachEvents(FrameworkElement elt) => 
         new HierarchicalDropWithDragBinder(elt, true, DragOver, DragOver, DragLeave, Drop);

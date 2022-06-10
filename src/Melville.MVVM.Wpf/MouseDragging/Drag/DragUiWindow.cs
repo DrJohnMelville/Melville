@@ -25,6 +25,7 @@ public sealed class DragUiWindow : Window, ILocalDragger<Point>
 {
 
   private readonly FrameworkElement target;
+  
   public DragUiWindow(FrameworkElement targetElement, double opacity)
   {
     this.target = targetElement;

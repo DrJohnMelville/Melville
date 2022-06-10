@@ -71,7 +71,7 @@ public partial class VisualTreeRunner : IVisualTreeRunner
             TryInvokeCommand(ref context, target);
     }
 
-    public object Run(Delegate target, params object?[] parameters)
+    public object? Run(Delegate target, params object?[] parameters)
     {
         RunMethod(target, parameters, out var result);
         return result;

@@ -1,24 +1,16 @@
 using System.Windows.Input;
+using Melville.INPC;
 using Melville.MVVM.Wpf.KeyboardFacade;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
-public class KeySwitcherDragger<T> : ILocalDragger<T> where T : struct
+public partial class KeySwitcherDragger<T> : ILocalDragger<T> where T : struct
 {
-    private readonly IKeyboardQuery keyboard;
-    private readonly ModifierKeys activatingKeys;
-    private readonly ILocalDragger<T> pressedTarget;
-    private readonly ILocalDragger<T> defaultTarget;
-
-    public KeySwitcherDragger(IKeyboardQuery keyboard, ModifierKeys activatingKeys, 
-        ILocalDragger<T> pressedTarget, ILocalDragger<T> defaultTarget)
-    {
-        this.keyboard = keyboard;
-        this.pressedTarget = pressedTarget;
-        this.defaultTarget = defaultTarget;
-        this.activatingKeys = activatingKeys;
-    }
-
+    [FromConstructor]private readonly IKeyboardQuery keyboard;
+    [FromConstructor]private readonly ModifierKeys activatingKeys;
+    [FromConstructor]private readonly ILocalDragger<T> pressedTarget;
+    [FromConstructor]private readonly ILocalDragger<T> defaultTarget;
+    
     public void NewPoint(MouseMessageType type, T point)
     {
         if (type == MouseMessageType.Down)

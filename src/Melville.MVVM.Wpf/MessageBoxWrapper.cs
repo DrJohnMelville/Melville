@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf;
 
@@ -13,14 +14,9 @@ public interface IMessageBoxWrapper
   MessageBoxResult Show(string message, string caption, MessageBoxButton buttons, MessageBoxImage image, 
     MessageBoxResult defaultResult, MessageBoxOptions options);
 }
-public sealed class MessageBoxWrapper: IMessageBoxWrapper
+public sealed partial class MessageBoxWrapper: IMessageBoxWrapper
 {
-  private readonly Window host;
-
-  public MessageBoxWrapper(Window host)
-  {
-    this.host = host;
-  }
+  [FromConstructor]private readonly Window host;
 
   public MessageBoxResult Show(string message) => MessageBox.Show(host, message);
   public MessageBoxResult Show(string message, string caption) => MessageBox.Show(host, message, caption);

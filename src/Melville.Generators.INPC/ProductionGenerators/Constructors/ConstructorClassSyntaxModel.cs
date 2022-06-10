@@ -36,6 +36,13 @@ public class ConstructorClassSyntaxModel : ILabeledMembersSyntaxModel, ILabeledM
         {
             GenerateSingleConstructor(cw, constructor);
         }
+
+        GeneratePartialMethodDeclaration(cw);
+    }
+
+    private static void GeneratePartialMethodDeclaration(CodeWriter cw)
+    {
+        cw.AppendLine("partial void OnConstructed();");
     }
 
     private void GenerateSingleConstructor(CodeWriter cw, IList<MemberData> constructorParams)
@@ -87,8 +94,11 @@ public class ConstructorClassSyntaxModel : ILabeledMembersSyntaxModel, ILabeledM
         using (cw.CurlyBlock())
         {
             GenerateFieldAssignments(cw);
+            GeneratePartialMethodCall(cw);
         }
     }
+
+    private static void GeneratePartialMethodCall(CodeWriter cw) => cw.AppendLine("OnConstructed();");
 
     private void GenerateFieldAssignments(CodeWriter cw)
     {

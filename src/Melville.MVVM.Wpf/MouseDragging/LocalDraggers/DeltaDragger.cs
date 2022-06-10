@@ -1,18 +1,14 @@
 using System;
 using System.Windows;
 using Melville.Hacks.Reflection;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
-public class DeltaDragger : SegmentedDragger<Point>
+public partial class DeltaDragger : SegmentedDragger<Point>
 {
-    private readonly ILocalDragger<Point> target;
+    [FromConstructor]private readonly ILocalDragger<Point> target;
     private Point lastPoint;
-
-    public DeltaDragger(ILocalDragger<Point> target)
-    {
-        this.target = target;
-    }
 
     protected override void MouseDown(Point point)
     {

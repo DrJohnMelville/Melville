@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Melville.INPC;
 using Melville.MVVM.Wpf.MouseClicks;
 using Melville.MVVM.Wpf.MouseDragging.Adorners;
 using Melville.MVVM.Wpf.MouseDragging.Drag;
@@ -14,7 +15,7 @@ using Melville.MVVM.Wpf.MouseDragging.Drop;
 namespace Melville.MVVM.Wpf.MouseDragging.ListRearrange;
 
 [Obsolete("Movew to TreeArranger")]
-public sealed class DragArrange
+public sealed partial class DragArrange
 {
 
 
@@ -35,10 +36,10 @@ public sealed class DragArrange
     }
   }
 
-  private class ListDragDropMonitor
+  private partial class ListDragDropMonitor
   {
-    private readonly IList items;
-    private readonly Type instanceType;
+    [FromConstructor] private readonly IList items;
+    [FromConstructor] private readonly Type instanceType;
 
     public ListDragDropMonitor(IList item)
     {

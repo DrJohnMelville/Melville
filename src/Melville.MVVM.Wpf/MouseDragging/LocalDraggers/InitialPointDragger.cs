@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Windows;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
-public class InitialPointDragger : SegmentedDragger<Point>
+public partial class InitialPointDragger : SegmentedDragger<Point>
 {
-    private readonly Point origin;
-    private readonly ILocalDragger<Point> target;
+    [FromConstructor]private readonly Point origin;
+    [FromConstructor]private readonly ILocalDragger<Point> target;
     private Vector offset;
-
-    public InitialPointDragger(Point origin, ILocalDragger<Point> target)
-    {
-        this.origin = origin;
-        this.target = target;
-    }
 
     protected override void MouseDown(Point point) => offset = origin - point;
 

@@ -1,4 +1,5 @@
 ﻿using  System.Windows;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MvvmDialogs;
 
@@ -8,14 +9,9 @@ public interface IMvvmDialog
   void ShowPopupWindow(object viewModel, double width, double height, string title);
 }
 
-public sealed class MvvmDialog : IMvvmDialog
+public sealed partial class MvvmDialog : IMvvmDialog
 {
-  private readonly Window parent;
-
-  public MvvmDialog(Window parent)
-  {
-    this.parent = parent;
-  }
+  [FromConstructor]private readonly Window parent;
 
   public bool? ShowModalDialog(object viewModel, double width, double height, string title)
   {

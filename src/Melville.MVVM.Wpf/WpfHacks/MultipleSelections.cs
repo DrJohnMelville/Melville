@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
+using Melville.INPC;
 using Serilog;
 
 namespace Melville.MVVM.Wpf.WpfHacks;
@@ -10,7 +11,7 @@ namespace Melville.MVVM.Wpf.WpfHacks;
 /// <summary>
 /// This allows us to bind an observable collection to a listbox to hold the selected items in a bound collection
 /// </summary>
-public static class MultipleSelections
+public static partial class MultipleSelections
 {
   public static IList GetSelectedItems(DependencyObject obj) => (IList)obj.GetValue(SelectedItemsProperty);
   public static void SetSelectedItems(DependencyObject obj, IList value) => obj.SetValue(SelectedItemsProperty, value);
@@ -29,17 +30,11 @@ public static class MultipleSelections
     }
   }
 
-  private class SelectionBinding
+  private partial class SelectionBinding
   {
-    private readonly ListBox selector;
-    private readonly IList model;
-
-    public SelectionBinding(ListBox selector, IList model)
-    {
-      this.selector = selector;
-      this.model = model;
-    }
-
+    [FromConstructor]private readonly ListBox selector;
+    [FromConstructor]private readonly IList model;
+    
     public void Bind()
     {
       SetListBoxSelectionToModel();

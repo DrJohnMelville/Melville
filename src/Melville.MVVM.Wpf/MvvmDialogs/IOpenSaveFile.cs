@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using Melville.FileSystem;
+using Melville.INPC;
 using Ookii.Dialogs.Wpf;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
@@ -30,15 +31,10 @@ public interface IOpenSaveFile
   string ImageFileFilter { get; }
 }
 
-public sealed class OpenSaveFileAdapter : IOpenSaveFile
+public sealed partial class OpenSaveFileAdapter : IOpenSaveFile
 {
-  private readonly Window parentWindow;
-
-  public OpenSaveFileAdapter(Window parent)
-  {
-    parentWindow = parent;
-  }
-
+  [FromConstructor]private readonly Window parentWindow;
+  
   #region Load Folder names
 
   public IDirectory? GetDirectory(string? dir)

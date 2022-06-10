@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Melville.INPC;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drop;
@@ -12,17 +13,11 @@ public interface IDropTarget
     void HandleDrop(object sender, DragEventArgs e);
 }
 
-public class DropTarget : IDropTarget
+public partial class DropTarget : IDropTarget
 {
-    private readonly FrameworkElement target;
-    private readonly string method;
-
-    public DropTarget(FrameworkElement target, string method)
-    {
-        this.target = target;
-        this.method = method;
-    }
-
+    [FromConstructor] private readonly FrameworkElement target;
+    [FromConstructor] private readonly string method;
+    
     public void BindToTargetControl(bool monitorDragContinue, bool preview)
     {
         if (monitorDragContinue)

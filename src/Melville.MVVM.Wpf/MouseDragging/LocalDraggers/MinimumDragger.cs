@@ -2,7 +2,7 @@
 
 namespace Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
 
-public class MinimumDragger : SegmentedDragger<Point>
+public partial class MinimumDragger : SegmentedDragger<Point>
 {
     private readonly double radiusSquared;
     private readonly ILocalDragger<Point> effector;

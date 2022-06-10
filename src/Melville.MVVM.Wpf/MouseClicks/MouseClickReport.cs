@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using Melville.INPC;
 using Melville.MVVM.Wpf.MouseDragging;
 using Melville.MVVM.Wpf.VisualTreeLocations;
 
@@ -51,17 +52,11 @@ public static class MouseClickReportOperations
         mcr.AttachToDataContextHolder(dragTypes).DragSource();
 }
     
-public class MouseClickReport : IMouseClickReport
+public partial class MouseClickReport : IMouseClickReport
 {
-    private readonly FrameworkElement target;
-    private readonly MouseButtonEventArgs eventArgs;
-
-    public MouseClickReport(FrameworkElement target, MouseButtonEventArgs eventArgs)
-    {
-        this.target = target;
-        this.eventArgs = eventArgs;
-    }
-
+    [FromConstructor]private readonly FrameworkElement target;
+    [FromConstructor]private readonly MouseButtonEventArgs eventArgs;
+    
     public bool IsLeft() => eventArgs.ChangedButton == MouseButton.Left;
     public bool IsMiddle() => eventArgs.ChangedButton == MouseButton.Middle;
     public bool IsRight()  => eventArgs.ChangedButton == MouseButton.Right;

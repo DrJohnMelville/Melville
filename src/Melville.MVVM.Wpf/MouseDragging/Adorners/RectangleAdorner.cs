@@ -1,17 +1,14 @@
 ﻿using  System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Adorners;
 
-public  class RectangleAdorner : DropAdorner
+public partial class RectangleAdorner : DropAdorner
 {
-  private readonly Rect bounds;
+  [FromConstructor]private readonly Rect bounds;
 
-  public RectangleAdorner(FrameworkElement adornedElement, Rect bounds) : base(adornedElement)
-  {
-    this.bounds = bounds;
-  }
   protected override UIElement CreateAdorningElement()
   {
     var ret = new Rectangle

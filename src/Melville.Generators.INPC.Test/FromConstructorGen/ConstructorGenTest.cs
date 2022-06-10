@@ -26,6 +26,14 @@ namespace Outer
         tb.LastFileContains("this.I = i;");
     }
     [Fact]
+    public void PartialOnConstructedMethod()
+    {
+        var tb = RunTest("[FromConstructor] private int I {get;}");
+        tb.LastFileContains("public partial class C");
+        tb.LastFileContains("OnConstructed();");
+        tb.LastFileContains("partial void OnConstructed();");
+    }
+    [Fact]
     public void AvoidKeywords()
     {
         var tb = RunTest("[FromConstructor] private int If {get;}");

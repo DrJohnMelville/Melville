@@ -1,17 +1,14 @@
 ﻿using  System;
 using System.Windows;
 using System.Windows.Input;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drag;
 
-public class DragHandler
+public partial class DragHandler
 {
-  private readonly IMouseDataSource source;
+  [FromConstructor]private readonly IMouseDataSource source;
 
-  public DragHandler(IMouseDataSource source)
-  {
-    this.source = source;
-  }
 
   public DragDropEffects InitiateDrag(IDataObject dataToDrag, DragDropEffects allowedEffects)
   {

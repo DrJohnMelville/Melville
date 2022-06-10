@@ -2,18 +2,14 @@
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drop;
 
-public class HierarchicalDropWithDragBinder: HierarchicalDropBinder
+public partial class HierarchicalDropWithDragBinder: HierarchicalDropBinder
 {
-    private readonly DragEventHandler over;
-    public HierarchicalDropWithDragBinder(UIElement elt, bool preview, 
-        DragEventHandler enter, DragEventHandler over, DragEventHandler leave, DragEventHandler drop) : 
-        base(elt, preview, enter, leave, drop)
-    {
-        this.over = over;
-    }
+    [FromConstructor] private readonly DragEventHandler over;
+    
     protected override void HandleOver(object sender, DragEventArgs e)
     {
         if (ChildHandledDrop(e)) return;
@@ -23,11 +19,11 @@ public class HierarchicalDropWithDragBinder: HierarchicalDropBinder
 }
 public class HierarchicalDropBinder
 {
-    protected DragDropEffects LastDragEffect { get; set; } = DragDropEffects.None;
-    protected UIElement Elt { get; }
+    private UIElement Elt { get; }
     private readonly DragEventHandler enter;
     private readonly DragEventHandler leave;
     private readonly DragEventHandler drop;
+    protected DragDropEffects LastDragEffect { get; set; } = DragDropEffects.None;
 
     public HierarchicalDropBinder(UIElement elt, bool preview, 
         DragEventHandler enter, DragEventHandler leave, DragEventHandler drop)
