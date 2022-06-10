@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using Melville.Generators.INPC.AstUtilities;
 using Melville.MVVM.Wpf.EventBindings;
 
 namespace Melville.MVVM.Wpf.DiParameterSources;

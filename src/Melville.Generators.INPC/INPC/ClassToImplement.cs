@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -23,5 +24,12 @@ public class ClassToImplement
         PropertyDependencies = propertyDependencies;
         TypeInfo = semanticModel.GetDeclaredSymbol(ClassDeclaration) ??
                    throw new InvalidProgramException("Class declaration is not a type declaration");
+    }
+
+    public void GenerateCode(SourceProductionContext context)
+    {
+        var cw = new SourceProductionCodeWriter(context);
+        InpcClassGeneratorFactory.CreateGenerator(this, cw).WriteToCodeWriter();
+        cw.PublishCodeInFile(ClassDeclaration, "INPC");
     }
 }

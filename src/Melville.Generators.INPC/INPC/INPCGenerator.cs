@@ -13,51 +13,6 @@ namespace Melville.Generators.INPC.INPC;
 [Generator]
 public class INPCGenerator : IIncrementalGenerator
 {
-    // public void Initialize(GeneratorInitializationContext context)
-    // {
-    //     context.RegisterForSyntaxNotifications(() => new INPCReceiver());
-    // }
-    //
-    // public void Execute(GeneratorExecutionContext context)
-    // {
-    //     try
-    //     {
-    //         InjectINPCProperties(context);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         context.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("INPCGen0003",
-    //                 "Exception Thrown", e.Message + e.StackTrace, "Fatal", DiagnosticSeverity.Error, true),
-    //             Location.None));
-    //     }
-    // }
-    //
-    // private void InjectINPCProperties(GeneratorExecutionContext context)
-    // {
-    //     if (!(context.SyntaxReceiver is INPCReceiver receiver))
-    //         throw new InvalidProgramException("Receiver is the wrong type");
-    //
-    //     var elaboratedClasses = receiver.ClassesToAugment.Values
-    //         .Select(i =>
-    //         {
-    //             Compilation compilation = context.Compilation;
-    //             return i.ElaborateSemanticInfo(compilation,
-    //                 compilation.GetSemanticModel(i.ClassDeclaration.SyntaxTree));
-    //         })
-    //         .ToList();
-    //
-    //     var factory = new InpcClassGeneratorFactory(elaboratedClasses,
-    //         context.Compilation.GetSpecialType(SpecialType.System_String));
-    //
-    //     var namer = new GeneratedFileUniqueNamer("INPC");
-    //
-    //
-    //     foreach (var augmenter in elaboratedClasses)
-    //     {
-    //         factory.CreateGenerator(augmenter, context).Generate(namer);
-    //     }
-    // }
-
     private static readonly SearchForAttribute attrFinder = new("Melville.INPC.AutoNotifyAttribute");
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -93,9 +48,7 @@ public class INPCGenerator : IIncrementalGenerator
 
     private void GenerateClass(SourceProductionContext context, ClassToImplement classToImplement)
     {
-        var cw = new SourceProductionCodeWriter(context);
-        InpcClassGeneratorFactory.CreateGenerator(classToImplement, cw).WriteToCodeWriter();
-        cw.PublishCodeInFile(classToImplement.ClassDeclaration, "INPC");
+        classToImplement.GenerateCode(context);
     }
 
     private static TypeDeclarationSyntax ParentClassSelector(GeneratorSyntaxContext j) =>

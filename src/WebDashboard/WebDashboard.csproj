@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+        <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\Melville.SystemInterface\Melville.SystemInterface.csproj" />
       <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
       <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
