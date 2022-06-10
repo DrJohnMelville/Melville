@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using Melville.Generators.INPC.CodeWriters;
+using Melville.Generators.INPC.INPC.CodeGen;
+using Melville.Generators.INPC.PartialTypeGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.INPC;
 
-public class ClassToImplement
+
+public class InpcSemanticModel : ILabeledMembersSemanticModel
 {
     public List<FieldDeclarationSyntax> FieldsToWrap { get; }
     public TypeDeclarationSyntax ClassDeclaration { get; }
@@ -15,7 +18,7 @@ public class ClassToImplement
     public PropertyDependencyChecker PropertyDependencies { get; }
     public INamedTypeSymbol TypeInfo { get; }
 
-    public ClassToImplement(List<FieldDeclarationSyntax> fieldsToWrap, TypeDeclarationSyntax classDeclaration,
+    public InpcSemanticModel(List<FieldDeclarationSyntax> fieldsToWrap, TypeDeclarationSyntax classDeclaration,
         SemanticModel semanticModel, PropertyDependencyChecker propertyDependencies)
     {
         FieldsToWrap = fieldsToWrap;
@@ -25,11 +28,9 @@ public class ClassToImplement
         TypeInfo = semanticModel.GetDeclaredSymbol(ClassDeclaration) ??
                    throw new InvalidProgramException("Class declaration is not a type declaration");
     }
-
-    public void GenerateCode(SourceProductionContext context)
+    
+    public void GenerateCode(CodeWriter cw)
     {
-        var cw = new SourceProductionCodeWriter(context);
         InpcClassGeneratorFactory.CreateGenerator(this, cw).WriteToCodeWriter();
-        cw.PublishCodeInFile(ClassDeclaration, "INPC");
     }
 }

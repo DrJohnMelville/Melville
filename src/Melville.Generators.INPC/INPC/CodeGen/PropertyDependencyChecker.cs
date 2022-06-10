@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.INPC;
+namespace Melville.Generators.INPC.INPC.CodeGen;
 
 public class PropertyDependencyChecker
 {
@@ -13,13 +13,13 @@ public class PropertyDependencyChecker
     public void AddProperty(PropertyDeclarationSyntax property)
     {
         foreach (var node in property.DescendantNodes()
-                     .Where(IsGetterDeclararion))
+                     .Where(IsGetterDeclaration))
         {
             AddPropertyBody(node, property.Identifier.ToString());
         }
     }
 
-    private bool IsGetterDeclararion(SyntaxNode i)
+    private bool IsGetterDeclaration(SyntaxNode i)
     {
         var ret = (i is ArrowExpressionClauseSyntax || 
                    (i is AccessorDeclarationSyntax ads && ads.Kind() == SyntaxKind.GetAccessorDeclaration));

@@ -5,14 +5,14 @@ using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.INPC;
+namespace Melville.Generators.INPC.INPC.CodeGen;
 
 public readonly struct InpcPropertyGenerator
 {
     private readonly FieldDeclarationSyntax fieldToWrap;
     private readonly IFieldSymbol fieldToWrapSymbol;
     private readonly CodeWriter codeWriter;
-    private readonly ClassToImplement target;
+    private readonly InpcSemanticModel target;
     private readonly INotifyImplementationStategy notifyStrategy;
     private readonly VariableDeclaratorSyntax variable;
     private readonly string fieldName;
@@ -20,7 +20,7 @@ public readonly struct InpcPropertyGenerator
 
     public InpcPropertyGenerator(FieldDeclarationSyntax fieldToWrap,
         CodeWriter codeWriter,
-        ClassToImplement target,
+        InpcSemanticModel target,
         INotifyImplementationStategy notifyStrategy,
         VariableDeclaratorSyntax variable)
     {

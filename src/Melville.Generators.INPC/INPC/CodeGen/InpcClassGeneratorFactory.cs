@@ -5,12 +5,12 @@ using Melville.Generators.INPC.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.INPC;
+namespace Melville.Generators.INPC.INPC.CodeGen;
 
 public static class InpcClassGeneratorFactory
 {
 
-    public static InpcClassGenerator CreateGenerator(ClassToImplement target, CodeWriter context) => 
+    public static InpcClassGenerator CreateGenerator(InpcSemanticModel target, CodeWriter context) => 
         new(target, StrategyForClass(target.TypeInfo), context);
 
     private static INotifyImplementationStategy StrategyForClass(INamedTypeSymbol target)
