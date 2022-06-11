@@ -55,7 +55,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="local:LogEntryViewModel">
                             <StackPanel>
-                                <TextBlock Text="{Binding Message}" TextWrapping="Wrap" />
+                                <TextBlock FontFamily="Consolas" Text="{Binding Message}" TextWrapping="Wrap" />
                                 <TextBlock Text="{Binding Exception}" TextWrapping="Wrap"
                                            wpfHacks:VisibilityHack.CollapseIfNull="{Binding Exception}" />
                             </StackPanel>
