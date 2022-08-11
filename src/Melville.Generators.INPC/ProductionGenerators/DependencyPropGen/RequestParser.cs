@@ -93,9 +93,15 @@ public class RequestParser
                 Nullable = ReadBoolLiteral(les);
                 break;
             case "Default":
-                customDefault = les.ToString();
+                customDefault = ParseDefaultExpression(les.ToString());
                 break;
         }
+    }
+
+    private readonly Regex shiftedDefaultFinder = new Regex(@"^""@(.+)""$");
+    private string? ParseDefaultExpression(string input)
+    {
+        return (shiftedDefaultFinder.Match(input) is { Success: true } match) ? match.Groups[1].Value : input;
     }
 
     private static bool ReadBoolLiteral(ExpressionSyntax les) => 

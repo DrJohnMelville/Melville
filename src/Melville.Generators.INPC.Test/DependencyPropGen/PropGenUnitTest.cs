@@ -183,6 +183,7 @@ namespace Outer
 
     [Theory]
     [InlineData("[GenerateDP(typeof(int),\"Prop\", Default=10)]", "Metadata(10)")]
+    [InlineData("[GenerateDP(typeof(int),\"Prop\", Default=\"@10\")]", "Metadata(10)")]
     [InlineData("[GenerateDP(typeof(int),\"Prop\", Default=-10)]", "Metadata(-10)")]
     [InlineData("[GenerateDP] private void OnPropChanged(int i = 10)", "Metadata(10,")]
     [InlineData("[GenerateDP] private void OnPropChanged(string i = \"Hello\")", "Metadata(\"Hello\",")]
