@@ -7,6 +7,7 @@ using Melville.FileSystem.CopyWithProgress;
 using Melville.INPC;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.MvvmDialogs;
+using Melville.WpfControls.FileDownloadBars;
 
 namespace Melville.Wpf.Samples.FileOperations;
 
@@ -15,9 +16,10 @@ public partial class MonitoredCopyViewModel
 
     [AutoNotify] private IFile? source;
     [AutoNotify] private IFile? destination;
-    [AutoNotify] private bool isCopying;
     [AutoNotify] private double progress;
     private CancellationTokenSource? tokenSource;
+
+    [FromConstructor] public FileDownloadBarViewModel Downloader { get; }
     
     public void OpenSource([FromServices]IOpenSaveFile fileDlg)
     {
@@ -35,23 +37,8 @@ public partial class MonitoredCopyViewModel
     public async Task DoCopy()
     {
         tokenSource = new CancellationTokenSource();
-        IsCopying = true;
-        try
-        {
-            await destination.CopyFrom(source, tokenSource.Token, FileAttributes.Normal, ReportProgress);
-        }
-        finally
-        {
-            IsCopying = false;
-        }
-    }
-
-    private CopyProgressResult ReportProgress(
-        long totalfilesize, long totalbytestransferred, long streamsize, 
-        long streambytestransferred, uint dwstreamnumber, CopyProgressCallbackReason dwcallbackreason, 
-        IntPtr hsourcefile, IntPtr hdestinationfile, IntPtr lpdata)
-    {
-        Progress = ((double)totalbytestransferred) / totalfilesize;
-        return CopyProgressResult.PROGRESS_CONTINUE;
+        if (Source is not null && Destination is not null)
+            await Downloader.CopyFile(
+                Destination, Source, FileAttributes.Normal, tokenSource.Token);
     }
 }
