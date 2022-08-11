@@ -41,4 +41,6 @@ public partial class MonitoredCopyViewModel
             await Downloader.CopyFile(
                 Destination, Source, FileAttributes.Normal, tokenSource.Token);
     }
+
+    public void DoCancel() => tokenSource?.Cancel();
 }
