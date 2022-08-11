@@ -1,98 +1,110 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.IOC", "src\Melville.IOC\Melville.IOC.csproj", "{38E22C65-8C05-4703-9587-A0133996C165}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32611.2
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.IOC", "src\Melville.IOC\Melville.IOC.csproj", "{38E22C65-8C05-4703-9587-A0133996C165}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.IOC.AspNet", "src\Melville.IOC.AspNet\Melville.IOC.AspNet.csproj", "{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.IOC.AspNet", "src\Melville.IOC.AspNet\Melville.IOC.AspNet.csproj", "{3D7EFB7C-D1A3-45F6-8BF7-7944825B0D9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.IOC.Test", "src\Melville.IOC.Test\Melville.IOC.Test.csproj", "{02E5FFF0-7332-4E91-A315-421EA044DC4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.IOC.Test", "src\Melville.IOC.Test\Melville.IOC.Test.csproj", "{02E5FFF0-7332-4E91-A315-421EA044DC4B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IOC", "IOC", "{8379C50E-4E57-49A3-8AB1-BEC01D3CB81F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{180FAD0F-CEF1-43DF-B15B-C4D4D74EDF7C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDashboard", "src\WebDashboard\WebDashboard.csproj", "{982DEF03-AD20-4FB7-8791-C1CAD3C6FA7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDashboard", "src\WebDashboard\WebDashboard.csproj", "{982DEF03-AD20-4FB7-8791-C1CAD3C6FA7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebDashboard.Test", "src\WebDashboard.Test\WebDashboard.Test.csproj", "{2965918A-6A37-4C59-8BE8-B7C4C4DAA6D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebDashboard.Test", "src\WebDashboard.Test\WebDashboard.Test.csproj", "{2965918A-6A37-4C59-8BE8-B7C4C4DAA6D7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MVVM", "MVVM", "{3962AEC7-0B44-4291-8B32-55DB84511B8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.MVVM", "src\Melville.MVVM\Melville.MVVM.csproj", "{AA893AFD-6518-4E1F-A205-E32DDFCEF228}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.MVVM", "src\Melville.MVVM\Melville.MVVM.csproj", "{AA893AFD-6518-4E1F-A205-E32DDFCEF228}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Mvvm.Test", "src\Melville.Mvvm.Test\Melville.Mvvm.Test.csproj", "{76BBB117-03D0-467D-B67F-FA4B70B8A03A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Mvvm.Test", "src\Melville.Mvvm.Test\Melville.Mvvm.Test.csproj", "{76BBB117-03D0-467D-B67F-FA4B70B8A03A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{88DB3BAA-BC1D-4D7C-9502-C671B31BA6BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.TestHelpers", "src\Melville.TestHelpers\Melville.TestHelpers.csproj", "{4C71CF97-BCE0-4578-9513-A4B961254339}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.TestHelpers", "src\Melville.TestHelpers\Melville.TestHelpers.csproj", "{4C71CF97-BCE0-4578-9513-A4B961254339}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Mvvm.TestHelpers", "src\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj", "{39351F2B-EFF1-4BC6-BE5A-0EFD516ABA6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Mvvm.TestHelpers", "src\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj", "{39351F2B-EFF1-4BC6-BE5A-0EFD516ABA6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.TestHelpers.Test", "src\Melville.TestHelpers.Test\Melville.TestHelpers.Test.csproj", "{E2DD23DC-A8D9-4BB5-BA62-E57BE7EF5077}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.TestHelpers.Test", "src\Melville.TestHelpers.Test\Melville.TestHelpers.Test.csproj", "{E2DD23DC-A8D9-4BB5-BA62-E57BE7EF5077}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.MVVM.Wpf", "src\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj", "{431001DA-C1CF-415D-84A8-E63D5980B13D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.MVVM.Wpf", "src\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj", "{431001DA-C1CF-415D-84A8-E63D5980B13D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.MVVM.WPF.Test", "src\Melville.MVVM.WPF.Test\Melville.MVVM.WPF.Test.csproj", "{95CBE9F2-9E58-4360-8492-8CB4057C2723}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.MVVM.WPF.Test", "src\Melville.MVVM.WPF.Test\Melville.MVVM.WPF.Test.csproj", "{95CBE9F2-9E58-4360-8492-8CB4057C2723}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WPF", "WPF", "{0A205128-7E45-4AAF-96F5-749119BF47E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.WpfControls", "src\Melville.WpfControls\Melville.WpfControls.csproj", "{5C343CCF-C360-4CCF-9322-75BA24AC7A69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.WpfControls", "src\Melville.WpfControls\Melville.WpfControls.csproj", "{5C343CCF-C360-4CCF-9322-75BA24AC7A69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.WpfControls.Test", "src\Melville.WpfControls.Test\Melville.WpfControls.Test.csproj", "{1E3672DE-5FFB-4AEC-A272-D26826517047}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.WpfControls.Test", "src\Melville.WpfControls.Test\Melville.WpfControls.Test.csproj", "{1E3672DE-5FFB-4AEC-A272-D26826517047}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Wpf.Samples", "Src\Melville.Wpf.Samples\Melville.Wpf.Samples.csproj", "{AEFC0E6E-D7BB-4167-ADC3-5F05E0DB8ED8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Wpf.Samples", "Src\Melville.Wpf.Samples\Melville.Wpf.Samples.csproj", "{AEFC0E6E-D7BB-4167-ADC3-5F05E0DB8ED8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Ioc.Interception", "src\Melville.Ioc.Interception\Melville.Ioc.Interception.csproj", "{C84FFEED-DFF0-4FEF-918D-923291EA89B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Ioc.Interception", "src\Melville.Ioc.Interception\Melville.Ioc.Interception.csproj", "{C84FFEED-DFF0-4FEF-918D-923291EA89B8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{C5F1CD9D-6E6A-4EFD-8E13-DBBE4BC04205}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.AspNetCoreLocalLog", "src\Melville.AspNetCoreLocalLog\Melville.AspNetCoreLocalLog.csproj", "{B7C4DF2D-566C-4E92-B0E1-FBBB04C4630D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.AspNetCoreLocalLog", "src\Melville.AspNetCoreLocalLog\Melville.AspNetCoreLocalLog.csproj", "{B7C4DF2D-566C-4E92-B0E1-FBBB04C4630D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCoreLocalLogTest", "src\AspNetCoreLocalLogTest\AspNetCoreLocalLogTest.csproj", "{7A493341-4540-4F74-BBA5-A3394D1732FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreLocalLogTest", "src\AspNetCoreLocalLogTest\AspNetCoreLocalLogTest.csproj", "{7A493341-4540-4F74-BBA5-A3394D1732FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SendMailService", "src\SendMailService\SendMailService.csproj", "{7BC43EF5-BC2D-4555-B18A-C798BFA16504}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendMailService", "src\SendMailService\SendMailService.csproj", "{7BC43EF5-BC2D-4555-B18A-C798BFA16504}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataAnalysis", "DataAnalysis", "{BCA843E9-83B1-469E-829A-8F6D77A70FD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.CurveFit", "src\Melville.CurveFit\Melville.CurveFit.csproj", "{D4130AB6-BFB7-4890-A23C-0661DF7F7511}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.CurveFit", "src\Melville.CurveFit\Melville.CurveFit.csproj", "{D4130AB6-BFB7-4890-A23C-0661DF7F7511}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.CurveFit.Test", "src\Melville.CurveFit.Test\Melville.CurveFit.Test.csproj", "{505295EC-A4F2-4673-8A33-52E32AB0BE1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.CurveFit.Test", "src\Melville.CurveFit.Test\Melville.CurveFit.Test.csproj", "{505295EC-A4F2-4673-8A33-52E32AB0BE1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.ExcelDataContext", "src\Melville.ExcelDataContext\Melville.ExcelDataContext.csproj", "{A48F3287-1B2D-4FE1-9DE8-288792058941}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.ExcelDataContext", "src\Melville.ExcelDataContext\Melville.ExcelDataContext.csproj", "{A48F3287-1B2D-4FE1-9DE8-288792058941}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Linq.Statistics", "src\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj", "{1D419A07-A24C-470C-9CD6-7C611B55B9E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Linq.Statistics", "src\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj", "{1D419A07-A24C-470C-9CD6-7C611B55B9E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Linq.Statistics.Test", "src\Melville.Linq.Statistics.Test\Melville.Linq.Statistics.Test.csproj", "{DCF309BF-CC45-427A-80B8-166C15B59D62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Linq.Statistics.Test", "src\Melville.Linq.Statistics.Test\Melville.Linq.Statistics.Test.csproj", "{DCF309BF-CC45-427A-80B8-166C15B59D62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggingTestWebsite", "Src\LoggingTestWebsite\LoggingTestWebsite.csproj", "{F0EEDAB6-AABD-49B9-9DAC-95019B98D5B4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggingTestWebsite", "Src\LoggingTestWebsite\LoggingTestWebsite.csproj", "{F0EEDAB6-AABD-49B9-9DAC-95019B98D5B4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.WpfAppFramework", "src\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj", "{12272FD4-58F6-42B6-BE62-7E73C04FB7A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.WpfAppFramework", "src\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj", "{12272FD4-58F6-42B6-BE62-7E73C04FB7A7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Log.NamedPipeEventSink", "src\Melville.Log.NamedPipeEventSink\Melville.Log.NamedPipeEventSink.csproj", "{AADC3FD0-0B8A-4C3F-8406-7D0BD44E36EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Log.NamedPipeEventSink", "src\Melville.Log.NamedPipeEventSink\Melville.Log.NamedPipeEventSink.csproj", "{AADC3FD0-0B8A-4C3F-8406-7D0BD44E36EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Log.Viewer", "src\Melville.Log.Viewer\Melville.Log.Viewer.csproj", "{47F7613C-116F-472D-ACD8-C96E67273FAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Log.Viewer", "src\Melville.Log.Viewer\Melville.Log.Viewer.csproj", "{47F7613C-116F-472D-ACD8-C96E67273FAF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Generators", "Generators", "{E8931D25-A7BA-441D-A00E-A5813D6F3996}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Generators.INPC", "Src\Melville.Generators.INPC\Melville.Generators.INPC.csproj", "{0AC7BB49-0D48-423B-BF57-87573B5B2AEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Generators.INPC", "Src\Melville.Generators.INPC\Melville.Generators.INPC.csproj", "{0AC7BB49-0D48-423B-BF57-87573B5B2AEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Generators.INPC.Test", "Src\Melville.Generators.INPC.Test\Melville.Generators.INPC.Test.csproj", "{81363522-1FD9-4082-BE93-ECD9B789D109}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Generators.INPC.Test", "Src\Melville.Generators.INPC.Test\Melville.Generators.INPC.Test.csproj", "{81363522-1FD9-4082-BE93-ECD9B789D109}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.INPC", "Src\Melville.INPC\Melville.INPC.csproj", "{7D43D729-0E35-453F-8528-6729AA553A24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.INPC", "Src\Melville.INPC\Melville.INPC.csproj", "{7D43D729-0E35-453F-8528-6729AA553A24}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "P2P", "P2P", "{467E0817-54AF-4EA7-8892-50C4296826C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.P2P.Test", "Src\Melville.P2P.Test\Melville.P2P.Test.csproj", "{0FDB37D2-0E68-4736-BDA6-C7456EDD00AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.P2P.Test", "Src\Melville.P2P.Test\Melville.P2P.Test.csproj", "{0FDB37D2-0E68-4736-BDA6-C7456EDD00AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.P2P.Raw", "src\Melville.P2P.Raw\Melville.P2P.Raw.csproj", "{A5867481-B949-43D1-845D-EDBDA52CBE27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.P2P.Raw", "src\Melville.P2P.Raw\Melville.P2P.Raw.csproj", "{A5867481-B949-43D1-845D-EDBDA52CBE27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.FileSystem", "src\Melville.FileSystem\Melville.FileSystem.csproj", "{6C3A9114-E807-485B-9C93-B860B0378FE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.FileSystem", "src\Melville.FileSystem\Melville.FileSystem.csproj", "{6C3A9114-E807-485B-9C93-B860B0378FE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Linq", "src\Melville.Linq\Melville.Linq.csproj", "{7EC97100-7837-4862-A696-897CE99DE6FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Linq", "src\Melville.Linq\Melville.Linq.csproj", "{7EC97100-7837-4862-A696-897CE99DE6FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Lists", "src\Melville.Lists\Melville.Lists.csproj", "{0A41985B-7CC4-47F6-803A-317893523E54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Lists", "src\Melville.Lists\Melville.Lists.csproj", "{0A41985B-7CC4-47F6-803A-317893523E54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Hacks", "src\Melville.Hacks\Melville.Hacks.csproj", "{FDE2F942-89C7-48C5-BF82-281086CC3491}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Hacks", "src\Melville.Hacks\Melville.Hacks.csproj", "{FDE2F942-89C7-48C5-BF82-281086CC3491}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.SystemInterface", "src\Melville.SystemInterface\Melville.SystemInterface.csproj", "{15C96F75-A5FD-42D9-B550-C94154FB348B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.SystemInterface", "src\Melville.SystemInterface\Melville.SystemInterface.csproj", "{15C96F75-A5FD-42D9-B550-C94154FB348B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{1B5461D7-0B04-4F30-BB66-1EDA98450329}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Maui.Samples", "Src\Melville.Maui.Samples\Melville.Maui.Samples.csproj", "{90CE5399-3E5F-41C1-B028-6DBA51D795CD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9DFC56A1-8B7D-4EED-9880-268D03D53430}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -252,6 +264,14 @@ Global
 		{15C96F75-A5FD-42D9-B550-C94154FB348B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15C96F75-A5FD-42D9-B550-C94154FB348B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15C96F75-A5FD-42D9-B550-C94154FB348B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{38E22C65-8C05-4703-9587-A0133996C165} = {8379C50E-4E57-49A3-8AB1-BEC01D3CB81F}
@@ -291,5 +311,9 @@ Global
 		{0A41985B-7CC4-47F6-803A-317893523E54} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{FDE2F942-89C7-48C5-BF82-281086CC3491} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{15C96F75-A5FD-42D9-B550-C94154FB348B} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
+		{90CE5399-3E5F-41C1-B028-6DBA51D795CD} = {1B5461D7-0B04-4F30-BB66-1EDA98450329}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {32830D18-8400-4B5A-9A71-3D3D1E19FCD7}
 	EndGlobalSection
 EndGlobal
