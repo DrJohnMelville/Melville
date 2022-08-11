@@ -39,7 +39,7 @@ public class HubLogConnection : ILogConnection
         connection.StartAsync();
     }
 
-    private async Task<string> GetAccessToken() => 
+    private async Task<string?> GetAccessToken() => 
         (await token.CurrentAccessToken()).AccessToken;
 
     private void HandleLogEvent(string serializedEvent)
