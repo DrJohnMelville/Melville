@@ -3,6 +3,7 @@ using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.CalendarControls;
 using Melville.Wpf.Samples.DialogBox;
 using Melville.Wpf.Samples.DiBinding;
+using Melville.Wpf.Samples.FileOperations;
 using Melville.Wpf.Samples.HIDExplore;
 using Melville.Wpf.Samples.LinqPadGraph;
 using Melville.Wpf.Samples.MouseClicks;
@@ -20,7 +21,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<PopupWindowSheetViewModel>();
+        SearchTreeForSample<MonitoredCopyViewModel>();
 
     public SampleDirectory()
     {
@@ -56,6 +57,7 @@ public class SampleDirectory : SampleDirectoryDsl
             Node("Controls",
                 Page<CalendarControlViewModel>("Calendar Control"),
                 Page<DialogBoxSheetViewModel>("Dialog Box"),
-                Page<PopupWindowSheetViewModel>("Popup Box"))
+                Page<PopupWindowSheetViewModel>("Popup Box"),
+                Page<MonitoredCopyViewModel>("Copy with Progress"))
         );
 }
