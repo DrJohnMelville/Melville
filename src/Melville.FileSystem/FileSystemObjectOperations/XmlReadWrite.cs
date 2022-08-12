@@ -17,7 +17,7 @@ public static partial class FileOperations
 
     public static async Task<XNode> ReadAsXmlAsync(this Stream stream)
     {
-        var xmlReader = XmlReader.Create(stream);
+        var xmlReader = XmlReader.Create(stream, new XmlReaderSettings(){Async = true});
         await xmlReader.MoveToContentAsync();
         return await XNode.ReadFromAsync(xmlReader, CancellationToken.None);
     }
