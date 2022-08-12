@@ -89,4 +89,38 @@ namespace Outer
         tb.LastFileDoesNotContain("this.k");
         tb.LastFileContains("this.j = j;");
     }
+
+    [Fact]
+    public void RecursiveConstructors()
+    {
+        var tb = RunTest("[FromConstructor] int b;", "[FromConstructor] int a;");
+        tb.LastFileContains("public C(int a, int b): base(a)");
+    }
+    [Fact]
+    public void Recursive2ParamConstructors()
+    {
+        var tb = RunTest("[FromConstructor] int c;", "[FromConstructor] int a; [FromConstructor] string B {get;}");
+        tb.LastFileContains("public C(int a, string b, int c): base(a, b)");
+    }
+    [Fact]
+    public void Recursive2ParamConstructorsReverse()
+    {
+        var tb = RunTest("[FromConstructor] int c;", "[FromConstructor] string B {get;} [FromConstructor] int a; ");
+        tb.LastFileContains("public C(string b, int a, int c): base(b, a)");
+    }
+
+    [Fact]
+    public void ThreeLevel()
+    {
+        var tb = new GeneratorTestBed(new ConstructorGenerator(), @"
+        using Melville.INPC;
+        namespace Outer;
+                    public class CA { [FromConstructor] float a; public CA(uint y) {}}
+                    public class CB: CA { [FromConstructor] double b; public CB(string x) {}}
+                    public class CC: CB { [FromConstructor] CA c;}
+");
+        tb.LastFileContains("public CC(string x, Outer.CA c): base(x)");
+        tb.LastFileContains("public CC(uint y, double b, Outer.CA c): base(y, b)");
+        tb.LastFileContains("public CC(float a, double b, Outer.CA c): base(a, b)");
+    }
 }

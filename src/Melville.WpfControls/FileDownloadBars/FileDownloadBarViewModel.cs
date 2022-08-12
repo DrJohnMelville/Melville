@@ -18,8 +18,6 @@ public partial class FileDownloadBarViewModel
     [AutoNotify] private string message;
     [AutoNotify] private bool copying;
     [AutoNotify] private double offset;
-    private DateTime lastTime;
-    private uint lastBytes;
 
     [FromConstructor] private readonly DownloadSpeedComputer speedComputer; 
 

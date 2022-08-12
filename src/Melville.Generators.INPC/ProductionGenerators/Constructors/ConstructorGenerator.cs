@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
+using Melville.Generators.INPC.ProductionGenerators.Constructors;
 using Melville.Generators.INPC.ProductionGenerators.INPC;
 using Melville.INPC;
 using Microsoft.CodeAnalysis;
