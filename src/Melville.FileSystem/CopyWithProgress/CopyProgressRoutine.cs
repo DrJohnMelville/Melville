@@ -14,7 +14,7 @@ public delegate CopyProgressResult CopyProgressRoutine(
     IntPtr hDestinationFile,
     IntPtr lpData);
     
-public partial class CopyProgeressWrapper
+public partial class CopyProgressWrapper
 {
     [FromConstructor] private readonly IProgress<double> progress;
     public CopyProgressResult Handler(
