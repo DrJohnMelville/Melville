@@ -19,14 +19,9 @@ public static partial class FileOperations
       SimpleFileOperations.MoveUsingFileSystem(attributes, destination.Path, source.Path) : 
       SimpleFileOperations.MoveUsingStreams(destination, source, token, attributes);
   }
-
-  private static bool CanUseFileSystemOptimization(IFile destination, IFile source) => 
-    destination.ValidFileSystemPath() && source.ValidFileSystemPath();
-
-  public static Task CopyFrom(this IFile destination, IFile source, CancellationToken token, FileAttributes attributes)
-  {
-    return CopyFrom(destination, source, token, attributes, NoProgressResult.Handler);
-  }
+  
+  public static Task CopyFrom(this IFile destination, IFile source, CancellationToken token, FileAttributes attributes) => 
+    CopyFrom(destination, source, token, attributes, NoProgressResult.Handler);
 
   public static Task CopyFrom(this IFile destination, IFile source, CancellationToken token, FileAttributes attributes,
     IProgress<double> progress) =>
@@ -37,6 +32,9 @@ public static partial class FileOperations
    CanUseFileSystemOptimization(destination, source) ?
       CopyAndSetAttributes(destination, source, token, progress, attributes) :
       SimpleFileOperations.CopyUsingStreams(destination, source, token, attributes);
+
+  private static bool CanUseFileSystemOptimization(IFile destination, IFile source) => 
+    destination.ValidFileSystemPath() && source.ValidFileSystemPath();
 
   private static async Task CopyAndSetAttributes(
     IFile destination, IFile source, CancellationToken token, CopyProgressRoutine progress, 
