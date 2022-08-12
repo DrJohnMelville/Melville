@@ -25,7 +25,7 @@ public static partial class FileOperations
 
   public static Task CopyFrom(this IFile destination, IFile source, CancellationToken token, FileAttributes attributes,
     IProgress<double> progress) =>
-    CopyFrom(destination, source, token, attributes, new CopyProgeressWrapper(progress).Handler);
+    CopyFrom(destination, source, token, attributes, new CopyProgressWrapper(progress).Handler);
   
   public static Task CopyFrom(this IFile destination, IFile source, CancellationToken token, FileAttributes attributes,
     CopyProgressRoutine progress) =>

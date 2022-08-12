@@ -8,14 +8,21 @@ namespace Melville.Generators.INPC.Test.FromConstructorGen;
 public class ConstructorGenTest
 {
     private GeneratorTestBed RunTest(string s, string parentCode = "") =>
-        new(new ConstructorGenerator(), @"
-using Melville.INPC;
-namespace Outer
-{
-    public class Parent {"+parentCode+@"} 
+        RunTestWithDeclaredAttr($@"
+    public class Parent {{" + parentCode + @"} 
     public partial class C: Parent {" + s + @"
-}
-}");
+");
+    private GeneratorTestBed RunTestWithDeclaredAttr(string s, string parentCode = "") =>
+        new(new ConstructorGenerator(), $@"
+
+namespace Melville.INPC{{
+    public class FromConstructorAttribute: Attribute{{}}
+}}
+namespace Outer
+{{
+    using Melville.INPC;
+    {s}
+}}");
 
     [Fact]
     public void IntProperty()
@@ -41,7 +48,7 @@ namespace Outer
         tb.LastFileContains("public C(int @if)");
         tb.LastFileContains("If = @if;");
     }
-    [Fact]
+   [Fact]
     public void Fields()
     {
         var tb = RunTest("[FromConstructor] private readonly int i;");
@@ -112,9 +119,7 @@ namespace Outer
     [Fact]
     public void ThreeLevel()
     {
-        var tb = new GeneratorTestBed(new ConstructorGenerator(), @"
-        using Melville.INPC;
-        namespace Outer;
+        var tb = RunTestWithDeclaredAttr(@"
                     public class CA { [FromConstructor] float a; public CA(uint y) {}}
                     public class CB: CA { [FromConstructor] double b; public CB(string x) {}}
                     public class CC: CB { [FromConstructor] CA c;}
@@ -123,4 +128,32 @@ namespace Outer
         tb.LastFileContains("public CC(uint y, double b, Outer.CA c): base(y, b)");
         tb.LastFileContains("public CC(float a, double b, Outer.CA c): base(a, b)");
     }
+    [Fact]
+    public void ClassLevelProperty()
+    {
+        var tb = RunTestWithDeclaredAttr(@"
+                    public class CA { [FromConstructor] float a; public CA(uint y) {}}
+                    [FromConstructor] public class CB: CA {  }
+                    public class CC: CB { [FromConstructor] CA c;}
+");
+        tb.LastFileContains("public CC(uint y, Outer.CA c): base(y)");
+        tb.LastFileContains("public CC(float a, Outer.CA c): base(a)");
+    }
+    [Fact]
+    public void SimpleNoParentCase()
+    {
+        var tb = RunTestWithDeclaredAttr(@"
+                    public class CC { [FromConstructor] int c;}
+");
+        tb.LastFileContains("public CC(int c)");
+    }     
+    [Fact]
+    public void JustCallParent()
+    {
+        var tb = RunTestWithDeclaredAttr(@"
+                    Public class CA {public CA(int x) {} }
+                    [FromConstructor]public class CC:CA { }
+");
+        tb.LastFileContains("public CC(int x): base(x)");
+    }  
 }

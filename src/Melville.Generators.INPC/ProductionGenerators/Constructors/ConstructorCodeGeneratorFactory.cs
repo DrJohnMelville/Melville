@@ -19,16 +19,18 @@ public readonly struct ConstructorCodeGeneratorFactory
         this.rootSymbol = rootSymbol;
         FindParentConstructors(rootSymbol);        
     }
-    public ConstructorsCodeGenerator Create(TypeDeclarationSyntax syntax) =>
-        new(syntax, ImplicitlyConstructedMembers(rootSymbol), constructors);
+    public ConstructorsCodeGenerator Create(TypeDeclarationSyntax syntax)
+    {
+        return new(syntax, ImplicitlyConstructedMembers(rootSymbol), constructors);
+    }
 
     private void FindParentConstructors(INamedTypeSymbol? target) => 
         FindDeclaredConstructors(target.BaseType, Array.Empty<MemberData>());
 
     private IEnumerable<MemberData[]> ReadConstructors(INamedTypeSymbol symbol, bool excludeDefalutCons) =>
         symbol.InstanceConstructors
-            .Where(i => i.Parameters.Length > 0 || !excludeDefalutCons)
-            .Select(i => i.Parameters.Select(j=>new MemberData(j.Type.FullyQualifiedName(), j.Name)).ToArray());
+            .Where(i => !excludeDefalutCons || i.Parameters.Length > 0)
+            .Select(static i => i.Parameters.Select(j=>new MemberData(j.Type.FullyQualifiedName(), j.Name)).ToArray());
     
     private void FindDeclaredConstructors(INamedTypeSymbol? baseType, MemberData[] inheritedParams)
     {
@@ -42,7 +44,7 @@ public readonly struct ConstructorCodeGeneratorFactory
             constructors.Add(constructor.Concat(inheritedParams).ToArray());
         }
 
-        if (implicitVars.Count > 0)
+        if (implicitVars.Count > 0 || HasFromConstructorAttribute(baseType))
         {
             FindDeclaredConstructors(baseType.BaseType, implicitVars.Concat(inheritedParams).ToArray());
         }
@@ -51,7 +53,7 @@ public readonly struct ConstructorCodeGeneratorFactory
     private MemberData[] ImplicitlyConstructedMembers(INamedTypeSymbol baseType) =>
         baseType
             .GetMembers()
-            .Where(HasFromConstructorAttribute)
+            .Where(ShouldGenerateAssignment)
             .Select(MemberDataForSymbol)
             .ToArray();
 
@@ -62,7 +64,13 @@ public readonly struct ConstructorCodeGeneratorFactory
         _ => throw new InvalidDataException("Only fields and properties should be attributed with [FromConstructor]")
     };
 
-    private bool HasFromConstructorAttribute(ISymbol i) => 
-        i.GetAttributes()
-            .Any(j => j.AttributeClass?.Name.Equals("FromConstructor") ?? false);
+    private bool ShouldGenerateAssignment(ISymbol i) => IsSettableMemberKind(i) && HasFromConstructorAttribute(i);
+
+    private static bool IsSettableMemberKind(ISymbol i) => i is IFieldSymbol or IPropertySymbol;
+
+    private static bool HasFromConstructorAttribute(ISymbol i) =>
+        i.GetAttributes().Any(IsFromConstructorAttribute);
+
+    private static bool IsFromConstructorAttribute(AttributeData j) => 
+        j.AttributeClass?.Name.Equals("FromConstructorAttribute") ?? false;
 }
