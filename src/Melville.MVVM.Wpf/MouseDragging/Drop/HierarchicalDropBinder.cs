@@ -6,10 +6,15 @@ using Melville.INPC;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drop;
 
-public partial class HierarchicalDropWithDragBinder: HierarchicalDropBinder
+public class HierarchicalDropWithDragBinder: HierarchicalDropBinder
 {
-    [FromConstructor] private readonly DragEventHandler over;
-    
+    private readonly DragEventHandler over;
+    public HierarchicalDropWithDragBinder(UIElement elt, bool preview, 
+        DragEventHandler enter, DragEventHandler over, DragEventHandler leave, DragEventHandler drop) : 
+        base(elt, preview, enter, leave, drop)
+    {
+        this.over = over;
+    }  
     protected override void HandleOver(object sender, DragEventArgs e)
     {
         if (ChildHandledDrop(e)) return;

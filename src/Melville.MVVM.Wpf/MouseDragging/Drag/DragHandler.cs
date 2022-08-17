@@ -9,7 +9,6 @@ public partial class DragHandler
 {
   [FromConstructor]private readonly IMouseDataSource source;
 
-
   public DragDropEffects InitiateDrag(IDataObject dataToDrag, DragDropEffects allowedEffects)
   {
     if (source.Target is not FrameworkElement src) return DragDropEffects.None;
