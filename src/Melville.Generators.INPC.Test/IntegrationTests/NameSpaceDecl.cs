@@ -3,6 +3,6 @@
 namespace Melville.Generators.INPC.Test.IntegrationTests;
 
 public partial class NameSpaceDecl
-    {
-        [AutoNotify] private int specialName;
-    }
+{
+    [AutoNotify] private int specialName;
+}
