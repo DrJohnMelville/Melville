@@ -23,7 +23,11 @@
   <ItemGroup>
     <Content Include="linqpad-samples\\*.*" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
+    <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
   <Target Name="PostBuild1" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%25LocalAppData%25\\LINQPad\\Drivers\\DataContext\\NetCore\\$(TargetName)&quot;" />
+    <Exec Command="xcopy /i/y/s &quot;$(TargetDir)*.*&quot; &quot;%LocalAppData%\LINQPad\Drivers\DataContext\NetCore\$(TargetName)\&quot;" />
   </Target>
 </Project>

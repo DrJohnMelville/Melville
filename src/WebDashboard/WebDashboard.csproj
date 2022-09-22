@@ -6,7 +6,8 @@
         <UseWPF>true</UseWPF>
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
         <ApplicationIcon>RootWindows/App.ico</ApplicationIcon>
-    </PropertyGroup>
+      <UserSecretsId>4bd11cd0-a1bc-4bf7-953f-34037119d442</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
       <ApplicationDefinition Remove="App.xaml" />
@@ -31,6 +32,7 @@
     
     <ItemGroup>
       <PackageReference Include="GraphSharp.Core" Version="1.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
       <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
 </Project>

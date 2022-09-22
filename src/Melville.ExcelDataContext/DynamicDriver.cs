@@ -11,13 +11,11 @@ namespace Melville.ExcelDataContext
 	{
 		static DynamicDriver()
 		{
-			AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
-			{
-				File.WriteAllText(@"C:\users\jom252\desktop\linqException.txt",args.Exception.Message+args.Exception.StackTrace);
-				if (args.Exception.StackTrace?.Contains(typeof (DynamicDriver).Namespace??"") ?? true)
-					Debugger.Launch ();
-			};
-	
+			// AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
+			// {
+			// 	Debugger.Launch();
+			// };
+			//
 		}
 		#region UI Identifiers
 		public override string Name => "Excel or CSV File";
@@ -31,8 +29,9 @@ namespace Melville.ExcelDataContext
 		public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, AssemblyName assemblyToBuild, 
 			ref string nameSpace, ref string typeName)
 		{
-			return TargetObjectBuilder.GetSchemaAndBuildAssembly(assemblyToBuild, nameSpace, typeName,
-				ExcelFileCache.LoadFile(cxInfo).GetSchemaDataSource());
+			var schema = ExcelFileCache.LoadFile(cxInfo).GetSchemaDataSource();
+			return new TargetObjectBuilder(assemblyToBuild, nameSpace, typeName, schema, cxInfo)
+				.GetSchemaAndBuildAssembly();
 		}
 
 		public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)

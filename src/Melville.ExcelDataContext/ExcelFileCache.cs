@@ -6,8 +6,7 @@ namespace Melville.ExcelDataContext
 {
     public static class ExcelFileCache
     {
-        private static readonly Dictionary<IConnectionInfo, RawFileReader> Readers =
-            new Dictionary<IConnectionInfo, RawFileReader>();
+        private static readonly Dictionary<IConnectionInfo, RawFileReader> Readers = new ();
 
         public static RawFileReader LoadFile(IConnectionInfo info)
         {
@@ -15,9 +14,7 @@ namespace Melville.ExcelDataContext
             {
                 return file;
             }
-            var newFile = RawFileReader.LoadFile(new ExcelFileProperties(info).FilePath);
-            Readers[info] = newFile;
-            return newFile;
+            return Readers[info] = RawFileReader.LoadFile(new ExcelFileProperties(info).FilePath);
         }
     }
 }

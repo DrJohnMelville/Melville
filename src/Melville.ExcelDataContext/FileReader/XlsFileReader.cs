@@ -7,7 +7,7 @@ namespace Melville.ExcelDataContext.FileReader
 {
     public class XlsFileReader : RawFileReader
     {
-        public override void Load(string fileName)
+        protected override void Load(string fileName)
         {
             using (var inputStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.Read, 10240))
             {

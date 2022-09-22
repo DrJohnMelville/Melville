@@ -23,7 +23,7 @@ public class NugetDeploymentCommandsTest
 
     public NugetDeploymentCommandsTest()
     {
-        sut = new NugetDeploymentCommands(viewModel.Object, files);
+        sut = new NugetDeploymentCommands(viewModel.Object, files, new GitHubPushOperation());
     }
 
     [Fact]

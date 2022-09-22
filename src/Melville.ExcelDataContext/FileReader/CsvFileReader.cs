@@ -7,7 +7,7 @@ namespace Melville.ExcelDataContext.FileReader
 {
     public class CsvFileReader : RawFileReader
     {
-        public override void Load(string fileName)
+        protected override void Load(string fileName)
         {
             using (var parser = new TextFieldParser(fileName))
             {

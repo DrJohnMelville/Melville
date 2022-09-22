@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Melville.FileSystem;
+using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.RootWindows;
 using WebDashboard.ConsoleWindows;
 
@@ -18,14 +19,14 @@ public class NugetViewModel: INugetViewModel
         Model = model;
     }
         
-    public void UploadPackages(INavigationWindow nav)
+    public void UploadPackages(INavigationWindow nav, [FromServices] IPackagePublishOperation uploadCommands)
     {
         var files = Model.Files
             .Where(i => i.Deploy)
             .Select(i => i.Package(Model.Version))
             .OfType<IFile>()
             .ToList();
-        nav.NavigateTo( new ConsoleWindowViewModel(new NugetDeploymentCommands(this, files)));
+        nav.NavigateTo( new ConsoleWindowViewModel(new NugetDeploymentCommands(this, files, uploadCommands)));
     }
 
 }

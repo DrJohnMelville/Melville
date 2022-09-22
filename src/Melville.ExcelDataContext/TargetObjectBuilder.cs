@@ -1,32 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using LINQPad.Extensibility.DataContext;
 using Melville.ExcelDataContext.SchemaComputation;
+using Melville.INPC;
 
 namespace Melville.ExcelDataContext
 {
-    public class TargetObjectBuilder
+    public readonly partial struct TargetObjectBuilder
     {
-        public static List<ExplorerItem> GetSchemaAndBuildAssembly(AssemblyName name, string nameSpace, string typeName,
-            ISchemaDataSource source)
+        [FromConstructor] private readonly AssemblyName name;
+        [FromConstructor] private readonly string nameSpace;
+        [FromConstructor] private readonly string typeName;
+        [FromConstructor] private readonly ISchemaDataSource source;
+        [FromConstructor] private readonly IConnectionInfo connectionInfo;
+        public  List<ExplorerItem> GetSchemaAndBuildAssembly()
         {
-            BuildAssembly(name, nameSpace, typeName, source);
+            BuildAssembly();
             return source.GetSchema();
         }
 
-        public static CompilationOutput BuildAssembly(AssemblyName name, string nameSpace, string typeName,
-            ISchemaDataSource source) => Compile(source.GetSourceCode(nameSpace, typeName), 
-                name.CodeBase??"C:\\");
-              static CompilationOutput Compile(string cSharpSourceCode, string outputFile)
+        private  CompilationOutput BuildAssembly() => Compile(source.GetSourceCode(nameSpace, typeName),
+            name.CodeBase ?? "C:\\");
+
+        private CompilationOutput Compile(string cSharpSourceCode, string outputFile)
         {
             var compileResult = DataContextDriver.CompileSource(new CompilationInput
             {
                 FilePathsToReference = AssembliesToReference(),
                 OutputPath = outputFile,
-                SourceCode = new[] {cSharpSourceCode}
+                SourceCode = new[] { cSharpSourceCode }
             });
 
             if (compileResult.Errors.Length > 0)
@@ -35,10 +41,8 @@ namespace Melville.ExcelDataContext
             return compileResult;
         }
 
-              private static string[] AssembliesToReference()
-              {
-                  return DataContextDriver.GetCoreFxReferenceAssemblies()
-                      .Append(typeof(TargetObjectBuilder).Assembly.Location).ToArray();
-              }
+        private string[] AssembliesToReference() =>
+            DataContextDriver.GetCoreFxReferenceAssemblies(connectionInfo)
+                .Append(typeof(TargetObjectBuilder).Assembly.Location).ToArray();
     }
 }

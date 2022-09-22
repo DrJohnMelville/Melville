@@ -1,23 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.FileSystem;
+using Melville.INPC;
 using WebDashboard.ConsoleWindows;
 
 namespace WebDashboard.NugetManager;
 
-public class NugetDeploymentCommands: IConsoleCommands
-{
-    private readonly INugetViewModel model;
-    private readonly IList<IFile> packages;
 
-    public NugetDeploymentCommands(INugetViewModel model, IList<IFile> packages)
+public partial class NugetDeploymentCommands: IConsoleCommands
+{
+    [FromConstructor] private readonly INugetViewModel model;
+    [FromConstructor] private readonly IList<IFile> packages;
+    [FromConstructor] private readonly IPackagePublishOperation pushOperation;
+
+    partial void OnConstructed()
     {
-        this.model = model;
-        this.packages = packages;
+        ;
     }
 
     public IAsyncEnumerable<(string Command, string Param)> Commands() => 
-        packages.Select(i => ("gpr", $"push \"{i.Path}\"")).ToAsyncEnumerable();
+        packages.Select(pushOperation.MakeCommand).ToAsyncEnumerable();
 
     public object NavigateOnReturn() => model;
 }

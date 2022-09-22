@@ -4,6 +4,8 @@ using Melville.IOC.IocContainers;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.WpfAppFramework.StartupBases;
+using Microsoft.Extensions.Configuration;
+using WebDashboard.NugetManager;
 
 namespace WebDashboard.Startup;
 
@@ -23,6 +25,7 @@ public class Startup : StartupBase
     protected override void RegisterWithIocContainer(IBindableIocService service)
     {
         service.AddLogging();
+        ConfigureNugetUpload(service);
         // window selectors
         service.Bind<IFileViewerFactory>().To<NugetManagerViewModelFactory>();
         service.Bind<IFileViewerFactory>().To<SecretManagerViewModelFactory>();
@@ -40,6 +43,13 @@ public class Startup : StartupBase
         service.Bind<IOpenSaveFile>().To<OpenSaveFileAdapter>();
     }
 
+    private static void ConfigureNugetUpload(IBindableIocService service)
+    {
+        service.AddConfigurationSources(i => i.AddUserSecrets<Startup>());
+        service.Bind<IPackagePublishOperation>().To<NugetPublishOperation>().AsSingleton();
+    }
+
     private void SetIcon(RootNavigationWindow arg) => 
         arg.SetWindowIconFromResource("WebDashboard", "RootWindows/app.ico");
 }
+

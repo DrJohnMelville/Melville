@@ -5,6 +5,7 @@
         <Company>Melville Computing</Company>
         <Copyright>2021 John Melville, MS, MD</Copyright>
         <RepositoryUrl>https://github.com/DrJohnMelville/Melville</RepositoryUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <Nullable>enable</Nullable>
         <LangVersion>10.0</LangVersion>
     </PropertyGroup>
