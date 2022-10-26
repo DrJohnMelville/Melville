@@ -10,11 +10,11 @@ namespace Melville.Linq.Statistics.Graphics.Internal
   public class BoxPlot<T,TLabel> : BarPlotBase<T, TLabel, BoxPlot<T, TLabel>> where TLabel:IComparable
   {
     private readonly IList<BoxValues> innerData;
-    public BoxPlot(IEnumerable<T> data, Func<T, double> yFunc, Func<T, TLabel> label) : base(data, yFunc, label)
+    public BoxPlot(IEnumerable<T> data, Func<T, double> yFunc, Func<T, TLabel> label, bool supressOutliers = false) : base(data, yFunc, label)
     { 
       innerData = Data.GroupBy(label)
         .OrderBy(i => i.Key)
-        .Select(i => new BoxValues(i,yFunc))
+        .Select(i => new BoxValues(i,yFunc, supressOutliers))
         .ToList();
     }
 
@@ -59,7 +59,7 @@ namespace Melville.Linq.Statistics.Graphics.Internal
       private readonly IList<SingleBoxValue> outliers ;
 
 
-      public BoxValues(IEnumerable<T> data, Func<T, double> yFunc)
+      public BoxValues(IEnumerable<T> data, Func<T, double> yFunc, bool suppressOutliers = false)
       {
         var dataList = data.Select(i=>new SingleBoxValue(i, yFunc(i))).OrderBy(i=>i.Value).AsList();
         min = dataList[0];
@@ -72,7 +72,9 @@ namespace Melville.Linq.Statistics.Graphics.Internal
         lowOutlier = c25.Value - (3.0 * iqr);
         highPossibleOutlier = c25.Value + (1.5 * iqr);
         highOutlier = c25.Value + (3.0 * iqr);
-        outliers = dataList.Where(i => i.Value > highPossibleOutlier || i.Value < lowPossibleOutlier).ToList();
+        outliers = suppressOutliers ? 
+          Array.Empty<SingleBoxValue>():
+          dataList.Where(i => i.Value > highPossibleOutlier || i.Value < lowPossibleOutlier).ToList();
         if (outliers.Any(i=>i.Value > c75.Value)) { max = new SingleBoxValue(max.Item, highPossibleOutlier);}
         if (outliers.Any(i=>i.Value < c25.Value)) { min = new SingleBoxValue(min.Item, lowPossibleOutlier);}
       }

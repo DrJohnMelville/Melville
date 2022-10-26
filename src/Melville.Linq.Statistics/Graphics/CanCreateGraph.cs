@@ -25,9 +25,10 @@ namespace Melville.Linq.Statistics.Graphics
 
     public BarPlot<T, string> Bar<T>(IEnumerable<T> items, Func<T, double> values) =>
       Bar(items, values, _ => string.Empty);
-    public BoxPlot<T, TLabel> Box<T, TLabel>(IEnumerable<T> items, Func<T, double> values, Func<T, TLabel> titles)
+    public BoxPlot<T, TLabel> Box<T, TLabel>(
+      IEnumerable<T> items, Func<T, double> values, Func<T, TLabel> titles, bool suppressOutliers = false)
       where TLabel:IComparable =>
-      AddSerries(new BoxPlot<T, TLabel>(items, values, titles));
+      AddSerries(new BoxPlot<T, TLabel>(items, values, titles, suppressOutliers));
 
     public ScatterPlot<T> Scatter<T>(IEnumerable<T> items, Func<T, double> xFunc, Func<T, double> yFunc) =>
       AddSerries(new ScatterPlot<T>(items, xFunc, yFunc));
