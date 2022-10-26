@@ -188,7 +188,18 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         if (i.HasExplicitDefaultValue)
         {
             cw.Append(" = ");
+            TryRenderEnumCast(cw, i.Type);
             cw.Append(ExplicitValue(i.ExplicitDefaultValue?.ToString()));
+        }
+    }
+
+    private void TryRenderEnumCast(CodeWriter cw, ITypeSymbol type)
+    {
+        if (type is INamedTypeSymbol { EnumUnderlyingType: { } })
+        {
+            cw.Append("(");
+            cw.Append(type.FullyQualifiedName());
+            cw.Append("}");
         }
     }
 

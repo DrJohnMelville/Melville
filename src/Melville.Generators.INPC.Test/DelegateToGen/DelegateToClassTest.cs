@@ -25,6 +25,15 @@ namespace Outer
 
     }
 
+    [Fact]
+    public void DelegateDefaultEnumValue()
+    {
+        var res = RunTest("class", "public enum CEnum {Zero, One}; public virtual void Meth(CEnum c = CEnum.One){}",
+             "[DelegateTo] Delegated bar;");
+        res.FileContains("GeneratedDelegator.Outer.C.bar.cs",
+            "public override void Meth(Outer.Delegated.CEnum c = (Outer.Delegated.CEnum}1) => this.bar.Meth(c);");
+    }
+
     [Fact] public void ForwardOverload()
     {
         var res = RunTest("class", "public virtual int Foo()=>1; public virtual int Foo(int i)=>i;", 
