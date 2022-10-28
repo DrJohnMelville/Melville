@@ -1,41 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Melville.INPC;
 
 namespace Melville.FileSystem.PseudoTransactedFS;
 
-public sealed class SwapableStore : ITransactableStore
+public sealed partial class SwapableStore : ITransactableStore
 {
-  public SwapableStore(ITransactableStore innerStore)
-  {
-    this.innerStore = innerStore;
-  }
 
-  #region Delegating functions
-
-  private ITransactableStore innerStore;
-  public IDirectory UntransactedRoot => innerStore.UntransactedRoot;
-
-  public ITransactedDirectory BeginTransaction()
-  {
-    return innerStore.BeginTransaction();
-  }
-
-  public bool IsLocalStore => innerStore.IsLocalStore;
-  public IDownloadProgressStore? ProgressStore => innerStore.ProgressStore;
-
-  public ValueTask DisposeAsync() => innerStore.DisposeAsync();
-
-  public Task<bool> RenewLease()
-  {
-    return innerStore.RenewLease();
-  }
-  #endregion
+  [FromConstructor][DelegateTo]private ITransactableStore innerStore;
 
   public async Task CopyAndTransferToNewStore(ITransactableStore newStore)
   {
     await newStore.UntransactedRoot.DuplicateFrom(innerStore.UntransactedRoot);
     innerStore = newStore;
   }
-
-  public IDisposable? WriteToken() => innerStore.WriteToken();
 }

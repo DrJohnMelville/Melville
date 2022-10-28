@@ -199,7 +199,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         {
             cw.Append("(");
             cw.Append(type.FullyQualifiedName());
-            cw.Append("}");
+            cw.Append(")");
         }
     }
 

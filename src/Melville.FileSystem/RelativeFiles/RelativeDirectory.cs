@@ -30,6 +30,7 @@ public sealed class RelativeDirectory: RelativeDirectoryBase
   protected override IDirectory GetTargetDirectory() => root().SubDirectory(name);
 }
 
+#warning -- this can become a WrappedDirectory
 public abstract class RelativeDirectoryBase : DirectoryAdapterBase
 {
   public override IFile File(string name) => new RelativeFile(GetTargetDirectory, name);

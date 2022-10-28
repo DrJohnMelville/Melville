@@ -1,35 +1,31 @@
 using System;
 using System.Threading.Tasks;
 using Melville.FileSystem.RelativeFiles;
+using Melville.INPC;
 
 namespace Melville.FileSystem.PseudoTransactedFS;
 
-public interface ITransactedDirectory : IDirectory, IDisposable
+public interface ITransactionControl
 {
-  Task Commit();
+  ValueTask Commit();
+  void Rollback();
+}
+public interface ITransactedDirectory : IDirectory, ITransactionControl, IDisposable
+{
 }
 
-public class PassthroughTransactedDirectory : DirectoryAdapterBase, ITransactedDirectory
+public partial class PassthroughTransactedDirectory : ITransactedDirectory
 {
-  protected readonly IDirectory inner;
-  public PassthroughTransactedDirectory(IDirectory inner)
-  {
-    this.inner = inner;
-  }
+  [FromConstructor][DelegateTo]protected readonly IDirectory inner;
 
-  protected override IDirectory GetTargetDirectory() => inner;
+  public void Dispose() { }
 
-  public void Dispose()
-  {
-    // Do nothing because we are just faking the transactions
-  }
-  public Task Commit()
-  {
-    // Do nothing because we are just faking the transactions
-    return Task.CompletedTask;
-  }
+  public ValueTask Commit() => new();
+
+  public void Rollback() {}
 } 
 
+#warning -- Make this a wrappedDirectory
 public sealed partial class TransactedDirectory : DirectoryAdapterBase, ITransactedDirectory
 {
   private readonly IDirectory inner;
@@ -55,12 +51,17 @@ public sealed partial class TransactedDirectory : DirectoryAdapterBase, ITransac
   public void Dispose()=> transaction.Rollback();
     
   public const string CommitFlagName = "Committed";
-  public async Task Commit()
+  public async ValueTask Commit()
   {
     var commitFile = await CreeateCommitFileIfNeeded();
     await transaction.Commit();// need to do the null commit to clear the DisposeCounter flag even if nothing
     // to commit.
     commitFile?.Delete();
+  }
+
+  public void Rollback()
+  {
+    transaction.Rollback();
   }
 
   private async Task<IFile?> CreeateCommitFileIfNeeded() => 

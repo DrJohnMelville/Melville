@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,13 +14,10 @@ public partial class TransactedDirectory
   {
     internal class PseudoTransaction
     {
-      private readonly List<TransactedFile> items = new List<TransactedFile>();
+      private readonly List<TransactedFile> items = new();
       private static int transactionNumberUsed;
       private readonly int transactionNumber;
-      public int TransactionNumber
-      {
-        get { return transactionNumber; }
-      }
+      public int TransactionNumber => transactionNumber;
 
       public PseudoTransaction()
         : this(Interlocked.Increment(ref transactionNumberUsed))
@@ -33,15 +31,28 @@ public partial class TransactedDirectory
 
       public IFile CreateEnlistedFile(IDirectory untransactedDirectory, string name)
       {
-        var ret = new TransactedFile(untransactedDirectory.File(name), untransactedDirectory.
-          File(name + "." + transactionNumber.ToString() + ".txn"), untransactedDirectory);
-        var existingTransactedFile = items.FirstOrDefault(i => i.Path.Equals(ret.Path, StringComparison.Ordinal));
-        Debug.Assert(!items.Any(i => i.Path.Equals(ret.Path, StringComparison.Ordinal) 
-                                     && i != existingTransactedFile));
-        if (existingTransactedFile != null) return existingTransactedFile;
+        var ret = new TransactedFile(untransactedDirectory.File(name), 
+          untransactedDirectory.File($"{name}.{transactionNumber}.txn"), untransactedDirectory);
+        if (HasExistingFile(ret, out var file)) return file;
         items.Add(ret);
         return ret;
       }
+
+      private bool HasExistingFile(IFile candidate, [NotNullWhen(true)]out IFile? file)
+      {
+        file = items.FirstOrDefault(i => PathMatches(candidate, i));
+        EnsureTransactionFileIsUnique(candidate, file);
+        return file != null;
+      }
+      
+      [Conditional("DEBUG")]
+      private void EnsureTransactionFileIsUnique(IFile candidate, IFile? file)
+      {
+        Debug.Assert(!items.Any(i => PathMatches(candidate, i) && i != file));
+      }
+
+      private static bool PathMatches(IFile a, IFile b) => 
+        b.Path.Equals(a.Path, StringComparison.OrdinalIgnoreCase);
 
       public Task Commit()
       {
@@ -51,15 +62,9 @@ public partial class TransactedDirectory
         items.Clear();
         return Task.WhenAll(commitTasks);
       }
-      private IEnumerable<TransactedFile> ItemsToCommit()
-      {
-        return items.
-          Where(i => i.innerShadow.Exists());
-      }
-      public bool HasItemsToCommit()
-      {
-        return ItemsToCommit().Any();
-      }
+      private IEnumerable<TransactedFile> ItemsToCommit() => items.Where(i => i.innerShadow.Exists());
+
+      public bool HasItemsToCommit() => ItemsToCommit().Any();
 
       public void Rollback()
       {
