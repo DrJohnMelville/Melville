@@ -24,7 +24,7 @@ public readonly struct ConstructorCodeGeneratorFactory
         return new(syntax, ImplicitlyConstructedMembers(rootSymbol), constructors);
     }
 
-    private void FindParentConstructors(INamedTypeSymbol? target) => 
+    private void FindParentConstructors(INamedTypeSymbol target) => 
         FindDeclaredConstructors(target.BaseType, Array.Empty<MemberData>());
 
     private IEnumerable<MemberData[]> ReadConstructors(INamedTypeSymbol symbol, bool excludeDefalutCons) =>
@@ -37,6 +37,7 @@ public readonly struct ConstructorCodeGeneratorFactory
         if (baseType == null)
         {
             constructors.Add(inheritedParams);
+            return;
         }
         var implicitVars = ImplicitlyConstructedMembers(baseType).ToList();
         foreach (var constructor in ReadConstructors(baseType, implicitVars.Count > 0))
