@@ -81,37 +81,44 @@ public sealed class PseudoTransactedStore : TransactionStoreBase, ITransactableS
       isRepaired = true;
       return Task.FromResult(1);
     }
-    var list = new Dictionary<int, TransactedDirectory.TransactedFile.RepairTransaction>();
+    var list = new Dictionary<int, RepairTransaction>();
     var dirs = new[] {innerFileSystem}.SelectRecursive(i => i.AllSubDirectories());
+    
     var unpackTxnFile = new Regex(@"^(.+)\\([^\\]+)\.(\d+)\.txn$");
+    
     foreach (var directory in dirs)
     {
       var files = Enumerable.ToArray<IFile>(directory.AllFiles("*.txn"));
       foreach (var file in files)
       {
         var fileStruct = unpackTxnFile.Match(file.Path);
-        Contract.Assert(fileStruct.Success);
-        Contract.Assert(directory.Path.Equals(fileStruct.Groups[1].Value, StringComparison.Ordinal));
+        Debug.Assert(fileStruct.Success);
+        Debug.Assert(directory.Path.Equals(fileStruct.Groups[1].Value, StringComparison.Ordinal));
         var txn = GetRepairTransaction(int.Parse(fileStruct.Groups[3].Value), list);
         var fileName = fileStruct.Groups[2].Value;
-        if (fileName.Equals(TransactedDirectory.CommitFlagName, StringComparison.Ordinal))
+        if (IsTransactionCommitFlag(fileName))
         {
           txn.SetCommitFile(file);
         } else
         {
-          txn.CreateEnlistedFile(directory, fileName);
+          txn.CreateEnlistedFile(directory.File(fileName), directory);
         }
       }
     }
     isRepaired = true;
     return Task.WhenAll(list.Values.Select(i=>i.DoRepair()));
   }
-  private TransactedDirectory.TransactedFile.RepairTransaction 
-    GetRepairTransaction(int transactionNumber, 
-      Dictionary<int, TransactedDirectory.TransactedFile.RepairTransaction> list)
+
+  private static bool IsTransactionCommitFlag(string fileName)
+  {
+    return fileName.Equals(TransactedDirectory.CommitFlagName, StringComparison.Ordinal);
+  }
+
+  private RepairTransaction 
+    GetRepairTransaction(int transactionNumber, Dictionary<int, RepairTransaction> list)
   {
     if (list.TryGetValue(transactionNumber, out var txn)) return txn;
-    var ret = new TransactedDirectory.TransactedFile.RepairTransaction(transactionNumber);
+    var ret = new RepairTransaction(transactionNumber);
     list.Add(transactionNumber, ret);
     return ret;
   }

@@ -8,7 +8,7 @@ namespace Melville.FileSystem.WrappedDirectories;
 public interface IFileWrapper
 {
     IFile WrapFile(IFile source, IDirectory? wrappedDirectory);
-    IDirectory wrapDirectory(IDirectory source, IDirectory wrappedParent);
+    IDirectory WrapDirectory(IDirectory source, IDirectory wrappedParent);
 }
 
 public static class WrappedDirectoryOperations
@@ -17,10 +17,9 @@ public static class WrappedDirectoryOperations
         new WrappedDirectory(inner, wrapper);
 }
 
-#warning move to melville librry
 public partial class WrappedDirectory: IDirectory
 {
-    [DelegateTo] [FromConstructor] internal readonly IDirectory innerDirectory;
+    [DelegateTo] [FromConstructor] private readonly IDirectory innerDirectory;
     [FromConstructor] private readonly IDirectory? parent;
     [FromConstructor] private readonly IFileWrapper wrapper;
 
@@ -45,5 +44,5 @@ public partial class WrappedDirectory: IDirectory
     public IDirectory SubDirectory(string name) => 
         WrapDirectory(innerDirectory.SubDirectory(name));
     private IDirectory WrapDirectory(IDirectory directory) => 
-        wrapper.wrapDirectory(directory, this);
+        wrapper.WrapDirectory(directory, this);
 }

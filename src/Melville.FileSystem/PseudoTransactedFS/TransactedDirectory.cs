@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Melville.FileSystem.RelativeFiles;
+using Melville.FileSystem.WrappedDirectories;
 using Melville.INPC;
 
 namespace Melville.FileSystem.PseudoTransactedFS;
@@ -14,66 +15,36 @@ public interface ITransactedDirectory : IDirectory, ITransactionControl, IDispos
 {
 }
 
-public partial class PassthroughTransactedDirectory : ITransactedDirectory
+public sealed partial class TransactedDirectory : ITransactedDirectory
 {
-  [FromConstructor][DelegateTo]protected readonly IDirectory inner;
-
-  public void Dispose() { }
-
-  public ValueTask Commit() => new();
-
-  public void Rollback() {}
-} 
-
-#warning -- Make this a wrappedDirectory
-public sealed partial class TransactedDirectory : DirectoryAdapterBase, ITransactedDirectory
-{
-  private readonly IDirectory inner;
-  private readonly TransactedFile.PseudoTransaction transaction;
-  public TransactedDirectory(IDirectory inner) :
-    this(inner, new TransactedFile.PseudoTransaction())
-  {
-  }
-  private TransactedDirectory(IDirectory inner, TransactedFile.PseudoTransaction transaction)
-  {
-    this.inner = inner;
-    this.transaction = transaction;
-  }
-
-  protected override IDirectory GetTargetDirectory() => inner;
-    
-  public override IDirectory SubDirectory(string name) => 
-    new TransactedDirectory(base.SubDirectory(name), transaction);
-
-  public override IFile File(string name) => transaction.CreateEnlistedFile(inner, name);
-
-  // if we have already committed than Rollback is a no-op anyway, no need to test for it
-  public void Dispose()=> transaction.Rollback();
-    
   public const string CommitFlagName = "Committed";
+  private readonly IDirectory innerDirectory;
+  private readonly PseudoTransaction transaction;
+  [DelegateTo]private readonly IDirectory wrappedDirectory;
+
+  public TransactedDirectory(IDirectory innerDirectory)
+  {
+    this.innerDirectory = innerDirectory;
+    transaction = new();
+    wrappedDirectory = innerDirectory.WrapWith(new TransactedFileWrapper(transaction));
+  }
+  public void Dispose() => Rollback();
+  public void Rollback() => transaction.Rollback();
+
   public async ValueTask Commit()
   {
-    var commitFile = await CreeateCommitFileIfNeeded();
-    await transaction.Commit();// need to do the null commit to clear the DisposeCounter flag even if nothing
-    // to commit.
-    commitFile?.Delete();
+    var commitFlag = await CreeteCommitFileIfNeeded();
+    await transaction.Commit();
+    commitFlag?.Delete();
   }
 
-  public void Rollback()
-  {
-    transaction.Rollback();
-  }
+  private ValueTask<IFile?> CreeteCommitFileIfNeeded() => 
+      transaction.HasItemsToCommit() ? CreateCommitFile() : new((IFile?)null);
 
-  private async Task<IFile?> CreeateCommitFileIfNeeded() => 
-    transaction.HasItemsToCommit() ? await CreateCommitFile() : null;
-
-  private async Task<IFile> CreateCommitFile()
-  {
-    var commitFile = inner.File($"{CommitFlagName}.{transaction.TransactionNumber}.txn");
-    using (var stream = await commitFile.CreateWrite())
+    private async ValueTask<IFile?> CreateCommitFile()
     {
-      await stream.WriteAsync(new byte[] {32});
+      var commitFile = innerDirectory.File($"{CommitFlagName}.{transaction.TransactionNumber}.txn");
+      await using var stream = await commitFile.CreateWrite();
+      return commitFile;
     }
-    return commitFile;
-  }
 }
