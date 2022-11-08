@@ -3,12 +3,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Melville.INPC;
 
 namespace Melville.FileSystem.Switchabe;
 
-public abstract class SwitchableFileBase: IFile, IHasLocalPath, INotifyPropertyChanged
+public abstract partial class SwitchableFileBase: IFile, IHasLocalPath, INotifyPropertyChanged
 {
-  protected IFile currentTarget;
+  [DelegateTo] protected IFile currentTarget;
   protected readonly IFile destination;
 
   protected SwitchableFileBase(IFile source, IFile destination)
@@ -18,28 +19,13 @@ public abstract class SwitchableFileBase: IFile, IHasLocalPath, INotifyPropertyC
   }
 
   #region Delegate File Operations
-  public IDirectory? Directory => currentTarget.Directory;
-  public string Path => currentTarget.Path;
   public string Name => destination.Name;
-  public string DestinationPath => currentTarget.Path;
-  public long Size => currentTarget.Size;
-  public DateTime LastAccess
-  {
-    get { return currentTarget.LastAccess; }
-    set { currentTarget.LastAccess = value; }
-  }
-  public DateTime LastWrite => currentTarget.LastWrite;
-  public DateTime Created => currentTarget.Created;
-  public bool Exists() => currentTarget.Exists();
-  public bool ValidFileSystemPath() => currentTarget.ValidFileSystemPath();
-  public FileAttributes Attributes => currentTarget.Attributes;
   public LocalFileNamePackage? LocalPath() => (currentTarget as IHasLocalPath)?.LocalPath();
   public Task<Stream> CreateWrite(FileAttributes attributes = FileAttributes.Normal) => throw new NotSupportedException();
   public void Delete() => throw new NotSupportedException();
   #endregion
 
   public abstract Task<Stream> OpenRead();
-
 
   public bool IsSwitched => currentTarget == destination;
   protected readonly TaskCompletionSource<int> completionSource = new TaskCompletionSource<int>();
@@ -74,7 +60,7 @@ public abstract class SwitchableFileBase: IFile, IHasLocalPath, INotifyPropertyC
 
   public event PropertyChangedEventHandler? PropertyChanged;
 
-  protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+  protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
   {
     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
   }
