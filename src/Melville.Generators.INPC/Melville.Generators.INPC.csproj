@@ -3,11 +3,9 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
 	    <IsRoslynComponent>true</IsRoslynComponent>
+        <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
     <PropertyGroup>
-        
-        
-        
         <Title>Melville.Generators.INPC</Title>
         <PackageDescription>A C# generator that generate INotifyPropertyChanged notification.</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
