@@ -22,9 +22,10 @@ namespace Test.TestStringDB
     /// Create the database.
     /// </summary>
     /// <param name="databaseName">Leave this parameter blank.  CSharp will fill in the name of the calling file, which is used to find the database file.</param>
-    protected StringTestDatabase([CallerFilePath] string databaseName = null)
+    protected StringTestDatabase([CallerFilePath] string? databaseName = null)
     {
-      dbFile = GetDatabaseFile(databaseName);
+      dbFile = GetDatabaseFile(databaseName 
+                               ?? throw new ArgumentException("databaseName must not be null", nameof(databaseName)));
       data = File.Exists(dbFile)?StringDictionarySerializer.Deserialize(File.ReadAllText(dbFile)):
       new Dictionary<string, string>();
     }

@@ -59,7 +59,7 @@ namespace Outer
 public partial class WithMacro
 {
     [MacroCode("private int Number~1~() => ~0~;")]
-    [MacroCode("// Code: ~0~/~1~", Prefix = "public static void FooGenerated() {", Postfix = "}")]
+    [MacroCode("// Code: ~0~/~1~", Prefix = "private static void FooGenerated() {", Postfix = "}")]
     [MacroItem(1, "One")]
     [MacroItem(2, "Two")]
     [MacroItem(3, "Three")]

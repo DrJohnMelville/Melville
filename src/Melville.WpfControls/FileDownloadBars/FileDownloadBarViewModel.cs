@@ -15,7 +15,7 @@ public partial class FileDownloadBarViewModel
 {
     [AutoNotify] private Brush barBrush = Brushes.Blue;
     [AutoNotify] private Brush nonBarBrush = Brushes.White;
-    [AutoNotify] private string message;
+    [AutoNotify] private string message = "";
     [AutoNotify] private bool copying;
     [AutoNotify] private double offset;
 
