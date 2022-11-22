@@ -71,7 +71,7 @@ public class TextTest
         generatorTestBed.FileContains("MacroGen.Outer.C.Func().cs", "// Code: 1/One");
     }
 }
-/*
+
 public partial class WithMacro
 {
     [MacroCode("private int Number~1~() => ~0~;")]
@@ -88,4 +88,4 @@ public partial class WithMacro
         Assert.Equal(3, NumberThree());
           
     }
-}*/
+}

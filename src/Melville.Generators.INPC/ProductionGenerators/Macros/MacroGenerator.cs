@@ -6,18 +6,28 @@ using Microsoft.CodeAnalysis;
 namespace Melville.Generators.INPC.ProductionGenerators.Macros;
 
 [Generator]
-public class MacroGenerator : LabeledMemberGenerator
+public class MacroGenerator : IIncrementalGenerator
 {
     private static readonly SearchForAttribute attrFinder = new("Melville.INPC.MacroCodeAttribute");
 
-    public MacroGenerator() : base(attrFinder, "MacroGen")
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        context.RegisterSourceOutput(
+            context.SyntaxProvider.ForAttributeWithMetadataName(
+                "Melville.INPC.MacroCodeAttribute", 
+                (_,_) => true,
+                (i, _) => i.TargetNode),
+            Generate);
+ 
     }
 
-    protected override bool GenerateCodeForMember(GeneratorSyntaxContext member, CodeWriter cw)
+    private void Generate(SourceProductionContext context, SyntaxNode node)
     {
-        MacroSyntaxInterpreter.ExpandSingleMacroSet(member.Node, cw);
-        return true;
-
+        var cw = new SourceProductionCodeWriter(context);
+        using (WriteCodeNear.Symbol(node, cw))
+        {
+            MacroSyntaxInterpreter.ExpandSingleMacroSet(node, cw);
+        }
+        cw.PublishCodeInFile(node, "MacroGen");
     }
 }
