@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.GenerationTools.AstUtilities;
+﻿using System.Collections.Immutable;
+using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

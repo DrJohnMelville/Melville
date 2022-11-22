@@ -8,8 +8,6 @@ namespace Melville.Generators.INPC.ProductionGenerators.Macros;
 [Generator]
 public class MacroGenerator : IIncrementalGenerator
 {
-    private static readonly SearchForAttribute attrFinder = new("Melville.INPC.MacroCodeAttribute");
-
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterSourceOutput(
