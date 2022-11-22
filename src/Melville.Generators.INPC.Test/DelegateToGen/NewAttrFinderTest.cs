@@ -1,10 +1,11 @@
-﻿using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
+﻿using System;
+using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.DelegateToGen;
-
+[Obsolete]
 public class NewAttrFinderTest
 {
     private GeneratorTestBed RunTest() => new(new TestGenerator(), $$"""

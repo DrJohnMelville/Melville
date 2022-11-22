@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -20,4 +21,29 @@ public class SourceProductionCodeWriter: CodeWriter
 
     public override void ReportDiagnostic(Diagnostic diagnostic) =>
         context.ReportDiagnostic(diagnostic);
+
+    public SourceProductionCodeOperation GenerateInClassFile(SyntaxNode node, string prefix) =>
+        new SourceProductionCodeOperation(this, node, prefix);
+}
+
+public readonly struct SourceProductionCodeOperation : IDisposable
+{
+    private readonly IDisposable closeCodeBlocks;
+    private readonly SourceProductionCodeWriter writer;
+    private readonly SyntaxNode node;
+    private readonly string prefix;
+
+    public SourceProductionCodeOperation(SourceProductionCodeWriter writer, SyntaxNode node, string prefix)
+    {
+        this.writer = writer;
+        this.node = node;
+        this.prefix = prefix;
+        closeCodeBlocks = WriteCodeNear.Symbol(node, writer);
+    }
+
+    public void Dispose()
+    {
+        closeCodeBlocks.Dispose();
+        writer.PublishCodeInFile(node, prefix);
+    }
 }

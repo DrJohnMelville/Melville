@@ -1,8 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.GenerationTools.AbstractGenerators;
-
+[Obsolete]
 public class TestGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)

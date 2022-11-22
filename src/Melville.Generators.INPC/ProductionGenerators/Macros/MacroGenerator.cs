@@ -24,10 +24,9 @@ public class MacroGenerator : IIncrementalGenerator
     private void Generate(SourceProductionContext context, SyntaxNode node)
     {
         var cw = new SourceProductionCodeWriter(context);
-        using (WriteCodeNear.Symbol(node, cw))
+        using (cw.GenerateInClassFile(node, "MacroGen"))
         {
             MacroSyntaxInterpreter.ExpandSingleMacroSet(node, cw);
         }
-        cw.PublishCodeInFile(node, "MacroGen");
     }
 }
