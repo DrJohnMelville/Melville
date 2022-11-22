@@ -13,12 +13,12 @@ public interface ILabeledMembersSyntaxModel
     public void AddMember(SyntaxNode declSyntax);
     public ILabeledMembersSemanticModel AddSemanticInfo(SemanticModel semanticModel);
 }
-
 public interface ILabeledMembersSemanticModel
 {
     public TypeDeclarationSyntax ClassDeclaration { get; }
     void GenerateCode(CodeWriter cw);
 }
+
 public abstract class ClassWithLabeledMembersGenerator: IIncrementalGenerator
 {
     private readonly SearchForAttribute attrFinder;

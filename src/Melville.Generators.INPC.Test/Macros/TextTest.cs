@@ -8,17 +8,32 @@ namespace Melville.Generators.INPC.Test.Macros;
 public class TextTest
 {
     protected GeneratorTestBed RunTest(string s) =>
-        new(new MacroGenerator(), @"
-using Melville.INPC;
-namespace Outer
-{
-    public partial class C {" +
-                                   s +
-                                   @"
-    private void Func();
-}
-}
-");
+        new(new MacroGenerator(), $$"""
+            namespace Melville.INPC 
+            {
+                public sealed class MacroItemAttribute: Attribute
+                {
+                    public MacroItemAttribute(params object[] text){}
+                }
+                public sealed class MacroCodeAttribute: Attribute
+                {
+                    public object Prefix {get;set;} = "";
+                    public object Postfix {get;set;} = "";
+                    public MacroCodeAttribute(object text){}
+                } 
+            }
+    
+            namespace Outer
+            {
+                using Melville.INPC;
+    
+                public partial class C 
+                {" 
+                    {{s}}
+                    private void Func();
+                }
+            }
+            """);
     [Theory]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "namespace Outer")]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "class C")]
@@ -56,6 +71,7 @@ namespace Outer
         generatorTestBed.FileContains("MacroGen.Outer.C.Func().cs", "// Code: 1/One");
     }
 }
+/*
 public partial class WithMacro
 {
     [MacroCode("private int Number~1~() => ~0~;")]
@@ -72,4 +88,4 @@ public partial class WithMacro
         Assert.Equal(3, NumberThree());
           
     }
-}
+}*/
