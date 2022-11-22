@@ -7,16 +7,19 @@ namespace Melville.Generators.INPC.Test.DelegateToGen;
 
 public class DelegateToTest
 {
-    private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), @"
-using Melville.INPC;
-namespace Outer
-{
-    public interface IInterface
-    {"+intMembers+@"}
-    public interface IChildInterface: IInterface { void ChildMethod(); }
-    public partial class C: IInterface {" + s + @"
-}
-}");
+    private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), $$"""
+        using Melville.INPC;
+        namespace Outer
+        {
+            public interface IInterface
+            {
+                {{intMembers}}  
+            }
+            public interface IChildInterface: IInterface { void ChildMethod(); }
+            public partial class C: IInterface { {{s}}
+            }
+        }
+        """);
     [Theory]
     [InlineData("private IInterface Field;", "this.Field.A()")]
     [InlineData("public IInterface Field{get;}", "this.Field.A()")]
