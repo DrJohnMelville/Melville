@@ -7,18 +7,35 @@ namespace Melville.Generators.INPC.Test.DependencyPropGen;
 public class PropGenUnitTest
 {
     private GeneratorTestBed RunTest(string s) =>
-        new GeneratorTestBed(new DependencyPropertyGenerator(), @"
-using Melville.INPC;
-using System;
-namespace Outer
-{
-    public partial class C {" +
-                                                                s +
-                                                                @"
-    private void Func();
-}
-}
-");
+        new GeneratorTestBed(new DependencyPropertyGenerator(), $$"""
+            namespace Melville.INPC
+            {
+              public sealed class GenerateDPAttribute : Attribute
+              {
+                public bool Attached { get; set; }
+                public bool Nullable { get; set; }
+                public object? Default { get; set; }
+
+                public GenerateDPAttribute()
+                {
+                }
+
+                public GenerateDPAttribute(Type targetType, string propName = "")
+                {
+                }  
+               }        
+            }
+            namespace Outer
+            {
+                using Melville.INPC;
+                using System;
+                public partial class C 
+                {
+                    {{s}}
+                    private void Func();
+                }
+            }
+            """);
 
     [Theory]
     [InlineData("bool")]
