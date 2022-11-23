@@ -7,15 +7,27 @@ namespace Melville.Generators.INPC.Test.DelegateToGen;
 public class DelegateToClassTest
 {
     private GeneratorTestBed RunTest(string classDecl, string classMembers, string s) => 
-        new(new DelegateToGenerator(), $@"
-using Melville.INPC;
-namespace Outer
-{{
-    public {classDecl} Delegated
-    {{"+classMembers+@"}
-    public partial class C: Delegated {" + s + @"
-}
-}");
+        new(new DelegateToGenerator(), $$"""
+            namespace Melville.INPC 
+            {
+               public sealed class DelegateToAttribute : Attribute
+                {
+                    public DelegateToAttribute(bool explicitImplementation = false){}
+                }
+            }
+            namespace Outer
+            {
+                using Melville.INPC;
+                public {{classDecl}} Delegated
+                {
+                    {{classMembers}}
+                }    
+                public partial class C: Delegated 
+                {
+                    {{s}}}
+                }
+            }
+            """);
 
     [Fact]
     public void DelegateToClass()

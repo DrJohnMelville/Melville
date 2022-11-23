@@ -6,20 +6,21 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public class InterfaceMethodGenerator : DelegatedMethodGenerator
 {
-    public InterfaceMethodGenerator(ITypeSymbol targetType, string methodPrefix) : base(targetType, methodPrefix)
+    public InterfaceMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol) :
+        base(targetType, methodPrefix, parentSymbol)
     {
     }
 
-    protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded(ITypeSymbol parentClass) => 
+    protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded() => 
         TargetTypeAndParents().SelectMany(i => i.GetMembers());
 
     private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
-        TargetType.AllInterfaces.Cast<ITypeSymbol>().Append(TargetType);
+        TargetType.AllInterfaces.Append(TargetType);
 
     protected override string MemberDeclarationPrefix() => "public ";
         
-    protected override bool ImplementationMissing(ITypeSymbol parentClass, ISymbol i) => 
-        parentClass.FindImplementationForInterfaceMember(i) == null;
+    protected override bool ImplementationMissing(ISymbol i) => 
+        parentSymbol.FindImplementationForInterfaceMember(i) == null;
 
 }
 
@@ -27,7 +28,7 @@ public class ExplicitMethodGenerator : InterfaceMethodGenerator
 {
     private readonly string namePrefix;
 
-    public ExplicitMethodGenerator(ITypeSymbol targetType, string methodPrefix, string namePrefix) : base(targetType, methodPrefix)
+    public ExplicitMethodGenerator(ITypeSymbol targetType, string methodPrefix, string namePrefix, ITypeSymbol parentSymbol) : base(targetType, methodPrefix, parentSymbol)
     {
         this.namePrefix = namePrefix;
     }

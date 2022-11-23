@@ -18,10 +18,7 @@ public class DelegateToGenerator: LabeledMemberGenerator
     {
         if (DelegationRequestParser.ParseItem(member.SemanticModel, member.Node) is not { } methodGenerator)
             return false;
-        if (member.Node.Parent is not {} parentSyntax ||
-            member.SemanticModel.GetDeclaredSymbol(parentSyntax) is not ITypeSymbol parent)
-            return false;
-        methodGenerator.GenerateForwardingMethods(parent, cw);
+        methodGenerator.GenerateForwardingMethods(cw);
         return true;
     }
 }

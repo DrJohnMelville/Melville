@@ -6,13 +6,14 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public class BaseClassMethodGenerator : DelegatedMethodGenerator
 {
-    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix) : base(targetType, methodPrefix)
+    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol) : 
+        base(targetType, methodPrefix, parentSymbol)
     {
     }
 
     protected override string MemberDeclarationPrefix() => "public override ";
 
-    protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded(ITypeSymbol parentClass) => 
+    protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded() => 
         TargetType.GetMembers().Where(IsForwardableSymbol);
 
     private bool IsForwardableSymbol(ISymbol i)
@@ -20,9 +21,9 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
         return (i.IsVirtual || i.IsAbstract) && i.DeclaredAccessibility == Accessibility.Public;
     }
 
-    protected override bool ImplementationMissing(ITypeSymbol parentClass, ISymbol sym)
+    protected override bool ImplementationMissing(ISymbol sym)
     {
-        return !parentClass.GetMembers().Any(i => i.IsOverride && i.Name == sym.Name && CompareArgumentLists(i, sym));
+        return !parentSymbol.GetMembers().Any(i => i.IsOverride && i.Name == sym.Name && CompareArgumentLists(i, sym));
     }
 
     private bool CompareArgumentLists(ISymbol parentSymbol, ISymbol childSymbol)

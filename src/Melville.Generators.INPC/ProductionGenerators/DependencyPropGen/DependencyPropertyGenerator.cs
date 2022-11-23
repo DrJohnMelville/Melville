@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
-using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

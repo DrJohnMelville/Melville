@@ -11,22 +11,24 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public interface IDelegatedMethodGenerator
 {
-    void GenerateForwardingMethods(ITypeSymbol parentClass, CodeWriter cw);
+    void GenerateForwardingMethods(CodeWriter cw);
 }
     
 public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 {
     protected readonly ITypeSymbol TargetType;
     private readonly string methodPrefix;
+    protected readonly ITypeSymbol parentSymbol;
 
     public static IDelegatedMethodGenerator Create(
-        ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location) =>
+        ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location, 
+        ITypeSymbol parent) =>
         (targetType.TypeKind, UseExplicit(location)) switch
         {
             (TypeKind.Interface, true) =>
-                new ExplicitMethodGenerator(targetType, methodPrefix, targetType.FullyQualifiedName()+"."),
-            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix),
-            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix),
+                new ExplicitMethodGenerator(targetType, methodPrefix, targetType.FullyQualifiedName()+".", parent),
+            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, parent),
+            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, parent),
             _ => new InvalidParentMethodGenerator(targetType, location)
         };
 
@@ -35,32 +37,33 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     protected abstract string MemberDeclarationPrefix();
     protected virtual string MemberNamePrefix() => "";
-    protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded(ITypeSymbol parentClass);
+    protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded();
  
-    protected DelegatedMethodGenerator(ITypeSymbol targetType, string methodPrefix)
+    protected DelegatedMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol)
     {
         this.TargetType = targetType;
         this.methodPrefix = methodPrefix;
+        this.parentSymbol = parentSymbol;
     }
 
     public string InheritFrom() => TargetType.FullyQualifiedName();
 
-    public void GenerateForwardingMethods(ITypeSymbol parentClass, CodeWriter cw)
+    public void GenerateForwardingMethods(CodeWriter cw)
     {
-        foreach (var member in MembersToForward(parentClass))
+        foreach (var member in MembersToForward())
         {
             GenerateForwardingMember(cw, member);
         }
     }
 
-    private IEnumerable<ISymbol> MembersToForward(ITypeSymbol parentClass) =>
-        MembersThatCouldBeForwarded(parentClass)
-            .Where(i=>ImplementationMissing(parentClass, i));
+    private IEnumerable<ISymbol> MembersToForward() =>
+        MembersThatCouldBeForwarded()
+            .Where(i=>ImplementationMissing(i));
 
     private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
         TargetType.AllInterfaces.Cast<ITypeSymbol>().Append(TargetType);
 
-    protected abstract bool ImplementationMissing(ITypeSymbol parentClass, ISymbol i); 
+    protected abstract bool ImplementationMissing(ISymbol i); 
 
     private void GenerateForwardingMember(CodeWriter cw, ISymbol member)
     {
