@@ -11,7 +11,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public interface IDelegatedMethodGenerator
 {
-    void GenerateForwardingMethods(SourceProductionCodeWriter cw);
+    void GenerateForwardingMethods(CodeWriter cw);
 }
 
 public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
@@ -19,7 +19,6 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     protected readonly ITypeSymbol TargetType;
     private readonly string methodPrefix;
     protected readonly ITypeSymbol parentSymbol;
-    private readonly SyntaxNode writeNextTo;
 
     public static IDelegatedMethodGenerator Create(
         ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location,
@@ -27,7 +26,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         (targetType.TypeKind, UseExplicit(location)) switch
         {
             (TypeKind.Interface, true) =>
-                new ExplicitMethodGenerator(targetType, methodPrefix, 
+                new ExplicitMethodGenerator(targetType, methodPrefix,
                     targetType.FullyQualifiedName() + ".", parent, location),
             (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, parent, location),
             (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, parent, location),
@@ -42,25 +41,20 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded();
 
     protected DelegatedMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol, SyntaxNode writeNextTo)
+        ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol)
     {
         this.TargetType = targetType;
         this.methodPrefix = methodPrefix;
         this.parentSymbol = parentSymbol;
-        this.writeNextTo = writeNextTo;
     }
 
     public string InheritFrom() => TargetType.FullyQualifiedName();
 
-    public void GenerateForwardingMethods(SourceProductionCodeWriter cw)
+    public void GenerateForwardingMethods(CodeWriter cw)
     {
-        using (cw.GenerateInClassFile(writeNextTo,
-                   "GeneratedDelegator"))
+        foreach (var member in MembersToForward())
         {
-            foreach (var member in MembersToForward())
-            {
-                GenerateForwardingMember(cw, member);
-            }
+            GenerateForwardingMember(cw, member);
         }
     }
 

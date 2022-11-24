@@ -14,29 +14,21 @@ public class DelegateToGenerator: IIncrementalGenerator
     {
         context.RegisterSourceOutput(
             context.SyntaxProvider.ForAttributeWithMetadataName("Melville.INPC.DelegateToAttribute",
-                static (i, _) => i is MemberDeclarationSyntax,
-                static (i, _) => DelegationRequestParser.ParseItem(i.SemanticModel, i.TargetNode)
-            ),
-            Generate
-        );
-        context.RegisterSourceOutput(
-            context.SyntaxProvider.ForAttributeWithMetadataName("Melville.INPC.DelegateToAttribute",
-                static (i, _) => i is VariableDeclaratorSyntax,
+                static (i, _) => i is MemberDeclarationSyntax or VariableDeclaratorSyntax,
                 static (i, _) =>
-                #warning -- this is ugly and needs to be fixed
-                    DelegatedMethodGenerator.Create(((IFieldSymbol)i.TargetSymbol).Type, 
-                        $"this.{i.TargetSymbol.Name}", ClimbTree(i.TargetNode), 
-                        (ITypeSymbol)i.SemanticModel.GetDeclaredSymbol(ClimbTree(i.TargetNode).Parent))
-                ),
+                {
+                    var targetSyntax = ClimbTree(i.TargetNode);
+                    return new DelegatedMethodInLocation(targetSyntax, 
+                        DelegationRequestParser.ParseItem(i.SemanticModel, targetSyntax));
+                }),
             Generate
         );
     }
 
-    private void Generate(SourceProductionContext writeTo, IDelegatedMethodGenerator? factory)
+    private void Generate(SourceProductionContext writeTo, DelegatedMethodInLocation factory)
     {
-        if (factory is null) return;
         var cw = new SourceProductionCodeWriter(writeTo);
-        factory.GenerateForwardingMethods(cw);
+        factory.GenerateIn(cw);
     }
 
     private static MemberDeclarationSyntax ClimbTree(SyntaxNode node) =>
