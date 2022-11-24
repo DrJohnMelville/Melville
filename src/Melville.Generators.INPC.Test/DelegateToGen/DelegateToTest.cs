@@ -10,7 +10,9 @@ public class DelegateToTest
     private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), $$"""
         namespace Melville.INPC 
         {
-          public sealed class DelegateToAttribute : Attribute
+          [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method,
+           Inherited = false, AllowMultiple = false)]
+          public sealed class DelegateToAttribute : System.Attribute
           {
               public DelegateToAttribute(bool explicitImplementation = false){}
           }  

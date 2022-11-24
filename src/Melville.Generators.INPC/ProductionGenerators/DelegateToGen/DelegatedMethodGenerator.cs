@@ -5,7 +5,6 @@ using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
@@ -18,23 +17,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 {
     protected readonly ITypeSymbol TargetType;
     private readonly string methodPrefix;
-    protected readonly ITypeSymbol parentSymbol;
-
-    public static IDelegatedMethodGenerator Create(
-        ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location,
-        ITypeSymbol parent) =>
-        (targetType.TypeKind, UseExplicit(location)) switch
-        {
-            (TypeKind.Interface, true) =>
-                new ExplicitMethodGenerator(targetType, methodPrefix,
-                    targetType.FullyQualifiedName() + ".", parent, location),
-            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, parent, location),
-            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, parent, location),
-            _ => new InvalidParentMethodGenerator(targetType, location)
-        };
-#warning -- this is buggy need to test for the actual attribute.
-    private static bool UseExplicit(MemberDeclarationSyntax location) =>
-        location.AttributeLists.ToString().Contains("true");
+    protected readonly ITypeSymbol ParentSymbol;
 
     protected abstract string MemberDeclarationPrefix();
     protected virtual string MemberNamePrefix() => "";
@@ -45,7 +28,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     {
         this.TargetType = targetType;
         this.methodPrefix = methodPrefix;
-        this.parentSymbol = parentSymbol;
+        this.ParentSymbol = parentSymbol;
     }
 
     public string InheritFrom() => TargetType.FullyQualifiedName();

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
@@ -10,20 +11,26 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 [Generator]
 public class DelegateToGenerator: IIncrementalGenerator
 {
+    public const string QualifiedAttributeName = "Melville.INPC.DelegateToAttribute";
+
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterSourceOutput(
-            context.SyntaxProvider.ForAttributeWithMetadataName("Melville.INPC.DelegateToAttribute",
+            context.SyntaxProvider.ForAttributeWithMetadataName(QualifiedAttributeName,
                 static (i, _) => i is MemberDeclarationSyntax or VariableDeclaratorSyntax,
                 static (i, _) =>
                 {
+                    bool useExplicit = DelegateToArgumentParser.UseExplicit(i.Attributes);
                     var targetSyntax = ClimbTree(i.TargetNode);
                     return new DelegatedMethodInLocation(targetSyntax, 
-                        DelegationRequestParser.ParseItem(i.SemanticModel, targetSyntax));
+                        new DelegationRequestParser(i.SemanticModel, targetSyntax, useExplicit)
+                            .ParseItem());
                 }),
             Generate
         );
     }
+    
+    
 
     private void Generate(SourceProductionContext writeTo, DelegatedMethodInLocation factory)
     {

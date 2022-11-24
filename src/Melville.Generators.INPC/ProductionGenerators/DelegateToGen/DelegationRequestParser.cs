@@ -4,15 +4,27 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
-public static class DelegationRequestParser
+public readonly struct DelegationRequestParser
 {
-    public static IDelegatedMethodGenerator? ParseItem(
-        SemanticModel model, SyntaxNode member) =>
+    private readonly SemanticModel model;
+    private readonly SyntaxNode member;
+    private readonly bool useExplicit;
+    private readonly ITypeSymbol parent;
+
+    public DelegationRequestParser(SemanticModel model, SyntaxNode member, bool useExplicit)
+    {
+        this.model = model;
+        this.member = member;
+        this.useExplicit = useExplicit;
+        parent = GetParent(model, member);
+    }
+
+    public IDelegatedMethodGenerator? ParseItem() =>
         member switch
         {
-            FieldDeclarationSyntax fs => ParseFromField(model, fs, GetParent(model, member)),
-            PropertyDeclarationSyntax pds => ParseFromProperty(model, pds, GetParent(model, member)),
-            MethodDeclarationSyntax mds => ParseFromMethod(model, mds, GetParent(model, member)),
+            FieldDeclarationSyntax fs => ParseFromField(fs),
+            PropertyDeclarationSyntax pds => ParseFromProperty(pds),
+            MethodDeclarationSyntax mds => ParseFromMethod(mds),
             _ => throw new InvalidProgramException("This is not a valid delegation target")
         };
 
@@ -22,27 +34,24 @@ public static class DelegationRequestParser
             ? throw new InvalidProgramException("Cannot find parent of delegated item")
             : parent;
 
-    private static IDelegatedMethodGenerator? ParseFromMethod(SemanticModel model, MethodDeclarationSyntax mds,
-        ITypeSymbol parent) =>
+    private IDelegatedMethodGenerator? ParseFromMethod(MethodDeclarationSyntax mds) =>
         model.GetDeclaredSymbol(mds) is IMethodSymbol symbol && IsValidDelegatingMethod(symbol)
-            ? DelegatedMethodGenerator.Create(symbol.ReturnType, $"this.{symbol.Name}()", mds, parent)
+            ? DelegateMethodGeneratorFactory.Create(symbol.ReturnType, $"this.{symbol.Name}()", parent, useExplicit)
             : null;
 
     private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
         symbol.Parameters.Length == 0 && !symbol.ReturnsVoid;
 
-    private static IDelegatedMethodGenerator? ParseFromProperty(SemanticModel model, PropertyDeclarationSyntax pds,
-        ITypeSymbol parent) => 
+    private IDelegatedMethodGenerator? ParseFromProperty(PropertyDeclarationSyntax pds) => 
         model.GetDeclaredSymbol(pds) is IPropertySymbol ps ? 
-            DelegatedMethodGenerator.Create(ps.Type, $"this.{ps.Name}", pds, parent) : 
+            DelegateMethodGeneratorFactory.Create(ps.Type, $"this.{ps.Name}", parent, useExplicit) : 
             null;
 
-    private static IDelegatedMethodGenerator? ParseFromField(SemanticModel model, FieldDeclarationSyntax fs,
-        ITypeSymbol parent) =>
+    private IDelegatedMethodGenerator? ParseFromField(FieldDeclarationSyntax fs) =>
         model.GetDeclaredSymbol(FirstVariableDecl(fs)) is IFieldSymbol symbol?
-            DelegatedMethodGenerator.Create(symbol.Type, $"this.{symbol.Name}", fs, parent):
+            DelegateMethodGeneratorFactory.Create(symbol.Type, $"this.{symbol.Name}", parent, useExplicit):
             null;
 
-    private static VariableDeclaratorSyntax FirstVariableDecl(FieldDeclarationSyntax fs) => 
+    private VariableDeclaratorSyntax FirstVariableDecl(FieldDeclarationSyntax fs) => 
         fs.Declaration.Variables.First();
 }

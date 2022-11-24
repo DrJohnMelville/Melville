@@ -6,7 +6,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public class BaseClassMethodGenerator : DelegatedMethodGenerator
 {
-    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol, SyntaxNode location) : 
+    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol) : 
         base(targetType, methodPrefix, parentSymbol)
     {
     }
@@ -23,7 +23,7 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
 
     protected override bool ImplementationMissing(ISymbol sym)
     {
-        return !parentSymbol.GetMembers().Any(i => i.IsOverride && i.Name == sym.Name && CompareArgumentLists(i, sym));
+        return !ParentSymbol.GetMembers().Any(i => i.IsOverride && i.Name == sym.Name && CompareArgumentLists(i, sym));
     }
 
     private bool CompareArgumentLists(ISymbol parentSymbol, ISymbol childSymbol)
