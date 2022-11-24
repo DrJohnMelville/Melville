@@ -8,9 +8,16 @@ namespace Melville.Generators.INPC.Test.DelegateToGen;
 public class DelegateToTest
 {
     private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), $$"""
-        using Melville.INPC;
+        namespace Melville.INPC 
+        {
+          public sealed class DelegateToAttribute : Attribute
+          {
+              public DelegateToAttribute(bool explicitImplementation = false){}
+          }  
+        }
         namespace Outer
         {
+            using Melville.INPC;
             public interface IInterface
             {
                 {{intMembers}}  

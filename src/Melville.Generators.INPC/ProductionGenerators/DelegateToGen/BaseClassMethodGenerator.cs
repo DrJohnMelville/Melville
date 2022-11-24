@@ -6,8 +6,8 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public class BaseClassMethodGenerator : DelegatedMethodGenerator
 {
-    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol) : 
-        base(targetType, methodPrefix, parentSymbol)
+    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol, SyntaxNode location) : 
+        base(targetType, methodPrefix, parentSymbol, location)
     {
     }
 

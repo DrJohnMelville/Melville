@@ -11,80 +11,88 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public interface IDelegatedMethodGenerator
 {
-    void GenerateForwardingMethods(CodeWriter cw);
+    void GenerateForwardingMethods(SourceProductionCodeWriter cw);
 }
-    
+
 public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 {
     protected readonly ITypeSymbol TargetType;
     private readonly string methodPrefix;
     protected readonly ITypeSymbol parentSymbol;
+    private readonly SyntaxNode writeNextTo;
 
     public static IDelegatedMethodGenerator Create(
-        ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location, 
+        ITypeSymbol targetType, string methodPrefix, MemberDeclarationSyntax location,
         ITypeSymbol parent) =>
         (targetType.TypeKind, UseExplicit(location)) switch
         {
             (TypeKind.Interface, true) =>
-                new ExplicitMethodGenerator(targetType, methodPrefix, targetType.FullyQualifiedName()+".", parent),
-            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, parent),
-            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, parent),
+                new ExplicitMethodGenerator(targetType, methodPrefix, 
+                    targetType.FullyQualifiedName() + ".", parent, location),
+            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, parent, location),
+            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, parent, location),
             _ => new InvalidParentMethodGenerator(targetType, location)
         };
-
-    private static bool UseExplicit(MemberDeclarationSyntax location) => 
+#warning -- this is buggy need to test for the actual attribute.
+    private static bool UseExplicit(MemberDeclarationSyntax location) =>
         location.AttributeLists.ToString().Contains("true");
 
     protected abstract string MemberDeclarationPrefix();
     protected virtual string MemberNamePrefix() => "";
     protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded();
- 
-    protected DelegatedMethodGenerator(ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol)
+
+    protected DelegatedMethodGenerator(
+        ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol, SyntaxNode writeNextTo)
     {
         this.TargetType = targetType;
         this.methodPrefix = methodPrefix;
         this.parentSymbol = parentSymbol;
+        this.writeNextTo = writeNextTo;
     }
 
     public string InheritFrom() => TargetType.FullyQualifiedName();
 
-    public void GenerateForwardingMethods(CodeWriter cw)
+    public void GenerateForwardingMethods(SourceProductionCodeWriter cw)
     {
-        foreach (var member in MembersToForward())
+        using (cw.GenerateInClassFile(writeNextTo,
+                   "GeneratedDelegator"))
         {
-            GenerateForwardingMember(cw, member);
+            foreach (var member in MembersToForward())
+            {
+                GenerateForwardingMember(cw, member);
+            }
         }
     }
 
     private IEnumerable<ISymbol> MembersToForward() =>
         MembersThatCouldBeForwarded()
-            .Where(i=>ImplementationMissing(i));
+            .Where(i => ImplementationMissing(i));
 
-    private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
+    private IEnumerable<ITypeSymbol> TargetTypeAndParents() =>
         TargetType.AllInterfaces.Cast<ITypeSymbol>().Append(TargetType);
 
-    protected abstract bool ImplementationMissing(ISymbol i); 
+    protected abstract bool ImplementationMissing(ISymbol i);
 
     private void GenerateForwardingMember(CodeWriter cw, ISymbol member)
     {
         RenderAttributes(cw, member.GetAttributes());
         switch (member)
         {
-            case IPropertySymbol {IsIndexer: true} ps:
+            case IPropertySymbol { IsIndexer: true } ps:
                 GenerateIndexer(ps, cw);
                 break;
-            case IPropertySymbol ps :
+            case IPropertySymbol ps:
                 GenerateProperty(ps, cw);
                 break;
-            case IMethodSymbol ms :
+            case IMethodSymbol ms:
                 TryGenerateMethod(ms, cw);
                 break;
-            case IEventSymbol es :
+            case IEventSymbol es:
                 GenerateEvent(es, cw);
                 break;
             default:
                 cw.AppendLine($"// call {member.Name} using : {methodPrefix}");
-                break;                    
+                break;
         }
     }
 
@@ -108,17 +116,17 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
     {
-        MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this" );
+        MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this");
         ParameterList(cw, ps.Parameters, RenderParameter, "[", "]");
         cw.AppendLine();
-        PropertyBlock(ps, cw, $"[{string.Join(", ", ps.Parameters.Select(i=>i.Name))}]");
+        PropertyBlock(ps, cw, $"[{string.Join(", ", ps.Parameters.Select(i => i.Name))}]");
     }
-        
+
     private void GenerateProperty(IPropertySymbol ps, CodeWriter cw)
     {
         MemberPrefix(cw, ps.Type.FullyQualifiedName(), ps.Name);
         cw.AppendLine();
-        PropertyBlock(ps, cw, "."+ps.Name);
+        PropertyBlock(ps, cw, "." + ps.Name);
     }
 
     private void PropertyBlock(IPropertySymbol ps, CodeWriter cw, string propertyCall)
@@ -140,7 +148,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void GenerateEvent(IEventSymbol es, CodeWriter cw)
     {
-        MemberPrefix(cw, "event "+es.Type.FullyQualifiedName(), es.Name);
+        MemberPrefix(cw, "event " + es.Type.FullyQualifiedName(), es.Name);
         cw.AppendLine();
         using (cw.CurlyBlock())
         {
@@ -148,6 +156,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
             {
                 cw.AppendLine($"add => {methodPrefix}.{es.Name} += value;");
             }
+
             if (es.RemoveMethod != null)
             {
                 cw.AppendLine($"remove => {methodPrefix}.{es.Name} -= value;");
@@ -214,15 +223,16 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         _ => ""
     };
 
-    private string ExplicitValue(string? value) => value switch{
+    private string ExplicitValue(string? value) => value switch
+    {
         null => "default",
         "True" => "true",
-        "False"=> "false",
+        "False" => "false",
         var i => i
     };
 
     private void ParameterList(
-        CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, 
+        CodeWriter cw, ImmutableArray<IParameterSymbol> parameters,
         Action<CodeWriter, IParameterSymbol> display, string open, string close)
     {
         cw.Append(open);
@@ -234,7 +244,8 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     // we generate those using higher level constructs.
     private bool IsSpecialExcludedMethod(IMethodSymbol ms) => !ms.CanBeReferencedByName;
 
-    private void AppendArgumentList(CodeWriter cw, ImmutableArray<IParameterSymbol> parameters, Action<CodeWriter, IParameterSymbol> paramPrinter)
+    private void AppendArgumentList(CodeWriter cw, ImmutableArray<IParameterSymbol> parameters,
+        Action<CodeWriter, IParameterSymbol> paramPrinter)
     {
         if (parameters.Length == 0) return;
         paramPrinter(cw, parameters[0]);
@@ -250,7 +261,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     {
         if (parameters.Length == 0) return;
         cw.Append("<");
-        cw.Append(string.Join(",", parameters.Select(i=>i.Name)));
+        cw.Append(string.Join(",", parameters.Select(i => i.Name)));
         cw.Append(">");
     }
 
