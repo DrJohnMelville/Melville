@@ -31,7 +31,7 @@ internal class PseudoTransaction: ITransactionControl
         var untransactedDirectory = untransactedFile?.Directory ??
             throw new ArgumentException("files enlisted in a transaction mush have a parent directory");
         var ret = new TransactedFile(untransactedFile,
-            untransactedDirectory.File($"{untransactedFile.Name}.{transactionNumber}.txt"),
+            untransactedDirectory.File($"{untransactedFile.Name}.{transactionNumber}.txn"),
             parentDir);
         if (HasExistingFile(ret, out var file)) return file;
         items.Add(ret);

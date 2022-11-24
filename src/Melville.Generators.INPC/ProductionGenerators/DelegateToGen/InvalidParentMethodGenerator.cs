@@ -16,7 +16,7 @@ public class InvalidParentMethodGenerator : IDelegatedMethodGenerator
 
     public string? InheritFrom() => null;
 
-    public void GenerateForwardingMethods(SourceProductionCodeWriter cw) =>
+    public void GenerateForwardingMethods(CodeWriter cw) =>
         cw.ReportDiagnosticAt(location, "Dele001", "Invalid Delegation target",
             $"Do not know how to generate delegating methods for a {target.TypeKind}",
             DiagnosticSeverity.Error);

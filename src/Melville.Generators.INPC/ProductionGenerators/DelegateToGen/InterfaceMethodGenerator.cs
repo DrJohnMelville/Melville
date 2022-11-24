@@ -8,7 +8,7 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
 {
     public InterfaceMethodGenerator(
         ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol, SyntaxNode writeNextTo) : 
-        base(targetType, methodPrefix, parentSymbol, writeNextTo)
+        base(targetType, methodPrefix, parentSymbol)
     {
     }
 

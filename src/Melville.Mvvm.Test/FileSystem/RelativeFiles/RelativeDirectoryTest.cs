@@ -1,7 +1,9 @@
 ﻿#nullable disable warnings
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Melville.FileSystem;
+using Melville.FileSystem.PseudoTransactedFS;
 using Melville.FileSystem.RelativeFiles;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Melville.Mvvm.TestHelpers.TestWrappers;
@@ -99,5 +101,214 @@ public sealed class RelativeDirectoryTest
     Assert.True(file is RelativeFile);
     file.AssertContent("Foo Bar");
   }
+    [Fact]
+    public async Task UntransactedRoot()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
 
-}
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+      Assert.Equal(baseFileSystem, txFs.UntransactedRoot);
+      
+    }
+    [Fact]
+    public async Task WriteTransactedFileSucceed()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+      using (var txn = txFs.BeginTransaction())
+      {
+        txn.File("foo.jpg").Create("bar");
+        await txn.Commit();
+      }
+
+      var file = baseFileSystem.File("foo.jpg");
+      Assert.Single(baseFileSystem.AllFiles());
+      Assert.True(file.Exists());
+      Assert.Equal("bar", FileSystemHelperObjects.Content(file));
+      
+    }
+    [Fact]
+    public async Task WriteTransactedFileWithoutCommit()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+      using (var txn = txFs.BeginTransaction())
+      {
+        txn.File("foo.jpg").Create("bar");
+        Assert.Single(baseFileSystem.AllFiles());
+      }
+
+      Assert.Empty(baseFileSystem.AllFiles());
+    }
+   [Fact]
+    public async Task CommitFlagWritenAndDeleted()
+    {
+      var dirMock = new MockDirectory("C:\\yyy");
+      var ptm = new PseudoTransactedStore(dirMock);
+      await ptm.RepairIncompleteTransactions();
+      dirMock.File("xxx").Create("FooBar");
+      var txn = ptm.BeginTransaction();
+      txn.File("xxx").Create("xxxYYY");
+      foreach (var file in dirMock.AllFiles("xxx*"))
+      {
+        ;
+      }
+      Assert.True(FileExists(dirMock, "xxx.*.txn"));
+      await txn.Commit();
+      txn.Dispose();
+      Assert.True(dirMock.File("xxx").Exists());
+      Assert.False(FileExists(dirMock, "xxx.*.txn"));
+      Assert.False(FileExists(dirMock, "Committed.*.txn"));
+    }
+
+    private bool FileExists(IDirectory dir, string mask) => dir.AllFiles(mask).Any();
+    [Fact]
+    public async Task EmptyTransactionDoesNotWriteFlag()
+    {
+      var fileMock = new Mock<IFile>();
+      var dirMock = new Mock<IDirectory>();
+      dirMock.Setup(i => i.File("Committed.1.txn")).Returns(fileMock.Object);
+
+      var ptm = new PseudoTransactedStore(dirMock.Object);
+      await ptm.RepairIncompleteTransactions();
+      var txn = ptm.BeginTransaction();
+      await txn.Commit();
+      txn.Dispose();
+      dirMock.Verify(i=>i.File("Comitted.1.txn"), Times.Never());
+      fileMock.Verify(i => i.CreateWrite(FileAttributes.Normal), Times.Never());
+      fileMock.Verify(i => i.Delete(), Times.Never());
+    }
+    [Fact]
+    public async Task WriteTransactedSubDirFileSucceed()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+      using (var txn = txFs.BeginTransaction())
+      {
+        var dir = txn.SubDirectory("subDir");
+        dir.Create();
+        dir.File("foo.jpg").Create("bar");
+        await txn.Commit();
+      }
+
+      var file = baseFileSystem.SubDirectory("subDir").File("foo.jpg");
+      Assert.True(file.Exists());
+      Assert.Equal("bar", FileSystemHelperObjects.Content(file));
+      
+    }
+    [Fact]
+    public async Task WriteTransactedSubDirFileWithoutCommit()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+      baseFileSystem.SubDirectory("subDir").File("foo.jpg").Create("UneditedContent");
+      using (var txn = txFs.BeginTransaction())
+      {
+        var dir = txn.SubDirectory("subDir");
+        dir.Create();
+        dir.File("foo.jpg").Create("bar");
+      }
+
+      var file = baseFileSystem.SubDirectory("subDir").File("foo.jpg");
+      Assert.True(file.Exists());
+      Assert.Equal("UneditedContent", FileSystemHelperObjects.Content(file));
+    }
+    [Fact]
+    public async Task RollbackUnfinishedTransactionOnInitalize()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+      baseFileSystem.File("foo.jpg.1.txn").Create("bar");
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+
+      Assert.False(baseFileSystem.File("foo.jpg.1.txn").Exists());
+      Assert.False(baseFileSystem.File("foo.jpg").Exists());
+      Assert.DoesNotContain(baseFileSystem.AllFiles(), i =>i.Exists());
+    }
+    [Fact]
+    public async Task RollbackUnfinishedSubDirTransactionOnInitalize()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+      var dir = baseFileSystem.SubDirectory("subDir");
+      dir.Create();
+      dir.File("foo.jpg.1.txn").Create("bar");
+      
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+
+      Assert.False(baseFileSystem.SubDirectory("subDir").File("foo.jpg.1.txn").Exists());
+      Assert.False(baseFileSystem.SubDirectory("subDir").File("foo.jpg").Exists());
+      Assert.DoesNotContain(dir.AllFiles(), i =>i.Exists());
+    }
+    [Fact]
+    public async Task CommitUnfinishedTransactionOnInitalize()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+      baseFileSystem.File("foo.jpg.1.txn").Create("bar");
+      baseFileSystem.File(TransactedDirectory.CommitFlagName+".1.txn").Create("   ");
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+
+      Assert.False(baseFileSystem.File("foo.jpg.1.txn").Exists());
+      Assert.False(baseFileSystem.File(TransactedDirectory.CommitFlagName + ".1.txn").Exists());
+      Assert.True(baseFileSystem.File("foo.jpg").Exists());
+    }
+    [Fact]
+    public async Task CommitUnfinishedSubDirTransactionOnInitalize()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+      var dir = baseFileSystem.SubDirectory("subDir");
+      dir.Create();
+      dir.File("foo.jpg.1.txn").Create("bar");
+      baseFileSystem.File(TransactedDirectory.CommitFlagName + ".1.txn").Create("   ");
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+
+      Assert.False(baseFileSystem.SubDirectory("subDir").File("foo.jpg.1.txn").Exists());
+      Assert.True(baseFileSystem.SubDirectory("subDir").File("foo.jpg").Exists());
+      Assert.False(baseFileSystem.File(TransactedDirectory.CommitFlagName + ".1.txn").Exists());
+    }
+    [Fact]
+    public async Task CommitMixedTransactionOnInitalize()
+    {
+      var baseFileSystem = new MockDirectory("C:\\Foo");
+      baseFileSystem.Create();
+      var dir = baseFileSystem.SubDirectory("subDir");
+      dir.Create();
+      dir.File("foo.jpg.1.txn").Create("bar");
+      dir.File("baz.jph.2.txn").Create("bar");
+      baseFileSystem.File(TransactedDirectory.CommitFlagName + ".1.txn").Create("   ");
+
+      var txFs = new PseudoTransactedStore(baseFileSystem);
+      await txFs.RepairIncompleteTransactions();
+
+      Assert.False(baseFileSystem.SubDirectory("subDir").File("foo.jpg.1.txn").Exists());
+      Assert.True(baseFileSystem.SubDirectory("subDir").File("foo.jpg").Exists());
+      Assert.False(baseFileSystem.SubDirectory("subDir").File("baz.jpg.2.txn").Exists());
+      Assert.False(baseFileSystem.SubDirectory("subDir").File("baz.jpg").Exists());
+      Assert.False(baseFileSystem.File(TransactedDirectory.CommitFlagName + ".1.txn").Exists());
+      Assert.False(baseFileSystem.File(TransactedDirectory.CommitFlagName + ".2.txn").Exists());
+    }
+  }
+  
