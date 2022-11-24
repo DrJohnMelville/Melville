@@ -14,8 +14,6 @@ public class InvalidParentMethodGenerator : IDelegatedMethodGenerator
         this.location = location;
     }
 
-    public string? InheritFrom() => null;
-
     public void GenerateForwardingMethods(CodeWriter cw) =>
         cw.ReportDiagnosticAt(location, "Dele001", "Invalid Delegation target",
             $"Do not know how to generate delegating methods for a {target.TypeKind}",
@@ -30,8 +28,6 @@ public class InvalidTargetMethodGenerator : IDelegatedMethodGenerator
     {
         this.location = location;
     }
-
-    public string? InheritFrom() => null;
 
     public void GenerateForwardingMethods(CodeWriter cw) =>
         cw.ReportDiagnosticAt(location, "Dele002", "Invalid Delegation method",

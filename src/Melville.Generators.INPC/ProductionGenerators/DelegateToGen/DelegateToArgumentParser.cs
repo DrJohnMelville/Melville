@@ -14,5 +14,5 @@ public static class DelegateToArgumentParser
     private static bool HasTrueArgument(AttributeData arg) =>
         arg.ConstructorArguments
             .Concat(arg.NamedArguments.Select(i=>i.Value))
-            .Any(i=>true.Equals((bool)i.Value) );
+            .Any(i=>true.Equals(i.Value) );
 }
