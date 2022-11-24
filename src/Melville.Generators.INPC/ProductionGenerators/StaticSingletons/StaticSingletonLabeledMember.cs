@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
 
+#warning  get rid of this
 public class StaticSingletonLabeledMember: ILabeledMembersSyntaxModel
 {
     private TypeDeclarationSyntax typeSyntax;

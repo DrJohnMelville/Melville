@@ -9,20 +9,26 @@ namespace Melville.Generators.INPC.Test.StaticSingletons;
 public class StaticSingletonTests
 {
     private GeneratorTestBed RunTestWithDeclaredAttr(string s, string parentCode = "") =>
-        new(new StaticSingletonGenerator(), $@"
-
-namespace Melville.INPC{{
-[Conditional(""ShowCodeGenAttributes"")]
-        [AttributeUsage( AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public sealed class StaticSingletonAttribute : Attribute
-    {{  public string? Name {{ get; }}
-        public StaticSingletonAttribute(string? name)
-        {{            Name = name;}} }} }}
-namespace Outer
-{{
-    using Melville.INPC;
-    {s}
-}}");
+        new(new StaticSingletonGenerator(), $$"""
+            namespace Melville.INPC
+            {
+                [Conditional(""ShowCodeGenAttributes"")]
+                [AttributeUsage( AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+                public sealed class StaticSingletonAttribute : Attribute
+                {  
+                    public string? Name { get; }
+                    public StaticSingletonAttribute(string? name)
+                    {           
+                     Name = name;
+                    }
+                } 
+            }
+            namespace Outer
+            {
+                using Melville.INPC;
+                {{s}}
+            }
+            """);
 
     [Fact]
     public void GenerateSingleton()
@@ -46,4 +52,3 @@ namespace Outer
         tb.LastFileContains("public static readonly Outer.X FooBar = new();");
     }
 }
-

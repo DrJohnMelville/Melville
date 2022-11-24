@@ -23,14 +23,8 @@ public class StaticSingletonCodeGenerator: ILabeledMembersSemanticModel
     public void GenerateCode(CodeWriter cw)
     {
         using var context = WriteCodeNear.Symbol(ClassDeclaration, cw);
-        cw.Append("public static readonly ");
-        cw.Append(symbol.FullyQualifiedName());
-        cw.Append(" ");
-        cw.Append(InstanceName());
-        cw.AppendLine(" = new();");
-        cw.Append("private ");
-        cw.Append(symbol.Name);
-        cw.AppendLine("() {}");
+        cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {InstanceName()} = new();");
+        cw.AppendLine($$"""private {{symbol.Name}}() {}""");
     }
 
     private string InstanceName()
