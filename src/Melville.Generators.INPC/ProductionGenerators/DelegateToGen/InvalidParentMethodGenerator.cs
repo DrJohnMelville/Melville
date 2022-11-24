@@ -21,3 +21,20 @@ public class InvalidParentMethodGenerator : IDelegatedMethodGenerator
             $"Do not know how to generate delegating methods for a {target.TypeKind}",
             DiagnosticSeverity.Error);
 }
+
+public class InvalidTargetMethodGenerator : IDelegatedMethodGenerator
+{
+    private readonly SyntaxNode location;
+
+    public InvalidTargetMethodGenerator(SyntaxNode location)
+    {
+        this.location = location;
+    }
+
+    public string? InheritFrom() => null;
+
+    public void GenerateForwardingMethods(CodeWriter cw) =>
+        cw.ReportDiagnosticAt(location, "Dele002", "Invalid Delegation method",
+            $"Can only delegate to a non-void returning method with no parameters",
+            DiagnosticSeverity.Error);
+}

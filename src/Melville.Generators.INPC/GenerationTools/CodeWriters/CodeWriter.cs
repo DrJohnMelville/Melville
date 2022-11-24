@@ -62,13 +62,14 @@ public static class CodeWriterOperations
 
     private static void AddIdentifierPath(SyntaxNode member, string postfix, StringBuilder sb)
     {
-        foreach (var symbol in member.AncestorsAndSelf().Reverse())
-        {
-            sb.Append(NameForNode(symbol, postfix));
-            sb.Append('.');
-        }
-
-        sb.Append("cs");
+        sb.Append(string.Join(".", 
+            member.AncestorsAndSelf()
+                .Select(i=>NameForNode(i, postfix))
+                .Where(i=>!string.IsNullOrWhiteSpace(i))
+                .Reverse()
+                .Append("cs")
+            )
+        );
     }
 
     private static void ReplaceForbiddenCharacters(StringBuilder sb)
@@ -110,7 +111,7 @@ public static class CodeWriterOperations
         BaseTypeDeclarationSyntax btds => btds.Identifier.ToString(),
         BaseNamespaceDeclarationSyntax nds => nds.Name.ToString(),
         CompilationUnitSyntax => prefix,
-        _ => "Unnamed"
+        _ => ""
     };
 
     private static string Concat(object identifier, object? trailer1 = null, object? trailer2 = null) => 

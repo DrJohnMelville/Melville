@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Immutable;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
@@ -15,22 +16,33 @@ public class DelegateToGenerator: IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        RegisterGeneratorFor<PropertyDeclarationSyntax>(context,
+            (item, fact)=> fact.ParseFromProperty((IPropertySymbol)item.TargetSymbol));
+        RegisterGeneratorFor<MethodDeclarationSyntax>(context,
+            (item, fact)=> fact.ParseFromMethod((IMethodSymbol)item.TargetSymbol, item.TargetNode));
+        RegisterGeneratorFor<VariableDeclaratorSyntax>(context,
+            (item, fact)=> fact.ParseFromField((IFieldSymbol)item.TargetSymbol));
+    }
+
+    private void RegisterGeneratorFor<T>(
+        IncrementalGeneratorInitializationContext context,
+        Func<GeneratorAttributeSyntaxContext, DelegationRequestParser, IDelegatedMethodGenerator> func)
+    {
         context.RegisterSourceOutput(
             context.SyntaxProvider.ForAttributeWithMetadataName(QualifiedAttributeName,
-                static (i, _) => i is MemberDeclarationSyntax or VariableDeclaratorSyntax,
-                static (i, _) =>
-                {
-                    bool useExplicit = DelegateToArgumentParser.UseExplicit(i.Attributes);
-                    var targetSyntax = ClimbTree(i.TargetNode);
-                    return new DelegatedMethodInLocation(targetSyntax, 
-                        new DelegationRequestParser(i.SemanticModel, targetSyntax, useExplicit)
-                            .ParseItem());
-                }),
+                static (i, _) => i is T,
+                (i, _) => new DelegatedMethodInLocation(i.TargetNode,
+                             func(i, CreateRequestParser(i.Attributes)))),
             Generate
         );
+        
     }
-    
-    
+
+    private static DelegationRequestParser CreateRequestParser(ImmutableArray<AttributeData> attributes)
+    {
+        return new DelegationRequestParser(DelegateToArgumentParser.UseExplicit(attributes));
+    }
+
 
     private void Generate(SourceProductionContext writeTo, DelegatedMethodInLocation factory)
     {
