@@ -22,7 +22,7 @@ public class GeneratorTestBed
     public GeneratorTestBed(CSharpGeneratorDriver driver, string code)
     {
         var sourceCompilation = CompileCode(code);
-        driver.RunGeneratorsAndUpdateCompilation(sourceCompilation, out compilation, out diagnostics);
+        driver.RunGeneratorsAndUpdateCompilation(sourceCompilation, out  compilation, out diagnostics);
     }
 
     private readonly Compilation compilation;

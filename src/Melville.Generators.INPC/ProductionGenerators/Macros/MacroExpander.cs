@@ -1,51 +1,63 @@
 ﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Collections.Immutable;
+using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.Macros;
 
-public readonly ref struct MacroExpander
+public readonly struct MacroExpander
 {
-    private readonly string? prefix;
-    private readonly string? postfix;
-    private readonly string text;
+    private readonly ImmutableArray<AttributeData> attributes;
+    private readonly List<ImmutableArray<TypedConstant>> replacements;
 
-    public MacroExpander(AttributeArgumentListSyntax attrs)
+    public MacroExpander(ImmutableArray<AttributeData> attributes)
     {
-        prefix = postfix = null;
-        text = "";
-        foreach (var argument in attrs.ToArguments())
+        this.attributes = attributes;
+        replacements = attributes
+            .FilterToAttributeType("Melville.INPC.MacroItemAttribute")
+            .Select(i => i.ConstructorArguments[0].Values)
+            .ToList();
+    }
+
+    public void WriteMacros(CodeWriter cw)
+    {
+        foreach (var element in CodeElements())
         {
-            switch (argument.Name, argument.Value)
+            element.WriteCode(cw, replacements);
+        }
+    }
+
+    private IEnumerable<MacroCodeExpander> CodeElements()
+    {
+        foreach (var codeAttribute in attributes.FilterToAttributeType("Melville.INPC.MacroCodeAttribute"))
+        {
+            var (prefix, postfix) = ReadPrefixAndPostFix(codeAttribute);
+            yield return new MacroCodeExpander(prefix, ReadCodeParameter(codeAttribute), postfix);
+        }
+    }
+
+    private static string ReadCodeParameter(AttributeData codeAttribute) =>
+        codeAttribute.ConstructorArguments[0].CodeString();
+
+    private static (string prefix, string postfix) ReadPrefixAndPostFix(AttributeData codeAttribute)
+    {
+        var prefix = "";
+        var postfix = "";
+        foreach (var argPair in codeAttribute.NamedArguments)
+        {
+            switch (argPair.Key)
             {
-                case ("Prefix", var val):
-                    prefix = val;
+                case "Prefix":
+                    prefix = argPair.Value.CodeString();
                     break;
-                case ("Postfix", var val):
-                    postfix = val;
-                    break;
-                case var (name, val) :
-                    text = val;
+                case "Postfix":
+                    postfix = argPair.Value.CodeString();
                     break;
             }
         }
-    }
 
-    public void Expand(CodeWriter sb, List<List<string>> values)
-    {
-        if (prefix != null && prefix.Length > 0) sb.AppendLine(prefix);
-        foreach (var value in values)
-        {
-            sb.AppendLine(Replace(text, value));
-        }
-        if (postfix != null && postfix.Length > 0) sb.AppendLine(postfix);
-    }
-        
-    private static Regex RegexReplacer = new Regex(@"~(\d+)~");
-    private string Replace(string template, IList<string> attrList)
-    {
-        return RegexReplacer.Replace(template, m => attrList[int.Parse(m.Groups[1].Value)]);
+        return (prefix, postfix);
     }
 }

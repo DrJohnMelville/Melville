@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
 [Generator]
 public class StaticSingletonGenerator: IIncrementalGenerator
 {
-    public const string attributeName = "Melville.INPC.StaticSingletonAttribute"; 
+    private const string attributeName = "Melville.INPC.StaticSingletonAttribute"; 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterSourceOutput(

@@ -21,8 +21,7 @@ public class StaticSingletonCodeGenerator
     }
     
     private static string ComputeInstanceName(ImmutableArray<AttributeData> attrs) =>
-        attrs.FilterToAttributeType(StaticSingletonGenerator.attributeName)
-            .SelectMany(i => i.AllValues().Select(j => j.Value))
+        attrs.SelectMany(i => i.AllValues().Select(j => j.Value))
             .OfType<string>()
             .DefaultIfEmpty("Instance")
             .First();

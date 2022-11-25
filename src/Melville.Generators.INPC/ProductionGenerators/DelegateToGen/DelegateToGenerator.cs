@@ -9,7 +9,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 [Generator]
 public class DelegateToGenerator: IIncrementalGenerator
 {
-    public const string QualifiedAttributeName = "Melville.INPC.DelegateToAttribute";
+    private const string QualifiedAttributeName = "Melville.INPC.DelegateToAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

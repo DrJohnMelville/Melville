@@ -10,7 +10,7 @@ public class PropGenUnitTest
         new GeneratorTestBed(new DependencyPropertyGenerator(), $$"""
             namespace Melville.INPC
             {
-              public sealed class GenerateDPAttribute : Attribute
+              public sealed class GenerateDPAttribute : System.Attribute
               {
                 public bool Attached { get; set; }
                 public bool Nullable { get; set; }

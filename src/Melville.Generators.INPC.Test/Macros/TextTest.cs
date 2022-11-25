@@ -1,6 +1,5 @@
 ﻿using Melville.Generators.INPC.ProductionGenerators.Macros;
 using Melville.Generators.INPC.Test.UnitTests;
-using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.Macros;
@@ -11,11 +10,11 @@ public class TextTest
         new(new MacroGenerator(), $$"""
             namespace Melville.INPC 
             {
-                public sealed class MacroItemAttribute: Attribute
+                public sealed class MacroItemAttribute: System.Attribute
                 {
                     public MacroItemAttribute(params object[] text){}
                 }
-                public sealed class MacroCodeAttribute: Attribute
+                public sealed class MacroCodeAttribute: System.Attribute
                 {
                     public object Prefix {get;set;} = "";
                     public object Postfix {get;set;} = "";
@@ -53,6 +52,11 @@ public class TextTest
     {
         RunTest("[MacroCode(\"// Macro: ~0~\", Prefix=\"// Prefix\")] [MacroItem(\"One\")]");
     }
+    [Fact]
+    public void DoubleCode()
+    {
+        RunTest("[MacroCode(\"// Macro: ~0~\", Prefix=\"// Prefix\")] [MacroCode(\"// Macro2: ~0~\", Prefix=\"// Prefix\")] [MacroItem(\"One\")]");
+    }
 
     [Fact]
     public void RepeatedUsing()
@@ -69,23 +73,5 @@ public class TextTest
         [MacroItem(3, ""Three"")]
 ");
         generatorTestBed.FileContains("MacroGen.Outer.C.Func().cs", "// Code: 1/One");
-    }
-}
-
-public partial class WithMacro
-{
-    [MacroCode("private int Number~1~() => ~0~;")]
-    [MacroCode("// Code: ~0~/~1~", Prefix = "private static void FooGenerated() {", Postfix = "}")]
-    [MacroItem(1, "One")]
-    [MacroItem(2, "Two")]
-    [MacroItem(3, "Three")]
-    [Fact]
-    public void Method()
-    {
-        FooGenerated();
-        Assert.Equal(1, NumberOne());
-        Assert.Equal(2, NumberTwo());
-        Assert.Equal(3, NumberThree());
-          
     }
 }
