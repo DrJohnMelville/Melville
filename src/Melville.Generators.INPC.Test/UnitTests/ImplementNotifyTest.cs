@@ -10,17 +10,18 @@ public class ImplementNotifyTest
     public void MultipleNameSpaces()
     {
         var tb = new GeneratorTestBed(new INPCGenerator(),
-            @"
-using Melville.INPC;
-namespace Outer{
-namespace NM
-{
-  public partial class C
-  { 
-    [AutoNotify] private int intProp,ip2;
-  }
-}
-}");
+            """
+            using Melville.INPC;
+            namespace Outer{
+            namespace NM
+            {
+              public partial class C
+              {  
+                [AutoNotify] private int intProp,ip2;
+              }
+            }
+            }
+            """);
         tb.AssertNoDiagnostics();
         tb.FileContains("INPC.Outer.NM.C.cs", "namespace Outer");
         tb.FileContains("INPC.Outer.NM.C.cs", "namespace NM");

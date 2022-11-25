@@ -2,7 +2,7 @@
 using Moq;
 using Xunit;
 
-namespace Melville.Generators.INPC.Test.DelegateToGen;
+namespace Melville.Generators.IntegrationTest.DelegateTo;
 
 public interface ITestInt
 {

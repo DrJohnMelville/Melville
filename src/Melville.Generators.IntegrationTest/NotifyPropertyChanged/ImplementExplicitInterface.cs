@@ -2,7 +2,7 @@
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests;
+namespace Melville.Generators.IntegrationTest.NotifyPropertyChanged;
 
 public partial class ImplementExplicitInterface : IExternalNotifyPropertyChanged
 {

@@ -1,8 +1,8 @@
-﻿using Melville.TestHelpers.InpcTesting;
+﻿using Melville.INPC;
+using Melville.TestHelpers.InpcTesting;
 using Xunit;
-using Melville.INPC;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests;
+namespace Melville.Generators.IntegrationTest.NotifyPropertyChanged;
 
 public sealed partial class ImplementSealedINPC
 {

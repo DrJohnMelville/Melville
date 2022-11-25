@@ -61,4 +61,7 @@ public static class TypeSymbolOperations
 
     public static IEnumerable<ISymbol> MembersLabeledWith(this ITypeSymbol symbol, string attrName) =>
         symbol.GetMembers().Where(i => i.GetAttributes().FilterToAttributeType(attrName).Any());
+
+    public static ITypeSymbol ThisOrContainingTypeSymbol(this ISymbol sym) =>
+        sym as ITypeSymbol ?? sym.ContainingType;
 }

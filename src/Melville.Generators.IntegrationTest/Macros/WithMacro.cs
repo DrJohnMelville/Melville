@@ -1,7 +1,7 @@
 ﻿using Melville.INPC;
 using Xunit;
 
-namespace Melville.Generators.INPC.Test.Macros;
+namespace Melville.Generators.IntegrationTest.Macros;
 
 public partial class WithMacro
 {

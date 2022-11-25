@@ -106,6 +106,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Generators.IntegrationTest", "src\Melville.Generators.IntegrationTest\Melville.Generators.IntegrationTest.csproj", "{926EB770-4842-4067-A5F7-161F89CE17D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -269,6 +271,10 @@ Global
 		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90CE5399-3E5F-41C1-B028-6DBA51D795CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{926EB770-4842-4067-A5F7-161F89CE17D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{926EB770-4842-4067-A5F7-161F89CE17D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{926EB770-4842-4067-A5F7-161F89CE17D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{926EB770-4842-4067-A5F7-161F89CE17D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -312,6 +318,7 @@ Global
 		{FDE2F942-89C7-48C5-BF82-281086CC3491} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{15C96F75-A5FD-42D9-B550-C94154FB348B} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{90CE5399-3E5F-41C1-B028-6DBA51D795CD} = {1B5461D7-0B04-4F30-BB66-1EDA98450329}
+		{926EB770-4842-4067-A5F7-161F89CE17D1} = {E8931D25-A7BA-441D-A00E-A5813D6F3996}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32830D18-8400-4B5A-9A71-3D3D1E19FCD7}

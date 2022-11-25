@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Melville.Generators.INPC.Test.UnitTests;
+﻿using Melville.Generators.INPC.Test.UnitTests;
 using Melville.INPC;
 using Xunit;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests;
+namespace Melville.Generators.IntegrationTest.NotifyPropertyChanged;
 
 public partial class GenericTest
 {

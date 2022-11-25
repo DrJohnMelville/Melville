@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -25,7 +26,7 @@ public class ConstructorGenerator : IIncrementalGenerator
         );
     }
 
-    private void Generate(SourceProductionContext codeTarget, ISymbol classToGenerate)
+    private void Generate(SourceProductionContext codeTarget, ISymbol? classToGenerate)
     {
         if (classToGenerate is not ITypeSymbol typeToGenerate) return;
         var cw = new SourceProductionCodeWriter(codeTarget);
@@ -35,8 +36,6 @@ public class ConstructorGenerator : IIncrementalGenerator
         }
     }
 
-    private static ITypeSymbol KeySelector(GeneratorAttributeSyntaxContext j)
-    {
-        return j.TargetSymbol as ITypeSymbol ?? j.TargetSymbol.ContainingType;
-    }
+    private static ITypeSymbol KeySelector(GeneratorAttributeSyntaxContext j) => 
+        j.TargetSymbol.ThisOrContainingTypeSymbol();
 }

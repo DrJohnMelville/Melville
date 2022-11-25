@@ -1,6 +1,6 @@
 ﻿using Melville.INPC;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests;
+namespace Melville.Generators.IntegrationTest.NotifyPropertyChanged;
 
 public partial class MultiGeneratorTest: IExternalNotifyPropertyChanged
 {

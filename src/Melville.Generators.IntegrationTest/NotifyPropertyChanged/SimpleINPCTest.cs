@@ -1,8 +1,8 @@
-﻿using Melville.TestHelpers.InpcTesting;
+﻿using Melville.INPC;
+using Melville.TestHelpers.InpcTesting;
 using Xunit;
-using Melville.INPC;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests;
+namespace Melville.Generators.IntegrationTest.NotifyPropertyChanged;
 
 public partial class SimpleINPCTest
 {
@@ -37,7 +37,7 @@ public partial class SimpleINPCTest
         using var counter = INPCCounter.VerifyInpcFired(obj, i=>i.NotifyChanged, i => i.X);
         obj.X = 10;
         Assert.Equal(10, obj.X);
-        Assert.Equal("0 -> 10", obj.NotifyChanged);
+        Assert.Equal((string?)"0 -> 10", (string?)obj.NotifyChanged);
             
     }
 }

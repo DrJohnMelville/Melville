@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
+using Melville.INPC;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
-using Melville.INPC;
 
-namespace Melville.Generators.INPC.Test.IntegrationTests;
+namespace Melville.Generators.IntegrationTest.NotifyPropertyChanged;
 
 public partial class ImplementPropertyInpc
 {
