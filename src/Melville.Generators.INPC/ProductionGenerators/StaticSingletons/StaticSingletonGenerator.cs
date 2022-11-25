@@ -11,7 +11,7 @@ namespace System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
 [Generator]
 public class StaticSingletonGenerator: IIncrementalGenerator
 {
-    private const string attributeName = "Melville.INPC.StaticSingletonAttribute"; 
+    public const string attributeName = "Melville.INPC.StaticSingletonAttribute"; 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterSourceOutput(
@@ -27,17 +27,7 @@ public class StaticSingletonGenerator: IIncrementalGenerator
         var writer = new SourceProductionCodeWriter(context);
         using (writer.GenerateInClassFile(attr.TargetNode, "StaticSingleton"))
         {
-            new StaticSingletonCodeGenerator((TypeDeclarationSyntax)attr.TargetNode,
-                (INamedTypeSymbol)attr.TargetSymbol).GenerateCode(writer, instanceNamw(attr.Attributes));
+            new StaticSingletonCodeGenerator(attr).GenerateCode(writer);
         }
     }
-
-    private string instanceNamw(ImmutableArray<AttributeData> attrs) =>
-        attrs.FilterToAttributeType(attributeName)
-            .SelectMany(i => i.AllValues().Select(j => j.Value))
-            .OfType<string>()
-            .DefaultIfEmpty("Instance")
-            .First();
-
-    public static readonly SearchForAttribute AttributeFinder = new("Melville.INPC.StaticSingletonAttribute");
 }

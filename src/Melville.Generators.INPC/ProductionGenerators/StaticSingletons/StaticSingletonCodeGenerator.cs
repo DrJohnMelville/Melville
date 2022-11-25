@@ -1,8 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Immutable;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
@@ -12,29 +9,29 @@ namespace System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
 
 public class StaticSingletonCodeGenerator
 {
-    public TypeDeclarationSyntax ClassDeclaration { get; }
+    private readonly TypeDeclarationSyntax classDeclaration;
     private readonly INamedTypeSymbol symbol;
+    private readonly string instanceName;
 
-    public StaticSingletonCodeGenerator(TypeDeclarationSyntax typeSyntax, INamedTypeSymbol symbol)
+    public StaticSingletonCodeGenerator(GeneratorAttributeSyntaxContext context)
     {
-        ClassDeclaration = typeSyntax;
-        this.symbol = symbol;
+        classDeclaration = (TypeDeclarationSyntax)context.TargetNode;
+        symbol = (INamedTypeSymbol)context.TargetSymbol;
+        instanceName = ComputeInstanceName(context.Attributes);
     }
+    
+    private static string ComputeInstanceName(ImmutableArray<AttributeData> attrs) =>
+        attrs.FilterToAttributeType(StaticSingletonGenerator.attributeName)
+            .SelectMany(i => i.AllValues().Select(j => j.Value))
+            .OfType<string>()
+            .DefaultIfEmpty("Instance")
+            .First();
 
-    public void GenerateCode(CodeWriter cw, string instanceNamw)
+
+    public void GenerateCode(CodeWriter cw)
     {
-        using var context = WriteCodeNear.Symbol(ClassDeclaration, cw);
-        var computedName = InstanceName();
-       // Debug.Assert(instanceNamw == computedName);
-        cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {instanceNamw} = new();");
+        using var _ = WriteCodeNear.Symbol(classDeclaration, cw);
+        cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {instanceName} = new();");
         cw.AppendLine($$"""private {{symbol.Name}}() {}""");
-    }
-
-    private string InstanceName()
-    {
-        return StaticSingletonGenerator.AttributeFinder.FindAttribute(ClassDeclaration)
-            ?.AttributeParameters()
-            .FirstOrDefault() ?? 
-               "Instance";
     }
 }
