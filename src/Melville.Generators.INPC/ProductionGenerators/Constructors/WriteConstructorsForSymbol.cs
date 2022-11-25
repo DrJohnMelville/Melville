@@ -54,10 +54,18 @@ internal readonly struct WriteConstructorsForSymbol
 
     private static IEnumerable<MemberData[]> ConstructorsThatWillBeSynthesizedForClass(INamedTypeSymbol classSymbol)
     {
+        if (!GeneratorWillAddConstructorsFor(classSymbol)) return Array.Empty<MemberData[]>();
         var localFields = ComputeFieldsToGenerate(classSymbol);
         return ConstructorsFor(classSymbol.BaseType)
             .DefaultIfEmpty(Array.Empty<MemberData>())
             .Select(i => i.Concat(localFields).ToArray())
             .Where(i => i.Length > 0);
     }
+
+    private static bool GeneratorWillAddConstructorsFor(INamedTypeSymbol classSymbol) =>
+        classSymbol.GetAttributes().Concat(
+            classSymbol.GetMembers()
+                .Where(i=> i is IFieldSymbol)
+                .SelectMany(i => i.GetAttributes())
+        ).FilterToAttributeType(ConstructorGenerator.AttributeName).Any();
 }

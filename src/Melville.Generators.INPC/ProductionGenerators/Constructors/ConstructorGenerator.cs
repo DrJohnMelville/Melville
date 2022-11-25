@@ -37,6 +37,6 @@ public class ConstructorGenerator : IIncrementalGenerator
 
     private static ITypeSymbol KeySelector(GeneratorAttributeSyntaxContext j)
     {
-        return j.TargetSymbol is ITypeSymbol sym ? sym : j.TargetSymbol.ContainingType;
+        return j.TargetSymbol as ITypeSymbol ?? j.TargetSymbol.ContainingType;
     }
 }
