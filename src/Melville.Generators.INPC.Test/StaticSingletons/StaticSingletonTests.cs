@@ -14,9 +14,9 @@ public class StaticSingletonTests
             {
                 [Conditional(""ShowCodeGenAttributes"")]
                 [AttributeUsage( AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-                public sealed class StaticSingletonAttribute : Attribute
+                public sealed class StaticSingletonAttribute : System.Attribute
                 {  
-                    public string? Name { get; }
+                    public string? Name { get; set;}
                     public StaticSingletonAttribute(string? name)
                     {           
                      Name = name;
@@ -41,13 +41,6 @@ public class StaticSingletonTests
     public void GenerateSingletonWithName()
     {
         var tb = RunTestWithDeclaredAttr("[StaticSingleton(\"FooBar\")] public partial class X {}");
-        tb.LastFileContains("private X() {}");
-        tb.LastFileContains("public static readonly Outer.X FooBar = new();");
-    }
-    [Fact]
-    public void GenerateSingletonWithExplicitName()
-    {
-        var tb = RunTestWithDeclaredAttr("[StaticSingleton(Name = \"FooBar\")] public partial class X {}");
         tb.LastFileContains("private X() {}");
         tb.LastFileContains("public static readonly Outer.X FooBar = new();");
     }

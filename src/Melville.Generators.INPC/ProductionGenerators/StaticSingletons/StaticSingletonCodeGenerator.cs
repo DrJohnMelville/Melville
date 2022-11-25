@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
@@ -9,7 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
 
-public class StaticSingletonCodeGenerator: ILabeledMembersSemanticModel
+public class StaticSingletonCodeGenerator
 {
     public TypeDeclarationSyntax ClassDeclaration { get; }
     private readonly INamedTypeSymbol symbol;
@@ -20,10 +21,12 @@ public class StaticSingletonCodeGenerator: ILabeledMembersSemanticModel
         this.symbol = symbol;
     }
 
-    public void GenerateCode(CodeWriter cw)
+    public void GenerateCode(CodeWriter cw, string instanceNamw)
     {
         using var context = WriteCodeNear.Symbol(ClassDeclaration, cw);
-        cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {InstanceName()} = new();");
+        var computedName = InstanceName();
+       // Debug.Assert(instanceNamw == computedName);
+        cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {instanceNamw} = new();");
         cw.AppendLine($$"""private {{symbol.Name}}() {}""");
     }
 
