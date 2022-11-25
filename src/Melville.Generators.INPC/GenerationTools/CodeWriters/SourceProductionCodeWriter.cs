@@ -22,6 +22,8 @@ public class SourceProductionCodeWriter: CodeWriter
     public override void ReportDiagnostic(Diagnostic diagnostic) =>
         context.ReportDiagnostic(diagnostic);
 
+    public SourceProductionCodeOperation GenerateInClassFile(ISymbol symbol, string prefix) =>
+        GenerateInClassFile(symbol.DeclaringSyntaxReferences[0].GetSyntax(), prefix);
     public SourceProductionCodeOperation GenerateInClassFile(SyntaxNode node, string prefix) =>
         new SourceProductionCodeOperation(this, node, prefix);
 }

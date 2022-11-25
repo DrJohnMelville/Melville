@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
@@ -57,4 +58,7 @@ public static class TypeSymbolOperations
 
     private static bool TypeMatches(ITypeSymbol symbol, string type) => 
         symbol.FullyQualifiedName().Equals(type);
+
+    public static IEnumerable<ISymbol> MembersLabeledWith(this ITypeSymbol symbol, string attrName) =>
+        symbol.GetMembers().Where(i => i.GetAttributes().FilterToAttributeType(attrName).Any());
 }

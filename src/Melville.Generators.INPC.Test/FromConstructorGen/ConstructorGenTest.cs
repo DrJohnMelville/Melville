@@ -12,17 +12,18 @@ public class ConstructorGenTest
     public class Parent {{" + parentCode + @"} 
     public partial class C: Parent {" + s + @"
 ");
-    private GeneratorTestBed RunTestWithDeclaredAttr(string s, string parentCode = "") =>
-        new(new ConstructorGenerator(), $@"
-
-namespace Melville.INPC{{
-    public class FromConstructorAttribute: Attribute{{}}
-}}
-namespace Outer
-{{
-    using Melville.INPC;
-    {s}
-}}");
+    private GeneratorTestBed RunTestWithDeclaredAttr(string s) =>
+        new(new ConstructorGenerator(), $$"""
+            namespace Melville.INPC
+            {
+                public class FromConstructorAttribute: System.Attribute{}
+            }
+            namespace Outer
+            {
+                using Melville.INPC;
+                {{s}}
+            }
+            """);
 
     [Fact]
     public void IntProperty()
