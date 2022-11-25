@@ -1,6 +1,6 @@
 ﻿using Melville.Generators.INPC.GenerationTools.AstUtilities;
 
-namespace System.Runtime.CompilerServices.ProductionGenerators.Constructors;
+namespace Melville.Generators.INPC.ProductionGenerators.Constructors;
 
 public record struct MemberData(string Type, string Name, string LowerCaseName)
 {

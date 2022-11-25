@@ -1,49 +1,39 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace System.Runtime.CompilerServices.ProductionGenerators.Constructors;
+namespace Melville.Generators.INPC.ProductionGenerators.Constructors;
 
-public class ConstructorsCodeGenerator : ILabeledMembersSemanticModel
+public readonly struct ConstructorsCodeGenerator
 {
-    public TypeDeclarationSyntax ClassDeclaration { get; }
-    public IList<MemberData> FieldsAndProperties { get; }
-    public IList<MemberData[]> Constructors { get; }
+    private readonly string className;
+    private IList<MemberData> FieldsAndProperties { get; }
+    private IList<MemberData[]> Constructors { get; }
 
     public ConstructorsCodeGenerator(
-        TypeDeclarationSyntax classDeclaration, IList<MemberData> fieldsAndProperties, IList<MemberData[]> constructors)
+        string className, IList<MemberData> fieldsAndProperties, IList<MemberData[]> constructors)
     {
+        this.className = className;
         FieldsAndProperties = fieldsAndProperties;
         Constructors = constructors;
-        ClassDeclaration = classDeclaration;
     }
     
-        public void GenerateCode(CodeWriter cw)
+    public void GenerateCode(CodeWriter cw)
     {
-        using var context = WriteCodeNear.Symbol(ClassDeclaration, cw);
         foreach (var constructor in Constructors.DefaultIfEmpty(Array.Empty<MemberData>()))
         {
             GenerateSingleConstructor(cw, constructor);
         }
-
         GeneratePartialMethodDeclaration(cw);
     }
 
-    private static void GeneratePartialMethodDeclaration(CodeWriter cw)
-    {
+    private static void GeneratePartialMethodDeclaration(CodeWriter cw) => 
         cw.AppendLine("partial void OnConstructed();");
-    }
 
     private void GenerateSingleConstructor(CodeWriter cw, IList<MemberData> constructorParams)
     {
-        cw.Append("public ");
-        cw.Append(ClassDeclaration.Identifier.ToString());
-        cw.Append("(");
+        cw.Append($"public {className}(");
         GenerateParameters(cw, constructorParams.Concat(FieldsAndProperties));
         cw.Append(")");
         if (constructorParams.Count > 0)
@@ -76,12 +66,8 @@ public class ConstructorsCodeGenerator : ILabeledMembersSemanticModel
         }
     }
 
-    private static void GenerateSingleParameter(CodeWriter cw, MemberData member)
-    {
-        cw.Append(member.Type);
-        cw.Append(" ");
-        cw.Append(member.LowerCaseName);
-    }
+    private static void GenerateSingleParameter(CodeWriter cw, MemberData member) => 
+        cw.Append($"{ member.Type} {member.LowerCaseName}");
 
     private void GenerateConstructorBody(CodeWriter cw)
     {
@@ -102,12 +88,6 @@ public class ConstructorsCodeGenerator : ILabeledMembersSemanticModel
         }
     }
 
-    private static void GenerateFieldAssignent(CodeWriter cw, MemberData member)
-    {
-        cw.Append("this.");
-        cw.Append(member.Name);
-        cw.Append(" = ");
-        cw.Append(member.LowerCaseName);
-        cw.AppendLine(";");
-    }
+    private static void GenerateFieldAssignent(CodeWriter cw, MemberData member) => 
+        cw.AppendLine($"this.{member.Name} = {member.LowerCaseName};");
 }

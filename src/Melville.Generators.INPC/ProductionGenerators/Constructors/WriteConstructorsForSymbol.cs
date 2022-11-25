@@ -1,5 +1,4 @@
-﻿#if false
-#else
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,14 +6,14 @@ using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 
-namespace System.Runtime.CompilerServices.ProductionGenerators.Constructors;
+namespace Melville.Generators.INPC.ProductionGenerators.Constructors;
 
-internal readonly struct ConstructorGenerator2
+internal readonly struct WriteConstructorsForSymbol
 {
     private readonly ITypeSymbol classToGenerate;
     private readonly SourceProductionCodeWriter writer;
 
-    public ConstructorGenerator2(ITypeSymbol classToGenerate, SourceProductionCodeWriter writer)
+    public WriteConstructorsForSymbol(ITypeSymbol classToGenerate, SourceProductionCodeWriter writer)
     {
         this.classToGenerate = classToGenerate;
         this.writer = writer;
@@ -23,7 +22,7 @@ internal readonly struct ConstructorGenerator2
     public void Genarate()
     {
         var fieldsToGenerate = ComputeFieldsToGenerate(classToGenerate);
-        new ConstructorsCodeGenerator2(classToGenerate.Name, fieldsToGenerate, ConstructorsFor(classToGenerate.BaseType))
+        new ConstructorsCodeGenerator(classToGenerate.Name, fieldsToGenerate, ConstructorsFor(classToGenerate.BaseType))
             .GenerateCode(writer);
     }
 
@@ -43,16 +42,22 @@ internal readonly struct ConstructorGenerator2
     private static IList<MemberData[]> ConstructorsFor(INamedTypeSymbol? classSymbol)
     {
         if (classSymbol is null) return Array.Empty<MemberData[]>();
-        var localFields = ComputeFieldsToGenerate(classSymbol);
-        var toBeGenerated = ConstructorsFor(classSymbol.BaseType)
-            .DefaultIfEmpty(Array.Empty<MemberData>())
-            .Select(i => i.Concat(localFields).ToArray())
-            .Where(i=>i.Length > 0);
-        return classSymbol.InstanceConstructors.Select(
-            i => i.Parameters.Select(j => new MemberData(j.Type.FullyQualifiedName(), j.Name))
-                .ToArray())
-            .Concat(toBeGenerated)
+        return ConstructorsExplicitlyDefinedOn(classSymbol)
+            .Concat(ConstructorsThatWillBeSynthesizedForClass(classSymbol))
             .ToList();
     }
+
+    private static IEnumerable<MemberData[]> ConstructorsExplicitlyDefinedOn(INamedTypeSymbol classSymbol) =>
+        classSymbol.InstanceConstructors.Select(
+            i => i.Parameters.Select(j => new MemberData(j.Type.FullyQualifiedName(), j.Name))
+                .ToArray());
+
+    private static IEnumerable<MemberData[]> ConstructorsThatWillBeSynthesizedForClass(INamedTypeSymbol classSymbol)
+    {
+        var localFields = ComputeFieldsToGenerate(classSymbol);
+        return ConstructorsFor(classSymbol.BaseType)
+            .DefaultIfEmpty(Array.Empty<MemberData>())
+            .Select(i => i.Concat(localFields).ToArray())
+            .Where(i => i.Length > 0);
+    }
 }
-#endif

@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices.ProductionGenerators.Constructors;
-using System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
+﻿using System.Runtime.CompilerServices.ProductionGenerators.StaticSingletons;
 using Melville.Generators.INPC.Test.UnitTests;
 using Melville.INPC;
 using Xunit;

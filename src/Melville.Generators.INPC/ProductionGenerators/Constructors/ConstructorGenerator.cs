@@ -1,27 +1,10 @@
 ﻿using System.Linq;
-using Melville.Generators.INPC.GenerationTools.AbstractGenerators;
-using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
-using Melville.Generators.INPC.ProductionGenerators.Constructors;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace System.Runtime.CompilerServices.ProductionGenerators.Constructors;
+namespace Melville.Generators.INPC.ProductionGenerators.Constructors;
 
-#if false
-[Generator]
-public class ConstructorGenerator : ClassWithLabeledMembersGenerator
-{
-    private static readonly SearchForAttribute attrFinder = new("Melville.INPC.FromConstructorAttribute");
-
-    public ConstructorGenerator() : base(attrFinder)
-    {
-    }
-
-    protected override ILabeledMembersSyntaxModel CreateMemberRecord(TypeDeclarationSyntax targetTypeDecl) =>
-        new ConstructorClassSyntaxModel(targetTypeDecl);
-}
-#else
 [Generator]
 public class ConstructorGenerator : IIncrementalGenerator
 {
@@ -48,7 +31,7 @@ public class ConstructorGenerator : IIncrementalGenerator
         var cw = new SourceProductionCodeWriter(codeTarget);
         using (cw.GenerateInClassFile(classToGenerate, "Constructors"))
         {
-            new ConstructorGenerator2(typeToGenerate, cw).Genarate();
+            new WriteConstructorsForSymbol(typeToGenerate, cw).Genarate();
         }
     }
 
@@ -56,7 +39,4 @@ public class ConstructorGenerator : IIncrementalGenerator
     {
         return j.TargetSymbol is ITypeSymbol sym ? sym : j.TargetSymbol.ContainingType;
     }
- 
 }
-
-#endif
