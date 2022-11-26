@@ -10,6 +10,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 public class RequestParser
 {
     private readonly SemanticModel semanticModel;
+    public MemberDeclarationSyntax TargetMemberSyntax { get; }
     public ITypeSymbol ParentSymbol { get; }
     public ITypeSymbol? Type { get; private set; }
     public string PropName { get; private set; } = "";
@@ -26,10 +27,12 @@ public class RequestParser
     public string DependencyPropName() => storedDependencyPropertyName?? (PropName + "Property");
     public string DefaultExpression() =>  customDefault??$"default({NullableTargetType()})";
         
-    public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol)
+    public RequestParser(SemanticModel semanticModel, ITypeSymbol parentSymbol, MemberDeclarationSyntax targetMemberSyntax)
     {
         this.semanticModel = semanticModel;
         ParentSymbol = parentSymbol;
+        TargetMemberSyntax = targetMemberSyntax;
+        ParseAttributeTarget();
     }
 
     #region Parameter and Attribute Parsing
@@ -108,11 +111,11 @@ public class RequestParser
         les.ToString().StartsWith("t");
         
 
-    #endregion        
-      
-    public void ParseAttributeTarget(MemberDeclarationSyntax targetMember)
+    #endregion
+
+    private void ParseAttributeTarget()
     {
-        switch (targetMember)
+        switch (TargetMemberSyntax)
         {
             case MethodDeclarationSyntax mds:
                 TryParseModifyMethod(mds);

@@ -53,7 +53,7 @@ public static class NotifyImplementationStrategyFactory
             .Concat(child.DeclaringSyntaxReferences);
 
     private static bool NeedsAutoINPCImplementation(SyntaxReference i) => 
-        GetDeclarationSyntax(i.GetSyntax()) is { } mds && attrFinder.HasAttribute(mds);
+        GetDeclarationSyntax(i.GetSyntax()) is { } mds  && attrFinder.HasAttribute(mds);
 
     private static MemberDeclarationSyntax? GetDeclarationSyntax(SyntaxNode node) =>
         node.AncestorsAndSelf().OfType<MemberDeclarationSyntax>().FirstOrDefault();

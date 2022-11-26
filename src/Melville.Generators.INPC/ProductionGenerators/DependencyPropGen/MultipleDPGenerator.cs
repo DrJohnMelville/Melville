@@ -34,7 +34,7 @@ public readonly struct GenerateMultipleDependencyPropertes
     }
 
     private void GenerateSingleDependencyProperty(AttributeSyntax attribute)
-    { 
+    {
         if (ParseAttribute(attribute) is { } parser &&
             EnsureValidAttribute(attribute, parser))
         {
@@ -44,8 +44,7 @@ public readonly struct GenerateMultipleDependencyPropertes
 
     private RequestParser ParseAttribute(AttributeSyntax attribute)
     {
-        var parser = new RequestParser(semanticModel, parentSymbol);
-        parser.ParseAttributeTarget(target);
+        var parser = new RequestParser(semanticModel, parentSymbol, target);
         // we parse the target before the parameters, because the parameters override the conventions.
         parser.ParseAllParams(attribute.ArgumentList);
         return parser;

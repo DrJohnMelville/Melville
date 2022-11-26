@@ -5,9 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.GenerationTools.AstUtilities;
 
-public class SearchForAttribute
+public readonly struct SearchForAttribute
 {
-    private string qualifiedAttributeName;
+    private readonly string qualifiedAttributeName;
 
     public SearchForAttribute(string qualifiedAttributeName)
     {
@@ -20,10 +20,10 @@ public class SearchForAttribute
 
     public IEnumerable<AttributeSyntax> FindAllAttributes(MemberDeclarationSyntax node)
     {
-        return FindSymbbolAttributes(node).Where(IsRequestedAttribute);
+        return FindSyntaxAttributes(node).Where(IsRequestedAttribute);
     }
 
-    private static IEnumerable<AttributeSyntax> FindSymbbolAttributes(MemberDeclarationSyntax node) =>
+    private static IEnumerable<AttributeSyntax> FindSyntaxAttributes(MemberDeclarationSyntax node) =>
         node.AttributeLists.SelectMany(i => i.Attributes);
 
     private bool IsRequestedAttribute(AttributeSyntax arg) => 
