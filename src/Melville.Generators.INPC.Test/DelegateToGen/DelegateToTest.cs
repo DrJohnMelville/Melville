@@ -138,7 +138,8 @@ public class DelegateToTest
     [Fact]
     public void PropogatePropertyToMethod()
     {
-        var res = RunTest("[DelegateTo] [method: Prop1] private IChildInterface Field;", "int ChildPropp{get;}");
-        res.LastFile().AssertContainsIgnoreWhiteSpace(@"[Prop1] public void ChildMethod");
+        var res = RunTest("[DelegateTo] [method: MethAttr][property: PropAttr] private IChildInterface Field;", "int ChildProp{get;}");
+        res.LastFile().AssertContainsIgnoreWhiteSpace(@"[MethAttr] public void ChildMethod");
+        res.LastFile().AssertContainsIgnoreWhiteSpace(@"[PropAttr] public int ChildProp {");
     }
 }

@@ -16,28 +16,28 @@ public readonly struct DelegationRequestParser
     public IDelegatedMethodGenerator ParseFromMethod(IMethodSymbol symbol, SyntaxNode location) =>
         IsValidDelegatingMethod(symbol)
             ? Create(symbol.ReturnType, $"this.{symbol.Name}()", 
-                symbol.ContainingType)
+                symbol)
             : new InvalidTargetMethodGenerator(location);
 
     private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
         symbol.Parameters.Length == 0 && !symbol.ReturnsVoid;
     
     public IDelegatedMethodGenerator ParseFromProperty(IPropertySymbol ps) =>
-        Create(ps.Type, $"this.{ps.Name}", ps.ContainingType);
+        Create(ps.Type, $"this.{ps.Name}", ps);
 
     public IDelegatedMethodGenerator ParseFromField(IFieldSymbol symbol) => 
-        Create(symbol.Type, $"this.{symbol.Name}", symbol.ContainingType);
+        Create(symbol.Type, $"this.{symbol.Name}", symbol);
 
     private IDelegatedMethodGenerator Create(
-        ITypeSymbol targetType, string methodPrefix, ITypeSymbol parent) =>
+        ITypeSymbol targetType, string methodPrefix, ISymbol target) =>
         (targetType.TypeKind, useExplicit) switch
         {
             (TypeKind.Interface, true) =>
                 new ExplicitMethodGenerator(targetType, methodPrefix,
-                    targetType.FullyQualifiedName() + ".", parent),
-            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, parent),
-            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, parent),
+                    targetType.FullyQualifiedName() + ".", target),
+            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, target),
+            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, target),
             _ => new InvalidParentMethodGenerator(targetType,
-                parent.DeclaringSyntaxReferences.First().GetSyntax())
+                target.DeclaringSyntaxReferences.First().GetSyntax())
         };
 }

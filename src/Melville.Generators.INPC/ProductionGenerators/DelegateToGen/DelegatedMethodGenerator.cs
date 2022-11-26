@@ -17,18 +17,20 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 {
     protected readonly ITypeSymbol TargetType;
     private readonly string methodPrefix;
-    protected readonly ITypeSymbol ParentSymbol;
+    private readonly ISymbol targetSymbol;
+
+    protected ITypeSymbol ParentSymbol => targetSymbol.ContainingType;
 
     protected abstract string MemberDeclarationPrefix();
     protected virtual string MemberNamePrefix() => "";
     protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded();
 
     protected DelegatedMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, ITypeSymbol parentSymbol)
+        ITypeSymbol targetType, string methodPrefix, ISymbol targetSymbol)
     {
         this.TargetType = targetType;
         this.methodPrefix = methodPrefix;
-        this.ParentSymbol = parentSymbol;
+        this.targetSymbol = targetSymbol;
     }
 
     public string InheritFrom() => TargetType.FullyQualifiedName();
@@ -80,14 +82,19 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
     {
+        CopyTargetMemberAttributes(cw, "property");
         MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this");
         ParameterList(cw, ps.Parameters, RenderParameter, "[", "]");
         cw.AppendLine();
         PropertyBlock(ps, cw, $"[{string.Join(", ", ps.Parameters.Select(i => i.Name))}]");
     }
 
+    private void CopyTargetMemberAttributes(CodeWriter cw, string kind) => 
+        new AttributeCopier(cw, kind).CopyAttributesFrom(targetSymbol.DeclaringSyntaxReferences);
+
     private void GenerateProperty(IPropertySymbol ps, CodeWriter cw)
     {
+        CopyTargetMemberAttributes(cw, "property");
         MemberPrefix(cw, ps.Type.FullyQualifiedName(), ps.Name);
         cw.AppendLine();
         PropertyBlock(ps, cw, "." + ps.Name);
@@ -112,6 +119,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void GenerateEvent(IEventSymbol es, CodeWriter cw)
     {
+        CopyTargetMemberAttributes(cw, "event");
         MemberPrefix(cw, "event " + es.Type.FullyQualifiedName(), es.Name);
         cw.AppendLine();
         using (cw.CurlyBlock())
@@ -136,6 +144,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void GenerateMethod(IMethodSymbol ms, CodeWriter cw)
     {
+        CopyTargetMemberAttributes(cw, "method");
         MemberPrefix(cw, ms.ReturnType.FullyQualifiedName(), ms.Name);
         AppendTypeParamList(cw, ms.TypeParameters);
         ParameterList(cw, ms.Parameters, RenderParameter, "(", ")");
