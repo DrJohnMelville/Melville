@@ -5,19 +5,25 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.ProductionGenerators.INPC.CodeGen;
+namespace Melville.Generators.INPC.ProductionGenerators.INPC;
 
-public class PropertyDependencyChecker
+public readonly struct PropertyDependencyGraphFactory
 {
-    private readonly Dictionary<string, HashSet<string>> mappings = new();
+    private readonly Dictionary<string, HashSet<string>> isReferencedBy = new();
 
-    public void AddClass(ITypeSymbol classDecl)
+    public PropertyDependencyGraphFactory()
+    {
+    }
+
+    public PropertyDependencyGraph CreateFromClass(ITypeSymbol classDecl)
     {
         foreach (var member in classDecl.GetMembers())
         {
             if (member is IPropertySymbol propSymbol)
                 AddProperty(propSymbol.DeclaringSyntaxReferences);
-        }    
+        }
+
+        return new(isReferencedBy);
     }
 
     private void AddProperty(ImmutableArray<SyntaxReference> declarations)
@@ -47,10 +53,9 @@ public class PropertyDependencyChecker
 
     private void AddPropertyBody(SyntaxNode node, string targetPropertyName)
     {
-        foreach (var invocation in node.DescendantNodes().Where(
-                     i=> i is IdentifierNameSyntax ))
+        foreach (var implementationNode in node.DescendantNodes())
         {
-            if (!ValidInvocation(invocation)) continue;
+            if (!(implementationNode is IdentifierNameSyntax invocation && ValidInvocation(invocation))) continue;
             AddMapping(targetPropertyName, invocation.ToString());
         }
     }
@@ -74,30 +79,9 @@ public class PropertyDependencyChecker
 
     private HashSet<string> GetCollection(string invocation)
     {
-        if (mappings.TryGetValue(invocation, out var item)) return item;
+        if (isReferencedBy.TryGetValue(invocation, out var item)) return item;
         var ret = new HashSet<string>();
-        mappings.Add(invocation, ret);
+        isReferencedBy.Add(invocation, ret);
         return ret;
-    }
-
-    public IEnumerable<string> AllDependantProperties(string initialProperty)
-    {
-        var candidates = new Stack<string>();
-        var outputItems = new HashSet<string>();
-        candidates.Push(initialProperty);
-        while (candidates.Any())
-        {
-            var item = candidates.Pop();
-            if (outputItems.Contains(item)) continue;
-            outputItems.Add(item);
-            yield return item;
-            if (mappings.TryGetValue(item, out var mappedProperties))
-            {
-                foreach (var prop in mappedProperties)
-                {
-                    candidates.Push(prop);
-                }
-            }
-        }
     }
 }

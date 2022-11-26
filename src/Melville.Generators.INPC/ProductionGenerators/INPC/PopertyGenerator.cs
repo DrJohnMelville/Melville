@@ -1,12 +1,11 @@
 ﻿using System;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
-using Melville.Generators.INPC.ProductionGenerators.INPC.CodeGen;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.INPC;
 
-public readonly struct FieldBlockGenerator
+public readonly struct PopertyGenerator
 {
     private readonly CodeWriter target;
     private readonly IFieldSymbol field;
@@ -14,10 +13,10 @@ public readonly struct FieldBlockGenerator
     private readonly string propertyName;
     private readonly string changeFuncName;
     public readonly INotifyImplementationStategy notifyStrategy;
-    private readonly PropertyDependencyChecker dependencies;
+    private readonly PropertyDependencyGraph dependencies;
 
-    public FieldBlockGenerator(CodeWriter target, IFieldSymbol field, ITypeSymbol parentClass,
-        INotifyImplementationStategy notifyStrategy, PropertyDependencyChecker dependencies)
+    public PopertyGenerator(CodeWriter target, IFieldSymbol field, ITypeSymbol parentClass,
+        INotifyImplementationStategy notifyStrategy, PropertyDependencyGraph dependencies)
     {
         this.target = target;
         this.field = field;

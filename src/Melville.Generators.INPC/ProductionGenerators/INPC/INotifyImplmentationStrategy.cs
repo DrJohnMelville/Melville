@@ -1,7 +1,7 @@
 ﻿
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 
-namespace Melville.Generators.INPC.ProductionGenerators.INPC.CodeGen;
+namespace Melville.Generators.INPC.ProductionGenerators.INPC;
 
 public interface INotifyImplementationStategy
 {

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
-using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Melville.Generators.INPC.ProductionGenerators.INPC.CodeGen;
+namespace Melville.Generators.INPC.ProductionGenerators.INPC;
 
-public static class InpcClassGeneratorFactory
+public static class NotifyImplementationStrategyFactory
 {
-    [Obsolete]
-    public static InpcClassGenerator CreateGenerator(InpcSemanticModel target, CodeWriter context) => 
-        new(target, StrategyForClass(target.TypeInfo), context);
-
     public static INotifyImplementationStategy StrategyForClass(ITypeSymbol target)
     {
         if (HasOnPropertyChangedMethod(target)) return new HasMethodStrategy();

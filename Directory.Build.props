@@ -9,5 +9,6 @@
         <Nullable>enable</Nullable>
         <LangVersion>11.0</LangVersion>
         <AnalysisLevel>latest</AnalysisLevel>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     </PropertyGroup>
 </Project>
