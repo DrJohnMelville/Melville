@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Xunit;
 
@@ -20,4 +21,13 @@ public readonly struct FileAsserts
     public void AssertNotEqual(string content) => Assert.NotEqual(content, Text());
     public void AssertRegex(Regex regex) => Assert.Matches(regex, Text());
     public void AssertRegex(string regex) => Assert.Matches(regex, Text());
+
+    public void AssertContainsIgnoreWhiteSpace(string snippet)
+    {
+        if (!StripWhitespace(Text()).Contains(StripWhitespace(snippet)))
+            AssertContains(snippet);
+    }
+
+    private string StripWhitespace(string s) => WhitespaceDetector.Replace(s, "");
+    private static Regex WhitespaceDetector = new Regex(@"\s", RegexOptions.Compiled);
 }

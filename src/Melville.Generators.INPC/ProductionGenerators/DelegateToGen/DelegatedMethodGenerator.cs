@@ -52,7 +52,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void GenerateForwardingMember(CodeWriter cw, ISymbol member)
     {
-        RenderAttributes(cw, member.GetAttributes());
+        CopyInheritedMemberAttributes(cw, member);
         switch (member)
         {
             case IPropertySymbol { IsIndexer: true } ps:
@@ -73,22 +73,9 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         }
     }
 
-    private void RenderAttributes(CodeWriter cw, ImmutableArray<AttributeData> attributes)
+    private void CopyInheritedMemberAttributes(CodeWriter cw, ISymbol member)
     {
-        foreach (var attribute in attributes)
-        {
-            var text = attribute.ToString();
-            if (!IsInternalCompilerAttribute(text)) RenderSingleAttribute(cw, text);
-        }
-    }
-
-    private static bool IsInternalCompilerAttribute(string text) => text.StartsWith("System.Runtime.CompilerServices");
-
-    private static void RenderSingleAttribute(CodeWriter cw, string text)
-    {
-        cw.Append("[");
-        cw.Append(text);
-        cw.Append("] ");
+        new AttributeCopier(cw, "").CopyAttributesFrom(member.DeclaringSyntaxReferences);
     }
 
     private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
@@ -169,7 +156,8 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
     private void RenderParameter(CodeWriter cw, IParameterSymbol i)
     {
-        RenderAttributes(cw, i.GetAttributes());
+        new AttributeCopier(cw,"", AttributeWriterStrategy.MultiplePerLine)
+            .CopyAttributesFrom(i.DeclaringSyntaxReferences);
         cw.Append(HandleRefKind(i.RefKind));
         cw.Append(i.Type.FullyQualifiedName());
         cw.Append(" ");

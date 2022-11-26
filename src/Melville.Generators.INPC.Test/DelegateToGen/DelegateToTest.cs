@@ -53,8 +53,7 @@ public class DelegateToTest
     }
     [Theory]
     [InlineData("int A {get;}", "public int A")]
-    [InlineData("[System.Obsolete( \"xxyy\")] int A {get;}", "[System.ObsoleteAttribute(\"xxyy\")] public int A")]
-    [InlineData("[System.Obsolete( \"xxyy\")][System.Runtime.CompilerServices.NullableContext(2] int A {get;}", "[System.ObsoleteAttribute(\"xxyy\")] public int A")]
+    [InlineData("[System.Obsolete( \"xxyy\")] int A {get;}", "[System.Obsolete(\"xxyy\")] public int A")]
     [InlineData("int A {get;}", "get => this.Field.A;")]
     [InlineData("int A {get;set;}", "get => this.Field.A;")]
     [InlineData("int A {get;set;}", "set => this.Field.A = value;")]
@@ -67,7 +66,7 @@ public class DelegateToTest
     [InlineData("int A(int a);", "public int A(int a) => this.Field.A(a);")]
     [InlineData("int A(int a = 1);", "public int A(int a = 1) => this.Field.A(a);")]
     [InlineData("int A(string? a = null);", "public int A(string? a = default) => this.Field.A(a);")]
-    [InlineData("int A([System.Obsolete(\"xxx\")] out string? a);", "public int A([System.ObsoleteAttribute(\"xxx\")] out string? a) => this.Field.A(out a);")]
+    [InlineData("int A([System.Obsolete(\"xxx\")] out string? a);", "public int A([System.Obsolete(\"xxx\")] out string? a) => this.Field.A(out a);")]
     [InlineData("int A(bool a = true);", "public int A(bool a = true) => this.Field.A(a);")]
     [InlineData("int A(bool a = false);", "public int A(bool a = false) => this.Field.A(a);")]
     [InlineData("int A(int a, string b);", "public int A(int a, string b) => this.Field.A(a, b);")]
@@ -85,7 +84,7 @@ public class DelegateToTest
     public void ImplementsMembers(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContainsIgnoreWhiteSpace(output);
     }
     
     [Theory]
@@ -95,7 +94,7 @@ public class DelegateToTest
     [InlineData("int A(int a);", "int Outer.IInterface.A(int a) => this.Field.A(a);")]
     [InlineData("int A(int a = 1);", "int Outer.IInterface.A(int a = 1) => this.Field.A(a);")]
     [InlineData("int A(string? a = null);", "int Outer.IInterface.A(string? a = default) => this.Field.A(a);")]
-    [InlineData("int A([System.Obsolete(\"xxx\")] out string? a);", "int Outer.IInterface.A([System.ObsoleteAttribute(\"xxx\")] out string? a) => this.Field.A(out a);")]
+    [InlineData("int A([System.Obsolete(\"xxx\")] out string? a);", "int Outer.IInterface.A([System.Obsolete(\"xxx\")] out string? a) => this.Field.A(out a);")]
     [InlineData("int A(bool a = true);", "int Outer.IInterface.A(bool a = true) => this.Field.A(a);")]
     [InlineData("int A(bool a = false);", "int Outer.IInterface.A(bool a = false) => this.Field.A(a);")]
     [InlineData("int A(int a, string b);", "int Outer.IInterface.A(int a, string b) => this.Field.A(a, b);")]
@@ -140,6 +139,6 @@ public class DelegateToTest
     public void PropogatePropertyToMethod()
     {
         var res = RunTest("[DelegateTo] [method: Prop1] private IChildInterface Field;", "int ChildPropp{get;}");
-        res.LastFile().AssertRegex(@"\[Prop1\]\s*public void ChildMethod");
+        res.LastFile().AssertContainsIgnoreWhiteSpace(@"[Prop1] public void ChildMethod");
     }
 }

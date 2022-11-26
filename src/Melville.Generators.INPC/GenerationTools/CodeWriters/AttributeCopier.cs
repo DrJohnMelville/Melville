@@ -10,17 +10,37 @@ public readonly struct AttributeCopier
 {
     private readonly CodeWriter cw;
     private readonly string attributePrefix;
+    private readonly AttributeWriterStrategy writerStrategy;
 
-    public AttributeCopier(CodeWriter cw, string attributePrefix)
+    public AttributeCopier(CodeWriter cw, string attributePrefix) : this(cw, attributePrefix,
+        AttributeWriterStrategy.OnePerLine)
+    {
+    }
+
+    public AttributeCopier(CodeWriter cw, string attributePrefix, AttributeWriterStrategy writerStrategy)
     {
         this.cw = cw;
         this.attributePrefix = attributePrefix;
+        this.writerStrategy = writerStrategy;
     }
 
-    public void CopyAttributesFrom(SyntaxNode sym)
+    public void CopyAttributesFrom(IEnumerable<SyntaxReference> referemces)
     {
-        if (sym.AncestorsAndSelf().OfType<MemberDeclarationSyntax>().FirstOrDefault() is {} mds)
-            CopyAttributesFrom(mds);
+        foreach (var reference in referemces)
+        {
+            CopyAttributesFrom(reference.GetSyntax());
+        }
+    }
+
+    public void CopyAttributesFrom(SyntaxNode? sym)
+    {
+        switch (sym)
+        {
+            case null: return;
+            case MemberDeclarationSyntax mds: CopyAttributesFrom(mds.AttributeLists); break;
+            case ParameterSyntax ps: CopyAttributesFrom(ps.AttributeLists); break;
+            default: CopyAttributesFrom(sym.Parent); break;
+        }
     }
 
     public void CopyAttributesFrom(MemberDeclarationSyntax mds)
@@ -35,17 +55,13 @@ public readonly struct AttributeCopier
             if (!IsDesiredAttributeTarget(attributeListSyntax)) continue;
             foreach (var attributeSyntax in attributeListSyntax.Attributes)
             {
-                TryCopyAttributeFrom(attributeSyntax);
+                writerStrategy.RenderAttribute(cw, attributeSyntax);
             }
         }
     }
 
     private bool IsDesiredAttributeTarget(AttributeListSyntax attributeListSyntax) =>
+        attributePrefix.Length == 0 ||
         attributePrefix.Equals(
             attributeListSyntax.Target?.Identifier.ValueText, StringComparison.Ordinal);
-
-    private void TryCopyAttributeFrom(AttributeSyntax attributeSyntax)
-    {
-        cw.AppendLine($"[{attributeSyntax}]");
-    }
 }
