@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,6 +10,24 @@ namespace Melville.Generators.INPC.ProductionGenerators.INPC.CodeGen;
 public class PropertyDependencyChecker
 {
     private readonly Dictionary<string, HashSet<string>> mappings = new();
+
+    public void AddClass(ITypeSymbol classDecl)
+    {
+        foreach (var member in classDecl.GetMembers())
+        {
+            if (member is IPropertySymbol propSymbol)
+                AddProperty(propSymbol.DeclaringSyntaxReferences);
+        }    
+    }
+
+    private void AddProperty(ImmutableArray<SyntaxReference> declarations)
+    {
+        foreach (var declaration in declarations)
+        {
+            if (declaration.GetSyntax() is PropertyDeclarationSyntax pds)
+                AddProperty(pds);
+        }
+    }
 
     public void AddProperty(PropertyDeclarationSyntax property)
     {

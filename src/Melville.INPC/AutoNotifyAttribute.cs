@@ -16,6 +16,5 @@ namespace Melville.INPC
         Inherited = false, AllowMultiple = false)]
     public sealed class AutoNotifyAttribute : Attribute
     {
-        public string Attributes { get; set; } = "";
     }
 }

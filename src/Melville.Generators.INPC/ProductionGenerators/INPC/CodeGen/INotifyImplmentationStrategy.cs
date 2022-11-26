@@ -9,6 +9,16 @@ public interface INotifyImplementationStategy
     void DeclareMethod(CodeWriter cw);
     void PropertyChangeCallPrefix(CodeWriter cw);
 }
+
+public static class NotifyImplementationStrategyOperations
+{
+    public static void RenderPropertyNotification(
+        this INotifyImplementationStategy notifier, CodeWriter cw, string propertyName)
+    {
+        notifier.PropertyChangeCallPrefix(cw);
+        cw.AppendLine($"""OnPropertyChanged("{propertyName}");""");
+    }
+}
     
 public sealed class HasMethodStrategy: INotifyImplementationStategy
 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
@@ -9,11 +10,11 @@ namespace Melville.Generators.INPC.ProductionGenerators.INPC.CodeGen;
 
 public static class InpcClassGeneratorFactory
 {
-
+    [Obsolete]
     public static InpcClassGenerator CreateGenerator(InpcSemanticModel target, CodeWriter context) => 
         new(target, StrategyForClass(target.TypeInfo), context);
 
-    private static INotifyImplementationStategy StrategyForClass(INamedTypeSymbol target)
+    public static INotifyImplementationStategy StrategyForClass(ITypeSymbol target)
     {
         if (HasOnPropertyChangedMethod(target)) return new HasMethodStrategy();
         if (CompatibleExplicitInterfaceDeclaration(target.BaseType) is {} baseName)
@@ -21,7 +22,7 @@ public static class InpcClassGeneratorFactory
         return DeclareOrUseNotificationInterface(target);
     }
 
-    private static INotifyImplementationStategy DeclareOrUseNotificationInterface(INamedTypeSymbol target)
+    private static INotifyImplementationStategy DeclareOrUseNotificationInterface(ITypeSymbol target)
     {
         var generatedRoot = MostGeneralAncestorThatWillBeGenerated(target) ?? target;
         var intName = ExplicitlyDeclaredInterfaceName(generatedRoot)??
@@ -31,28 +32,28 @@ public static class InpcClassGeneratorFactory
             : new UseInterfaceStrategy(intName);
     }
 
-    private static string? ExplicitlyDeclaredInterfaceName(INamedTypeSymbol generatedRoot) => 
+    private static string? ExplicitlyDeclaredInterfaceName(ITypeSymbol generatedRoot) => 
         CompatibleExplicitInterfaceDeclaration(generatedRoot)?.FullyQualifiedName();
 
-    private static bool NeedToImplementINPC(INamedTypeSymbol target, INamedTypeSymbol generatedRoot, 
+    private static bool NeedToImplementINPC(ITypeSymbol target, ITypeSymbol generatedRoot, 
         string intName) =>
         SymbolEqualityComparer.Default.Equals(generatedRoot, target)
         && MemberIsMissing(generatedRoot, intName + ".OnPropertyChanged");
 
-    private static bool MemberIsMissing(INamedTypeSymbol generatedRoot, string methodName) =>
+    private static bool MemberIsMissing(ITypeSymbol generatedRoot, string methodName) =>
         !generatedRoot.HasMethod(null,methodName, typeof(string));
        
-    private static INamedTypeSymbol? MostGeneralAncestorThatWillBeGenerated(INamedTypeSymbol? child)
+    private static ITypeSymbol? MostGeneralAncestorThatWillBeGenerated(ITypeSymbol? child)
     {
         if (child == null) return null;
         return MostGeneralAncestorThatWillBeGenerated(child.BaseType) ??
                (RequiresInpcGeneration(child) ? child : null);
     }
 
-    private static bool RequiresInpcGeneration(INamedTypeSymbol child) =>
+    private static bool RequiresInpcGeneration(ITypeSymbol child) =>
         TypeAndAllItsMembers(child).Any(NeedsAutoINPCImplementation);
 
-    private static IEnumerable<SyntaxReference> TypeAndAllItsMembers(INamedTypeSymbol child) =>
+    private static IEnumerable<SyntaxReference> TypeAndAllItsMembers(ITypeSymbol child) =>
         child.GetMembers()
             .SelectMany(i => i.DeclaringSyntaxReferences)
             .Concat(child.DeclaringSyntaxReferences);
@@ -65,11 +66,11 @@ public static class InpcClassGeneratorFactory
 
     private static readonly SearchForAttribute attrFinder = new("Melville.INPC.AutoNotifyAttribute");
 
-    private static INamedTypeSymbol? CompatibleExplicitInterfaceDeclaration(INamedTypeSymbol? target) => 
+    private static ITypeSymbol? CompatibleExplicitInterfaceDeclaration(ITypeSymbol? target) => 
         target?.Interfaces
             .Where(HasOnPropertyChangedMethod)
             .FirstOrDefault();
 
-    private static bool HasOnPropertyChangedMethod(INamedTypeSymbol target) => 
+    private static bool HasOnPropertyChangedMethod(ITypeSymbol target) => 
         target.HasMethod(null, "OnPropertyChanged", typeof(string));
 }

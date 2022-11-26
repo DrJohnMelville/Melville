@@ -22,10 +22,12 @@ public class SourceProductionCodeWriter: CodeWriter
     public override void ReportDiagnostic(Diagnostic diagnostic) =>
         context.ReportDiagnostic(diagnostic);
 
-    public SourceProductionCodeOperation GenerateInClassFile(ISymbol symbol, string prefix) =>
-        GenerateInClassFile(symbol.DeclaringSyntaxReferences[0].GetSyntax(), prefix);
-    public SourceProductionCodeOperation GenerateInClassFile(SyntaxNode node, string prefix) =>
-        new SourceProductionCodeOperation(this, node, prefix);
+    public SourceProductionCodeOperation GenerateInClassFile(
+        ISymbol symbol, string prefix, string baseDeclaration = "") =>
+        GenerateInClassFile(symbol.DeclaringSyntaxReferences[0].GetSyntax(), prefix, baseDeclaration);
+    public SourceProductionCodeOperation GenerateInClassFile(
+        SyntaxNode node, string prefix, string baseDeclaration = "") =>
+        new SourceProductionCodeOperation(this, node, prefix, baseDeclaration);
 }
 
 public readonly struct SourceProductionCodeOperation : IDisposable
@@ -35,12 +37,13 @@ public readonly struct SourceProductionCodeOperation : IDisposable
     private readonly SyntaxNode node;
     private readonly string prefix;
 
-    public SourceProductionCodeOperation(SourceProductionCodeWriter writer, SyntaxNode node, string prefix)
+    public SourceProductionCodeOperation(
+        SourceProductionCodeWriter writer, SyntaxNode node, string prefix, string baseDeclaration = "")
     {
         this.writer = writer;
         this.node = node;
         this.prefix = prefix;
-        closeCodeBlocks = WriteCodeNear.Symbol(node, writer);
+        closeCodeBlocks = WriteCodeNear.Symbol(node, writer, baseDeclaration);
     }
 
     public void Dispose()

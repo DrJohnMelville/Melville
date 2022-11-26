@@ -11,7 +11,6 @@ public class ImplementNotifyTest
     {
         public sealed class AutoNotifyAttribute : Attribute
         {
-            public string Attributes { get; set; } = "";
         }
     }
     """;
@@ -249,35 +248,34 @@ using Melville.INPC;
     public void Generate()
     {
         var tb = new GeneratorTestBed(new INPCGenerator(),
-            @"
-using Melville.INPC;
-  public partial class C
-  { 
-    [AutoNotify] private int ip2;
-  }
-" + AttrDecl);
-        tb.AssertNoDiagnostics();
-        tb.FileEqual("INPC.C.cs",
-            @"#nullable enable
-using Melville.INPC;
-public partial class C: Melville.INPC.IExternalNotifyPropertyChanged 
-{
-    public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
-    void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)
-    {
-        this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-    }
-    public int Ip2
-    {
-        get => this.ip2;
-        set
-        {
-            this.ip2 = value;
-            ((Melville.INPC.IExternalNotifyPropertyChanged)this).OnPropertyChanged(""Ip2"");
-        }
-    }
-}
-");
+            """
+            using Melville.INPC;
+              public partial class C
+              { 
+                [AutoNotify] private int ip2;
+              }
+            " + AttrDecl);
+                    tb.AssertNoDiagnostics();
+                    tb.FileEqual("INPC.C.cs",
+                        @"using Melville.INPC;
+            public partial class C: Melville.INPC.IExternalNotifyPropertyChanged 
+            {
+                public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+                void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)
+                {
+                    this.PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                }
+                public int Ip2
+                {
+                    get => this.ip2;
+                    set
+                    {
+                        this.ip2 = value;
+                        ((Melville.INPC.IExternalNotifyPropertyChanged)this).OnPropertyChanged(""Ip2"");
+                    }
+                }
+            }
+            """);
     }
 
     [Theory]
@@ -286,7 +284,7 @@ public partial class C: Melville.INPC.IExternalNotifyPropertyChanged
     [InlineData("private void OnIpChanged(int old, int newVal){}",
         "this.OnIpChanged(this.ip, this.ip = value);", "this.ip = value;")]
     [InlineData("private void OnIpChanged(int newVal){}", 
-        "this.OnIpChanged(this.ip = value);", "this.ip = value;")]
+        "this.OnIpChanged(this.ip);", "xxxx;")]
     [InlineData("private void OnIpChanged(){}", "this.ip = value;", "gbjojh")]
     [InlineData("private void OnIpChanged(){}", "this.OnIpChanged();", "gbjojh")]
     [InlineData(" ", "this.ip = value;", "this.OnIpChanged();")]
@@ -330,13 +328,15 @@ namespace NM
         var tb = new GeneratorTestBed(new INPCGenerator(),
             @"
 using Melville.INPC;
-namespace NM.A.B;
+namespace NM.A.B
+{
 public class C
 { 
   [AutoNotify] private int ip;
+}
 }"+AttrDecl);
-        tb.FileDoesNotContain("INPC.NM.A.B.C.cs", "namespace NM.A.B\r\n{");
-        tb.FileContains("INPC.NM.A.B.C.cs", "namespace NM.A.B;");
+        tb.FileContains("INPC.NM.A.B.C.cs", "namespace NM.A.B\r\n{");
+        tb.FileDoesNotContain("INPC.NM.A.B.C.cs", "namespace NM.A.B;");
             
     }
 
@@ -487,12 +487,17 @@ namespace NM
     public void IncludeAttribute()
     {
         var tb = new GeneratorTestBed(new INPCGenerator(),
-            @"using Melville.INPC;
-  using System.Collections.Generic;
-  public partial class C
-  {
-    [AutoNotify(Attributes=""[NewProp(1)]"")]private int integer;
-  }"+AttrDecl);
+          """
+          using Melville.INPC;
+          using System.Collections.Generic;
+          public class NewPropAttribute:System.Attribute {public NewPropAttribute(int i){}}
+          public partial class C
+          {
+            [AutoNotify]
+            [property:NewProp(1)]
+            private int integer;
+          }
+          """+AttrDecl);
         tb.AssertNoDiagnostics();
         tb.FileContains("INPC.C.cs", "[NewProp(1)]\r\n    public int Integer");
         tb.FileDoesNotContain("INPC.C.cs", "[AutoNotify]");

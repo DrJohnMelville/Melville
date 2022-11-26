@@ -48,7 +48,6 @@ public readonly struct InpcPropertyGenerator
     }
 
     private static readonly Regex propertyNameRegex = new("_*(.)(.*)");
-
     private static string ComputePropertyName(string fieldName)
     {
         var match = propertyNameRegex.Match(fieldName);
