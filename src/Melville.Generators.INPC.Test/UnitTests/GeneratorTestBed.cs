@@ -56,46 +56,14 @@ public class GeneratorTestBed
         return compilation;
     }
 
-    public void AssertNoDiagnostics()
-    {
-        Assert.Empty(diagnostics);
-    }
+    public void AssertNoDiagnostics() => Assert.Empty(diagnostics);
 
-    public void AssertDiagnosticCount(int expetedDiagnostics)
-    {
+    public void AssertDiagnosticCount(int expetedDiagnostics) => 
         Assert.Equal(expetedDiagnostics, diagnostics.Length);
-            
-    }
 
-    private SyntaxTree TreeFromName(string fileName) => 
-        compilation.SyntaxTrees.First(i => i.FilePath.Contains(fileName));
-
-    public void FileContains(string fileName, string fileContent)
-    {
-        Assert.Contains(fileContent, TreeFromName(fileName).ToString());
-            
-    }
-    public void FileDoesNotContain(string fileName, string fileContent)
-    {
-        Assert.DoesNotContain(fileContent, TreeFromName(fileName).ToString());
-            
-    }
-    public void LastFileContains(string fileContent)
-    {
-        Assert.Contains(fileContent, compilation.SyntaxTrees.Last().ToString());
-            
-    }
-    public void LastFileDoesNotContain(string fileContent)
-    {
-        Assert.DoesNotContain(fileContent,  compilation.SyntaxTrees.Last().ToString());
-            
-    }
-
-    public void FileEqual(string fileName, string fileContent)
-    {
-        Assert.Equal(fileContent, TreeFromName(fileName).ToString());
-            
-    }
+    public FileAsserts FromName(string fileName) => 
+        new(compilation.SyntaxTrees.First(i => i.FilePath.Contains(fileName)));
+    public FileAsserts LastFile() => new(compilation.SyntaxTrees.Last());
 
     public void NoSuchFile(string fileName)
     {

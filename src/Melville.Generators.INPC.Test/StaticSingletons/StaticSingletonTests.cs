@@ -33,14 +33,14 @@ public class StaticSingletonTests
     public void GenerateSingleton()
     {
         var tb = RunTestWithDeclaredAttr("[StaticSingleton] public partial class X {}");
-        tb.LastFileContains("private X() {}");
-        tb.LastFileContains("public static readonly Outer.X Instance = new();");
+        tb.LastFile().AssertContains("private X() {}");
+        tb.LastFile().AssertContains("public static readonly Outer.X Instance = new();");
     }
     [Fact]
     public void GenerateSingletonWithName()
     {
         var tb = RunTestWithDeclaredAttr("[StaticSingleton(\"FooBar\")] public partial class X {}");
-        tb.LastFileContains("private X() {}");
-        tb.LastFileContains("public static readonly Outer.X FooBar = new();");
+        tb.LastFile().AssertContains("private X() {}");
+        tb.LastFile().AssertContains("public static readonly Outer.X FooBar = new();");
     }
 }

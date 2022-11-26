@@ -38,8 +38,8 @@ public class DelegateToTest
     public void InheritFromDelegatedInterface(string member, string methodCall)
     {
         var res = RunTest("[DelegateTo] "+member, @"int A();");
-        res.LastFileContains( "public partial class C");            
-        res.LastFileContains( methodCall);            
+        res.LastFile().AssertContains("public partial class C");            
+        res.LastFile().AssertContains(methodCall);            
     }
 
     [Theory]
@@ -49,7 +49,7 @@ public class DelegateToTest
     public void DelegationPrefixes(string targetMember, string output)
     {
         var res = RunTest(targetMember, "int A {get;}");
-        res.LastFileContains(output);
+        res.LastFile().AssertContains(output);
     }
     [Theory]
     [InlineData("int A {get;}", "public int A")]
@@ -85,8 +85,7 @@ public class DelegateToTest
     public void ImplementsMembers(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
-            output);
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
     }
     
     [Theory]
@@ -107,8 +106,7 @@ public class DelegateToTest
     public void ExplicitImplementation(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo(true)] private IInterface Field; ", intMember);
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs",
-            output);
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
     }
 
 
@@ -117,8 +115,8 @@ public class DelegateToTest
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; public int A()=>1;",
             "int A(); int B(int b1);");
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "int B(int b1)");
-        res.FileDoesNotContain("GeneratedDelegator.Outer.C.Field.cs", "int A(");
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("int B(int b1)");
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertDoesNotContain("int A(");
     }
         
     [Theory]
@@ -127,15 +125,21 @@ public class DelegateToTest
     public void DoNotImplementHiddenMethods(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FileDoesNotContain("GeneratedDelegator.Outer.C.Field.cs",
-            output);
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertDoesNotContain(output);
     }
         
     [Fact]
     public void InheritedInterface()
     {
         var res = RunTest("[DelegateTo] private IChildInterface Field;", "int Parent();");
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "public void ChildMethod() => this.Field.ChildMethod();");
-        res.FileContains("GeneratedDelegator.Outer.C.Field.cs", "public int Parent() => this.Field.Parent();");
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("public void ChildMethod() => this.Field.ChildMethod();");
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("public int Parent() => this.Field.Parent();");
+    }
+
+    [Fact]
+    public void PropogatePropertyToMethod()
+    {
+        var res = RunTest("[DelegateTo] [method: Prop1] private IChildInterface Field;", "int ChildPropp{get;}");
+        res.LastFile().AssertRegex(@"\[Prop1\]\s*public void ChildMethod");
     }
 }

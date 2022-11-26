@@ -191,11 +191,9 @@ public class PropGenUnitTest
                 System.Windows.DependencyProperty.Register(""Novel"", typeof(int),
                 typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
             
-        res.LastFileDoesNotContain( ".Register");
-        res.LastFileContains( 
-            "get => (int)this.GetValue(Outer.C.NovelProperty);");
-        res.LastFileContains( 
-            "set => this.SetValue(Outer.C.NovelProperty, value);");
+        res.LastFile().AssertDoesNotContain(".Register");
+        res.LastFile().AssertContains("get => (int)this.GetValue(Outer.C.NovelProperty);");
+        res.LastFile().AssertContains("set => this.SetValue(Outer.C.NovelProperty, value);");
     }
 
     [Theory]
@@ -208,7 +206,7 @@ public class PropGenUnitTest
     public void GeneratePropWithDefault(string prompt, string defaultText)
     {
         var res = RunTest(prompt);
-        res.LastFileContains( defaultText);
+        res.LastFile().AssertContains(defaultText);
             
     }
     [Fact]
@@ -219,15 +217,11 @@ public class PropGenUnitTest
                 System.Windows.DependencyProperty.RegisterAttached(""Novel"", typeof(int),
                 typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
             
-        res.LastFileDoesNotContain(".Register");
-        res.LastFileContains( 
-            "public static int GetNovel(System.Windows.DependencyObject obj) =>");
-        res.LastFileContains( 
-            "(int)obj.GetValue(Outer.C.NovelProperty);");
-        res.LastFileContains( 
-            "public static void SetNovel(System.Windows.DependencyObject obj, int value) =>");
-        res.LastFileContains( 
-            "obj.SetValue(Outer.C.NovelProperty, value);");
+        res.LastFile().AssertDoesNotContain(".Register");
+        res.LastFile().AssertContains("public static int GetNovel(System.Windows.DependencyObject obj) =>");
+        res.LastFile().AssertContains("(int)obj.GetValue(Outer.C.NovelProperty);");
+        res.LastFile().AssertContains("public static void SetNovel(System.Windows.DependencyObject obj, int value) =>");
+        res.LastFile().AssertContains("obj.SetValue(Outer.C.NovelProperty, value);");
     }
 
     private void MultiContentTest(string source, params string[] contents)
@@ -235,7 +229,7 @@ public class PropGenUnitTest
         var res = RunTest(source);
         foreach (var content in contents)
         {
-            res.LastFileContains(content);
+            res.LastFile().AssertContains(content);
         }
             
     }

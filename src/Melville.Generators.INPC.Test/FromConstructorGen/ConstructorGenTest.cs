@@ -29,61 +29,61 @@ public class ConstructorGenTest
     public void IntProperty()
     {
         var tb = RunTest("[FromConstructor] private int I {get;}");
-        tb.LastFileContains("public partial class C");
-        tb.LastFileContains("public C(int i)");
-        tb.LastFileContains("this.I = i;");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("public C(int i)");
+        tb.LastFile().AssertContains("this.I = i;");
     }
     [Fact]
     public void PartialOnConstructedMethod()
     {
         var tb = RunTest("[FromConstructor] private int I {get;}");
-        tb.LastFileContains("public partial class C");
-        tb.LastFileContains("OnConstructed();");
-        tb.LastFileContains("partial void OnConstructed();");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("OnConstructed();");
+        tb.LastFile().AssertContains("partial void OnConstructed();");
     }
     [Fact]
     public void AvoidKeywords()
     {
         var tb = RunTest("[FromConstructor] private int If {get;}");
-        tb.LastFileContains("public partial class C");
-        tb.LastFileContains("public C(int @if)");
-        tb.LastFileContains("If = @if;");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("public C(int @if)");
+        tb.LastFile().AssertContains("If = @if;");
     }
    [Fact]
     public void Fields()
     {
         var tb = RunTest("[FromConstructor] private readonly int i;");
-        tb.LastFileContains("public partial class C");
-        tb.LastFileContains("public C(int i)");
-        tb.LastFileContains("this.i = i;");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("public C(int i)");
+        tb.LastFile().AssertContains("this.i = i;");
     }
     [Fact]
     public void MultipleFieldsInOneDeclaration()
     {
         var tb = RunTest("[FromConstructor] private readonly int i,j;");
-        tb.LastFileContains("public partial class C");
-        tb.LastFileContains("public C(int i, int j)");
-        tb.LastFileContains("this.i = i;");
-        tb.LastFileContains("this.j = j;");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("public C(int i, int j)");
+        tb.LastFile().AssertContains("this.i = i;");
+        tb.LastFile().AssertContains("this.j = j;");
     }
     [Fact]
     public void MultipleFieldsInTwoDeclarations()
     {
         var tb = RunTest("[FromConstructor] private readonly int i;" +
                          "[FromConstructor] public double j;");
-        tb.LastFileContains("public partial class C");
-        tb.LastFileContains("public C(int i, double j)");
-        tb.LastFileContains("this.i = i;");
-        tb.LastFileContains("this.j = j;");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("public C(int i, double j)");
+        tb.LastFile().AssertContains("this.i = i;");
+        tb.LastFile().AssertContains("this.j = j;");
     }
 
     [Fact]
     public void InheritedField()
     {
         var tb = RunTest("[FromConstructor] int j;", "public Parent(uint i) {}");
-        tb.LastFileContains("public C(uint i, int j): base(i)");
-        tb.LastFileDoesNotContain("this.i");
-        tb.LastFileContains("this.j = j;");
+        tb.LastFile().AssertContains("public C(uint i, int j): base(i)");
+        tb.LastFile().AssertDoesNotContain("this.i");
+        tb.LastFile().AssertContains("this.j = j;");
     }
     [Fact]
     public void TwoInheritedConstructors()
@@ -91,30 +91,30 @@ public class ConstructorGenTest
         var tb = RunTest("[FromConstructor] int j;", @"
                    public Parent(uint i) {} 
                    public Parent(uint i, string k) {}");
-        tb.LastFileContains("public C(uint i, int j): base(i)");
-        tb.LastFileContains("public C(uint i, string k, int j): base(i, k)");
-        tb.LastFileDoesNotContain("this.i");
-        tb.LastFileDoesNotContain("this.k");
-        tb.LastFileContains("this.j = j;");
+        tb.LastFile().AssertContains("public C(uint i, int j): base(i)");
+        tb.LastFile().AssertContains("public C(uint i, string k, int j): base(i, k)");
+        tb.LastFile().AssertDoesNotContain("this.i");
+        tb.LastFile().AssertDoesNotContain("this.k");
+        tb.LastFile().AssertContains("this.j = j;");
     }
 
     [Fact]
     public void RecursiveConstructors()
     {
         var tb = RunTest("[FromConstructor] int b;", "[FromConstructor] int a;");
-        tb.LastFileContains("public C(int a, int b): base(a)");
+        tb.LastFile().AssertContains("public C(int a, int b): base(a)");
     }
     [Fact]
     public void Recursive2ParamConstructors()
     {
         var tb = RunTest("[FromConstructor] int c;", "[FromConstructor] int a; [FromConstructor] string B {get;}");
-        tb.LastFileContains("public C(int a, string b, int c): base(a, b)");
+        tb.LastFile().AssertContains("public C(int a, string b, int c): base(a, b)");
     }
     [Fact]
     public void Recursive2ParamConstructorsReverse()
     {
         var tb = RunTest("[FromConstructor] int c;", "[FromConstructor] string B {get;} [FromConstructor] int a; ");
-        tb.LastFileContains("public C(string b, int a, int c): base(b, a)");
+        tb.LastFile().AssertContains("public C(string b, int a, int c): base(b, a)");
     }
 
     [Fact]
@@ -125,9 +125,9 @@ public class ConstructorGenTest
                     public class CB: CA { [FromConstructor] double b; public CB(string x) {}}
                     public class CC: CB { [FromConstructor] CA c;}
 ");
-        tb.LastFileContains("public CC(string x, Outer.CA c): base(x)");
-        tb.LastFileContains("public CC(uint y, double b, Outer.CA c): base(y, b)");
-        tb.LastFileContains("public CC(float a, double b, Outer.CA c): base(a, b)");
+        tb.LastFile().AssertContains("public CC(string x, Outer.CA c): base(x)");
+        tb.LastFile().AssertContains("public CC(uint y, double b, Outer.CA c): base(y, b)");
+        tb.LastFile().AssertContains("public CC(float a, double b, Outer.CA c): base(a, b)");
     }
     [Fact]
     public void ClassLevelProperty()
@@ -137,8 +137,8 @@ public class ConstructorGenTest
                     [FromConstructor] public class CB: CA {  }
                     public class CC: CB { [FromConstructor] CA c;}
 ");
-        tb.LastFileContains("public CC(uint y, Outer.CA c): base(y)");
-        tb.LastFileContains("public CC(float a, Outer.CA c): base(a)");
+        tb.LastFile().AssertContains("public CC(uint y, Outer.CA c): base(y)");
+        tb.LastFile().AssertContains("public CC(float a, Outer.CA c): base(a)");
     }
     [Fact]
     public void SimpleNoParentCase()
@@ -146,7 +146,7 @@ public class ConstructorGenTest
         var tb = RunTestWithDeclaredAttr(@"
                     public class CC { [FromConstructor] int c;}
 ");
-        tb.LastFileContains("public CC(int c)");
+        tb.LastFile().AssertContains("public CC(int c)");
     }     
     [Fact]
     public void JustCallParent()
@@ -155,6 +155,6 @@ public class ConstructorGenTest
                     Public class CA {public CA(int x) {} }
                     [FromConstructor]public class CC:CA { }
 ");
-        tb.LastFileContains("public CC(int x): base(x)");
+        tb.LastFile().AssertContains("public CC(int x): base(x)");
     }  
 }

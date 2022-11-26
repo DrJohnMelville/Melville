@@ -45,7 +45,7 @@ public class TextTest
     [InlineData("[MacroCode(\"// Macro: ~0~\", Postfix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// 233")]
         
     public void SimpleSub(string input, string output) => 
-        RunTest(input).FileContains("MacroGen.Outer.C.Func().cs", output);
+        RunTest(input).FromName("MacroGen.Outer.C.Func().cs").AssertContains(output);
 
     [Fact]
     public void Prefix()
@@ -62,7 +62,7 @@ public class TextTest
     public void RepeatedUsing()
     {
         var gen = RunTest(@"[MacroCode(""// Code: ~0~/~1~"", Prefix = ""public void Generated() {"", Postfix = ""}"")]");
-        gen.FileContains("MacroGen.Outer.C.Func().cs", "using Melville.INPC");
+        gen.FromName("MacroGen.Outer.C.Func().cs").AssertContains("using Melville.INPC");
     }    
     [Fact]
     public void Gen()
@@ -72,6 +72,6 @@ public class TextTest
         [MacroItem(2, ""Two"")]
         [MacroItem(3, ""Three"")]
 ");
-        generatorTestBed.FileContains("MacroGen.Outer.C.Func().cs", "// Code: 1/One");
+        generatorTestBed.FromName("MacroGen.Outer.C.Func().cs").AssertContains("// Code: 1/One");
     }
 }
