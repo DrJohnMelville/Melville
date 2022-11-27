@@ -209,6 +209,21 @@ public class PropGenUnitTest
         res.LastFile().AssertContains(defaultText);
             
     }
+    [Theory]
+    [InlineData("[GenerateDP][field:FieldProp][property:PropProp] private void OnPropChanged(int new){}", 
+        "[FieldProp] public static readonly System.Windows.DependencyProperty PropProperty")]
+    [InlineData("[GenerateDP][field:FieldProp][property:PropProp] private void OnPropChanged(int new){}", 
+        "[PropProp] public int Prop")]
+    [InlineData("[GenerateDP(Attached=true)][field:FieldProp][method:MethProp] private void OnPropChanged(int new){}", 
+        "[MethProp] public static int GetProp(System.Windows.DependencyObject")]
+    [InlineData("[GenerateDP(Attached=true)][field:FieldProp][method:MethProp] private void OnPropChanged(int new){}", 
+        "[MethProp] public static void SetProp(System.Windows.DependencyObject")]
+    public void CopyAppropriateAttributes(string prompt, string defaultText)
+    {
+        var res = RunTest(prompt);
+        res.LastFile().AssertContainsIgnoreWhiteSpace(defaultText);
+            
+    }
     [Fact]
     public void GenerateAttachedFromDeclaration()
     {
