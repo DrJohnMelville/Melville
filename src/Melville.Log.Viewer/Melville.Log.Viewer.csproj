@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net7.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UserSecretsId>7cfb7489-0c66-42f3-bec2-77a2250777de</UserSecretsId>
     <ApplicationIcon>ApplicationRoot/app.ico</ApplicationIcon>

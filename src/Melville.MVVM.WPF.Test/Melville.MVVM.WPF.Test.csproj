@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net7.0-windows</TargetFramework>
         <Description>This is a library of my favorite wpf controls</Description>
         <OutputType>Library</OutputType>
         <DebugType>Full</DebugType>
