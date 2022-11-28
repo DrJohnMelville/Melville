@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.INPC;
 
-public readonly struct PopertyGenerator
+public readonly struct PropertyGenerator
 {
     private readonly CodeWriter target;
     private readonly IFieldSymbol field;
@@ -14,22 +14,26 @@ public readonly struct PopertyGenerator
     private readonly string changeFuncName;
     public readonly INotifyImplementationStategy notifyStrategy;
     private readonly PropertyDependencyGraph dependencies;
+    private readonly string propertyModifiers;
 
-    public PopertyGenerator(CodeWriter target, IFieldSymbol field, ITypeSymbol parentClass,
-        INotifyImplementationStategy notifyStrategy, PropertyDependencyGraph dependencies)
+
+    public PropertyGenerator(CodeWriter target, IFieldSymbol field, ITypeSymbol parentClass,
+        INotifyImplementationStategy notifyStrategy, PropertyDependencyGraph dependencies, 
+        string propertyModifiers)
     {
         this.target = target;
         this.field = field;
         this.parentClass = parentClass;
         this.notifyStrategy = notifyStrategy;
         this.dependencies = dependencies;
+        this.propertyModifiers = propertyModifiers;
         propertyName = field.Name.ComputePropertyName();
         changeFuncName = $"On{propertyName}Changed";
     }
 
     public void RenderSingleField()
     {
-        target.AppendLine($"public {field.Type.FullyQualifiedName()} {propertyName}");
+        target.AppendLine($"{propertyModifiers} {field.Type.FullyQualifiedName()} {propertyName}");
         using var _ = target.CurlyBlock();
         GemetateGetBlock();
         GenerateSetBlock(field);

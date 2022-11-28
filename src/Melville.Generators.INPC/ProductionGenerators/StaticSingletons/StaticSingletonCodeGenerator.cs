@@ -29,7 +29,6 @@ public class StaticSingletonCodeGenerator
 
     public void GenerateCode(CodeWriter cw)
     {
-        using var _ = WriteCodeNear.Symbol(classDeclaration, cw);
         cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {instanceName} = new();");
         cw.AppendLine($$"""private {{symbol.Name}}() {}""");
     }

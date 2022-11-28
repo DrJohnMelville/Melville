@@ -103,10 +103,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Maui.Samples", "Sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9DFC56A1-8B7D-4EED-9880-268D03D53430}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
+		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Generators.IntegrationTest", "src\Melville.Generators.IntegrationTest\Melville.Generators.IntegrationTest.csproj", "{926EB770-4842-4067-A5F7-161F89CE17D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Generators.IntegrationTest", "src\Melville.Generators.IntegrationTest\Melville.Generators.IntegrationTest.csproj", "{926EB770-4842-4067-A5F7-161F89CE17D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

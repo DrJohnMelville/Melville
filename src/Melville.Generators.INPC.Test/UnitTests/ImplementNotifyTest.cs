@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Melville.Generators.INPC.ProductionGenerators.INPC;
+using Moq.Protected;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.UnitTests;
@@ -9,8 +10,9 @@ public class ImplementNotifyTest
     private const string AttrDecl = """
     namespace Melville.INPC
     {
-        public sealed class AutoNotifyAttribute : Attribute
+        public sealed class AutoNotifyAttribute : System.Attribute
         {
+            public string PropertyModifier { get; set;} = "";
         }
     }
     """;
@@ -522,6 +524,19 @@ namespace NM
   }"+AttrDecl);
         tb.AssertNoDiagnostics();
         tb.FromName("INPC.C.cs").AssertContains("=> this.IntegerGetFilter(this.integer);");
+    }
+    [Fact]
+    public void CustomPropertyModifiers()
+    {
+        var tb = new GeneratorTestBed(new INPCGenerator(),
+            @"using Melville.INPC;
+  using System.Collections.Generic;
+  public partial class C
+  {
+    [AutoNotify (PropertyModifier = ""protected virtual"")] private int integer;
+  }"+AttrDecl);
+        tb.AssertNoDiagnostics();
+        tb.FromName("INPC.C.cs").AssertContains("protected virtual int Integer");
     }
     [Fact]
     public void ClassWithGenericConstraint()

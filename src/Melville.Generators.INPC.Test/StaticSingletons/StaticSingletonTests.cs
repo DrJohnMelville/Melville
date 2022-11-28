@@ -40,7 +40,7 @@ public class StaticSingletonTests
     public void GenerateSingletonWithName()
     {
         var tb = RunTestWithDeclaredAttr("[StaticSingleton(\"FooBar\")] public partial class X {}");
-        tb.LastFile().AssertContains("private X() {}");
+        tb.LastFile().AssertContains("private X() {}"); 
         tb.LastFile().AssertContains("public static readonly Outer.X FooBar = new();");
     }
 }

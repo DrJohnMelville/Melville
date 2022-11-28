@@ -38,10 +38,13 @@ public class INPCGenerator: IIncrementalGenerator
             {
                 new AttributeCopier(cw, "property").CopyAttributesFrom(member.TargetNode);
                 if (member.TargetSymbol is not IFieldSymbol field) continue;
-                new PopertyGenerator(
-                    cw, field, classSymbol, notifyImplementation,dependencies)
+                new PropertyGenerator(
+                    cw, field, classSymbol, notifyImplementation,dependencies,
+                    new PropertyParametersParser(member.Attributes).Parse())
                     .RenderSingleField();
             }
         }
     }
 }
+
+;
