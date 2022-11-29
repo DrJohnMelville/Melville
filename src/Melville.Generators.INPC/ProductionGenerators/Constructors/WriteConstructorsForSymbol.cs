@@ -44,14 +44,16 @@ internal readonly struct WriteConstructorsForSymbol
     private static IList<MemberData[]> ConstructorsFor(INamedTypeSymbol? classSymbol)
     {
         if (classSymbol is null) return Array.Empty<MemberData[]>();
-        return ConstructorsExplicitlyDefinedOn(classSymbol).Where(i=>i.Length > 0)
+        return ConstructorsExplicitlyDefinedOn(classSymbol)
             .Concat(ConstructorsThatWillBeSynthesizedForClass(classSymbol))
             .DefaultIfEmpty(Array.Empty<MemberData>())
             .ToList();
     }
 
     private static IEnumerable<MemberData[]> ConstructorsExplicitlyDefinedOn(INamedTypeSymbol classSymbol) =>
-        classSymbol.InstanceConstructors.Select(
+        classSymbol.InstanceConstructors
+        .Where(i=>!i.IsImplicitlyDeclared)
+        .Select(
             i => i.Parameters.Select(j => new MemberData(j.Type.FullyQualifiedName(), j.Name))
                 .ToArray());
 

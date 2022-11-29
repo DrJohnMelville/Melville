@@ -188,6 +188,26 @@ public class ConstructorGenTest
         tb.FromName("Intermed").AssertDoesNotContain("public Intermed()");
     }
     [Fact]
+    public void BaseClassWithDefaultAndExplicitConstructors()
+    {
+        var tb = RunTestWithDeclaredAttr("""
+            public class Base
+            {
+                public Base() {}
+                public Base(int i)
+                {
+                }
+
+                public class Child: Base 
+                {
+                    [FromConstructor] private readonly string s;
+                }
+            }
+            """);
+        tb.FromName("Child").AssertContains("public Child(int i, string s): base(i)");
+        tb.FromName("Child").AssertContains("public Child(string s)");
+    }
+    [Fact]
     public void SimpleNoParentCase()
     {
         var tb = RunTestWithDeclaredAttr(@"
