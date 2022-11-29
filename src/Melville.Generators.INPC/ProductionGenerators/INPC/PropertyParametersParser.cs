@@ -19,7 +19,7 @@ public readonly struct PropertyParametersParser
         return attributes
             .SelectMany(i => i.NamedArguments)
             .Where(i => i.Key.Equals("PropertyModifier", StringComparison.Ordinal))
-            .Select(i => i.Value.Value.ToString())
+            .Select(i => i.Value.Value?.ToString()??"public")
             .DefaultIfEmpty("public")
             .First();
     }

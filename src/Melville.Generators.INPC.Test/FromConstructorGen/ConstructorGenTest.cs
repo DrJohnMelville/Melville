@@ -141,6 +141,32 @@ public class ConstructorGenTest
         tb.LastFile().AssertContains("public CC(float a, Outer.CA c): base(a)");
     }
     [Fact]
+    public void ExcludeEmptyConstructor()
+    {
+        var tb = RunTestWithDeclaredAttr("""
+            public class Base
+            {
+                public Base(int i)
+                {
+                }
+            }
+
+            public partial class Intermed : Base
+            {
+                [FromConstructor] private string s;
+            }
+
+            [FromConstructor]
+            public partial class Leaf: Intermed {
+            }
+
+            """);
+        tb.FromName("Intermed").AssertContains("public Intermed(int i, string s): base(i)");
+        tb.FromName("Intermed").AssertDoesNotContain("public Intermed()");
+        tb.FromName("Leaf").AssertContains("public Leaf(int i, string s): base(i, s)");
+        tb.FromName("Leaf").AssertDoesNotContain("public Leaf()");
+    }
+    [Fact]
     public void SimpleNoParentCase()
     {
         var tb = RunTestWithDeclaredAttr(@"
