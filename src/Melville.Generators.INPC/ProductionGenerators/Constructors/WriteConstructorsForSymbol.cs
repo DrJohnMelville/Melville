@@ -5,6 +5,7 @@ using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.Constructors;
 
@@ -29,14 +30,15 @@ internal readonly struct WriteConstructorsForSymbol
     private static List<MemberData> ComputeFieldsToGenerate(ITypeSymbol target) =>
         target.MembersLabeledWith(ConstructorGenerator.AttributeName)
             .Select(CreateMemberData)
+            .OfType<MemberData>()
             .ToList();
 
-    private static MemberData CreateMemberData(ISymbol i) =>
+    private static MemberData? CreateMemberData(ISymbol i) =>
         i switch
         {
             IFieldSymbol field => new MemberData(field.Type.FullyQualifiedName(), field.Name),
             IPropertySymbol prop => new MemberData(prop.Type.FullyQualifiedName(), prop.Name),
-            _=> throw new InvalidDataException("Can only put FromConstructor on fields or properties")
+            _=> null
         };
 
     private static IList<MemberData[]> ConstructorsFor(INamedTypeSymbol? classSymbol)

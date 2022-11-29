@@ -18,6 +18,8 @@ namespace Melville.Generators.IntegrationTest.FromConstructorTest
     public partial class Intermed : Base
     {
         [FromConstructor] private string s;
+
+        [FromConstructor] public partial class B2:Base {}
     }
 
     [FromConstructor]
@@ -28,5 +30,8 @@ namespace Melville.Generators.IntegrationTest.FromConstructorTest
     {
         [Fact]
         public void TryConstruct() => Assert.NotNull(new Leaf(1, "One"));
+
+        [Fact]
+        public void InnerConstruct() => Assert.NotNull(new Intermed.B2(1));
     }
 }

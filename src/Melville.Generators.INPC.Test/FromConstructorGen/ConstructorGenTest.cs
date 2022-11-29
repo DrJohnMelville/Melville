@@ -167,6 +167,27 @@ public class ConstructorGenTest
         tb.FromName("Leaf").AssertDoesNotContain("public Leaf()");
     }
     [Fact]
+    public void NestedClass()
+    {
+        var tb = RunTestWithDeclaredAttr("""
+            public class Base
+            {
+                public Base(int i)
+                {
+                }
+            }
+
+            public partial class Intermed : Base
+            {
+                [FromConstructor] private string s;
+
+                [FromConstructor] public class I2: Base {}
+            }
+            """);
+        tb.FromName("Intermed").AssertContains("public Intermed(int i, string s): base(i)");
+        tb.FromName("Intermed").AssertDoesNotContain("public Intermed()");
+    }
+    [Fact]
     public void SimpleNoParentCase()
     {
         var tb = RunTestWithDeclaredAttr(@"
