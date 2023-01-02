@@ -8,12 +8,21 @@ public class TextTest
 {
     protected GeneratorTestBed RunTest(string s) =>
         new(new MacroGenerator(), $$"""
+            using System.Diagnostics;
             namespace Melville.INPC 
             {
+                [Conditional("ShowCodeGenAttributes")]
+                [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method | 
+                                AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event |
+                    AttributeTargets.Interface, Inherited=false, AllowMultiple=true)]
                 public sealed class MacroItemAttribute: System.Attribute
                 {
                     public MacroItemAttribute(params object[] text){}
                 }
+                [Conditional("ShowCodeGenAttributes")]
+                [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method | 
+                                AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event |
+                    AttributeTargets.Class, Inherited=false, AllowMultiple=true)]
                 public sealed class MacroCodeAttribute: System.Attribute
                 {
                     public object Prefix {get;set;} = "";
@@ -33,6 +42,7 @@ public class TextTest
                 }
             }
             """);
+
     [Theory]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "namespace Outer")]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "class C")]
@@ -40,12 +50,43 @@ public class TextTest
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(1)]", "// Macro: 1")]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// Macro: One")]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// Macro: Two")]
-    [InlineData("[MacroCode(\"// Macro: ~0~\", Prefix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// Macro: Two")]
-    [InlineData("[MacroCode(\"// Macro: ~0~\", Prefix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// 233")]
-    [InlineData("[MacroCode(\"// Macro: ~0~\", Postfix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]", "// 233")]
-        
+    [InlineData("[MacroCode(\"// Macro: ~0~\", Prefix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]",
+        "// Macro: Two")]
+    [InlineData("[MacroCode(\"// Macro: ~0~\", Prefix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]",
+        "// 233")]
+    [InlineData("[MacroCode(\"// Macro: ~0~\", Postfix = \"// 233\")] [MacroItem(\"One\")][MacroItem(\"Two\")]",
+        "// 233")]
+    [InlineData("""
+        [MacroCode("// Hello\r\n// World")]
+        [MacroItem("One")]
+        """, "// Hello\r\n        // World")]
     public void SimpleSub(string input, string output) => 
         RunTest(input).FromName("MacroGen.Outer.C.Func().cs").AssertContains(output);
+
+    
+    [Fact]
+    public void AttrsOnInterface()
+    {
+        var gen = RunTest("""
+            [MacroItem("A")]
+            [MacroCode("// item: ~0~")]
+            interface I {};
+            """);
+        gen.LastFile().AssertContains("// item: A");
+    }
+    [Fact]
+    public void AttrsOnInterfaceMember()
+    {
+        var gen = RunTest("""
+            interface I 
+            {
+                [MacroItem("A")]
+                [MacroCode("// item: ~0~")]
+                int X();
+            };
+            """);
+        gen.LastFile().AssertContains("// item: A");
+    }
 
     [Fact]
     public void Prefix()

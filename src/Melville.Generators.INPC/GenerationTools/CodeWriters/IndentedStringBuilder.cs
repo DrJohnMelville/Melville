@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Melville.Generators.INPC.GenerationTools.CodeWriters;
 
-public class IndentedStringBuilder
+public partial class IndentedStringBuilder
 {
     private readonly int indentSize;
     private readonly StringBuilder target = new StringBuilder();
@@ -18,8 +19,8 @@ public class IndentedStringBuilder
         
     public void AppendLine(string s = "")
     {
-        AppendIndentIfNeeded();
-        target.AppendLine(s);
+        Append(s);
+        target.AppendLine();
         needsIndent = true;
     }
     public void Append(string s)
@@ -28,10 +29,7 @@ public class IndentedStringBuilder
         target.Append(InsertInternalIndentStrings(s));
     }
 
-    private string InsertInternalIndentStrings(string s)
-    {
-        return s.Replace(Environment.NewLine, Environment.NewLine+indentString);
-    }
+    private string InsertInternalIndentStrings(string s) => s.Replace(Environment.NewLine, Environment.NewLine+indentString);
 
     private void AppendIndentIfNeeded()
     {
