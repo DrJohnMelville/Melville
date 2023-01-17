@@ -105,6 +105,12 @@ public class ConstructorGenTest
         tb.LastFile().AssertContains("public C(int a, int b): base(a)");
     }
     [Fact]
+    public void RecursiveConstructorsOnProperty()
+    {
+        var tb = RunTest("[FromConstructor] int b;", "[FromConstructor] int A {get;}");
+        tb.LastFile().AssertContains("public C(int a, int b): base(a)");
+    }
+    [Fact]
     public void Recursive2ParamConstructors()
     {
         var tb = RunTest("[FromConstructor] int c;", "[FromConstructor] int a; [FromConstructor] string B {get;}");

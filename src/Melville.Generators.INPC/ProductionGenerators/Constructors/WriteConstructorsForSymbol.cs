@@ -70,7 +70,7 @@ internal readonly struct WriteConstructorsForSymbol
     private static bool GeneratorWillAddConstructorsFor(INamedTypeSymbol classSymbol) =>
         classSymbol.GetAttributes().Concat(
             classSymbol.GetMembers()
-                .Where(i=> i is IFieldSymbol)
+                .Where(i=> i is IFieldSymbol or IPropertySymbol)
                 .SelectMany(i => i.GetAttributes())
         ).FilterToAttributeType(ConstructorGenerator.AttributeName).Any();
 }
