@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -63,8 +64,13 @@ public class StaWorker : IStaWorker
       tcs.SetResult(await action());
     });
       
-    thread.SetApartmentState(ApartmentState.STA);
+    TrySetApartmentState<T>(thread);
     thread.Start();
     return tcs.Task;
+  }
+
+  private static void TrySetApartmentState<T>(Thread thread)
+  {
+      if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) thread.SetApartmentState(ApartmentState.STA);
   }
 }
