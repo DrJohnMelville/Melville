@@ -14,7 +14,7 @@ public static class DictionaryExtensions
         dict[key] = newItem;
         return newItem;
     }
-    #if NET5_0_OR_GREATER
+#if NET5_0_OR_GREATER
     public static TItem GetOrCreate<TKey, TItem>(
         this Dictionary<TKey, TItem> dict, TKey key, Func<TKey, TItem> creator) where TKey: notnull
     {
