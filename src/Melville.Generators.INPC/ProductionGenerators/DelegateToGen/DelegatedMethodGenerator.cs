@@ -111,7 +111,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 
             if (ps.SetMethod is { } setMethod)
             {
-                cw.AppendLine($"{setMethodKeyword(setMethod)} => {methodPrefix}{propertyCall} = value;");
+                cw.AppendLine($"{SetMethodKeyword(setMethod)} => {methodPrefix}{propertyCall} = value;");
             }
         }
     }
@@ -248,5 +248,5 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         cw.Append(memberName);
     }
 
-    private string setMethodKeyword(IMethodSymbol ps) => ps.IsInitOnly ? "init" : "set";
+    private string SetMethodKeyword(IMethodSymbol ps) => ps.IsInitOnly ? "init" : "set";
 }
