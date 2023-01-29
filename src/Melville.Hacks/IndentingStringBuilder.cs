@@ -86,8 +86,9 @@ public partial class IndentingStringBuilder
 #if NET5_0_OR_GREATER
     [EditorBrowsable(EditorBrowsableState.Never)]
     [InterpolatedStringHandler]
-    public struct ForwardingInterpolatedStringHandler
+    public partial struct ForwardingInterpolatedStringHandler
     {
+        [DelegateTo()]
         private StringBuilder.AppendInterpolatedStringHandler handler;
 
         public ForwardingInterpolatedStringHandler(
@@ -97,16 +98,16 @@ public partial class IndentingStringBuilder
                 parent.AppendTarget());
         }
 
-        public void AppendLiteral(string value) => handler.AppendLiteral(value);
-        public void AppendFormatted<T>(T value) => handler.AppendFormatted(value);
-        public void AppendFormatted<T>(T value, string? format) => handler.AppendFormatted(value, format);
-        public void AppendFormatted<T>(T value, int alignment) => handler.AppendFormatted(value, alignment);
-        public void AppendFormatted<T>(T value, int alignment, string? format) => handler.AppendFormatted(value, alignment, format);
-        public void AppendFormatted(ReadOnlySpan<char> value) => handler.AppendFormatted(value);
-        public void AppendFormatted(ReadOnlySpan<char> value, int alignment=0, string? format = null) => handler.AppendFormatted(value, alignment, format);
-        public void AppendFormatted(string? value) => handler.AppendFormatted(value);
-        public void AppendFormatted(string? value, int alignment = 0, string? format = null) => handler.AppendFormatted(value, alignment, format);
-        public void AppendFormatted(object? value, int alignment = 0, string? format = null) => handler.AppendFormatted(value, alignment, format);
+        //public void AppendLiteral(string value) => handler.AppendLiteral(value);
+        //public void AppendFormatted<T>(T value) => handler.AppendFormatted(value);
+        //public void AppendFormatted<T>(T value, string? format) => handler.AppendFormatted(value, format);
+        //public void AppendFormatted<T>(T value, int alignment) => handler.AppendFormatted(value, alignment);
+        //public void AppendFormatted<T>(T value, int alignment, string? format) => handler.AppendFormatted(value, alignment, format);
+        //public void AppendFormatted(ReadOnlySpan<char> value) => handler.AppendFormatted(value);
+        //public void AppendFormatted(ReadOnlySpan<char> value, int alignment=0, string? format = null) => handler.AppendFormatted(value, alignment, format);
+        //public void AppendFormatted(string? value) => handler.AppendFormatted(value);
+        //public void AppendFormatted(string? value, int alignment = 0, string? format = null) => handler.AppendFormatted(value, alignment, format);
+        //public void AppendFormatted(object? value, int alignment = 0, string? format = null) => handler.AppendFormatted(value, alignment, format);
 
     }
 
