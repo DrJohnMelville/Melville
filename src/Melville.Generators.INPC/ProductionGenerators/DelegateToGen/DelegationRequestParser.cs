@@ -15,8 +15,7 @@ public readonly struct DelegationRequestParser
 
     public IDelegatedMethodGenerator ParseFromMethod(IMethodSymbol symbol, SyntaxNode location) =>
         IsValidDelegatingMethod(symbol)
-            ? Create(symbol.ReturnType, $"this.{symbol.Name}()", 
-                symbol)
+            ? Create(symbol.ReturnType, $"this.{symbol.Name}()", symbol)
             : new InvalidTargetMethodGenerator(location);
 
     private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
@@ -29,15 +28,23 @@ public readonly struct DelegationRequestParser
         Create(symbol.Type, $"this.{symbol.Name}", symbol);
 
     private IDelegatedMethodGenerator Create(
-        ITypeSymbol targetType, string methodPrefix, ISymbol target) =>
-        (targetType.TypeKind, useExplicit) switch
+        ITypeSymbol typeToImplement, string methodPrefix, ISymbol targetSymbol) =>
+        IsMixIn(targetSymbol.ContainingType, typeToImplement)?
+            new MixinMethodGenerator(typeToImplement, methodPrefix, targetSymbol):
+        (typeToImplement.TypeKind, useExplicit) switch
         {
             (TypeKind.Interface, true) =>
-                new ExplicitMethodGenerator(targetType, methodPrefix,
-                    targetType.FullyQualifiedName() + ".", target),
-            (TypeKind.Interface, _) => new InterfaceMethodGenerator(targetType, methodPrefix, target),
-            (TypeKind.Class, _) => new BaseClassMethodGenerator(targetType, methodPrefix, target),
-            _ => new InvalidParentMethodGenerator(targetType,
-                target.DeclaringSyntaxReferences.First().GetSyntax())
+                new ExplicitMethodGenerator(typeToImplement, methodPrefix,
+                    typeToImplement.FullyQualifiedName() + ".", targetSymbol),
+            (TypeKind.Interface, _) => new InterfaceMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
+            (TypeKind.Class, _) => new BaseClassMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
+            _ => new InvalidParentMethodGenerator(typeToImplement,
+                targetSymbol.DeclaringSyntaxReferences.First().GetSyntax())
         };
-}
+
+    private bool IsMixIn(INamedTypeSymbol typeHostingMembers, ITypeSymbol typeToImplement) =>
+        !typeHostingMembers.AllInterfaces
+            .Concat(typeHostingMembers.AllBases())
+            .Any(
+                i => SymbolEqualityComparer.Default.Equals(i, typeToImplement));
+} 

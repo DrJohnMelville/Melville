@@ -20,7 +20,7 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
 
     protected override string MemberDeclarationPrefix() => "public ";
         
-    protected override bool ImplementationMissing(ISymbol i) => 
+    protected override bool ImplementationMissing(ISymbol i) =>
         ParentSymbol.FindImplementationForInterfaceMember(i) == null;
 
 }

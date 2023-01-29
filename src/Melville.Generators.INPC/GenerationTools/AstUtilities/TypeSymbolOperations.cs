@@ -9,6 +9,15 @@ namespace Melville.Generators.INPC.GenerationTools.AstUtilities;
 
 public static class TypeSymbolOperations
 {
+    public static IEnumerable<INamedTypeSymbol> AllBases(this ITypeSymbol typeSymbol)
+    {
+        var current = typeSymbol.BaseType;
+        while (current != null)
+        {
+            yield return current;
+            current = current.BaseType;
+        }
+    }
     public static void WriteTypeSymbolName(this CodeWriter writer, ITypeSymbol symbol)
     {
         writer.Append(symbol.FullyQualifiedName());
