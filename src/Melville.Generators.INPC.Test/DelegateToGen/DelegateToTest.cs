@@ -60,6 +60,7 @@ public class DelegateToTest
     [InlineData("int A {set;}", "set => this.Field.A = value;")]
     [InlineData("int A {get;init;}", "init => this.Field.A = value;")]
     [InlineData("int A();", "public int A() => this.Field.A();")]
+    [InlineData("internal int A();", "internal int A() => this.Field.A();")]
     [InlineData("int A(ref int b);", "public int A(ref int b) => this.Field.A(ref b);")]
     [InlineData("int A(out int b);", "public int A(out int b) => this.Field.A(out b);")]
     [InlineData("int A(in int b);", "public int A(in int b) => this.Field.A(in b);")]

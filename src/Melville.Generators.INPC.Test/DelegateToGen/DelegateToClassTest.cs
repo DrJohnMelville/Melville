@@ -52,6 +52,18 @@ public class DelegateToClassTest
         res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("public override int Foo() => this.bar.Foo();");            
 
     }
+    [Fact] public void ForwardInternalOverload()
+    {
+        var res = RunTest("class", "internal virtual int Foo()=>1; ", 
+            "[DelegateTo] Delegated bar;");
+        res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("internal override int Foo() => this.bar.Foo();");
+    }
+    [Fact] public void ForwardProtectedOverload()
+    {
+        var res = RunTest("class", "protected virtual int Foo()=>1; ", 
+            "[DelegateTo] Delegated bar;");
+        res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("protected override int Foo() => this.bar.Foo();");
+    }
     [Fact] public void ForwardOverloadNumber()
     {
         var res = RunTest("class", "public virtual int Foo(int i, int j)=>1; public virtual int Foo(int i)=>i;", 
@@ -83,7 +95,7 @@ public class DelegateToClassTest
     public void DelegateProtectedMethod()
     {
         var res = RunTest("class", "protected virtual int Foo()=>1;", "[DelegateTo] Delegated bar;");
-        res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertDoesNotContain("Foo");            
+        res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("protected override int Foo()");            
 
     }
     [Fact]

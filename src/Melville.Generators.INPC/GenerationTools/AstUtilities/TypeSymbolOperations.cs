@@ -8,30 +8,11 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.GenerationTools.AstUtilities;
 
-public static class SymbolOperations
-{
-    public static string AccessDeclaration(this ISymbol sym) => sym.DeclaredAccessibility switch
-    {
-        Accessibility.NotApplicable => throw new NotSupportedException("Unknown Access"),
-        Accessibility.Private => "private",
-        Accessibility.ProtectedAndInternal => "protected private",
-        Accessibility.Protected => "protected",
-        Accessibility.Internal => "internal",
-        Accessibility.ProtectedOrInternal => "protected internal",
-        _ => "public",
-    };
-}
-
 public static class TypeSymbolOperations
 {
-    public static IEnumerable<INamedTypeSymbol> AllBases(this ITypeSymbol typeSymbol)
+    public static IEnumerable<ITypeSymbol> AllBases(this ITypeSymbol typeSymbol)
     {
-        var current = typeSymbol.BaseType;
-        while (current != null)
-        {
-            yield return current;
-            current = current.BaseType;
-        }
+        for (var i = typeSymbol.BaseType; i != null; i = i.BaseType) yield return i;
     }
     public static void WriteTypeSymbolName(this CodeWriter writer, ITypeSymbol symbol)
     {

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
@@ -29,21 +30,23 @@ public readonly struct DelegationRequestParser
 
     private IDelegatedMethodGenerator Create(
         ITypeSymbol typeToImplement, string methodPrefix, ISymbol targetSymbol) =>
-        IsMixIn(targetSymbol.ContainingType, typeToImplement)?
-            new MixinMethodGenerator(typeToImplement, methodPrefix, targetSymbol):
-        (typeToImplement.TypeKind, useExplicit) switch
+        (typeToImplement.TypeKind, useExplicit, IsMixIn(targetSymbol.ContainingType, typeToImplement)) switch
         {
-            (TypeKind.Interface, true) =>
+            (TypeKind.Class or TypeKind.Struct,false,true) => 
+                new MixinClassGenerator(typeToImplement, methodPrefix, targetSymbol),
+            (TypeKind.Interface,false,true) => 
+                new InterfaceMixinGenerator(typeToImplement, methodPrefix, targetSymbol),
+            (TypeKind.Interface, true, _) =>
                 new ExplicitMethodGenerator(typeToImplement, methodPrefix,
                     typeToImplement.FullyQualifiedName() + ".", targetSymbol),
-            (TypeKind.Interface, _) => new InterfaceMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
-            (TypeKind.Class, _) => new BaseClassMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
+            (TypeKind.Interface, _, _) => new InterfaceMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
+            (TypeKind.Class, _, _) => new BaseClassMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
             _ => new InvalidParentMethodGenerator(typeToImplement,
                 targetSymbol.DeclaringSyntaxReferences.First().GetSyntax())
         };
 
     private bool IsMixIn(INamedTypeSymbol typeHostingMembers, ITypeSymbol typeToImplement) =>
-        !typeHostingMembers.AllInterfaces
+        !typeHostingMembers.Interfaces
             .Concat(typeHostingMembers.AllBases())
             .Any(
                 i => SymbolEqualityComparer.Default.Equals(i, typeToImplement));

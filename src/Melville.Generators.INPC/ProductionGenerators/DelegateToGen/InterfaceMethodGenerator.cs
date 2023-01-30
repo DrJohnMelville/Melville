@@ -19,11 +19,24 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
     private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
         GeneratedMethodSourceSymbol.AllInterfaces.Append(GeneratedMethodSourceSymbol);
 
-    protected override string MemberDeclarationPrefix(ISymbol sym) => sym.AccessDeclaration()+" ";
+    public override string MemberDeclarationPrefix(ISymbol sym) => sym.AccessDeclaration()+" ";
         
     protected override bool ImplementationMissing(ISymbol i) =>
         GeneratedMethodHostSymbol.FindImplementationForInterfaceMember(i) == null;
 
+}
+
+public class InterfaceMixinGenerator : InterfaceMethodGenerator
+{
+    public InterfaceMixinGenerator(ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol) 
+        : base(targetType, methodPrefix, parentSymbol)
+    {
+    }
+
+    protected override bool ImplementationMissing(ISymbol i) =>
+        !GeneratedMethodHostSymbol.HasSimilarSymbol(i);
+
+    protected override bool HostDescendsFromSource => false;
 }
 
 public class ExplicitMethodGenerator : InterfaceMethodGenerator
@@ -37,6 +50,6 @@ public class ExplicitMethodGenerator : InterfaceMethodGenerator
         this.namePrefix = namePrefix;
     }
 
-    protected override string MemberDeclarationPrefix(ISymbol sym) => ""; // Explicit methods are inherently private
-    protected override string MemberNamePrefix() => namePrefix;
+    public override string MemberDeclarationPrefix(ISymbol sym) => ""; // Explicit methods are inherently private
+    public override string MemberNamePrefix() => namePrefix;
 }
