@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
@@ -16,12 +17,12 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
         TargetTypeAndParents().SelectMany(i => i.GetMembers());
 
     private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
-        TargetType.AllInterfaces.Append(TargetType);
+        GeneratedMethodSourceSymbol.AllInterfaces.Append(GeneratedMethodSourceSymbol);
 
-    protected override string MemberDeclarationPrefix() => "public ";
+    protected override string MemberDeclarationPrefix(ISymbol sym) => sym.AccessDeclaration()+" ";
         
     protected override bool ImplementationMissing(ISymbol i) =>
-        ParentSymbol.FindImplementationForInterfaceMember(i) == null;
+        GeneratedMethodHostSymbol.FindImplementationForInterfaceMember(i) == null;
 
 }
 
@@ -36,6 +37,6 @@ public class ExplicitMethodGenerator : InterfaceMethodGenerator
         this.namePrefix = namePrefix;
     }
 
-    protected override string MemberDeclarationPrefix() => "";
+    protected override string MemberDeclarationPrefix(ISymbol sym) => ""; // Explicit methods are inherently private
     protected override string MemberNamePrefix() => namePrefix;
 }

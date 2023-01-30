@@ -15,25 +15,25 @@ public interface IDelegatedMethodGenerator
 
 public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
 {
-    protected readonly ITypeSymbol TargetType;
+    protected readonly ITypeSymbol GeneratedMethodSourceSymbol;
     private readonly string methodPrefix;
-    private readonly ISymbol targetSymbol;
+    private readonly ISymbol targetHolderSymbol;
 
-    protected ITypeSymbol ParentSymbol => targetSymbol.ContainingType;
+    protected ITypeSymbol GeneratedMethodHostSymbol => targetHolderSymbol.ContainingType;
 
-    protected abstract string MemberDeclarationPrefix();
+    protected abstract string MemberDeclarationPrefix(ISymbol replacedSymbol);
     protected virtual string MemberNamePrefix() => "";
     protected abstract IEnumerable<ISymbol> MembersThatCouldBeForwarded();
 
     protected DelegatedMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, ISymbol targetSymbol)
+        ITypeSymbol targetType, string methodPrefix, ISymbol targetHolderSymbol)
     {
-        this.TargetType = targetType;
+        this.GeneratedMethodSourceSymbol = targetType;
         this.methodPrefix = methodPrefix;
-        this.targetSymbol = targetSymbol;
+        this.targetHolderSymbol = targetHolderSymbol;
     }
 
-    public string InheritFrom() => TargetType.FullyQualifiedName();
+    public string InheritFrom() => GeneratedMethodSourceSymbol.FullyQualifiedName();
 
     public void GenerateForwardingMethods(CodeWriter cw)
     {
@@ -48,7 +48,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
             .Where(i => ImplementationMissing(i));
 
     private IEnumerable<ITypeSymbol> TargetTypeAndParents() =>
-        TargetType.AllInterfaces.Cast<ITypeSymbol>().Append(TargetType);
+        GeneratedMethodSourceSymbol.AllInterfaces.Cast<ITypeSymbol>().Append(GeneratedMethodSourceSymbol);
 
     protected abstract bool ImplementationMissing(ISymbol i);
 
@@ -83,19 +83,19 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     private void GenerateIndexer(IPropertySymbol ps, CodeWriter cw)
     {
         CopyTargetMemberAttributes(cw, "property");
-        MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this");
+        MemberPrefix(cw, ps.Type.FullyQualifiedName(), "this", ps);
         ParameterList(cw, ps.Parameters, RenderParameter, "[", "]");
         cw.AppendLine();
         PropertyBlock(ps, cw, $"[{string.Join(", ", ps.Parameters.Select(i => i.Name))}]");
     }
 
     private void CopyTargetMemberAttributes(CodeWriter cw, string kind) => 
-        new AttributeCopier(cw, kind).CopyAttributesFrom(targetSymbol.DeclaringSyntaxReferences);
+        new AttributeCopier(cw, kind).CopyAttributesFrom(targetHolderSymbol.DeclaringSyntaxReferences);
 
     private void GenerateProperty(IPropertySymbol ps, CodeWriter cw)
     {
         CopyTargetMemberAttributes(cw, "property");
-        MemberPrefix(cw, ps.Type.FullyQualifiedName(), ps.Name);
+        MemberPrefix(cw, ps.Type.FullyQualifiedName(), ps.Name, ps);
         cw.AppendLine();
         PropertyBlock(ps, cw, "." + ps.Name);
     }
@@ -120,7 +120,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     private void GenerateEvent(IEventSymbol es, CodeWriter cw)
     {
         CopyTargetMemberAttributes(cw, "event");
-        MemberPrefix(cw, "event " + es.Type.FullyQualifiedName(), es.Name);
+        MemberPrefix(cw, "event " + es.Type.FullyQualifiedName(), es.Name, es);
         cw.AppendLine();
         using (cw.CurlyBlock())
         {
@@ -145,7 +145,7 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
     private void GenerateMethod(IMethodSymbol ms, CodeWriter cw)
     {
         CopyTargetMemberAttributes(cw, "method");
-        MemberPrefix(cw, ms.ReturnType.FullyQualifiedName(), ms.Name);
+        MemberPrefix(cw, ms.ReturnType.FullyQualifiedName(), ms.Name, ms);
         AppendTypeParamList(cw, ms.TypeParameters);
         ParameterList(cw, ms.Parameters, RenderParameter, "(", ")");
         cw.Append(" => ");
@@ -239,9 +239,9 @@ public abstract class DelegatedMethodGenerator : IDelegatedMethodGenerator
         cw.Append(">");
     }
 
-    private void MemberPrefix(CodeWriter cw, string typeName, string memberName)
+    private void MemberPrefix(CodeWriter cw, string typeName, string memberName, ISymbol replacedSymbol)
     {
-        cw.Append(MemberDeclarationPrefix());
+        cw.Append(MemberDeclarationPrefix(replacedSymbol));
         cw.Append(typeName);
         cw.Append(" ");
         cw.Append(MemberNamePrefix());

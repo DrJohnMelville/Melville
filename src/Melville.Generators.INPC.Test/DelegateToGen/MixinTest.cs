@@ -48,6 +48,7 @@ public class MixinTest
         var res = RunTest("struct", "public int Foo()=>1;", "[DelegateTo] Mixin bar;");
         res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("public int Foo() => this.bar.Foo();");
     }
+
     [Fact]
     public void DelegateInternaItem()
     {

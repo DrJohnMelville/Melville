@@ -4,8 +4,23 @@ using System.Collections.Immutable;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.GenerationTools.AstUtilities;
+
+public static class SymbolOperations
+{
+    public static string AccessDeclaration(this ISymbol sym) => sym.DeclaredAccessibility switch
+    {
+        Accessibility.NotApplicable => throw new NotSupportedException("Unknown Access"),
+        Accessibility.Private => "private",
+        Accessibility.ProtectedAndInternal => "protected private",
+        Accessibility.Protected => "protected",
+        Accessibility.Internal => "internal",
+        Accessibility.ProtectedOrInternal => "protected internal",
+        _ => "public",
+    };
+}
 
 public static class TypeSymbolOperations
 {

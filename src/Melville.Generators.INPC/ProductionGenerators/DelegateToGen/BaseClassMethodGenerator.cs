@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
@@ -11,7 +12,7 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
     {
     }
 
-    protected override string MemberDeclarationPrefix() => "public override ";
+    protected override string MemberDeclarationPrefix(ISymbol replacedSumbol) => replacedSumbol.AccessDeclaration() + " override ";
 
     protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded() => 
         AllTypes()
@@ -21,11 +22,11 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
 
     private IEnumerable<ITypeSymbol> AllTypes()
     {
-        var curentType = TargetType;
+        var curentType = GeneratedMethodSourceSymbol;
         while (curentType != null)
         {
-            yield return TargetType;
-            foreach (var currentInterface in TargetType.Interfaces)
+            yield return GeneratedMethodSourceSymbol;
+            foreach (var currentInterface in GeneratedMethodSourceSymbol.Interfaces)
             {
                 yield return currentInterface;
             }
@@ -38,7 +39,7 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
         (i.IsVirtual || i.IsAbstract) && i.DeclaredAccessibility == Accessibility.Public;
 
     protected override bool ImplementationMissing(ISymbol sym) => 
-        !ParentSymbol.GetMembers().Any(i => i.IsOverride && i.Name == sym.Name && CompareArgumentLists(i, sym));
+        !GeneratedMethodHostSymbol.GetMembers().Any(i => i.IsOverride && i.Name == sym.Name && CompareArgumentLists(i, sym));
 
     private bool CompareArgumentLists(ISymbol a, ISymbol b)
     {
