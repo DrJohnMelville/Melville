@@ -88,7 +88,7 @@ public partial class IndentingStringBuilder
     [InterpolatedStringHandler]
     public partial struct ForwardingInterpolatedStringHandler
     {
-        [DelegateTo()]
+        [DelegateTo(false)]
         private StringBuilder.AppendInterpolatedStringHandler handler;
 
         public ForwardingInterpolatedStringHandler(

@@ -28,13 +28,10 @@ public class DelegateToGenerator: IIncrementalGenerator
             context.SyntaxProvider.ForAttributeWithMetadataName(QualifiedAttributeName,
                 static (i, _) => i is T,
                 (i, _) => new DelegatedMethodInLocation(i.TargetNode,
-                    func(i, CreateRequestParser(i.Attributes)))),
+                    func(i, DelegationRequestParserFactory.Create(i.Attributes)))),
             Generate
         );
 
-    private static DelegationRequestParser CreateRequestParser(ImmutableArray<AttributeData> attributes) =>
-        new(DelegateToArgumentParser.UseExplicit(attributes));
-    
     private void Generate(SourceProductionContext writeTo, DelegatedMethodInLocation factory) => 
         factory.GenerateIn(new SourceProductionCodeWriter(writeTo));
 }

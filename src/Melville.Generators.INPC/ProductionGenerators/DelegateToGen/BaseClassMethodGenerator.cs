@@ -17,8 +17,9 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
 
     protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded() =>
         AllTypes()
+            .Where(i=>i.SpecialType is SpecialType.None)
             .SelectMany(i => i.GetMembers())
-            .Distinct(SymbolEqualityComparer.Default)
+            .Distinct(SimilarSymbolEqualityComparer.Instance)
             .Where(IsForwardableSymbol);
 
     private IEnumerable<ITypeSymbol> AllTypes() => 

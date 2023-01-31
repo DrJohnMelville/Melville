@@ -8,6 +8,8 @@ namespace Melville.INPC
         Inherited = false, AllowMultiple = false)]
     public sealed class DelegateToAttribute : Attribute
     {
-        public DelegateToAttribute(bool explicitImplementation = false){}
+        public DelegateToAttribute(){}
+        public DelegateToAttribute(bool explicitImplementation){}
+        public DelegateToAttribute(string? postProcessName){}
     }
 }

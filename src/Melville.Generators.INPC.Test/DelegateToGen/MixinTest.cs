@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+﻿using System;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Xunit;
 
