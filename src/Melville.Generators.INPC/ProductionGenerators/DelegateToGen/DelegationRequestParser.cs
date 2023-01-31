@@ -17,7 +17,8 @@ public readonly struct DelegationRequestParser
     public IDelegatedMethodGenerator ParseFromMethod(IMethodSymbol symbol, SyntaxNode location) =>
         IsValidDelegatingMethod(symbol)
             ? Create(symbol.ReturnType, $"this.{symbol.Name}()", symbol)
-            : new InvalidTargetMethodGenerator(location);
+            : new ErrorMethodGenerator(location, "Dele002", "Invalid Delegation method",
+                $"Can only delegate to a non-void returning method with no parameters");
 
     private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
         symbol.Parameters.Length == 0 && !symbol.ReturnsVoid;
@@ -34,6 +35,14 @@ public readonly struct DelegationRequestParser
         {
             (TypeKind.Class or TypeKind.Struct,false,true) => 
                 new MixinClassGenerator(typeToImplement, methodPrefix, targetSymbol),
+            (not TypeKind.Interface,true,_) => 
+                new ErrorMethodGenerator(SymbolLocation(targetSymbol), 
+                    "Dele004","Explicit implementation of non interface",
+                    "Only interfaces can be explicitly implemented"),
+            (_,true,true) => 
+                new ErrorMethodGenerator(SymbolLocation(targetSymbol), 
+                    "Dele003","Inconsistent Options",
+                    "To use explicit implementation the host class must implement the target interface"),
             (TypeKind.Interface,false,true) => 
                 new InterfaceMixinGenerator(typeToImplement, methodPrefix, targetSymbol),
             (TypeKind.Interface, true, _) =>
@@ -41,9 +50,13 @@ public readonly struct DelegationRequestParser
                     typeToImplement.FullyQualifiedName() + ".", targetSymbol),
             (TypeKind.Interface, _, _) => new InterfaceMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
             (TypeKind.Class, _, _) => new BaseClassMethodGenerator(typeToImplement, methodPrefix, targetSymbol),
-            _ => new InvalidParentMethodGenerator(typeToImplement,
-                targetSymbol.DeclaringSyntaxReferences.First().GetSyntax())
+            _ => new ErrorMethodGenerator(SymbolLocation(typeToImplement),
+                "Dele001", "Invalid Delegation target",
+                $"Do not know how to generate delegating methods for a {typeToImplement}")
         };
+
+    private static SyntaxNode SymbolLocation(ISymbol typeToImplement) => 
+        typeToImplement.DeclaringSyntaxReferences.First().GetSyntax();
 
     private bool IsMixIn(INamedTypeSymbol typeHostingMembers, ITypeSymbol typeToImplement) =>
         !typeHostingMembers.Interfaces
