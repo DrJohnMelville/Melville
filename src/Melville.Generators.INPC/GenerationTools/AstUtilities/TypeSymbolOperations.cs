@@ -14,15 +14,9 @@ public static class TypeSymbolOperations
     {
         for (var i = typeSymbol.BaseType; i != null; i = i.BaseType) yield return i;
     }
-    public static void WriteTypeSymbolName(this CodeWriter writer, ITypeSymbol symbol)
-    {
-        writer.Append(symbol.FullyQualifiedName());
-    }
 
-    public static string FullyQualifiedName(this ITypeSymbol symbol)
-    {
-        return symbol.ToString();
-    }
+    public static string FullyQualifiedName(this ITypeSymbol symbol) => symbol.ToString();
+    public static bool IsVoid(this ITypeSymbol symbol) => symbol.SpecialType == SpecialType.System_Void;
 
     public static bool HasMethod(
         this ITypeSymbol symbol, ITypeSymbol? returnType, string name, params ITypeSymbol[] parameters) =>
