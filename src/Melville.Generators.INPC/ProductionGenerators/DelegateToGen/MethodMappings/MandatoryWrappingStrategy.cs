@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.ComponentModel.Design;
+using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
 
@@ -11,15 +12,16 @@ public class MandatoryWrappingStrategy : IMethodWrappingStrategy
         this.name = name;
     }
 
-    public virtual MappedMethod MapType(ITypeSymbol type)
-    {
-        return type.SpecialType == SpecialType.System_Void ?
-            new MappedMethod(type, " {", $"; {name}();}}") :
-            HasInputMapping(type);
-    }
+    public MappedMethod MethodMappingFor(ITypeSymbol type) => TypeConversionStrategy(type, MapType(type));
 
-    protected MappedMethod HasInputMapping(ITypeSymbol type)
-    {
-        return new MappedMethod(type, $" => {name}(", ");");
-    }
+    protected virtual ITypeSymbol MapType(ITypeSymbol inputType) => inputType;
+
+    private MappedMethod TypeConversionStrategy(ITypeSymbol source, ITypeSymbol destination) =>
+        IsVoid(source)
+            ? new MappedMethod(destination, " {", $"; {ExpandReturn(IsVoid(destination))}{name}();}}")
+            : new MappedMethod(destination, $" => {name}(", ");");
+
+    private string ExpandReturn(bool targetIsVoid) => targetIsVoid ? "" : "return ";
+
+    private static bool IsVoid(ITypeSymbol type) => type.SpecialType == SpecialType.System_Void;
 }

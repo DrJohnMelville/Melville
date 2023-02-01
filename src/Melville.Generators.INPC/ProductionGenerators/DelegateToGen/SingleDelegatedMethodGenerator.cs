@@ -51,7 +51,7 @@ public readonly struct SingleDelegatedMethodGenerator
 
     private void GenerateIndexer(IPropertySymbol ps)
     {
-        var substitute = parent.WrappingStrategy.MapType(ps.Type);
+        var substitute = parent.WrappingStrategy.MethodMappingFor(ps.Type);
         CopyTargetMemberAttributes("property");
         MemberPrefix(substitute.FinalType.FullyQualifiedName(), "this", ps);
         ParameterList(ps.Parameters, RenderParameter, "[", "]");
@@ -62,7 +62,7 @@ public readonly struct SingleDelegatedMethodGenerator
 
     private void GenerateProperty(IPropertySymbol ps)
     {
-        var substitute = parent.WrappingStrategy.MapType(ps.Type);
+        var substitute = parent.WrappingStrategy.MethodMappingFor(ps.Type);
 
         CopyTargetMemberAttributes("property");
         MemberPrefix(substitute.FinalType.FullyQualifiedName(), ps.Name, ps);
@@ -81,7 +81,7 @@ public readonly struct SingleDelegatedMethodGenerator
 
             if (ps.SetMethod is { } setMethod)
             {
-                var setSubs = parent.WrappingStrategy.MapType(ps.SetMethod.ReturnType);
+                var setSubs = parent.WrappingStrategy.MethodMappingFor(ps.SetMethod.ReturnType);
                 cw.AppendLine($"{SetMethodKeyword(setMethod)}{setSubs.OpenBody}{parent.MethodPrefix}{propertyCall} = {mappedMethod.CastResultTo(ps.Type)}value{setSubs.CloseBody}");
             }
         }
@@ -117,7 +117,7 @@ public readonly struct SingleDelegatedMethodGenerator
     {
         CopyTargetMemberAttributes("method");
 
-        var substitute = parent.WrappingStrategy.MapType(ms.ReturnType);
+        var substitute = parent.WrappingStrategy.MethodMappingFor(ms.ReturnType);
 
         MemberPrefix(substitute.FinalType.FullyQualifiedName(), ms.Name, ms);
         AppendTypeParamList(ms.TypeParameters);

@@ -4,5 +4,5 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMapp
 
 public interface IMethodWrappingStrategy
 {
-    public MappedMethod MapType(ITypeSymbol type);
+    public MappedMethod MethodMappingFor(ITypeSymbol type);
 }

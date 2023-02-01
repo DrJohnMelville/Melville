@@ -6,7 +6,7 @@ public class NoMethodMapping : IMethodWrappingStrategy
 {
     public static readonly NoMethodMapping Instance = new();
     private NoMethodMapping() { }
-    public MappedMethod MapType(ITypeSymbol type)
+    public MappedMethod MethodMappingFor(ITypeSymbol type)
     {
         return new(type, " => ", ";");
     }

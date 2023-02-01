@@ -26,25 +26,14 @@ public class UnrestrictedWrappingStrategy : MandatoryWrappingStrategy
             .ToList();
     }
 
-    public override MappedMethod MapType(ITypeSymbol type)
-    {
-        return (type, MapsToType(type)) switch
-        {
-            (_, null) => NoMethodMapping.Instance.MapType(type),
-            ({SpecialType:not SpecialType.System_Void}, var mappedType) => base.MapType(mappedType),
-            var (voidType, _) => HasInputMapping(voidType)
-        };
-    }
 
-    protected virtual ITypeSymbol? MapsToType(ITypeSymbol typeSymbol)
-    {
-        return typeSymbol.SpecialType is SpecialType.System_Void
+    protected override ITypeSymbol? MapType(ITypeSymbol typeSymbol) =>
+        typeSymbol.SpecialType is SpecialType.System_Void
             ? MapToVoid(typeSymbol)
             : MapToConcreteType(typeSymbol);
-    }
 
     private ITypeSymbol? MapToVoid(ITypeSymbol isVoid) =>
-        candidateMethods.Any(i => !i.Parameters.Any(j => !j.IsOptional)) ? isVoid : null;
+        candidateMethods.FirstOrDefault(i => !i.Parameters.Any(j => !j.IsOptional))?.ReturnType;
 
     private ITypeSymbol? MapToConcreteType(ITypeSymbol typeSymbol) =>
         candidateMethods
