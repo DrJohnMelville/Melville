@@ -10,6 +10,6 @@ namespace Melville.INPC
     {
         public DelegateToAttribute(){}
         public DelegateToAttribute(bool explicitImplementation){}
-        public DelegateToAttribute(string? postProcessName){}
+        public DelegateToAttribute(string postProcessName){}
     }
 }

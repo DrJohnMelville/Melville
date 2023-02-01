@@ -28,7 +28,7 @@ public class DelegateToGenerator: IIncrementalGenerator
             context.SyntaxProvider.ForAttributeWithMetadataName(QualifiedAttributeName,
                 static (i, _) => i is T,
                 (i, _) => new DelegatedMethodInLocation(i.TargetNode,
-                    func(i, DelegationRequestParserFactory.Create(i.Attributes)))),
+                    func(i, DelegationRequestParserFactory.Create(i.Attributes, i.SemanticModel)))),
             Generate
         );
 

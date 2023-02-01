@@ -14,8 +14,10 @@ public class DelegateToTest
            Inherited = false, AllowMultiple = false)]
           public sealed class DelegateToAttribute : System.Attribute
           {
-              public DelegateToAttribute(bool explicitImplementation = false){}
-          }  
+                public DelegateToAttribute(){}
+                public DelegateToAttribute(bool explicitImplementation){}
+                public DelegateToAttribute(string postProcessName){}
+           }  
         }
         namespace Outer
         {

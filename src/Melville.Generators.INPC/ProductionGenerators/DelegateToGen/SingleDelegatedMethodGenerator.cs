@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
@@ -50,34 +51,38 @@ public readonly struct SingleDelegatedMethodGenerator
 
     private void GenerateIndexer(IPropertySymbol ps)
     {
+        var substitute = parent.WrappingStrategy.MapType(ps.Type);
         CopyTargetMemberAttributes("property");
-        MemberPrefix(ps.Type.FullyQualifiedName(), "this", ps);
+        MemberPrefix(substitute.FinalType.FullyQualifiedName(), "this", ps);
         ParameterList(ps.Parameters, RenderParameter, "[", "]");
         cw.AppendLine();
-        PropertyBlock(ps, $"[{string.Join(", ", ps.Parameters.Select(i => i.Name))}]");
+        PropertyBlock(ps, $"[{string.Join(", ", ps.Parameters.Select(i => i.Name))}]", substitute);
     }
 
 
     private void GenerateProperty(IPropertySymbol ps)
     {
+        var substitute = parent.WrappingStrategy.MapType(ps.Type);
+
         CopyTargetMemberAttributes("property");
-        MemberPrefix(ps.Type.FullyQualifiedName(), ps.Name, ps);
+        MemberPrefix(substitute.FinalType.FullyQualifiedName(), ps.Name, ps);
         cw.AppendLine();
-        PropertyBlock(ps, "." + ps.Name);
+        PropertyBlock(ps, "." + ps.Name, substitute);
     }
 
-    private void PropertyBlock(IPropertySymbol ps, string propertyCall)
+    private void PropertyBlock(IPropertySymbol ps, string propertyCall, MappedMethod mappedMethod)
     {
         using (cw.CurlyBlock())
         {
             if (ps.GetMethod != null)
             {
-                cw.AppendLine($"get => {parent.MethodPrefix}{propertyCall};");
+                cw.AppendLine($"get{mappedMethod.OpenBody}{parent.MethodPrefix}{propertyCall}{mappedMethod.CloseBody}");
             }
 
             if (ps.SetMethod is { } setMethod)
             {
-                cw.AppendLine($"{SetMethodKeyword(setMethod)} => {parent.MethodPrefix}{propertyCall} = value;");
+                var setSubs = parent.WrappingStrategy.MapType(ps.SetMethod.ReturnType);
+                cw.AppendLine($"{SetMethodKeyword(setMethod)}{setSubs.OpenBody}{parent.MethodPrefix}{propertyCall} = {mappedMethod.CastResultTo(ps.Type)}value{setSubs.CloseBody}");
             }
         }
     }
@@ -111,16 +116,19 @@ public readonly struct SingleDelegatedMethodGenerator
     private void GenerateMethod(IMethodSymbol ms)
     {
         CopyTargetMemberAttributes("method");
-        MemberPrefix(ms.ReturnType.FullyQualifiedName(), ms.Name, ms);
+
+        var substitute = parent.WrappingStrategy.MapType(ms.ReturnType);
+
+        MemberPrefix(substitute.FinalType.FullyQualifiedName(), ms.Name, ms);
         AppendTypeParamList(ms.TypeParameters);
         ParameterList(ms.Parameters, RenderParameter, "(", ")");
-        cw.Append(" => ");
+        cw.Append(substitute.OpenBody);
         cw.Append(parent.MethodPrefix);
         cw.Append(".");
         cw.Append(ms.Name);
         AppendTypeParamList(ms.TypeParameters);
         ParameterList(ms.Parameters, RenderArgument, "(", ")");
-        cw.AppendLine(";");
+        cw.AppendLine(substitute.CloseBody);
     }
 
     private void RenderArgument(IParameterSymbol i)

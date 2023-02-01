@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
@@ -8,8 +9,9 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 public class InterfaceMethodGenerator : DelegatedMethodGenerator
 {
     public InterfaceMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol) : 
-        base(targetType, methodPrefix, parentSymbol)
+        ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol,
+        IMethodWrappingStrategy wrappingStrategy) : 
+        base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
     {
     }
 
@@ -28,8 +30,9 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
 
 public class InterfaceMixinGenerator : InterfaceMethodGenerator
 {
-    public InterfaceMixinGenerator(ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol) 
-        : base(targetType, methodPrefix, parentSymbol)
+    public InterfaceMixinGenerator(
+        ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol, IMethodWrappingStrategy wrappingStrategy) :
+        base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
     {
     }
 
@@ -44,8 +47,8 @@ public class ExplicitMethodGenerator : InterfaceMethodGenerator
     private readonly string namePrefix;
 
     public ExplicitMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, string namePrefix, ISymbol parentSymbol) 
-        : base(targetType, methodPrefix, parentSymbol)
+        ITypeSymbol targetType, string methodPrefix, string namePrefix, ISymbol parentSymbol, IMethodWrappingStrategy wrappingStrategy) 
+        : base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
     {
         this.namePrefix = namePrefix;
     }
