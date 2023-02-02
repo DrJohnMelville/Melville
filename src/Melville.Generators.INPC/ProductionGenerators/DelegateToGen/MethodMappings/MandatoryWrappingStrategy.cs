@@ -14,11 +14,11 @@ public class MandatoryWrappingStrategy : IMethodWrappingStrategy
     }
 
     public MappedMethod MethodMappingFor(ITypeSymbol type) => 
-        TypeConversionStrategy2(type, MapType(type));
+        TryCreateConversionStrategy(type, MapType(type));
 
     protected virtual ITypeSymbol? MapType(ITypeSymbol inputType) => inputType;
 
-    private MappedMethod TypeConversionStrategy2(ITypeSymbol source, ITypeSymbol? destination) =>
+    private MappedMethod TryCreateConversionStrategy(ITypeSymbol source, ITypeSymbol? destination) =>
         destination is null
             ? NoMethodMapping.Instance.MethodMappingFor(source)
             : TypeConversionStrategy(source, destination);

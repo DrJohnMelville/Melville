@@ -8,14 +8,14 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMapp
 
 public class UnrestrictedWrappingStrategy : MandatoryWrappingStrategy
 {
-    private readonly SemanticModel semanticModel;
+    public SemanticModel SemanticModel { get; }
     private readonly IList<IMethodSymbol> valueMappers;
     private readonly ITypeSymbol? voidMapsTo;
 
 
     public UnrestrictedWrappingStrategy(string name, ITypeSymbol type, SemanticModel semanticModel) : base(name)
     {
-        this.semanticModel = semanticModel;
+        this.SemanticModel = semanticModel;
         var sorter = new WrappingMethodSorter(type, name);
         valueMappers = sorter.NonVoidMap();
         voidMapsTo = sorter.VoidMap();
@@ -27,16 +27,14 @@ public class UnrestrictedWrappingStrategy : MandatoryWrappingStrategy
     private ITypeSymbol? MapToConcreteType(ITypeSymbol typeSymbol) =>
         valueMappers
             .Select(i => TryConstructGenericMethod(i, typeSymbol))
-            .FirstOrDefault(i => CanCallWithSingleArgument(i, typeSymbol))?.ReturnType;
+            .FirstOrDefault(i => FirstArgumentMatches(i, typeSymbol))?.ReturnType;
 
-    private IMethodSymbol? TryConstructGenericMethod(IMethodSymbol method, ITypeSymbol argumentType) =>
+    private IMethodSymbol TryConstructGenericMethod(IMethodSymbol method, ITypeSymbol argumentType) =>
         method.IsGenericMethod ? method.Construct(argumentType) : method; 
 
-    private bool CanCallWithSingleArgument(IMethodSymbol? method, ITypeSymbol argumentType) =>
-        method is not null &&
-        ArgumentMatchesParameter(argumentType, method.Parameters[0].Type);
+    private bool FirstArgumentMatches(IMethodSymbol method, ITypeSymbol argumentType) =>
+        IsAssignableTo(argumentType, method.Parameters[0].Type);
 
-    private bool ArgumentMatchesParameter(ITypeSymbol argumentType, ITypeSymbol parameterType) =>
-        semanticModel.Compilation.HasImplicitConversion(argumentType, parameterType);
-    
+    protected bool IsAssignableTo(ITypeSymbol? argumentType, ITypeSymbol? parameterType) =>
+        SemanticModel.Compilation.HasImplicitConversion(argumentType, parameterType);
 }

@@ -38,7 +38,7 @@ public readonly struct DelegationRequestParser
         ITypeSymbol typeToImplement, string methodPrefix, ISymbol targetSymbol)
     {
         var isMixIn = IsMixIn(targetSymbol.ContainingType, typeToImplement);
-        var wrappingStrategy = CreateWrappingStrategy(targetSymbol.ContainingType);
+        var wrappingStrategy = CreateWrappingStrategy(targetSymbol.ContainingType, isMixIn);
         return (typeToImplement.TypeKind, useExplicit, isMixIn) switch
         {
             (not TypeKind.Interface, true, _) =>
@@ -75,8 +75,13 @@ public readonly struct DelegationRequestParser
             .Any(
                 i => SymbolEqualityComparer.Default.Equals(i, typeToImplement));
 
-    private IMethodWrappingStrategy CreateWrappingStrategy(INamedTypeSymbol newMethodHostType) =>
+    private IMethodWrappingStrategy CreateWrappingStrategy(INamedTypeSymbol newMethodHostType, bool isMixIn) =>
         string.IsNullOrEmpty(postProcessName) ?
             NoMethodMapping.Instance: 
-            new UnrestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel);
+            PickStrategyByInheritenceType(newMethodHostType, isMixIn);
+
+    private UnrestrictedWrappingStrategy PickStrategyByInheritenceType(INamedTypeSymbol newMethodHostType, bool isMixIn) =>
+        isMixIn?
+            new UnrestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel):
+            new RestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel);
 }

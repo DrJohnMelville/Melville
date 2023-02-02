@@ -7,7 +7,7 @@ namespace Melville.Generators.INPC.Test.DelegateToGen;
 
 public class DelegateToTest
 {
-    private GeneratorTestBed RunTest(string s, string intMembers) => new(new DelegateToGenerator(), $$"""
+    private GeneratorTestBed RunTest(string classMembers, string intMembers) => new(new DelegateToGenerator(), $$"""
         namespace Melville.INPC 
         {
           [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method,
@@ -27,7 +27,7 @@ public class DelegateToTest
                 {{intMembers}}  
             }
             public interface IChildInterface: IInterface { void ChildMethod(); }
-            public partial class C: IInterface { {{s}}
+            public partial class C: IInterface { {{classMembers}}
             }
         }
         """);
@@ -42,6 +42,17 @@ public class DelegateToTest
         var res = RunTest("[DelegateTo] "+member, @"int A();");
         res.LastFile().AssertContains("public partial class C");            
         res.LastFile().AssertContains(methodCall);            
+    }
+
+    [Theory]
+    [InlineData("[DelegateTo] IInterface i; byte Wrap(int i)=>(byte)i;", "public int A() => Wrap(this.i.A());")]
+    [InlineData("[DelegateTo] IInterface i; long Wrap(int i)=>i;", "public int A() => this.i.A();")]
+    [InlineData("[DelegateTo] IInterface i; long Wrap()=>1;", "public void B() {this.i.B(); Wrap();}")]
+    public void ReturnMethodWrapping(string member, string methodCall)
+    {
+        var res = RunTest("[DelegateTo(\"Wrap\")] " + member, @"int A(); void B();");
+        res.LastFile().AssertContains("public partial class C");
+        res.LastFile().AssertContains(methodCall);
     }
 
     [Theory]
