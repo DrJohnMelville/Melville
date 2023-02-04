@@ -1,5 +1,6 @@
 ﻿using Melville.Generators.INPC.ProductionGenerators.Macros;
 using Melville.Generators.INPC.Test.UnitTests;
+using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.Macros;
@@ -9,28 +10,6 @@ public class TextTest
     protected GeneratorTestBed RunTest(string s) =>
         new(new MacroGenerator(), $$"""
             using System.Diagnostics;
-            namespace Melville.INPC 
-            {
-                [Conditional("ShowCodeGenAttributes")]
-                [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method | 
-                                AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event |
-                    AttributeTargets.Interface, Inherited=false, AllowMultiple=true)]
-                public sealed class MacroItemAttribute: System.Attribute
-                {
-                    public MacroItemAttribute(params object[] text){}
-                }
-                [Conditional("ShowCodeGenAttributes")]
-                [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Method | 
-                                AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Event |
-                    AttributeTargets.Class, Inherited=false, AllowMultiple=true)]
-                public sealed class MacroCodeAttribute: System.Attribute
-                {
-                    public object Prefix {get;set;} = "";
-                    public object Postfix {get;set;} = "";
-                    public MacroCodeAttribute(object text){}
-                } 
-            }
-    
             namespace Outer
             {
                 using Melville.INPC;
@@ -41,7 +20,7 @@ public class TextTest
                     private void Func();
                 }
             }
-            """);
+            """, typeof(MacroItemAttribute));
 
     [Theory]
     [InlineData("[MacroCode(\"// Macro: ~0~\")] [MacroItem(\"One\")]", "namespace Outer")]

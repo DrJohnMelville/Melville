@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Threading;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,11 +28,24 @@ public class DelegateToGenerator: IIncrementalGenerator
         context.RegisterSourceOutput(
             context.SyntaxProvider.ForAttributeWithMetadataName(QualifiedAttributeName,
                 static (i, _) => i is T,
-                (i, _) => new DelegatedMethodInLocation(i.TargetNode,
-                    func(i, DelegationRequestParserFactory.Create(i.Attributes, i.SemanticModel)))),
+                 (i,_) => (i, func)
+/*                (i, _) => new DelegatedMethodInLocation(i.TargetNode,
+                    func(i, DelegationRequestParserFactory.Create(i.Attributes, i.SemanticModel)))*/),
             Generate
         );
 
-    private void Generate(SourceProductionContext writeTo, DelegatedMethodInLocation factory) => 
-        factory.GenerateIn(new SourceProductionCodeWriter(writeTo));
+    private void Generate(
+        SourceProductionContext arg1, 
+        (GeneratorAttributeSyntaxContext i, Func<GeneratorAttributeSyntaxContext, DelegationRequestParser, IDelegatedMethodGenerator> func) context)
+    {
+        var targetAttributes = context.i;
+        var codeWriter = new SourceProductionCodeWriter(arg1);
+        using var _ = codeWriter.GenerateInClassFile(targetAttributes.TargetNode, "GeneratedDelegator");
+        foreach (var attr in targetAttributes.Attributes)
+        {
+            var creator = DelegationRequestParserFactory.Create(attr, targetAttributes.SemanticModel);
+            context.func(context.i,creator).GenerateForwardingMethods(codeWriter);
+        }
+    }
+
 }

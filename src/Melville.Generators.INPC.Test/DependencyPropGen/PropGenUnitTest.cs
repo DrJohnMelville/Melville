@@ -1,5 +1,6 @@
 ﻿using Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 using Melville.Generators.INPC.Test.UnitTests;
+using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.DependencyPropGen;
@@ -8,23 +9,6 @@ public class PropGenUnitTest
 {
     private GeneratorTestBed RunTest(string s) =>
         new GeneratorTestBed(new DependencyPropertyGenerator(), $$"""
-            namespace Melville.INPC
-            {
-              public sealed class GenerateDPAttribute : System.Attribute
-              {
-                public bool Attached { get; set; }
-                public bool Nullable { get; set; }
-                public object? Default { get; set; }
-
-                public GenerateDPAttribute()
-                {
-                }
-
-                public GenerateDPAttribute(Type targetType, string propName = "")
-                {
-                }  
-               }        
-            }
             namespace Outer
             {
                 using Melville.INPC;
@@ -35,7 +19,7 @@ public class PropGenUnitTest
                     private void Func();
                 }
             }
-            """);
+            """, typeof(GenerateDPAttribute));
 
     [Theory]
     [InlineData("bool")]

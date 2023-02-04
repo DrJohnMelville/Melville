@@ -24,7 +24,7 @@ namespace Melville.ExcelDataContext
         }
 
         private  CompilationOutput BuildAssembly() => Compile(source.GetSourceCode(nameSpace, typeName),
-            name.CodeBase ?? "C:\\");
+            AppDomain.CurrentDomain.BaseDirectory);
 
         private CompilationOutput Compile(string cSharpSourceCode, string outputFile)
         {

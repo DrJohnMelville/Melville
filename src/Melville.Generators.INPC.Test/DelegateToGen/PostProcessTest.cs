@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
+using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.DelegateToGen;
@@ -9,17 +10,6 @@ public class PostProcessTest
 {
     private GeneratorTestBed RunTest(string mixinMembers, string hostMembers) =>
         new(new DelegateToGenerator(), $$"""
-            namespace Melville.INPC 
-            {
-              [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method,
-               Inherited = false, AllowMultiple = false)]
-              public sealed class DelegateToAttribute : System.Attribute
-              {
-                    public DelegateToAttribute(){}
-                    public DelegateToAttribute(bool explicitImplementation){}
-                    public DelegateToAttribute(string postProcessName){}
-               }  
-            }
             namespace Outer
             {
                 using Melville.INPC;
@@ -32,7 +22,7 @@ public class PostProcessTest
                     {{hostMembers}}}
                 }
             }
-            """);
+            """, typeof(DelegateToAttribute));
 
     [Theory]
     [InlineData("public int X() => 1;", "public int X() => Wrap(this.mix.X());")]
@@ -44,7 +34,7 @@ public class PostProcessTest
     public void WrapIntTest(string forwardedItem, string result)
     {
         var res = RunTest(forwardedItem, """
-            [DelegateTo("Wrap")] private Mixin mix;
+            [DelegateTo(WrapWith = "Wrap")] private Mixin mix;
             public int Wrap(int i) => i;
             public void Wrap();
             """);
@@ -59,7 +49,7 @@ public class PostProcessTest
     public void WrapIntToLongTest(string forwardedItem, string result)
     {
         var res = RunTest(forwardedItem, """
-            [DelegateTo("Wrap")] private Mixin mix;
+            [DelegateTo(WrapWith = "Wrap")] private Mixin mix;
             public long Wrap(int i) => i;
             public void Wrap();
             """);
@@ -87,7 +77,7 @@ public class PostProcessTest
     private GeneratorTestBed RunSubstitutionItemTest(string forwardedItem, string succeeditem)
     {
         return RunTest(forwardedItem, $"""
-            [DelegateTo("Wrap")] private Mixin mix;
+            [DelegateTo(WrapWith = "Wrap")] private Mixin mix;
             {succeeditem}
             """);
     }

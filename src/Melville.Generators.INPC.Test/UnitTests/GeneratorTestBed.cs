@@ -1,5 +1,8 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using Melville.Generators.INPC.ProductionGenerators.INPC;
 using Melville.INPC;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -9,19 +12,19 @@ namespace Melville.Generators.INPC.Test.UnitTests;
 
 public class GeneratorTestBed
 {
-    public GeneratorTestBed(ISourceGenerator sut, string code) : this(
+    public GeneratorTestBed(ISourceGenerator sut, string code, params Type[] typesToInclude) : this(
         CSharpGeneratorDriver.Create(ImmutableArray.Create(sut), ImmutableArray<AdditionalText>.Empty,
-            CSharpParseOptions), code)
+            CSharpParseOptions), code, typesToInclude)
     {
     }
 
-    public GeneratorTestBed(IIncrementalGenerator sut, string code): this(
-        CSharpGeneratorDriver.Create(sut), code)
+    public GeneratorTestBed(IIncrementalGenerator sut, string code, params Type[] typesToInclude) : this(
+        CSharpGeneratorDriver.Create(sut), code, typesToInclude)
     {
     }
-    public GeneratorTestBed(CSharpGeneratorDriver driver, string code)
+    public GeneratorTestBed(CSharpGeneratorDriver driver, string code, params Type[] typesToInclude)
     {
-        var sourceCompilation = CompileCode(code);
+        var sourceCompilation = CompileCode(code, typesToInclude);
         driver.RunGeneratorsAndUpdateCompilation(sourceCompilation, out  compilation, out diagnostics);
     }
 
@@ -30,8 +33,8 @@ public class GeneratorTestBed
     private static readonly CSharpParseOptions CSharpParseOptions = new CSharpParseOptions(kind: SourceCodeKind.Regular, documentationMode: DocumentationMode.Parse);
 
 
-    private static CSharpCompilation CompileCode(string code)
-    {
+    private static CSharpCompilation CompileCode(string code, Type[] typesToInclude)
+    { 
         CSharpParseOptions parseOptions = new CSharpParseOptions()
             .WithKind(SourceCodeKind.Regular) // ...as representing a complete .cs file
             .WithLanguageVersion(LanguageVersion.Latest); // ...enabling the latest language features
@@ -46,15 +49,30 @@ public class GeneratorTestBed
         CSharpCompilation compilation =
             CSharpCompilation.Create("TestInMemoryAssembly") // ..with some fake dll name
                 .WithOptions(compileOptions)
-                .AddReferences(
-                    MetadataReference.CreateFromFile(typeof(object).Assembly
-                        .Location)); // ...referencing the same mscorlib we're running on
+                .AddReferences(SystemReferences())
+                .AddReferences(AllReferences(typesToInclude));
 
         var tree = CSharpSyntaxTree.ParseText(code, parseOptions);
         compilation = compilation.AddSyntaxTrees(tree);
         // Parse and compile the C# code into a *.dll and *.xml file in-memory
         return compilation;
     }
+
+    // allows loading the attributes from another assembly.  See
+    // https://stackoverflow.com/questions/23907305/roslyn-has-no-reference-to-system-runtime/72618941#72618941
+    // https://stackoverflow.com/questions/68231332/in-memory-csharpcompilation-cannot-resolve-attributes
+    private static IEnumerable<MetadataReference> SystemReferences()
+    {
+        return AppDomain.CurrentDomain.GetAssemblies()
+            .Where(i => i is { IsDynamic: false, Location: { Length: > 0 } })
+            .Select(i => MetadataReference.CreateFromFile(i.Location));
+    }
+
+    private static IEnumerable<PortableExecutableReference> AllReferences(Type[] typesToInclude) => 
+        typesToInclude
+            .Select(i => i.Assembly.Location)
+            .Distinct()
+            .Select(i=>MetadataReference.CreateFromFile(i));
 
     public void AssertNoDiagnostics() => Assert.Empty(diagnostics);
 

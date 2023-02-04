@@ -1,5 +1,6 @@
 ﻿using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
+using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.DelegateToGen;
@@ -8,13 +9,6 @@ public class DelegateToClassTest
 {
     private GeneratorTestBed RunTest(string classDecl, string classMembers, string s) => 
         new(new DelegateToGenerator(), $$"""
-            namespace Melville.INPC 
-            {
-               public sealed class DelegateToAttribute : Attribute
-                {
-                    public DelegateToAttribute(bool explicitImplementation = false){}
-                }
-            }
             namespace Outer
             {
                 using Melville.INPC;
@@ -27,7 +21,7 @@ public class DelegateToClassTest
                     {{s}}}
                 }
             }
-            """);
+            """, typeof(DelegateToAttribute));
 
     [Fact]
     public void DelegateToClass()

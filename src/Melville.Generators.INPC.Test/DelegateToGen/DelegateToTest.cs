@@ -2,27 +2,18 @@
 using System.Security.Cryptography.X509Certificates;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
+using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.DelegateToGen;
 
 public class DelegateToTest
 {
-    private GeneratorTestBed RunTest(string classMembers, string intMembers) => new(new DelegateToGenerator(), $$"""
-        namespace Melville.INPC 
-        {
-          [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method,
-           Inherited = false, AllowMultiple = false)]
-          public sealed class DelegateToAttribute : System.Attribute
-          {
-                public DelegateToAttribute(){}
-                public DelegateToAttribute(bool explicitImplementation){}
-                public DelegateToAttribute(string postProcessName){}
-           }  
-        }
+    private GeneratorTestBed RunTest(string classMembers, string intMembers) =>
+        new(new DelegateToGenerator(), $$"""
+        using Melville.INPC;
         namespace Outer
         {
-            using Melville.INPC;
             public interface IInterface
             {
                 {{intMembers}}  
@@ -31,7 +22,7 @@ public class DelegateToTest
             public partial class C: IInterface { {{classMembers}}
             }
         }
-        """);
+        """, typeof(DelegateToAttribute));
     [Theory]
     [InlineData("private IInterface Field;", "this.Field.A()")]
     [InlineData("public IInterface Field{get;}", "this.Field.A()")]
@@ -51,7 +42,7 @@ public class DelegateToTest
     [InlineData("[DelegateTo] IInterface i; long Wrap()=>1;", "public void B() {this.i.B(); Wrap();}")]
     public void ReturnMethodWrapping(string member, string methodCall)
     {
-        var res = RunTest("[DelegateTo(\"Wrap\")] " + member, @"int A(); void B();");
+        var res = RunTest("[DelegateTo(WrapWith = \"Wrap\")] " + member, @"int A(); void B();");
         res.LastFile().AssertContains("public partial class C");
         res.LastFile().AssertContains(methodCall);
     }

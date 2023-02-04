@@ -9,25 +9,12 @@ public class StaticSingletonTests
 {
     private GeneratorTestBed RunTestWithDeclaredAttr(string s, string parentCode = "") =>
         new(new StaticSingletonGenerator(), $$"""
-            namespace Melville.INPC
-            {
-                [Conditional(""ShowCodeGenAttributes"")]
-                [AttributeUsage( AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-                public sealed class StaticSingletonAttribute : System.Attribute
-                {  
-                    public string? Name { get; set;}
-                    public StaticSingletonAttribute(string? name)
-                    {           
-                     Name = name;
-                    }
-                } 
-            }
             namespace Outer
             {
                 using Melville.INPC;
                 {{s}}
             }
-            """);
+            """, typeof (StaticSingletonAttribute));
 
     [Fact]
     public void GenerateSingleton()

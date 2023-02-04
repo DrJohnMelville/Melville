@@ -1,6 +1,7 @@
 ﻿using Melville.Generators.INPC.ProductionGenerators.Constructors;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
+using Melville.INPC;
 using Xunit;
 
 namespace Melville.Generators.INPC.Test.FromConstructorGen;
@@ -14,16 +15,12 @@ public class ConstructorGenTest
 ");
     private GeneratorTestBed RunTestWithDeclaredAttr(string s) =>
         new(new ConstructorGenerator(), $$"""
-            namespace Melville.INPC
-            {
-                public class FromConstructorAttribute: System.Attribute{}
-            }
             namespace Outer
             {
                 using Melville.INPC;
                 {{s}}
             }
-            """);
+            """, typeof(FromConstructorAttribute));
 
     [Fact]
     public void IntProperty()
