@@ -1,7 +1,7 @@
 ﻿using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 
 public class ErrorMethodGenerator : IDelegatedMethodGenerator
 {

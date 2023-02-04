@@ -53,7 +53,7 @@ public class MixinTest
     [Fact]
     public void SwitchInternalToPublic()
     {
-        var res = RunTest("class", "internal int Foo()=>1;", "[DelegateTo] Mixin bar;");
-        res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("internal int Foo() => this.bar.Foo();");
+        var res = RunTest("class", "internal int Foo()=>1;", "[DelegateTo(Visibility = Visibility.Public)] Mixin bar;");
+        res.FromName("GeneratedDelegator.Outer.C.bar.cs").AssertContains("public int Foo() => this.bar.Foo();");
     }
 }

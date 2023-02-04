@@ -2,12 +2,11 @@
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 
 public class MixinClassGenerator : BaseClassMethodGenerator
 {
-    public MixinClassGenerator(ITypeSymbol sourceType, string methodPrefix, ISymbol targetSymbol, IMethodWrappingStrategy wrappingStrategy) :
-        base(sourceType, methodPrefix, targetSymbol, wrappingStrategy)
+    public MixinClassGenerator(DelegationOptions options) : base(options)
     {
     }
 

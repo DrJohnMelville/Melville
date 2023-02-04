@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
 

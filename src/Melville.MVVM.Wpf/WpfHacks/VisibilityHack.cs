@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using Melville.INPC;
+using Visibility = System.Windows.Visibility;
 
 namespace Melville.MVVM.Wpf.WpfHacks;
 

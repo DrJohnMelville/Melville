@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.GenerationTools.CodeWriters;
 
-public abstract  class CodeWriter
+public abstract class CodeWriter
 {
     private readonly HashSet<string> prefixLines = new();
     private readonly IndentedStringBuilder target = new();

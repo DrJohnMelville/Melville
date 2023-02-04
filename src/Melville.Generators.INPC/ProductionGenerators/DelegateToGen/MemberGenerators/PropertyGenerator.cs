@@ -1,4 +1,5 @@
 ﻿using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
 
@@ -90,5 +91,5 @@ public class PropertyGenerator : MemberGenerator<IPropertySymbol>
         cw.Append(SourceSymbol.Name);
     }
 
-    private string SetMethodKeyword() => SourceSymbol.SetMethod.IsInitOnly ? "init" : "set";
+    private string SetMethodKeyword() => SourceSymbol.SetMethod?.IsInitOnly??false ? "init" : "set";
 }

@@ -8,6 +8,7 @@ using Melville.INPC;
 using Melville.Linq;
 using Melville.MVVM.Wpf.EventBindings;
 using Melville.WpfControls.Hacks;
+using Visibility = System.Windows.Visibility;
 
 namespace Melville.WpfControls.CalendarControls;
 

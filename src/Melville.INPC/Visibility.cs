@@ -1,14 +1,17 @@
 ﻿namespace Melville.INPC;
 
 /// <summary>
-/// Enumeration for common accessibility combinations.  This is copied from Microsoft.CodeAnalysis.Text
+/// Enumeration for common accessibility combinations.
+/// the values are specifically chosen so this can be casted directly to the
+/// Microsoft.CodeAnalysis.Accessability class. 
 /// </summary>
-public enum Accessibility
+public enum Visibility
 {
     /// <summary>
     /// No accessibility specified.
     /// </summary>
     NotApplicable = 0,
+    CopySourceVisibility = 0,
 
     // DO NOT CHANGE ORDER OF THESE ENUM VALUES
     Private = 1,

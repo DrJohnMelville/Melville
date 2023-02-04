@@ -5,15 +5,21 @@ namespace Melville.INPC;
 
 [Conditional("ShowCodeGenAttributes")]
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property | AttributeTargets.Method,
-    Inherited = false, AllowMultiple = false)]
+    Inherited = false, AllowMultiple = true)]
 public sealed class DelegateToAttribute : Attribute
 {
+
     /// <summary>
     /// Sets the desired accessibility of the generated members,
     /// </summary>
-    public Accessibility Accessibility { get; set; }
-    public string WrapWith { get; set; }
+    public Visibility Visibility { get; set; }
+
+    public string WrapWith { get; set; } = "";
+    public bool ExplicitImplementation { get; set; }
 
     public DelegateToAttribute(){}
-    public DelegateToAttribute(bool explicitImplementation){}
+    public DelegateToAttribute(bool explicitImplementation)
+    {
+        ExplicitImplementation = explicitImplementation;
+    }
 }

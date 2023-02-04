@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -28,9 +31,7 @@ public class DelegateToGenerator: IIncrementalGenerator
         context.RegisterSourceOutput(
             context.SyntaxProvider.ForAttributeWithMetadataName(QualifiedAttributeName,
                 static (i, _) => i is T,
-                 (i,_) => (i, func)
-/*                (i, _) => new DelegatedMethodInLocation(i.TargetNode,
-                    func(i, DelegationRequestParserFactory.Create(i.Attributes, i.SemanticModel)))*/),
+                 (i,_) => (i, func)),
             Generate
         );
 

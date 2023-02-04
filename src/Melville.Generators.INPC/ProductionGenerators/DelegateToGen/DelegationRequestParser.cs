@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
+using Melville.INPC;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -11,12 +13,15 @@ public readonly struct DelegationRequestParser
     private readonly bool useExplicit;
     private readonly string postProcessName;
     private readonly SemanticModel semanticModel;
+    private readonly Accessibility visibility;
 
-    public DelegationRequestParser(bool useExplicit, string postProcessName, SemanticModel semanticModel)
+    public DelegationRequestParser(bool useExplicit, string postProcessName, SemanticModel semanticModel,
+        Accessibility visibility)
     {
         this.useExplicit = useExplicit;
         this.postProcessName = postProcessName;
         this.semanticModel = semanticModel;
+        this.visibility = visibility;
     }
 
     public IDelegatedMethodGenerator ParseFromMethod(IMethodSymbol symbol, SyntaxNode location) =>
@@ -39,6 +44,9 @@ public readonly struct DelegationRequestParser
     {
         var isMixIn = IsMixIn(targetSymbol.ContainingType, typeToImplement);
         var wrappingStrategy = CreateWrappingStrategy(targetSymbol.ContainingType, isMixIn);
+
+        var options = new DelegationOptions(typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility);
+
         return (typeToImplement.TypeKind, useExplicit, isMixIn) switch
         {
             (not TypeKind.Interface, true, _) =>
@@ -50,16 +58,16 @@ public readonly struct DelegationRequestParser
                     "Dele003", "Inconsistent Options",
                     "To use explicit implementation the host class must implement the target interface"),
             (TypeKind.Class or TypeKind.Struct, false, true) =>
-                new MixinClassGenerator(typeToImplement, methodPrefix, targetSymbol, wrappingStrategy),
+                new MixinClassGenerator(options),
             (TypeKind.Interface, false, true) =>
-                new InterfaceMixinGenerator(typeToImplement, methodPrefix, targetSymbol, wrappingStrategy),
+                new InterfaceMixinGenerator(options),
             (TypeKind.Interface, true, _) =>
-                new ExplicitMethodGenerator(typeToImplement, methodPrefix,
-                    typeToImplement.FullyQualifiedName() + ".", targetSymbol, wrappingStrategy),
-            (TypeKind.Interface, _, _) => new InterfaceMethodGenerator(
-                typeToImplement, methodPrefix, targetSymbol, wrappingStrategy),
-            (TypeKind.Class, _, _) => new BaseClassMethodGenerator(
-                typeToImplement, methodPrefix, targetSymbol, wrappingStrategy),
+                new ExplicitMethodGenerator(options),
+                // new ExplicitMethodGenerator( typeToImplement, methodPrefix,
+                //     typeToImplement.FullyQualifiedName() + ".", targetSymbol, wrappingStrategy),
+            (TypeKind.Interface, _, _) => new InterfaceMethodGenerator(options),
+            (TypeKind.Class, _, _) => new BaseClassMethodGenerator(options),
+
             _ => new ErrorMethodGenerator(SymbolLocation(typeToImplement),
                 "Dele001", "Invalid Delegation target",
                 $"Do not know how to generate delegating methods for a {typeToImplement}")

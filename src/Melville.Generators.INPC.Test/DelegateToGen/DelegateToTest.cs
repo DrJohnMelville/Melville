@@ -114,6 +114,14 @@ public class DelegateToTest
         res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
     }
 
+    [Theory]
+    [InlineData("int A(ref int b);", "int Outer.IInterface.A(ref int b) => this.Field.A(ref b);")]
+    public void ExplicitImplementationAsProperty(string intMember, string output)
+    {
+        var res = RunTest(" [DelegateTo(ExplicitImplementation = true)] private IInterface Field; ", intMember);
+        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
+    }
+
 
     [Fact]
     public void DoNotGenerateExistingMembers()

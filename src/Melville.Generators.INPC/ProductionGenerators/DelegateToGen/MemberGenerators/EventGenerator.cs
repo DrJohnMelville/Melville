@@ -1,4 +1,5 @@
 ﻿using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGenerators;
