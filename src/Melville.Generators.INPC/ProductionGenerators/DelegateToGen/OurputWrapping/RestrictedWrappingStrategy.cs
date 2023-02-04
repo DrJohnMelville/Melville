@@ -1,7 +1,7 @@
 ﻿using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 
 public class RestrictedWrappingStrategy : UnrestrictedWrappingStrategy
 {

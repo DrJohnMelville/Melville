@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 
 public interface IMethodWrappingStrategy
 {

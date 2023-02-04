@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
-using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
-public class InterfaceMethodGenerator : DelegatedMethodGenerator
+public class InterfaceMethodGenerator : ClassGenerator
 {
     public InterfaceMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol,
+        ITypeSymbol sourceType, string methodPrefix, ISymbol parentSymbol,
         IMethodWrappingStrategy wrappingStrategy) : 
-        base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
+        base(sourceType, methodPrefix, parentSymbol, wrappingStrategy)
     {
     }
 
@@ -19,9 +19,9 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
         TargetTypeAndParents().SelectMany(i => i.GetMembers());
 
     private IEnumerable<ITypeSymbol> TargetTypeAndParents() => 
-        GeneratedMethodSourceSymbol.AllInterfaces.Append(GeneratedMethodSourceSymbol);
+        SourceType.AllInterfaces.Append(SourceType);
 
-    public override string MemberDeclarationPrefix(ISymbol sym) => sym.AccessDeclaration()+" ";
+    protected override string MemberDeclarationPrefix(Accessibility sym) => sym.AccessDeclaration()+" ";
         
     protected override bool ImplementationMissing(ISymbol i) =>
         GeneratedMethodHostSymbol.FindImplementationForInterfaceMember(i) == null;
@@ -31,8 +31,8 @@ public class InterfaceMethodGenerator : DelegatedMethodGenerator
 public class InterfaceMixinGenerator : InterfaceMethodGenerator
 {
     public InterfaceMixinGenerator(
-        ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol, IMethodWrappingStrategy wrappingStrategy) :
-        base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
+        ITypeSymbol sourceType, string methodPrefix, ISymbol parentSymbol, IMethodWrappingStrategy wrappingStrategy) :
+        base(sourceType, methodPrefix, parentSymbol, wrappingStrategy)
     {
     }
 
@@ -47,12 +47,12 @@ public class ExplicitMethodGenerator : InterfaceMethodGenerator
     private readonly string namePrefix;
 
     public ExplicitMethodGenerator(
-        ITypeSymbol targetType, string methodPrefix, string namePrefix, ISymbol parentSymbol, IMethodWrappingStrategy wrappingStrategy) 
-        : base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
+        ITypeSymbol sourceType, string methodPrefix, string namePrefix, ISymbol parentSymbol, IMethodWrappingStrategy wrappingStrategy) 
+        : base(sourceType, methodPrefix, parentSymbol, wrappingStrategy)
     {
         this.namePrefix = namePrefix;
     }
 
-    public override string MemberDeclarationPrefix(ISymbol sym) => ""; // Explicit methods are inherently private
-    public override string MemberNamePrefix() => namePrefix;
+    protected override string MemberDeclarationPrefix(Accessibility suggestedAccess) => ""; // Explicit methods are inherently private
+    protected override string MemberNamePrefix() => namePrefix;
 }

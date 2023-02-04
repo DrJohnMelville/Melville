@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
-using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 

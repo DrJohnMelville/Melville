@@ -1,21 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
-using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
-public class BaseClassMethodGenerator : DelegatedMethodGenerator
+public class BaseClassMethodGenerator : ClassGenerator
 {
-    public BaseClassMethodGenerator(ITypeSymbol targetType, string methodPrefix, ISymbol parentSymbol,
+    public BaseClassMethodGenerator(ITypeSymbol sourceType, string methodPrefix, ISymbol parentSymbol,
         IMethodWrappingStrategy wrappingStrategy) :
-        base(targetType, methodPrefix, parentSymbol, wrappingStrategy)
+        base(sourceType, methodPrefix, parentSymbol, wrappingStrategy)
     {
     }
 
-    public override string MemberDeclarationPrefix(ISymbol replacedSumbol) =>
-        replacedSumbol.AccessDeclaration() + " override ";
+    protected override string MemberDeclarationPrefix(Accessibility suggestedAccess) =>
+        suggestedAccess.AccessDeclaration() + " override ";
 
     protected override IEnumerable<ISymbol> MembersThatCouldBeForwarded() =>
 //We are not using the SymbolEqualityComparer specifically because we want a looser comparison of the symbols
@@ -28,7 +28,7 @@ public class BaseClassMethodGenerator : DelegatedMethodGenerator
 #pragma warning restore RS1024
 
     private IEnumerable<ITypeSymbol> AllTypes() => 
-        GeneratedMethodSourceSymbol.AllBases().Prepend(GeneratedMethodSourceSymbol);
+        SourceType.AllBases().Prepend(SourceType);
 
     protected virtual bool IsForwardableSymbol(ISymbol i) =>
         (i.IsVirtual || i.IsAbstract) && CanSeeSymbol(i);

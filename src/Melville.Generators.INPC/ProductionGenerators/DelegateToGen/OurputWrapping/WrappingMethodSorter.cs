@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 
 public readonly struct WrappingMethodSorter
 {

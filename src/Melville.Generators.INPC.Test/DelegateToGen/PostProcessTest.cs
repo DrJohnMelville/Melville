@@ -80,7 +80,7 @@ public class PostProcessTest
         "private int Wrap(int x, int y)=>y;")]
     public void MethodMatchingTest(string forwardedItem, string result, string succeeditem, string failItem)
     {
-//        RunSubstitutionItemTest(forwardedItem, succeeditem).LastFile().AssertContains(result);
+        RunSubstitutionItemTest(forwardedItem, succeeditem).LastFile().AssertContains(result);
         RunSubstitutionItemTest(forwardedItem, failItem).LastFile().AssertDoesNotContain(result);
     }
 

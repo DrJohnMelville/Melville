@@ -1,8 +1,7 @@
-﻿using System.ComponentModel.Design;
-using Melville.Generators.INPC.GenerationTools.AstUtilities;
+﻿using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodMappings;
+namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 
 public class MandatoryWrappingStrategy : IMethodWrappingStrategy
 {

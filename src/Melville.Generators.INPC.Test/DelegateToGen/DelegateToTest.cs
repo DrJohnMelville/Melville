@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Xunit;
@@ -130,6 +131,20 @@ public class DelegateToTest
             "int A(); int B(int b1);");
         res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("int B(int b1)");
         res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertDoesNotContain("int A(");
+    }
+
+    [Theory]
+    [InlineData("public int A();", "public int A(){}", "public int A1() {}")]
+    [InlineData("public int A();", "public int A(){}", "public int A(string s) {}")]
+    [InlineData("public int A(int x);", "public int A(int y){}", "public int A(string s) {}")]
+    [InlineData("public int A(int x);", "public int A(int y){}", "public int A() {}")]
+    [InlineData("public int A<T>();", "public int A<T>(){}", "public int A() {}")]
+    [InlineData("public int A<T>();", "public int A<T>(){}", "public int A<T1,T2>() {}")]
+    public void MethodSupressionTest(string hostMember, string suppressed, string notSupressed)
+    {
+        RunTest("[DelegateTo] private IInterface field; " + hostMember, suppressed).LastFile().AssertDoesNotContain("public int");
+        RunTest("[DelegateTo] private IInterface field; " + hostMember, notSupressed).LastFile().AssertContains("public int");
+
     }
         
     [Theory]

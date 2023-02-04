@@ -66,5 +66,4 @@ public partial class IndentedStringBuilder
         });
     }
     public override string ToString() => target.ToString();
-
 }
