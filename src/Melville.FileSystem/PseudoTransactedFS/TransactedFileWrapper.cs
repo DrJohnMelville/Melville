@@ -13,6 +13,6 @@ internal sealed partial class TransactedFileWrapper : IFileWrapper
             wrappedDirectory??throw new ArgumentException("Transacted files should have a parent."));
 
     public IDirectory WrapDirectory(IDirectory source, IDirectory wrappedParent) => 
-        new WrappedDirectory(source, wrappedParent, this);
+        new FileWrapperDirectoryWrapper(source, wrappedParent, this);
   
 }
