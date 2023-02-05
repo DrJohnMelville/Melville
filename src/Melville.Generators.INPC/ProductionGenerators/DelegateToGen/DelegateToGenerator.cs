@@ -23,6 +23,8 @@ public class DelegateToGenerator: IIncrementalGenerator
             (item, fact)=> fact.ParseFromMethod((IMethodSymbol)item.TargetSymbol, item.TargetNode));
         RegisterGeneratorFor<VariableDeclaratorSyntax>(context,
             (item, fact)=> fact.ParseFromField((IFieldSymbol)item.TargetSymbol));
+        RegisterGeneratorFor<TypeDeclarationSyntax>(context,
+            (item, fact)=> fact.ParseFromType((ITypeSymbol)item.TargetSymbol));
     }
 
     private void RegisterGeneratorFor<T>(

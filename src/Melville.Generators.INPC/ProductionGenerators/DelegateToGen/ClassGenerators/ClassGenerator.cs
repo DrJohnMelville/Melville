@@ -27,7 +27,7 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
         Options = options;
     }
 
-    protected ITypeSymbol GeneratedMethodHostSymbol => HostSymbol.ContainingType;
+    protected ITypeSymbol GeneratedMethodHostSymbol => Options.HostClass;
 
     protected abstract string MemberDeclarationPrefix(Accessibility suggestedAccess);
     protected virtual string MemberNamePrefix() => "";
@@ -46,14 +46,16 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
         MembersThatCouldBeForwarded()
             .Where(IsNotSpecialInternalMethod)
             .Select(CreateMemberGenerator)
-            .Where(i => !HostSymbol.ContainingType.GetMembers().Any(i.IsSuppressedBy));
+            .Where(i => !Options.HostClass.GetMembers().Any(i.IsSuppressedBy));
 
-    private IMemberGenerator CreateMemberGenerator(ISymbol member) => member switch
+    private IMemberGenerator CreateMemberGenerator(ISymbol member) => 
+        (member, Options.Namer.ComputeNameFor(member.Name)) switch
     {
-        IPropertySymbol { IsIndexer: true } ps => new IndexerGenerator(ps, this),
-        IPropertySymbol ps => new PropertyGenerator(ps, this, ps.Name),
-        IEventSymbol es => new EventGenerator(es, this, es.Name),
-        IMethodSymbol ms => new MethodGenerator(ms, this, ms.Name),
+        (_, null) => FilteredMemberGenerator.Instance,
+        (IPropertySymbol { IsIndexer: true } ps, _) => new IndexerGenerator(ps, this),
+        (IPropertySymbol ps, var newName) => new PropertyGenerator(ps, this, newName),
+        (IEventSymbol es, var newName) => new EventGenerator(es, this, newName),
+        (IMethodSymbol ms, var newName) => new MethodGenerator(ms, this, newName),
         _ => throw new InvalidOperationException($"Cannot forward member: {member}")
     };
 
@@ -72,6 +74,7 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
     protected abstract bool ImplementationMissing(ISymbol i);
 
     protected bool CanSeeSymbol(ISymbol methodToGenerate) =>
+        Options.IsSelfGeneration() ||
         (methodToGenerate.DeclaredAccessibility, SourceAndHostInSameAssembly(), HostDescendsFromSource) is
         (Accessibility.Public, _, _) or
         (Accessibility.Internal, true, _) or

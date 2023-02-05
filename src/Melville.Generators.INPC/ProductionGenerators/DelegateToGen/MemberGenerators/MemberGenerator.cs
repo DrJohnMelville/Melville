@@ -1,8 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 
@@ -13,6 +10,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGene
         bool IsSuppressedBy(ISymbol comparisonItem);
         void WriteSymbol(CodeWriter cw);
     }
+
     public abstract class MemberGenerator<T>: IMemberGenerator where T: ISymbol    {
         protected T SourceSymbol { get; }
         private readonly ClassGenerator host;

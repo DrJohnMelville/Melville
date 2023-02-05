@@ -13,9 +13,10 @@ public sealed class DelegateToAttribute : Attribute
     /// Sets the desired accessibility of the generated members,
     /// </summary>
     public Visibility Visibility { get; set; }
-
     public string WrapWith { get; set; } = "";
     public bool ExplicitImplementation { get; set; }
+    public string? Filter { get; set; }
+    public string? Rename { get; set; }
 
     public DelegateToAttribute(){}
     public DelegateToAttribute(bool explicitImplementation)

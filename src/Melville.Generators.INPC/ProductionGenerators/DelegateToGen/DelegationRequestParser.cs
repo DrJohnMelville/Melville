@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodNamers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Melville.INPC;
 using Microsoft.CodeAnalysis;
@@ -8,44 +9,50 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
-public readonly struct DelegationRequestParser
+public class DelegationRequestParser
 {
     private readonly bool useExplicit;
     private readonly string postProcessName;
     private readonly SemanticModel semanticModel;
     private readonly Accessibility visibility;
-
+    private readonly IMethodNamer namer;
     public DelegationRequestParser(bool useExplicit, string postProcessName, SemanticModel semanticModel,
-        Accessibility visibility)
+        Accessibility visibility, IMethodNamer namer)
     {
         this.useExplicit = useExplicit;
         this.postProcessName = postProcessName;
         this.semanticModel = semanticModel;
         this.visibility = visibility;
+        this.namer = namer;
     }
 
     public IDelegatedMethodGenerator ParseFromMethod(IMethodSymbol symbol, SyntaxNode location) =>
         IsValidDelegatingMethod(symbol)
-            ? Create(symbol.ReturnType, $"this.{symbol.Name}()", symbol)
+            ? Create(symbol.ReturnType, $"this.{symbol.Name}()", symbol, symbol.ContainingType)
             : new ErrorMethodGenerator(location, "Dele002", "Invalid Delegation method",
                 $"Can only delegate to a non-void returning method with no parameters");
 
     private static bool IsValidDelegatingMethod(IMethodSymbol symbol) => 
-        symbol.Parameters.Length == 0 && !symbol.ReturnsVoid;
+        symbol.Parameters.All(i=>i.IsOptional) && !symbol.ReturnsVoid;
     
     public IDelegatedMethodGenerator ParseFromProperty(IPropertySymbol ps) =>
-        Create(ps.Type, $"this.{ps.Name}", ps);
+        Create(ps.Type, $"this.{ps.Name}", ps, ps.ContainingType);
 
     public IDelegatedMethodGenerator ParseFromField(IFieldSymbol symbol) => 
-        Create(symbol.Type, $"this.{symbol.Name}", symbol);
+        Create(symbol.Type, $"this.{symbol.Name}", symbol, symbol.ContainingType);
+
+    public IDelegatedMethodGenerator ParseFromType(ITypeSymbol symbol) =>
+        Create(symbol, "this", symbol, symbol);
+
 
     private IDelegatedMethodGenerator Create(
-        ITypeSymbol typeToImplement, string methodPrefix, ISymbol targetSymbol)
+        ITypeSymbol typeToImplement, string methodPrefix, ISymbol targetSymbol, ITypeSymbol targetType)
     {
-        var isMixIn = IsMixIn(targetSymbol.ContainingType, typeToImplement);
-        var wrappingStrategy = CreateWrappingStrategy(targetSymbol.ContainingType, isMixIn);
+        var isMixIn = IsMixIn(targetType, typeToImplement);
+        var wrappingStrategy = CreateWrappingStrategy(targetType, isMixIn);
 
-        var options = new DelegationOptions(typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility);
+        var options = new DelegationOptions(
+            typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility, namer);
 
         return (typeToImplement.TypeKind, useExplicit, isMixIn) switch
         {
@@ -77,18 +84,18 @@ public readonly struct DelegationRequestParser
     private static SyntaxNode SymbolLocation(ISymbol typeToImplement) => 
         typeToImplement.DeclaringSyntaxReferences.First().GetSyntax();
 
-    private bool IsMixIn(INamedTypeSymbol typeHostingMembers, ITypeSymbol typeToImplement) =>
+    private bool IsMixIn(ITypeSymbol typeHostingMembers, ITypeSymbol typeToImplement) =>
         !typeHostingMembers.Interfaces
             .Concat(typeHostingMembers.AllBases())
             .Any(
                 i => SymbolEqualityComparer.Default.Equals(i, typeToImplement));
 
-    private IMethodWrappingStrategy CreateWrappingStrategy(INamedTypeSymbol newMethodHostType, bool isMixIn) =>
+    private IMethodWrappingStrategy CreateWrappingStrategy(ITypeSymbol newMethodHostType, bool isMixIn) =>
         string.IsNullOrEmpty(postProcessName) ?
             NoMethodMapping.Instance: 
             PickStrategyByInheritenceType(newMethodHostType, isMixIn);
 
-    private UnrestrictedWrappingStrategy PickStrategyByInheritenceType(INamedTypeSymbol newMethodHostType, bool isMixIn) =>
+    private UnrestrictedWrappingStrategy PickStrategyByInheritenceType(ITypeSymbol newMethodHostType, bool isMixIn) =>
         isMixIn?
             new UnrestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel):
             new RestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel);
