@@ -56,6 +56,7 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
         (IPropertySymbol ps, var newName) => new PropertyGenerator(ps, this, newName),
         (IEventSymbol es, var newName) => new EventGenerator(es, this, newName),
         (IMethodSymbol ms, var newName) => new MethodGenerator(ms, this, newName),
+        (ITypeSymbol tS, _) => FilteredMemberGenerator.Instance,
         _ => throw new InvalidOperationException($"Cannot forward member: {member}")
     };
 

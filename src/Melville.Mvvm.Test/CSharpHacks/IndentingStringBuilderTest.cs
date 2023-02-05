@@ -23,7 +23,7 @@ public class IndentingStringBuilderTest
     [Fact] public void Literal() => AssertResult("ABC", i => i.Append("ABC"));
     [Fact] public void Formatted() => AssertResult("YYY + 11\r\n", i => i.AppendLine($"YYY + {11}"));
     [Fact] public void Number() => AssertResult("4", i => i.Append(4));
-    [Fact] public void AppendLine() => AssertResult("4\r\n", i => i.AppendLine(4));
+    [Fact] public void AppendLine() => AssertResult("4\r\n", i => i.AppendLine("4"));
 
     [Fact]
     public void SingleIndent() => AssertResult("""

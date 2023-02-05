@@ -7,33 +7,10 @@ using Melville.INPC;
 
 namespace Melville.Hacks;
 
-[MacroItem("string?")]
-[MacroItem("sbyte")]
-[MacroItem("byte")]
-[MacroItem("short")]
-[MacroItem("int")]
-[MacroItem("long")]
-[MacroItem("float")]
-[MacroItem("double")]
-[MacroItem("decimal")]
-[MacroItem("ushort")]
-[MacroItem("uint")]
-[MacroItem("ulong")]
-[MacroItem("object?")]
-[MacroItem("ReadOnlySpan<char>")]
-[MacroCode("public IndentingStringBuilder Append(~0~ value) => ReturnThis(AppendTarget().Append(value));")]
-[MacroCode("""
-        public IndentingStringBuilder AppendLine(~0~ value) 
-        {
-            AppendTarget().Append(value); 
-            AddNewLine();
-            return this;
-        }
-        """)]
-[MacroCode("public IndentingStringBuilder Insert(int index, ~0~ value) => ReturnThis(AppendTarget().Insert(index, value));")]
 public partial class IndentingStringBuilder
 {
-    [FromConstructor] private readonly StringBuilder target;
+    [FromConstructor]
+    private readonly StringBuilder target;
     [FromConstructor] private readonly string indentString;
     private int indentSize;
     private bool needsIndent;
@@ -41,12 +18,20 @@ public partial class IndentingStringBuilder
     public IndentingStringBuilder(string? indent = null) : this(new StringBuilder(), indent ??"    ")
     {
     }
-
+    
+    [DelegateTo(WrapWith = "ReturnMe")]
     private StringBuilder AppendTarget()
     {
         if (needsIndent) AddIndent();
         return target;
     }
+
+    //This one has to be forwarded manually because forwarder will not forward unsafe code
+    public unsafe IndentingStringBuilder Append(char* value, int valueCount) => 
+        ReturnMe(this.AppendTarget().Append(value, valueCount));
+
+
+    public IndentingStringBuilder ReturnMe(StringBuilder sb) => this;
 
     private void AddIndent()
     {

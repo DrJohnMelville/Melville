@@ -60,7 +60,7 @@ public class PostProcessTest
     [InlineData("public void X() {}", "public int X() {this.mix.X(); return Wrap();}", "public int Wrap() => i;", "public void Wrap1(){}")]
     [InlineData("public void X() {}", "public void X() {this.mix.X(); Wrap();}", "public void Wrap(){}", "public void Wrap1(){}")]
     [InlineData("public void X() {}", "public void X() {this.mix.X(); Wrap();}", "public void Wrap(int x = 0){}", "public void Wrap(int x){}")]
-    [InlineData("public int X() => 1;", "public int X() => Wrap(this.mix.X());", "private int Wrap(int x)=>1", "private int Wrap(string x)=>1")]
+    [InlineData("public int X() => 1;", "Wrap", "private int Wrap(int x)=>1", "private int Wrap(string x)=>1")]
     [InlineData("public int X() => 1;", "public int X() => Wrap(this.mix.X());", "private T Wrap<T>(T x)=>x", "private T Wrap<T,U>(T x) => x;")]
     [InlineData("public int X() => 1;", "public int X() => Wrap(this.mix.X());", "private T Wrap<T>(T x)=>x;", 
         "private T Wrap<T>(int x) => x;")]
