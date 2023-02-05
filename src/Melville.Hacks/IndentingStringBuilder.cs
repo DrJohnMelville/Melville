@@ -18,8 +18,9 @@ public partial class IndentingStringBuilder
     public IndentingStringBuilder(string? indent = null) : this(new StringBuilder(), indent ??"    ")
     {
     }
-    
-    [DelegateTo(WrapWith = "ReturnMe")]
+
+    [DelegateTo(WrapWith = nameof(ReturnThis), Exclude = "Line$")]
+    [DelegateTo(WrapWith = nameof(ReturnThisAndSetIndent), Filter = "Line$")]
     private StringBuilder AppendTarget()
     {
         if (needsIndent) AddIndent();
@@ -28,10 +29,17 @@ public partial class IndentingStringBuilder
 
     //This one has to be forwarded manually because forwarder will not forward unsafe code
     public unsafe IndentingStringBuilder Append(char* value, int valueCount) => 
-        ReturnMe(this.AppendTarget().Append(value, valueCount));
+        ReturnThis(this.AppendTarget().Append(value, valueCount));
 
+    // Do not autoforward because this should not add an indent if the last line is blank
+    public override string ToString() => target.ToString();
 
-    public IndentingStringBuilder ReturnMe(StringBuilder sb) => this;
+    public IndentingStringBuilder ReturnThisAndSetIndent(StringBuilder sb)
+    {
+        needsIndent = true;
+        return this;
+    }
+    public IndentingStringBuilder ReturnThis(StringBuilder sb) => this;
 
     private void AddIndent()
     {
@@ -39,22 +47,13 @@ public partial class IndentingStringBuilder
         {
             target.Append(indentString);
         }
-
         needsIndent = false;
     }
 
-    public override string ToString() => target.ToString();
 
-    public void AddNewLine()
-    {
-        target.Append(Environment.NewLine);
-        needsIndent = true;
-    }
-
-    private IndentingStringBuilder ReturnThis<T>(T ignore) => this;
-
-    public IndentingStringBuilder BeginIndent() => ReturnThis(indentSize++);
-    public IndentingStringBuilder EndIndent() => ReturnThis(indentSize--);
+    private IndentingStringBuilder WrapWithThis(int _) => this;
+    public IndentingStringBuilder BeginIndent() => WrapWithThis(indentSize++);
+    public IndentingStringBuilder EndIndent() => WrapWithThis(indentSize--);
 
     public BlockClosingStruct OpenBlock()
     {
@@ -62,7 +61,7 @@ public partial class IndentingStringBuilder
         return new(this);
     }
 
-    public partial struct BlockClosingStruct : IDisposable
+    public readonly partial struct BlockClosingStruct : IDisposable
     {
         [FromConstructor] private readonly IndentingStringBuilder target;
         public void Dispose() => target.EndIndent();
@@ -73,7 +72,7 @@ public partial class IndentingStringBuilder
     [InterpolatedStringHandler]
     public partial struct ForwardingInterpolatedStringHandler
     {
-        [DelegateTo(false)]
+        [DelegateTo]
         private StringBuilder.AppendInterpolatedStringHandler handler;
 
         public ForwardingInterpolatedStringHandler(
@@ -90,8 +89,15 @@ public partial class IndentingStringBuilder
     public IndentingStringBuilder AppendLine(
         [InterpolatedStringHandlerArgument("")] ForwardingInterpolatedStringHandler handler)
     {
-        AddNewLine();
+        target.Append(Environment.NewLine);
+        needsIndent = true;
         return this;
     }
+
+    private IndentingStringBuilder AppendLine(ref StringBuilder.AppendInterpolatedStringHandler handler) => 
+        throw new NotSupportedException("I replaced this with the ones above, so prevent it from getting forwarded.");
+    private IndentingStringBuilder Append(ref StringBuilder.AppendInterpolatedStringHandler handler) => 
+        throw new NotSupportedException("I replaced this with the ones above, so prevent it from getting forwarded.");
+
 #endif
-} 
+}

@@ -16,6 +16,7 @@ public sealed class DelegateToAttribute : Attribute
     public string WrapWith { get; set; } = "";
     public bool ExplicitImplementation { get; set; }
     public string? Filter { get; set; }
+    public string? Exclude { get; set; }
     public string? Rename { get; set; }
 
     public DelegateToAttribute(){}

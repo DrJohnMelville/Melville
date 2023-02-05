@@ -15,6 +15,7 @@ public static class DelegationRequestParserFactory
         var visibility = Accessibility.NotApplicable;
         string? filter = null;
         string? rename = null;
+        string? exclude = null;
         foreach (var ca in attr.ConstructorArguments)
         {
             if (true.Equals(ca.Value)) useExplicit = true;
@@ -27,10 +28,11 @@ public static class DelegationRequestParserFactory
                 case "WrapWith": WrapWith = na.Value.Value?.ToString()??""; break;
                 case "Filter": filter= na.Value.Value?.ToString()??""; break;
                 case "Rename": rename = na.Value.Value?.ToString()??""; break;
+                case "Exclude": exclude= na.Value.Value?.ToString()??""; break;
                 case "ExplicitImplementation": useExplicit = Convert.ToBoolean(na.Value.Value); break;
                 case "Visibility": visibility = (Accessibility)(na.Value.Value ?? Accessibility.NotApplicable); break;
             }
         }
-        return new(useExplicit, WrapWith, compilation, visibility, RenameFactory.Create(filter, rename));
+        return new(useExplicit, WrapWith, compilation, visibility, RenameFactory.Create(filter, rename, exclude));
     }
 }
