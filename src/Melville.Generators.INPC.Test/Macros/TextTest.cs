@@ -70,12 +70,19 @@ public class TextTest
     [Fact]
     public void Prefix()
     {
-        RunTest("[MacroCode(\"// Macro: ~0~\", Prefix=\"// Prefix\")] [MacroItem(\"One\")]");
+        RunTest("[MacroCode(\"// Macro: ~0~\", Prefix=\"// Prefix\")] [MacroItem(\"One\")]")
+            .LastFile().AssertContains("// Prefix");
     }
     [Fact]
     public void DoubleCode()
     {
-        RunTest("[MacroCode(\"// Macro: ~0~\", Prefix=\"// Prefix\")] [MacroCode(\"// Macro2: ~0~\", Prefix=\"// Prefix\")] [MacroItem(\"One\")]");
+        var ret =RunTest("""
+                [MacroCode("// Macro: ~0~", Prefix="// Prefix")] 
+                [MacroCode("// Macro2: ~0~", Prefix="// Prefix")] 
+                [MacroItem("One")]
+                """);
+        ret.LastFile().AssertContains("// Macro: One");
+        ret.LastFile().AssertContains("// Macro2: One");
     }
 
     [Fact]
@@ -93,5 +100,24 @@ public class TextTest
         [MacroItem(3, ""Three"")]
 ");
         generatorTestBed.FromName("MacroGen.Outer.C.Func().cs").AssertContains("// Code: 1/One");
+    }
+
+    [Theory]
+    [InlineData("~0~", "Hello", "//! Hello")]
+    [InlineData("~0:C, `0x{0:X4}~", "AB", "//! 0xA, 0xB")]
+    [InlineData("~0:C, ~", "AB", "//! A, B")]
+    [InlineData("~0:I|`0x{0:X4}~", "AB", "//! 0x0041|0x0042")]
+    [InlineData("~0:I|`0x{0:X4}~", "\x0141\x0142", "//! 0x0141|0x0142")]
+    [InlineData("~0:a|`0x{0:X4}~", "\x0141\x0142", "//! 0x0041|0x0042")]
+    [InlineData("~0:I`{0:X2}~", "AB", "//! 4142")]
+    [InlineData("~0:I,~", "AB", "//! 65,66")]
+    [InlineData("~0:x~", "41 !@#$%% 42", "//! 6566")]
+    [InlineData("~0:x~", "41 !@#$%% 4", "//! 6564")]
+    [InlineData("~0:B,~", "00000000 11111111", "//! 0,255")]
+    [InlineData("~0:B,~", "00000000 111111", "//! 0,252")]
+    public void PlaceHolderExpansions(string placeholder, string value, string result)
+    {
+        RunTest($"""[MacroCode("//! {placeholder}")] [MacroItem("{value}")]""")
+            .LastFile().AssertContains(result);
     }
 }
