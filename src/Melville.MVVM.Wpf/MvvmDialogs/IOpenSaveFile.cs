@@ -125,3 +125,46 @@ public sealed partial class OpenSaveFileAdapter : IOpenSaveFile
   public string ImageFileFilter => 
     "Any Image File|*.jpg;*.jpeg;*.bmp;*.png;*.gif;*.tif;*.wdp|Joint Photographic Experts Group Image (*.jpg)|*.jpg|Bitmap (*.bmp)|*.bmp|Portable Network Graphic (*.png)|*.png|Graphics Interchange Format (*.gif)|*.gif|Tagged Image File Format (*.tif)|*.tif|Windows Metafile Bitmap (*.wdp)|*.wdp";
 }
+
+public sealed partial class CommandLineFileOpen : IOpenSaveFile
+{
+    [FromConstructor] private readonly string? cmdLine;
+    [FromConstructor] private readonly IDiskFileSystemConnector connector;
+
+    public IDirectory? GetDirectory(string? dir = null) =>
+        connector.DirectoryFromPath(GetDirectoryString(dir));
+
+    public string? GetDirectoryString(string? dir = null) => cmdLine;
+
+    public IFile? GetSaveFile(
+        IDirectory? defaultDirectory, string ext, string filter, string title, string? name = null)
+        => connector.FileFromPath(cmdLine);
+
+    public string? GetSaveFileName(string? defaultDir, string ext, string filter, string title, string? name = null) =>
+        cmdLine;
+
+    public string? GetLoadFileName(string? defaultDir, string ext, string filter, string title) =>
+        cmdLine;
+
+    public IFile? GetLoadFile(IDirectory? defaultDir, string ext, string filter, string title) =>
+        connector.FileFromPath(cmdLine);
+
+    public IEnumerable<IFile> GetLoadFiles(IDirectory? defaultDir, string ext, string filter, string title, bool oneFileOnly = false) =>
+        new[] { connector.FileFromPath(cmdLine) };
+
+    public IEnumerable<string> GetLoadFileNames(string? defaultDir, string ext, string filter, string title,
+        bool oneFileOnly = false) =>
+        new[] { cmdLine };
+
+    public string ImageFileFilter => "";
+}
+
+public sealed partial class CompositeFileOpenSaveFile : IOpenSaveFile
+{
+    [FromConstructor] private IList<IOpenSaveFile> options;
+    private int item = 0;
+
+    [DelegateTo]
+    private IOpenSaveFile Current => options[Math.Min(options.Count - 1, item++)];
+}
+

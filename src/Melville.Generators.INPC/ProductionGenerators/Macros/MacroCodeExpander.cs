@@ -110,8 +110,8 @@ public readonly record struct MacroCodeExpander(string Prefix, string Code, stri
     private static int HexNibble(char arg) => arg switch
     {
         >= '0' and <= '9' => arg - '0',
-        >= 'A' and <= 'F' => arg - 'A',
-        >= 'a' and <= 'f' => arg - 'a',
+        >= 'A' and <= 'F' => 10 + arg - 'A',
+        >= 'a' and <= 'f' => 10 + arg - 'a',
         _ => -1
     };
 

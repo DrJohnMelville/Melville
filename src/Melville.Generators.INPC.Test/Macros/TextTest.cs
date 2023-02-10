@@ -113,6 +113,7 @@ public class TextTest
     [InlineData("~0:I,~", "AB", "//! 65,66")]
     [InlineData("~0:x~", "41 !@#$%% 42", "//! 6566")]
     [InlineData("~0:x~", "41 !@#$%% 4", "//! 6564")]
+    [InlineData("~0:x~", "FF !@#$%% FE", "//! 255254")]
     [InlineData("~0:B,~", "00000000 11111111", "//! 0,255")]
     [InlineData("~0:B,~", "00000000 111111", "//! 0,252")]
     public void PlaceHolderExpansions(string placeholder, string value, string result)
