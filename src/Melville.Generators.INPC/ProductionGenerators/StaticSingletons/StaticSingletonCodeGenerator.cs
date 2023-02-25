@@ -29,6 +29,9 @@ public class StaticSingletonCodeGenerator
 
     public void GenerateCode(CodeWriter cw)
     {
+        cw.AppendLine("/// <summary>");
+        cw.AppendLine($"/// Static singleton for {symbol.FullyQualifiedName()}");
+        cw.AppendLine("/// </summary>");
         cw.AppendLine($"public static readonly {symbol.FullyQualifiedName()} {instanceName} = new();");
         cw.AppendLine($$"""private {{symbol.Name}}() {}""");
     }

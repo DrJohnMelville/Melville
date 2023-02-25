@@ -21,6 +21,9 @@ public class StaticSingletonTests
     {
         var tb = RunTestWithDeclaredAttr("[StaticSingleton] public partial class X {}");
         tb.LastFile().AssertContains("private X() {}");
+        tb.LastFile().AssertContains("/// <summary>");
+        tb.LastFile().AssertContains("/// Static singleton for Outer.X");
+        tb.LastFile().AssertContains("/// </summary>");
         tb.LastFile().AssertContains("public static readonly Outer.X Instance = new();");
     }
     [Fact]

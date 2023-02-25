@@ -21,6 +21,7 @@ namespace Melville.INPC
         public bool Attached { get; set; }
         public bool Nullable { get; set; }
         public object? Default { get; set; }
+        public string XmlDocumentation {get; set; } = "";
 
         public GenerateDPAttribute()
         {

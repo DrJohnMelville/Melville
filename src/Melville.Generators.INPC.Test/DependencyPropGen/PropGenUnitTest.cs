@@ -55,7 +55,9 @@ public class PropGenUnitTest
             "{\r\n",
             $"    get => ({expandedName})this.GetValue(Outer.C.PropProperty);",
             $"    set => this.SetValue(Outer.C.PropProperty, value);",
-            "}\r\n"
+            "}\r\n",
+            $"/// DependencyProperty field for Prop",
+            $"/// DependencyProperty property for Prop"
         );
 
     [Fact]
@@ -164,7 +166,9 @@ public class PropGenUnitTest
             "public static int GetProp(System.Windows.DependencyObject obj) =>",
             "    (int)obj.GetValue(Outer.C.PropProperty);",
             "public static void SetProp(System.Windows.DependencyObject obj, int value) =>",
-            "    obj.SetValue(Outer.C.PropProperty, value);"
+            "    obj.SetValue(Outer.C.PropProperty, value);",
+            "// DependencyProperty getter for Prop",
+            "// DependencyProperty setter for Prop"
         );
 
     [Fact]
@@ -178,6 +182,16 @@ public class PropGenUnitTest
         res.LastFile().AssertDoesNotContain(".Register");
         res.LastFile().AssertContains("get => (int)this.GetValue(Outer.C.NovelProperty);");
         res.LastFile().AssertContains("set => this.SetValue(Outer.C.NovelProperty, value);");
+    }
+
+    [Fact]
+    public void GenerateExplicitDocumentation()
+    {
+        var res = RunTest("""
+        [GenerateDP(typeof(int), "X", XmlDocumentation="x\r\ny")] int y;
+        """);
+        res.LastFile().AssertContains("/// x");
+        res.LastFile().AssertContains("/// y");
     }
 
     [Theory]

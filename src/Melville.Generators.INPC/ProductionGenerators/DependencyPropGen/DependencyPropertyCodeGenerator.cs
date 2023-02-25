@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.GenerationTools.CodeWriters;
+﻿using System;
+using Melville.Generators.INPC.GenerationTools.CodeWriters;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 
@@ -24,7 +25,6 @@ public readonly struct DependencyPropertyCodeGenerator
     public void GenerateDependencyPropertyDeclaration()
     {
         if (rp.Type == null) return;
-        cw.AppendLine($"// {rp.PropName} Dependency Property Implementation");
         GenerateDependencyProperty();
         GenerateAccessorMembers();
         cw.AppendLine();
@@ -33,6 +33,7 @@ public readonly struct DependencyPropertyCodeGenerator
     private void GenerateDependencyProperty()
     {
         if (rp.FromCustomDpDeclaration) return;
+        RenderXmlDocComment("field");
         CopyTargetAttributes("field");
         cw.AppendLine($"public static readonly System.Windows.DependencyProperty {rp.DependencyPropName()} = ");
         var attached = rp.Attached ? "Attached" : "";
@@ -66,6 +67,7 @@ public readonly struct DependencyPropertyCodeGenerator
 
     private void GeneratePropertyDeclaration()
     {
+        RenderXmlDocComment("property");
         CopyTargetAttributes("property");
         cw.AppendLine($"public {rp.NullableTargetType()} {rp.PropName}");
         using var block = cw.CurlyBlock();
@@ -75,11 +77,46 @@ public readonly struct DependencyPropertyCodeGenerator
 
     private void GenerateAttachedHelperMethods()
     {
+        RenderXmlDocComment("getter");
         CopyTargetAttributes("method");
         cw.AppendLine($"public static {rp.NullableTargetType()} Get{rp.PropName}(System.Windows.DependencyObject obj) =>");
         cw.AppendLine($"    ({rp.NullableTargetType()})obj.GetValue({rp.ParentType()}.{rp.DependencyPropName()});");
+
+
+        RenderXmlDocComment("setter");
         CopyTargetAttributes("method");
         cw.AppendLine($"public static void Set{rp.PropName}(System.Windows.DependencyObject obj, {rp.NullableTargetType()} value) =>");
         cw.AppendLine($"    obj.SetValue({rp.ParentType()}.{rp.DependencyPropName()}, value);");
     }
+
+    private void RenderXmlDocComment(string kind)
+    {
+        cw.AppendLine("/// <summary>");
+        if (LacksExplicitDocumentation())
+            RenderGenericDocumentation(kind);
+        else
+            RenderCustomDocumentation();
+        cw.AppendLine("/// </summary>");
+    }
+
+    private bool LacksExplicitDocumentation()
+    {
+        return string.IsNullOrWhiteSpace(rp.XmlDocumentation);
+    }
+
+    private void RenderGenericDocumentation(string kind) => 
+        cw.AppendLine($"/// DependencyProperty {kind} for {rp.PropName}");
+
+    private void RenderCustomDocumentation()
+    {
+        foreach (var str in DocumentationLines())
+        {
+            cw.Append("/// ");
+            cw.AppendLine(str);
+        }
+    }
+
+    private string[] DocumentationLines() => 
+        rp.XmlDocumentation.Split(
+            new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 }

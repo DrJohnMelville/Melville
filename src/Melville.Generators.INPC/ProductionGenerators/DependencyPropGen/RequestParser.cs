@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
@@ -16,6 +17,7 @@ public class RequestParser
     public string PropName { get; private set; } = "";
     public bool Attached { get; private set; }
     public bool Nullable { get; private set; }
+    public string XmlDocumentation { get; set; } = "";
     private string? customDefault;
         
     public bool Valid() => PropName.Length > 0 && Type != null;
@@ -98,7 +100,18 @@ public class RequestParser
             case "Default":
                 customDefault = ParseDefaultExpression(les.ToString());
                 break;
+            case "XmlDocumentation":
+                XmlDocumentation = ParseStringFromExpression(les);
+                break;
+
         }
+    }
+
+    private static string ParseStringFromExpression(ExpressionSyntax les)
+    {
+        return les is LiteralExpressionSyntax ss && (ss.Kind() is SyntaxKind.StringLiteralExpression)
+            ? ss.Token.ValueText
+            : les.ToString();
     }
 
     private readonly Regex shiftedDefaultFinder = new Regex(@"^""@(.+)""$");
@@ -130,7 +143,7 @@ public class RequestParser
     {
         if (!TryParseModifyMethodName(targetMethod.Identifier.ToString(), out var extractedName)) return;
         PropName = extractedName;
-        if (semanticModel.GetDeclaredSymbol(targetMethod) is IMethodSymbol symbol)
+        if (ModelExtensions.GetDeclaredSymbol(semanticModel, targetMethod) is IMethodSymbol symbol)
         {
             Attached = ComputeAttached(symbol.IsStatic, symbol.Parameters);
             Type = FilterTypeSymbolForNullability(symbol.Parameters.LastOrDefault()?.Type);
