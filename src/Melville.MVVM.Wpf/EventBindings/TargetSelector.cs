@@ -14,7 +14,11 @@ public interface IAdditionlTargets
 {
   IEnumerable<object> Targets();
 }
-[GenerateDP(typeof(object), "Target", Attached = true, Nullable = true)]
+[GenerateDP(typeof(object), "Target", Attached = true, Nullable = true,
+    XmlDocumentation = """
+    Indicates an additional target that should be searched for treerunner requests
+    to execute a method on this node.
+    """)]
 public static partial class TargetSelector
 {
   public static IList<object> ResolveTarget(DependencyObject sender, 
