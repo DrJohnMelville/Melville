@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -54,51 +53,23 @@ public static class CodeWriterOperations
     
     private static string FileNameForMember(SyntaxNode member, string postfix)
     {
-        var sb = new StringBuilder();
-        AddIdentifierPath(member, postfix, sb);
-        ReplaceForbiddenCharacters(sb);
-        return sb.ToString();
+        var hashString = string.Join("", member
+            .AncestorsAndSelf()
+            .Select(NameForNode));
+        var hash = Fnv.FromString(hashString);
+        return $"{ClassName(member)}.{hash:X}.g.cs";
     }
 
-    private static void AddIdentifierPath(SyntaxNode member, string postfix, StringBuilder sb)
+    private static string ClassName(SyntaxNode? node) => node switch
     {
-        sb.Append(string.Join(".", 
-            member.AncestorsAndSelf()
-                .Select(i=>NameForNode(i, postfix))
-                .Where(i=>!string.IsNullOrWhiteSpace(i))
-                .Reverse()
-                .Append("cs")
-            )
-        );
-    }
+        null => "NoName",
+        TypeDeclarationSyntax tds => tds.Identifier.ToString(),
+        _ => ClassName(node.Parent)
 
-    private static void ReplaceForbiddenCharacters(StringBuilder sb)
-    {
-        for (int i = 0; i < sb.Length; i++)
-        {
-            if (!IsValidChar(sb[i])) sb[i] = '_';
-        }
-    }
-
-    private static bool IsValidChar(char c) => c switch
-    {
-        >= 'a' and <= 'z' => true,
-        >= 'A' and <= 'Z' => true,
-        >= '0' and <= '9' => true,
-        '.' => true,
-        ',' => true,
-        '-' => true,
-        '_' => true,
-        ' ' => true,
-        '(' => true,
-        ')' => true,
-        '[' => true,
-        ']' => true,
-        '{' => true,
-        '}' => true,
-        _ => false
     };
 
+    private static string NameForNode(SyntaxNode symbol) =>
+        NameForNode(symbol, "");
     private static string NameForNode(SyntaxNode symbol, string prefix) => symbol switch
     {
         MethodDeclarationSyntax mds => Concat(mds.Identifier, mds.TypeParameterList, mds.ParameterList),

@@ -90,7 +90,7 @@ public class DelegateToTest
     public void ImplementsMembers(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContainsIgnoreWhiteSpace(output);
+        res.LastFile().AssertContainsIgnoreWhiteSpace(output);
     }
     
     [Theory]
@@ -111,7 +111,7 @@ public class DelegateToTest
     public void ExplicitImplementation(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo(true)] private IInterface Field; ", intMember);
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
+        res.LastFile().AssertContains(output);
     }
 
     [Theory]
@@ -119,7 +119,7 @@ public class DelegateToTest
     public void ExplicitImplementationAsProperty(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo(ExplicitImplementation = true)] private IInterface Field; ", intMember);
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains(output);
+        res.LastFile().AssertContains(output);
     }
 
 
@@ -128,8 +128,8 @@ public class DelegateToTest
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; public int A()=>1;",
             "int A(); int B(int b1);");
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("int B(int b1)");
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertDoesNotContain("int A(");
+        res.LastFile().AssertContains("int B(int b1)");
+        res.LastFile().AssertDoesNotContain("int A(");
     }
 
     [Theory]
@@ -152,15 +152,15 @@ public class DelegateToTest
     public void DoNotImplementHiddenMethods(string intMember, string output)
     {
         var res = RunTest(" [DelegateTo] private IInterface Field; ", intMember);
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertDoesNotContain(output);
+        res.LastFile().AssertDoesNotContain(output);
     }
         
     [Fact]
     public void InheritedInterface()
     {
         var res = RunTest("[DelegateTo] private IChildInterface Field;", "int Parent();");
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("public void ChildMethod() => this.Field.ChildMethod();");
-        res.FromName("GeneratedDelegator.Outer.C.Field.cs").AssertContains("public int Parent() => this.Field.Parent();");
+        res.LastFile().AssertContains("public void ChildMethod() => this.Field.ChildMethod();");
+        res.LastFile().AssertContains("public int Parent() => this.Field.Parent();");
     }
 
     [Fact]

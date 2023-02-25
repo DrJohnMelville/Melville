@@ -34,8 +34,8 @@ public class ImplementNotifyTest
             }
             """ + AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.Outer.NM.C.cs").AssertContains("namespace Outer");
-        tb.FromName("INPC.Outer.NM.C.cs").AssertContains("namespace NM");
+        tb.LastFile().AssertContains("namespace Outer");
+        tb.LastFile().AssertContains("namespace NM");
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public class ImplementNotifyTest
     [AutoNotify] private int intProp,ip2;
   }}"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.D.cs").AssertContains("public partial class C");
-        tb.FromName("INPC.C.D.cs").AssertContains("public partial class D: Melville.INPC.IExternalNotifyPropertyChanged");
+        tb.LastFile().AssertContains("public partial class C");
+        tb.LastFile().AssertContains("public partial class D: Melville.INPC.IExternalNotifyPropertyChanged");
     }
 
     [Fact]
@@ -64,8 +64,8 @@ using Melville.INPC;
     [AutoNotify] private int intProp,ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("public int IntProp");
-        tb.FromName("INPC.C.cs").AssertContains("public int Ip2");
+        tb.LastFile().AssertContains("public int IntProp");
+        tb.LastFile().AssertContains("public int Ip2");
 
     }
 
@@ -94,8 +94,8 @@ using Melville.INPC;
      private int intProp,ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("AutoNotify");
-        tb.FromName("INPC.C.cs").AssertContains("void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)");
+        tb.LastFile().AssertDoesNotContain("AutoNotify");
+        tb.LastFile().AssertContains("void Melville.INPC.IExternalNotifyPropertyChanged.OnPropertyChanged(string propertyName)");
     }
 
     [Fact]
@@ -126,8 +126,8 @@ using Melville.INPC;
      [AutoNotify] private int ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("public int Ip2");
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("public int IntProp");
+        tb.LastFile().AssertContains("public int Ip2");
+        tb.LastFile().AssertDoesNotContain("public int IntProp");
     }
 
     [Fact]
@@ -142,7 +142,7 @@ using Melville.INPC;
      [Melville.INPC.AutoNotify] private int ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("public int Ip2");
+        tb.LastFile().AssertContains("public int Ip2");
     }
 
     [Fact]
@@ -156,8 +156,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotify] private int ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("public int Ip2");
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("public int IntProp");
+        tb.LastFile().AssertContains("public int Ip2");
+        tb.LastFile().AssertDoesNotContain("public int IntProp");
     }
 
     [Fact]
@@ -171,8 +171,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("public int Ip2");
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("public int IntProp");
+        tb.LastFile().AssertContains("public int Ip2");
+        tb.LastFile().AssertDoesNotContain("public int IntProp");
     }
 
     [Fact]
@@ -187,7 +187,7 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("IExternalNotifyPropertyChange");
+        tb.LastFile().AssertDoesNotContain("IExternalNotifyPropertyChange");
     }
 
     [Fact]
@@ -204,8 +204,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("void INot.OnPropertyChanged(string");
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("IExternalNotifyPropertyChange");
+        tb.LastFile().AssertContains("void INot.OnPropertyChanged(string");
+        tb.LastFile().AssertDoesNotContain("IExternalNotifyPropertyChange");
     }
 
     [Fact]
@@ -223,9 +223,9 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}}}"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.NS.C.cs").AssertContains("((NS.INot)this).OnPropertyChanged(\"Ip2\")");
-        tb.FromName("INPC.NS.C.cs").AssertDoesNotContain("void NS.INot.OnPropertyChanged(string");
-        tb.FromName("INPC.NS.C.cs").AssertDoesNotContain("IExternalNotifyPropertyChange");
+        tb.LastFile().AssertContains("((NS.INot)this).OnPropertyChanged(\"Ip2\")");
+        tb.LastFile().AssertDoesNotContain("void NS.INot.OnPropertyChanged(string");
+        tb.LastFile().AssertDoesNotContain("IExternalNotifyPropertyChange");
     }
     [Fact]
     public void UseInheritedInterfaceMethod()
@@ -242,8 +242,8 @@ using Melville.INPC;
      [Melville.INPC.AutoNotifyAttribute] private int ip2;
   }}}}" + AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.NS.C.cs").AssertDoesNotContain("IExternalNotifyPropertyChange");
-        tb.FromName("INPC.NS.C.cs").AssertContains("((NS.I)this).OnPropertyChanged");
+        tb.LastFile().AssertDoesNotContain("IExternalNotifyPropertyChange");
+        tb.LastFile().AssertContains("((NS.I)this).OnPropertyChanged");
     }
     [Fact]
     public void Generate()
@@ -302,8 +302,8 @@ namespace NM
     [AutoNotify] private int ip;
   }}
 }}" + AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.NM.C.cs").AssertContains(included);
-        tb.FromName("INPC.NM.C.cs").AssertDoesNotContain(excluded);
+        tb.LastFile().AssertContains(included);
+        tb.LastFile().AssertDoesNotContain(excluded);
     }
 
     [Fact]
@@ -319,8 +319,8 @@ namespace NM
     [AutoNotify] private int ip;
   }
 }"+AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.NM.C.cs").AssertContains("namespace NM\r\n{");
-        tb.FromName("INPC.NM.C.cs").AssertDoesNotContain("namespace NM;");
+        tb.LastFile().AssertContains("namespace NM\r\n{");
+        tb.LastFile().AssertDoesNotContain("namespace NM;");
             
     }
     [Fact]
@@ -336,8 +336,8 @@ public class C
   [AutoNotify] private int ip;
 }
 }"+AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.NM.A.B.C.cs").AssertContains("namespace NM.A.B\r\n{");
-        tb.FromName("INPC.NM.A.B.C.cs").AssertDoesNotContain("namespace NM.A.B;");
+        tb.LastFile().AssertContains("namespace NM.A.B\r\n{");
+        tb.LastFile().AssertDoesNotContain("namespace NM.A.B;");
             
     }
 
@@ -370,7 +370,7 @@ namespace NM
     {
         [AutoNotify] private int y;
     }"+AttrDecl, typeof(AutoNotifyAttribute));
-          tb.FromName("INPC.ImplementInheritedINPC.cs").AssertContains("public partial class ImplementInheritedINPC \r\n{");
+          tb.LastFile().AssertContains("public partial class ImplementInheritedINPC \r\n{");
     }
 
     [Fact]
@@ -386,7 +386,7 @@ namespace NM
     {
         [AutoNotify] private int y;
     }"+AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.ImplementInheritedINPC.cs").AssertContains("public partial class ImplementInheritedINPC \r\n{");
+        tb.LastFile().AssertContains("public partial class ImplementInheritedINPC \r\n{");
     }
 
     [Fact]
@@ -399,7 +399,7 @@ namespace NM
         protected void OnPropertyChanged(string property) {}
         [AutoNotify] private int y;
     }"+AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.ImplementInheritedINPC.cs").AssertContains("public partial class ImplementInheritedINPC \r\n{");
+        tb.LastFile().AssertContains("public partial class ImplementInheritedINPC \r\n{");
     }
 
     [Theory]
@@ -417,7 +417,7 @@ namespace NM
         [AutoNotify] private int y;
         "+propDecl+@"
     }"+AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.ImplementInheritedINPC.cs").AssertContains(@"OnPropertyChanged(""FindY"");");
+        tb.LastFile().AssertContains(@"OnPropertyChanged(""FindY"");");
     }
 
     [Fact]
@@ -432,7 +432,7 @@ namespace NM
         private ImplementInheritedINPC other;
         [AutoNotify] public int FindY {get {return other?.Y;}}
     }"+AttrDecl, typeof(AutoNotifyAttribute));
-        tb.FromName("INPC.ImplementInheritedINPC.cs").AssertDoesNotContain(@"OnPropertyChanged(""FindY"");");
+        tb.LastFile().AssertDoesNotContain(@"OnPropertyChanged(""FindY"");");
     }
         
     [Fact]
@@ -446,7 +446,7 @@ namespace NM
     [AutoNotify] private List<int> ints;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("System.Collections.Generic.List<int>");
+        tb.LastFile().AssertContains("System.Collections.Generic.List<int>");
     }
     [Fact]
     public void Nullable()
@@ -460,8 +460,8 @@ namespace NM
     [AutoNotify] private string? stringProp;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("int? IntProp");
-        tb.FromName("INPC.C.cs").AssertContains("string? StringProp");
+        tb.LastFile().AssertContains("int? IntProp");
+        tb.LastFile().AssertContains("string? StringProp");
     }
     [Fact]
     public void AmbigiousFileNames()
@@ -476,8 +476,8 @@ namespace NM
      [AutoNotify] private T tProp;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("int? IntProp");
-        tb.FromName("INPC.C_T_.cs").AssertContains("T TProp");
+        tb.FromName("C.50C5D5C.g.cs").AssertContains("int? IntProp");
+        tb.FromName("C.74C0903A.g.cs").AssertContains("T TProp");
     }
     [Fact]
     public void IncludeAttribute()
@@ -495,8 +495,8 @@ namespace NM
           }
           """+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("[NewProp(1)]\r\n    public int Integer");
-        tb.FromName("INPC.C.cs").AssertDoesNotContain("[AutoNotify]");
+        tb.LastFile().AssertContains("[NewProp(1)]\r\n    public int Integer");
+        tb.LastFile().AssertDoesNotContain("[AutoNotify]");
     }
     [Fact]
     public void SetFilter()
@@ -510,7 +510,7 @@ namespace NM
     private int IntegerSetFilter(int i) => i;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("this.integer = this.IntegerSetFilter(value);");
+        tb.LastFile().AssertContains("this.integer = this.IntegerSetFilter(value);");
     }
     [Fact]
     public void GetFilter()
@@ -524,7 +524,7 @@ namespace NM
     private int IntegerGetFilter(int i) => i;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("=> this.IntegerGetFilter(this.integer);");
+        tb.LastFile().AssertContains("=> this.IntegerGetFilter(this.integer);");
     }
     [Fact]
     public void CustomPropertyModifiers()
@@ -537,7 +537,7 @@ namespace NM
     [AutoNotify (PropertyModifier = ""protected virtual"")] private int integer;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C.cs").AssertContains("protected virtual int Integer");
+        tb.LastFile().AssertContains("protected virtual int Integer");
     }
     [Fact]
     public void ClassWithGenericConstraint()
@@ -550,7 +550,7 @@ namespace NM
     [AutoNotify] private int integer;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.FromName("INPC.C_T_.cs").AssertContains("public partial class C<T>: Melville.INPC.IExternalNotifyPropertyChanged where T: IInt");
+        tb.LastFile().AssertContains("public partial class C<T>: Melville.INPC.IExternalNotifyPropertyChanged where T: IInt");
     }
 
 }

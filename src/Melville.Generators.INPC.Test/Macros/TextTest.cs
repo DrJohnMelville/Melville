@@ -40,7 +40,7 @@ public class TextTest
         [MacroItem("One")]
         """, "// Hello\r\n        // World")]
     public void SimpleSub(string input, string output) => 
-        RunTest(input).FromName("MacroGen.Outer.C.Func().cs").AssertContains(output);
+        RunTest(input).LastFile().AssertContains(output);
 
     
     [Fact]
@@ -89,7 +89,7 @@ public class TextTest
     public void RepeatedUsing()
     {
         var gen = RunTest(@"[MacroCode(""// Code: ~0~/~1~"", Prefix = ""public void Generated() {"", Postfix = ""}"")]");
-        gen.FromName("MacroGen.Outer.C.Func().cs").AssertContains("using Melville.INPC");
+        gen.LastFile().AssertContains("using Melville.INPC");
     }    
     [Fact]
     public void Gen()
@@ -99,7 +99,7 @@ public class TextTest
         [MacroItem(2, ""Two"")]
         [MacroItem(3, ""Three"")]
 ");
-        generatorTestBed.FromName("MacroGen.Outer.C.Func().cs").AssertContains("// Code: 1/One");
+        generatorTestBed.LastFile().AssertContains("// Code: 1/One");
     }
 
     [Theory]
