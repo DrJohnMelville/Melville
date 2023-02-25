@@ -28,23 +28,7 @@ public readonly struct DocumentationCopier
 
     private void Copy(in ReadOnlySpan<char> docComment)
     {
-        var position = 0;
-        while (position < docComment.Length)
-        {
-            if (char.IsWhiteSpace(docComment[position]))
-            {
-                position++;
-            }
-            else
-            {
-                cw.Append("/// ");
-                while (position < docComment.Length && docComment[position] is not '\r' or '\n')
-                {
-                    cw.Append(docComment[position++]);
-                }
-                cw.AppendLine();
-            }
-        }
+        cw.CopyWithLinePrefix("/// ", docComment);
     }
 
 }

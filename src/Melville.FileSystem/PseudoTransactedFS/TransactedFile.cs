@@ -10,7 +10,7 @@ namespace Melville.FileSystem.PseudoTransactedFS;
   {
     public FileAttributes Attributes { get; private set; }
     [FromConstructor] private readonly IFile inner;
-    [FromConstructor] private readonly IFile innerShadow; // shadow is the write beside file before the transaction commits;
+    [FromConstructor] private readonly IFile innerShadow;
     [FromConstructor] public IDirectory Directory { get; private set; }
     
     public string Path => inner.Path;

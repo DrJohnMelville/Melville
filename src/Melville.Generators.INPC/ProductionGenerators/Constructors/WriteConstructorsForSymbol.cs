@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
@@ -36,8 +37,12 @@ internal readonly struct WriteConstructorsForSymbol
     private static MemberData? CreateMemberData(ISymbol i) =>
         i switch
         {
-            IFieldSymbol field => new MemberData(field.Type.FullyQualifiedName(), field.Name),
-            IPropertySymbol prop => new MemberData(prop.Type.FullyQualifiedName(), prop.Name),
+            IFieldSymbol field => 
+                new MemberData(field.Type.FullyQualifiedName(), field.Name, 
+                    field.GetDocumentationCommentXml()),
+            IPropertySymbol prop => 
+                new MemberData(prop.Type.FullyQualifiedName(), prop.Name, 
+                    prop.GetDocumentationCommentXml()),
             _=> null
         };
 
@@ -54,8 +59,21 @@ internal readonly struct WriteConstructorsForSymbol
         classSymbol.InstanceConstructors
         .Where(i=>!i.IsImplicitlyDeclared)
         .Select(
-            i => i.Parameters.Select(j => new MemberData(j.Type.FullyQualifiedName(), j.Name))
+            i => i.Parameters.Select(j => 
+                    new MemberData(j.Type.FullyQualifiedName(), j.Name,
+                        ParamDocumentation(i.GetDocumentationCommentXml(), j.Name)))
                 .ToArray());
+
+    private static readonly Regex paramFinder =
+        new Regex($"""<param\s+name="([^"]*)"[^>]*>([^<]*)""");
+    private static string? ParamDocumentation(string? documentation, string param)
+    {
+        return paramFinder.Matches(documentation??"")
+            .OfType<Match>()
+            .Where(i => i.Groups[1].Value.Equals(param))
+            .Select(i => i.Groups[2].Value)
+            .FirstOrDefault();
+    }
 
     private static IEnumerable<MemberData[]> ConstructorsThatWillBeSynthesizedForClass(INamedTypeSymbol classSymbol)
     {

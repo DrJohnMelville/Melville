@@ -89,4 +89,27 @@ public static class CodeWriterOperations
 
     private static string Concat(object identifier, object? trailer1 = null, object? trailer2 = null) => 
         string.Concat(identifier.ToString(), trailer1?.ToString() ?? "", trailer2?.ToString() ?? "");
+
+    public static void CopyWithLinePrefix(
+        this CodeWriter cw, string prefix, ReadOnlySpan<char> input)
+    {
+        var position = 0;
+        while (position < input.Length)
+        {
+            if (char.IsWhiteSpace(input[position]))
+            {
+                position++;
+            }
+            else
+            {
+                cw.Append("/// ");
+                while (position < input.Length && input[position] is not '\r' or '\n')
+                {
+                    cw.Append(input[position++]);
+                }
+                cw.AppendLine();
+            }
+        }
+
+    }
 }

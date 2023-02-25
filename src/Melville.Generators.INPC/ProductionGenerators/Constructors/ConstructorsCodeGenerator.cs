@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 
 namespace Melville.Generators.INPC.ProductionGenerators.Constructors;
@@ -33,8 +34,10 @@ public readonly struct ConstructorsCodeGenerator
 
     private void GenerateSingleConstructor(CodeWriter cw, IList<MemberData> constructorParams)
     {
+        var allParams = constructorParams.Concat(FieldsAndProperties).ToList();
+        TryGenerateDocumentation(cw, allParams);
         cw.Append($"public {className}(");
-        GenerateParameters(cw, constructorParams.Concat(FieldsAndProperties));
+        GenerateParameters(cw, allParams);
         cw.Append(")");
         if (constructorParams.Count > 0)
         {
@@ -42,6 +45,25 @@ public readonly struct ConstructorsCodeGenerator
         }
         cw.AppendLine("");
         GenerateConstructorBody(cw);
+    }
+
+    private void TryGenerateDocumentation(CodeWriter cw, IList<MemberData> allParams)
+    {
+        if (allParams.All(i => string.IsNullOrWhiteSpace(i.XmlDocummentation))) return;
+        cw.AppendLine("/// <summary>");
+        cw.AppendLine($"/// Auto generated constructor for {className}");
+        cw.AppendLine("/// </summary>");
+        foreach (var param in allParams)
+        {
+            cw.CopyWithLinePrefix("/// ",
+                $"""<param name="{param.LowerCaseName}">{StripSummaryTags(param.XmlDocummentation)}</param> """.AsSpan());
+        }
+    }
+
+    private static readonly Regex SummaryFinder = new Regex(@"\s*</?(?:summary|member)[^>]*>\s*");
+    private string StripSummaryTags(string? documentation)
+    {
+        return SummaryFinder.Replace(documentation??"", "");
     }
 
     private void GenerateBaseCall(CodeWriter cw, IList<MemberData> constructorParams)

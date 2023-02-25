@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.ProductionGenerators.Constructors;
+﻿using System.Runtime.InteropServices.ComTypes;
+using Melville.Generators.INPC.ProductionGenerators.Constructors;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Melville.INPC;
@@ -226,5 +227,35 @@ public class ConstructorGenTest
                     [FromConstructor]public class CC:CA { }
 ");
         tb.LastFile().AssertContains("public CC(int x): base(x)");
-    }  
+    }
+
+    [Theory]
+    [InlineData(";")]
+    [InlineData("{get; set;}")]
+    public void GenerateWithDocumentation(string suffix)
+    {
+        var f = RunTest($$"""
+            /// <summary>
+            /// this is the documentation for i
+            /// </summary>
+            [FromConstructor] private int i {{suffix}}
+            """, """
+            /// <summary>
+            /// constructor for ...
+            /// </summary>
+            /// <param name="j">Documentation for j</param>
+            /// <param name="k">K is a
+            /// string value</param>
+            public Parent(int j, string k) {}
+            """).LastFile();
+
+        f.AssertContains("/// <summary>");
+        f.AssertContains("/// Auto generated constructor for");
+        f.AssertContains("/// </summary>");
+        f.AssertContains("/// <param name=\"i\">this is the documentation for i</param>");
+        f.AssertContains("/// <param name=\"j\">Documentation for j</param>");
+        f.AssertContains("/// <param name=\"k\">K is a");
+        f.AssertContains("/// string value</param>");
+
+    }
 }
