@@ -29,12 +29,25 @@ public class DelegateToTest
     [InlineData("public IInterface Field => null", "this.Field.A()")]
     [InlineData("public IInterface Field{get;set;}", "this.Field.A()")]
     [InlineData("public IInterface Field() => null", "this.Field().A()")]
+    [InlineData("public IInterface Field() => null", "this.Field().A()")]
     public void InheritFromDelegatedInterface(string member, string methodCall)
     {
         var res = RunTest("[DelegateTo] "+member, @"int A();");
         res.LastFile().AssertContains("public partial class C");            
         res.LastFile().AssertContains(methodCall);            
     }
+
+    [Fact]
+    public void CopyDocumentation()
+    {
+        var res = RunTest("[DelegateTo] IInterface field;", """
+        /// <summary>
+        /// This is the Summary
+        /// </summary>
+        int A();
+        """);
+        res.LastFile().AssertContains("/// This is the Summary");
+}
 
     [Theory]
     [InlineData("[DelegateTo] IInterface i; byte Wrap(int i)=>(byte)i;", "public int A() => Wrap(this.i.A());")]

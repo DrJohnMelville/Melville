@@ -111,7 +111,7 @@ using Melville.INPC;
      [A2.AutoNotify] private int intProp,ip2;
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
-        tb.NoSuchFile("INPC.C.cs");
+        tb.LastFile().AssertContains("private int intProp,ip2;");
     }
 
     [Fact]
@@ -538,6 +538,22 @@ namespace NM
   }"+AttrDecl, typeof(AutoNotifyAttribute));
         tb.AssertNoDiagnostics();
         tb.LastFile().AssertContains("protected virtual int Integer");
+    }
+    [Fact]
+    public void CopyDocComment()
+    {
+        var tb = new GeneratorTestBed(new INPCGenerator(),
+            @"using Melville.INPC;
+  using System.Collections.Generic;
+  public partial class C
+  {
+    /// <summary>
+    /// This is the content summary.
+    /// </summary>
+    [AutoNotify] private int integer;
+  }"+AttrDecl, typeof(AutoNotifyAttribute));
+        tb.AssertNoDiagnostics();
+        tb.LastFile().AssertContains("This is the content summary.");
     }
     [Fact]
     public void ClassWithGenericConstraint()

@@ -33,6 +33,7 @@ public readonly struct PropertyGenerator
 
     public void RenderSingleField()
     {
+        new DocumentationCopier(target).Copy(field);
         target.AppendLine($"{propertyModifiers} {field.Type.FullyQualifiedName()} {propertyName}");
         using var _ = target.CurlyBlock();
         GemetateGetBlock();

@@ -66,4 +66,6 @@ public partial class IndentedStringBuilder
         });
     }
     public override string ToString() => target.ToString();
+
+    public void Append(char c) => target.Append(c);
 }

@@ -14,12 +14,14 @@ public abstract class CodeWriter
     public void AddPrefixLine(string line) => prefixLines.Add(line);
     public void AppendLine(string s = "") => target.AppendLine(s);
     public void Append(string s) => target.Append(s);
+    public void Append(char c) => target.Append(c);
     public IDisposable CurlyBlock() => target.CurlyBlock();
     public IDisposable IndentedRun() => target.IndentedRun();
     public override string ToString() => string.Join(Environment.NewLine, prefixLines.Append(target.ToString()));
     
     public abstract void PublishCodeInFile(string fileName);
     public abstract void ReportDiagnostic(Diagnostic diagnostic);
+
 }
 
 public static class CodeWriterOperations
