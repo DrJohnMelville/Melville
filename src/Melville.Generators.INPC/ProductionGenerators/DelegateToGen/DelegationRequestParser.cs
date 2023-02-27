@@ -54,6 +54,7 @@ public class DelegationRequestParser
         var options = new DelegationOptions(
             typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility, namer);
 
+#warning get rid of ismixin
         return (typeToImplement.TypeKind, useExplicit, isMixIn) switch
         {
             (not TypeKind.Interface, true, _) =>
@@ -64,16 +65,12 @@ public class DelegationRequestParser
                 new ErrorMethodGenerator(SymbolLocation(targetSymbol),
                     "Dele003", "Inconsistent Options",
                     "To use explicit implementation the host class must implement the target interface"),
-            (TypeKind.Class or TypeKind.Struct, false, true) =>
-                new MixinClassGenerator(options),
-            (TypeKind.Interface, false, true) =>
-                new InterfaceMixinGenerator(options),
             (TypeKind.Interface, true, _) =>
                 new ExplicitMethodGenerator(options),
                 // new ExplicitMethodGenerator( typeToImplement, methodPrefix,
                 //     typeToImplement.FullyQualifiedName() + ".", targetSymbol, wrappingStrategy),
             (TypeKind.Interface, _, _) => new InterfaceMethodGenerator(options),
-            (TypeKind.Class, _, _) => new BaseClassMethodGenerator(options),
+            (TypeKind.Class or TypeKind.Struct, _, _) => new BaseClassMethodGenerator(options),
 
             _ => new ErrorMethodGenerator(SymbolLocation(typeToImplement),
                 "Dele001", "Invalid Delegation target",

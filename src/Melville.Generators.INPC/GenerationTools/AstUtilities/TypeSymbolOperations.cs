@@ -10,9 +10,9 @@ namespace Melville.Generators.INPC.GenerationTools.AstUtilities;
 
 public static class TypeSymbolOperations
 {
-    public static IEnumerable<ITypeSymbol> AllBases(this ITypeSymbol typeSymbol)
+    public static IEnumerable<ITypeSymbol> AllBases(this ITypeSymbol? typeSymbol)
     {
-        for (var i = typeSymbol.BaseType; i != null; i = i.BaseType) yield return i;
+        for (var i = typeSymbol?.BaseType; i != null; i = i.BaseType) yield return i;
     }
 
     public static string FullyQualifiedName(this ITypeSymbol symbol) => symbol.ToString();

@@ -55,7 +55,7 @@ public class DelegateToClassTest
     [Fact] public void ForwardProtectedOverload()
     {
         var res = RunTest("class", "protected virtual int Foo()=>1; ", 
-            "[DelegateTo] Delegated bar;");
+            "[DelegateTo] C bar {get; set;");
         res.LastFile().AssertContains("protected override int Foo() => this.bar.Foo();");
     }
     [Fact] public void ForwardOverloadNumber()
@@ -86,17 +86,23 @@ public class DelegateToClassTest
 
     }
     [Fact]
-    public void DelegateProtectedMethod()
+    public void DelegateProtectedMethodIfTypesAreIdentical()
+    {
+        var res = RunTest("class", "protected virtual int Foo()=>1;", "[DelegateTo] C bar {get;");
+        res.LastFile().AssertContains("protected override int Foo()");            
+
+    }
+    [Fact]
+    public void DoNotDelegateProtectedMethodsToAnAncestorType()
     {
         var res = RunTest("class", "protected virtual int Foo()=>1;", "[DelegateTo] Delegated bar;");
-        res.LastFile().AssertContains("protected override int Foo()");            
+        res.LastFile().AssertDoesNotContain("int Foo()");            
 
     }
     [Fact]
     public void DoNotDelegateNonVirtualMethods()
     {
         var res = RunTest("class", "public int Foo()=>1;", "[DelegateTo] Delegated bar;");
-        res.LastFile().AssertDoesNotContain("Foo");            
-
+        res.LastFile().AssertContains("public new int Foo() => this.bar.Foo();");
     }
 }

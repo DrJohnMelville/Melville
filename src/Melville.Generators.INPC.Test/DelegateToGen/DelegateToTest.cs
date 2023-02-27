@@ -29,7 +29,6 @@ public class DelegateToTest
     [InlineData("public IInterface Field => null", "this.Field.A()")]
     [InlineData("public IInterface Field{get;set;}", "this.Field.A()")]
     [InlineData("public IInterface Field() => null", "this.Field().A()")]
-    [InlineData("public IInterface Field() => null", "this.Field().A()")]
     public void InheritFromDelegatedInterface(string member, string methodCall)
     {
         var res = RunTest("[DelegateTo] "+member, @"int A();");

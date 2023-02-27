@@ -67,16 +67,10 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
     private bool IsNotSpecialInternalMethod(ISymbol i) => i.CanBeReferencedByName || IsIndexer(i);
 
     private static bool IsIndexer(ISymbol i) => i is IPropertySymbol { IsIndexer: true };
-
-    private IEnumerable<ISymbol> MembersToForward() =>
-        MembersThatCouldBeForwarded()
-            .Where(i => ImplementationMissing(i));
-
-    protected abstract bool ImplementationMissing(ISymbol i);
-
+#warning redo this with attention to self references
     protected bool CanSeeSymbol(ISymbol methodToGenerate) =>
         Options.IsSelfGeneration() ||
-        (methodToGenerate.DeclaredAccessibility, SourceAndHostInSameAssembly(), HostDescendsFromSource) is
+        (methodToGenerate.DeclaredAccessibility, SourceAndHostInSameAssembly(), HostDescendsFromSource: SourceAndHostAreSameClass) is
         (Accessibility.Public, _, _) or
         (Accessibility.Internal, true, _) or
         (Accessibility.ProtectedAndInternal, true, true) or
@@ -84,16 +78,18 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
         (Accessibility.ProtectedOrInternal, _, true) or
         (Accessibility.Protected, _, true);
 
-    protected virtual bool HostDescendsFromSource => true;
+    protected  bool SourceAndHostAreSameClass => 
+        SymbolEqualityComparer.Default.Equals(SourceType, Options.HostClass);
 
     private bool SourceAndHostInSameAssembly() =>
         SymbolEqualityComparer.Default.Equals(SourceType.ContainingAssembly,
             GeneratedMethodHostSymbol.ContainingAssembly);
 
     public void RenderPrefix(
-        CodeWriter cw, Accessibility suggestedAccess, string eventElt, ITypeSymbol type, string name)
+        CodeWriter cw, Accessibility suggestedAccess, string virtualOverideNew, string eventElt, ITypeSymbol type, string name)
     {
         cw.Append(MemberDeclarationPrefix(Options.ComputeAccessibilityFor(suggestedAccess)));
+        cw.Append(virtualOverideNew);
         cw.Append(eventElt);
         cw.Append(type.FullyQualifiedName());
         cw.Append(" ");

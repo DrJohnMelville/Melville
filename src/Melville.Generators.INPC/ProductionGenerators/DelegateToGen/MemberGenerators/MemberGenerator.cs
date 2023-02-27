@@ -1,5 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 
@@ -35,7 +38,8 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGene
             new DocumentationCopier(cw).Copy(SourceSymbol);
             CopySourceAttributes(cw);
             CopyApplicableHostAttributes(cw);
-            host.RenderPrefix(cw, SourceSymbol.DeclaredAccessibility, EventElt(), ResultType, memberName);
+            host.RenderPrefix(cw, 
+                SourceSymbol.DeclaredAccessibility, OverrideOrNew(), EventElt(), ResultType, memberName);
         }
 
         private void CopySourceAttributes(CodeWriter cw) => 
@@ -45,5 +49,20 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGene
             new AttributeCopier(cw, CopiedAttributeName()).CopyAttributesFrom(host.HostSymbol.DeclaringSyntaxReferences);
 
         protected void AppendHostSymbolAccess(CodeWriter cw) => cw.Append(host.MethodPrefix);
+
+
+        private string OverrideOrNew()
+        {
+            var prior = GetBaseMembers().FirstOrDefault(IsSuppressedBy);
+            return prior switch
+            {
+                { IsVirtual: true } or {IsAbstract: true} => "override ",
+                null => "",
+                _ => "new "
+            };
+        }
+
+        private IEnumerable<ISymbol> GetBaseMembers() =>
+            host.HostSymbol.ContainingType.AllBases().SelectMany(i => i.GetMembers());
     }
 }
