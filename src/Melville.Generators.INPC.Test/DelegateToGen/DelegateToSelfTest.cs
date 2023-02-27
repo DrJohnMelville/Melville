@@ -33,6 +33,12 @@ public class DelegateToSelfTest
         tb.LastFile().AssertContains("private long LongX() => Wrap(this.X())");
     }
     [Fact]
+    public void ForwardProtectedMethods()
+    {
+        var tb =RunTest("[DelegateTo(WrapWith=\"Wrap\", Rename=\"Long$0\" Visibility = Visibility.Public)]", "protected int X() => 1; private long Wrap(int x)=>x;");
+        tb.LastFile().AssertContains("public long LongX() => Wrap(this.X())");
+    }
+    [Fact]
     public void DoubleForward()
     {
         var tb =RunTest("[DelegateTo(Filter=\"A.+\" Rename=\"Super$0\")][DelegateTo(Filter=\"B.+\" Rename=\"$0Minor\")]", "private int Apple() => 1; private long Boy(int x)=>x;");

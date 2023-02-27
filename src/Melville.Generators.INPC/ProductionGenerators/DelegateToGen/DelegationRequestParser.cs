@@ -54,7 +54,6 @@ public class DelegationRequestParser
         var options = new DelegationOptions(
             typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility, namer);
 
-#warning get rid of ismixin
         return (typeToImplement.TypeKind, useExplicit, isMixIn) switch
         {
             (not TypeKind.Interface, true, _) =>
@@ -67,8 +66,6 @@ public class DelegationRequestParser
                     "To use explicit implementation the host class must implement the target interface"),
             (TypeKind.Interface, true, _) =>
                 new ExplicitMethodGenerator(options),
-                // new ExplicitMethodGenerator( typeToImplement, methodPrefix,
-                //     typeToImplement.FullyQualifiedName() + ".", targetSymbol, wrappingStrategy),
             (TypeKind.Interface, _, _) => new InterfaceMethodGenerator(options),
             (TypeKind.Class or TypeKind.Struct, _, _) => new BaseClassMethodGenerator(options),
 
@@ -87,13 +84,14 @@ public class DelegationRequestParser
             .Any(
                 i => SymbolEqualityComparer.Default.Equals(i, typeToImplement));
 
-    private IMethodWrappingStrategy CreateWrappingStrategy(ITypeSymbol newMethodHostType, bool isMixIn) =>
+    private IMethodWrappingStrategy CreateWrappingStrategy
+        (ITypeSymbol newMethodHostType, bool isMixIn) =>
         string.IsNullOrEmpty(postProcessName) ?
             NoMethodMapping.Instance: 
             PickStrategyByInheritenceType(newMethodHostType, isMixIn);
 
-    private UnrestrictedWrappingStrategy PickStrategyByInheritenceType(ITypeSymbol newMethodHostType, bool isMixIn) =>
-        isMixIn?
+    private UnrestrictedWrappingStrategy PickStrategyByInheritenceType(
+        ITypeSymbol newMethodHostType, bool isMixIn) => isMixIn?
             new UnrestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel):
             new RestrictedWrappingStrategy(postProcessName, newMethodHostType, semanticModel);
 }

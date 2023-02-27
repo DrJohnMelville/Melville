@@ -39,6 +39,7 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
         foreach (var symbol in MembersToGenerate())
         {
             symbol.WriteSymbol(cw);
+            cw.AppendLine();
         }
     }
 
@@ -67,20 +68,19 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
     private bool IsNotSpecialInternalMethod(ISymbol i) => i.CanBeReferencedByName || IsIndexer(i);
 
     private static bool IsIndexer(ISymbol i) => i is IPropertySymbol { IsIndexer: true };
-#warning redo this with attention to self references
+
     protected bool CanSeeSymbol(ISymbol methodToGenerate) =>
-        Options.IsSelfGeneration() ||
-        (methodToGenerate.DeclaredAccessibility, SourceAndHostInSameAssembly(), HostDescendsFromSource: SourceAndHostAreSameClass) is
-        (Accessibility.Public, _, _) or
-        (Accessibility.Internal, true, _) or
-        (Accessibility.ProtectedAndInternal, true, true) or
-        (Accessibility.ProtectedOrInternal, true, _) or
-        (Accessibility.ProtectedOrInternal, _, true) or
-        (Accessibility.Protected, _, true);
+        methodToGenerate.DeclaredAccessibility switch {
+            Accessibility.Private or
+            Accessibility.Protected or
+            Accessibility.ProtectedAndInternal => CanSeePrivate(),
+            Accessibility.ProtectedOrInternal => SourceAndHostInSameAssembly() || CanSeePrivate(),
+            Accessibility.Internal => SourceAndHostInSameAssembly(),
+            Accessibility.Public => true,
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
-    protected  bool SourceAndHostAreSameClass => 
-        SymbolEqualityComparer.Default.Equals(SourceType, Options.HostClass);
-
+    private bool CanSeePrivate() => Options.IsSelfGeneration();
     private bool SourceAndHostInSameAssembly() =>
         SymbolEqualityComparer.Default.Equals(SourceType.ContainingAssembly,
             GeneratedMethodHostSymbol.ContainingAssembly);
