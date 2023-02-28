@@ -25,6 +25,7 @@ public class StaticSingletonTests
         tb.LastFile().AssertContains("/// Static singleton for Outer.X");
         tb.LastFile().AssertContains("/// </summary>");
         tb.LastFile().AssertContains("public static readonly Outer.X Instance = new();");
+        tb.LastFile().AssertContains("#nullable enable");
     }
     [Fact]
     public void GenerateSingletonWithName()

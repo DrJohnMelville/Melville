@@ -132,13 +132,16 @@ public sealed partial class CommandLineFileOpen : IOpenSaveFile
     [FromConstructor] private readonly IDiskFileSystemConnector connector;
 
     public IDirectory? GetDirectory(string? dir = null) =>
-        connector.DirectoryFromPath(GetDirectoryString(dir));
+        GetDirectoryString(dir) is {} dirString ?connector.DirectoryFromPath(dirString):null;
 
     public string? GetDirectoryString(string? dir = null) => cmdLine;
 
     public IFile? GetSaveFile(
         IDirectory? defaultDirectory, string ext, string filter, string title, string? name = null)
-        => connector.FileFromPath(cmdLine);
+        => FileOrNullFromPath(cmdLine);
+
+    private IFile? FileOrNullFromPath(string? path) =>
+        path is null ? null : connector.FileFromPath(path);
 
     public string? GetSaveFileName(string? defaultDir, string ext, string filter, string title, string? name = null) =>
         cmdLine;
@@ -147,14 +150,14 @@ public sealed partial class CommandLineFileOpen : IOpenSaveFile
         cmdLine;
 
     public IFile? GetLoadFile(IDirectory? defaultDir, string ext, string filter, string title) =>
-        connector.FileFromPath(cmdLine);
+        FileOrNullFromPath(cmdLine);
 
     public IEnumerable<IFile> GetLoadFiles(IDirectory? defaultDir, string ext, string filter, string title, bool oneFileOnly = false) =>
-        new[] { connector.FileFromPath(cmdLine) };
+        cmdLine is null? Array.Empty<IFile>(): new[] { connector.FileFromPath(cmdLine) };
 
     public IEnumerable<string> GetLoadFileNames(string? defaultDir, string ext, string filter, string title,
         bool oneFileOnly = false) =>
-        new[] { cmdLine };
+        cmdLine is null ? Array.Empty<string>(): new [] { cmdLine };
 
     public string ImageFileFilter => "";
 }
