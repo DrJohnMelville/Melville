@@ -16,6 +16,9 @@ namespace Melville.INPC
         Inherited = false, AllowMultiple = false)]
     public sealed class AutoNotifyAttribute : Attribute
     {
+        /// <summary>
+        /// Set the desired visibility of the generated property -- defaults to public
+        /// </summary>
         public string PropertyModifier { get; set; } = "";
     }
 }

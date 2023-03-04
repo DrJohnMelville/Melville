@@ -10,7 +10,7 @@ namespace Melville.Generators.INPC.Test.DelegateToGen;
 public class DelegateToTest
 {
     private GeneratorTestBed RunTest(string classMembers, string intMembers) =>
-        new(new DelegateToGenerator(), $$"""
+        RunTest($$"""
         using Melville.INPC;
         namespace Outer
         {
@@ -22,7 +22,41 @@ public class DelegateToTest
             public partial class C: IInterface { {{classMembers}}
             }
         }
-        """, typeof(DelegateToAttribute));
+        """);
+
+    private static GeneratorTestBed RunTest(string code) => 
+        new(new DelegateToGenerator(), code, typeof(DelegateToAttribute));
+
+    [Fact]
+    public void InheritedInterfaceTest()
+    {
+        var res = RunTest("""
+            using Melville.INPC;
+            namespace Outer;
+
+            public interface IPar 
+            {
+                /// <summary>
+                /// This is ParOp
+                /// </summary>
+                public int ParOp();
+            }
+            public interface IChild: IExternalNotifyPropertyChanged 
+            {
+                /// <summary>
+                /// This is Child
+                /// </summary>
+                public int ChildOp();
+            }
+
+            public class ConcreteChild: IChild 
+            {
+                [DelegateTo] private IChild inner;
+            }
+            """);
+        res.LastFile().AssertContains("xxyy");
+    }
+
     [Theory]
     [InlineData("private IInterface Field;", "this.Field.A()")]
     [InlineData("public IInterface Field{get;}", "this.Field.A()")]

@@ -11,9 +11,15 @@ public enum Visibility
     /// No accessibility specified.
     /// </summary>
     NotApplicable = 0,
+    /// <summary>
+    /// The DelegateTo method will use the source symbol's visibility
+    /// </summary>
     CopySourceVisibility = 0,
 
     // DO NOT CHANGE ORDER OF THESE ENUM VALUES
+    /// <summary>
+    /// Same a private in C#
+    /// </summary>
     Private = 1,
 
     /// <summary>
@@ -28,9 +34,19 @@ public enum Visibility
     /// </summary>
     ProtectedAndFriend = ProtectedAndInternal,
 
+    /// <summary>
+    /// Same as protected in C#
+    /// </summary>
     Protected = 3,
 
+    /// <summary>
+    /// Same as intenral in C#
+    /// </summary>
     Internal = 4,
+
+    /// <summary>
+    /// Same as intenral in C#
+    /// </summary>
     Friend = Internal,
 
     /// <summary>
@@ -45,5 +61,8 @@ public enum Visibility
     /// </summary>
     ProtectedOrFriend = ProtectedOrInternal,
 
+    /// <summary>
+    /// Same as public in c#
+    /// </summary>
     Public = 6
 }

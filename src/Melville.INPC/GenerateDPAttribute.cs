@@ -18,15 +18,35 @@ namespace Melville.INPC
         AttributeTargets.Event | AttributeTargets.All, Inherited = false, AllowMultiple = true)]
     public sealed class GenerateDPAttribute : Attribute
     {
+        /// <summary>
+        /// Generate an attached property.
+        /// </summary>
         public bool Attached { get; set; }
+        /// <summary>
+        /// Generate a nullable property
+        /// </summary>
         public bool Nullable { get; set; }
+        /// <summary>
+        /// C# string for the default value of the property.
+        /// </summary>
         public object? Default { get; set; }
+        /// <summary>
+        /// Xml Documentation to attach to the property.
+        /// </summary>
         public string XmlDocumentation {get; set; } = "";
 
+        /// <summary>
+        /// Default constructor for GenerateDpAttribute
+        /// </summary>
         public GenerateDPAttribute()
         {
         }
 
+        /// <summary>
+        /// Create a GenerateDPAttribute
+        /// </summary>
+        /// <param name="targetType">Type of the desired dependency property.</param>
+        /// <param name="propName">Name of the desired dependency property.</param>
         public GenerateDPAttribute(Type targetType, string propName = "")
         {
         }
