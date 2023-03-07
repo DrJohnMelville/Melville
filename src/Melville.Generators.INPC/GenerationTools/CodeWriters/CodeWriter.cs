@@ -102,8 +102,8 @@ public static class CodeWriterOperations
             }
             else
             {
-                cw.Append("/// ");
-                while (position < input.Length && input[position] is not '\r' or '\n')
+                cw.Append(prefix);
+                while (position < input.Length && input[position] is not ('\r' or '\n'))
                 {
                     cw.Append(input[position++]);
                 }

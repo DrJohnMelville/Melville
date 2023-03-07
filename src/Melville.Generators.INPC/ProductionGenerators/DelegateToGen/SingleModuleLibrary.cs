@@ -8,7 +8,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public class SingleModuleLibrary : IDocumentationLibrary
 {
-    private static XElement Empty = new XElement("doc");
+    private static XElement Empty = new XElement("xml");
     private readonly string path;
     private XElement? xml;
 
@@ -19,7 +19,7 @@ public class SingleModuleLibrary : IDocumentationLibrary
 
     public string LookupDocumentationFor(ISymbol symbol)
     {
-        var name = symbol.GetDocumentationCommentId()??"Not a documentation ID";
+        var name = symbol.GetDocumentationCommentId()??"xml";
         return Xml()
             .Descendants("member")
             .Where(i => name.Equals(i.Attribute("name")?.Value, StringComparison.Ordinal))

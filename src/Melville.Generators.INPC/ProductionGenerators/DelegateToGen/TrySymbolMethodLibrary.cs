@@ -12,5 +12,7 @@ public class TrySymbolMethodLibrary : IDocumentationLibrary
     }
 
     public string LookupDocumentationFor(ISymbol symbol) =>
-        symbol.GetDocumentationCommentXml() is { Length: > 0 } native ? native : inner.LookupDocumentationFor(symbol);
+        symbol.GetDocumentationCommentXml() is { Length: > 0 } native ? 
+            native : 
+            inner.LookupDocumentationFor(symbol);
 }

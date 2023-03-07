@@ -37,7 +37,6 @@ public class ModuleCacheLibrary: IDocumentationLibrary
         var displayString = module.ToDisplayString();
         return
             xmlProviders.TryGetValue(displayString, out var moduleLibrary) ? 
-                moduleLibrary.LookupDocumentationFor(symbol) : 
-                $"<summary>No documentation for module {displayString}</summary>";
+                moduleLibrary.LookupDocumentationFor(symbol) :"";
     }
 }

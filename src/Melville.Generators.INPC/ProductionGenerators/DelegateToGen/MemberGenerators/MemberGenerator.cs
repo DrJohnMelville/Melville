@@ -35,11 +35,17 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGene
 
         public virtual void WriteSymbol(CodeWriter cw)
         {
-            new DocumentationCopier(cw).Copy(SourceSymbol, this.host.Options.DocumentationLibrary);
+            MergeTargedAndSourceXmlDocumentation(cw);
             CopySourceAttributes(cw);
             CopyApplicableHostAttributes(cw);
             host.RenderPrefix(cw, 
                 SourceSymbol.DeclaredAccessibility, OverrideOrNew(), EventElt(), ResultType, memberName);
+        }
+
+        private void MergeTargedAndSourceXmlDocumentation(CodeWriter cw)
+        {
+            new DocumentationCopier(cw).Copy(SourceSymbol, this.host.Options.DocumentationLibrary);
+            new DocumentationCopier(cw).Copy(this.host.HostSymbol, this.host.Options.DocumentationLibrary);
         }
 
         private void CopySourceAttributes(CodeWriter cw) => 

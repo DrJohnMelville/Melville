@@ -34,13 +34,6 @@ public class DelegateToTest
             using Melville.INPC;
             namespace Outer;
 
-            public interface IPar 
-            {
-                /// <summary>
-                /// This is ParOp
-                /// </summary>
-                public int ParOp();
-            }
             public interface IChild: IExternalNotifyPropertyChanged 
             {
                 /// <summary>
@@ -51,10 +44,15 @@ public class DelegateToTest
 
             public class ConcreteChild: IChild 
             {
+                /// <remarks>
+                /// Forwarded method through IChild.Inner
+                /// </remarks>
                 [DelegateTo] private IChild inner;
             }
             """);
-        res.LastFile().AssertContains("xxyy");
+        res.LastFile().AssertContains("/// This is Child");
+        res.LastFile().AssertContains("/// Forwarded method through");
+        res.LastFile().AssertContains("/// Sends a property change notification");
     }
 
     [Theory]
