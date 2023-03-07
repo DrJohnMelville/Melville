@@ -8,7 +8,8 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
 public static class DelegationRequestParserFactory
 {
-    public static DelegationRequestParser Create(AttributeData attr, SemanticModel compilation)
+    public static DelegationRequestParser Create(AttributeData attr, SemanticModel compilation,
+        IDocumentationLibrary moduleCacheLibrary)
     {
         var useExplicit = false;
         var WrapWith = "";
@@ -33,6 +34,7 @@ public static class DelegationRequestParserFactory
                 case "Visibility": visibility = (Accessibility)(na.Value.Value ?? Accessibility.NotApplicable); break;
             }
         }
-        return new(useExplicit, WrapWith, compilation, visibility, RenameFactory.Create(filter, rename, exclude));
+        return new(useExplicit, WrapWith, compilation, visibility, 
+            RenameFactory.Create(filter, rename, exclude), moduleCacheLibrary);
     }
 }

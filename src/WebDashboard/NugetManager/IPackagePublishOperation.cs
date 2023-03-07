@@ -17,7 +17,7 @@ public class GitHubPushOperation : IPackagePublishOperation
 
 public partial class NugetPublishOperation : IPackagePublishOperation
 {
-    private readonly string nugetKey;
+    private readonly string? nugetKey;
 
     public NugetPublishOperation(IConfigurationRoot config)
     {
@@ -25,6 +25,8 @@ public partial class NugetPublishOperation : IPackagePublishOperation
     }
     
     public (string command, string param) MakeCommand(IFile packageFile) => 
+        nugetKey is null ?
+            ("echo", "Count not find a nuget key."):
         ("dotnet", $"nuget push \"{packageFile.Path}\" --api-key {nugetKey} -s https://api.nuget.org/v3/index.json");
     
 }

@@ -35,7 +35,7 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGene
 
         public virtual void WriteSymbol(CodeWriter cw)
         {
-            new DocumentationCopier(cw).Copy(SourceSymbol);
+            new DocumentationCopier(cw).Copy(SourceSymbol, this.host.Options.DocumentationLibrary);
             CopySourceAttributes(cw);
             CopyApplicableHostAttributes(cw);
             host.RenderPrefix(cw, 

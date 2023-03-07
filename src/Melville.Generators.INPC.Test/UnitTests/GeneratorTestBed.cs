@@ -65,14 +65,17 @@ public class GeneratorTestBed
     {
         return AppDomain.CurrentDomain.GetAssemblies()
             .Where(i => i is { IsDynamic: false, Location: { Length: > 0 } })
-            .Select(i => MetadataReference.CreateFromFile(i.Location));
+            .Select(i => CreateModuleReference(i.Location));
     }
 
     private static IEnumerable<PortableExecutableReference> AllReferences(Type[] typesToInclude) => 
         typesToInclude
             .Select(i => i.Assembly.Location)
             .Distinct()
-            .Select(i=>MetadataReference.CreateFromFile(i));
+            .Select(CreateModuleReference);
+
+    private static PortableExecutableReference CreateModuleReference(string i) => 
+        MetadataReference.CreateFromFile(i);
 
     public void AssertNoDiagnostics() => Assert.Empty(diagnostics);
 

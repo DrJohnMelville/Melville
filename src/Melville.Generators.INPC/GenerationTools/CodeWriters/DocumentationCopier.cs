@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.GenerationTools.CodeWriters;
@@ -13,6 +14,8 @@ public readonly struct DocumentationCopier
         this.cw = cw;
     }
 
+    public void Copy(ISymbol symbol, IDocumentationLibrary provider) => 
+        Copy(provider.LookupDocumentationFor(symbol));
     public void Copy(ISymbol symbol) => Copy(symbol.GetDocumentationCommentXml());
 
     private void Copy(string? docComment)

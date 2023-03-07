@@ -5,14 +5,13 @@ using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 
-public record DelegationOptions(
-    ITypeSymbol SourceType,
-    ISymbol HostSymbol, 
+public record DelegationOptions(ITypeSymbol SourceType,
+    ISymbol HostSymbol,
     string MethodPrefix,
     IMethodWrappingStrategy WrappingStrategy,
     Accessibility DesiredAccessibility,
-    IMethodNamer Namer
-)
+    IMethodNamer Namer, 
+    IDocumentationLibrary DocumentationLibrary)
 {
     public ITypeSymbol HostClass => HostSymbol is ITypeSymbol ts?ts: HostSymbol.ContainingType;
     public Accessibility ComputeAccessibilityFor(Accessibility source) =>

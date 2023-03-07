@@ -17,7 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.IO.Pipelines" Version="6.0.3" />
+      <PackageReference Include="System.IO.Pipelines" Version="7.0.0" />
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
       <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
     </ItemGroup>

@@ -16,14 +16,17 @@ public class DelegationRequestParser
     private readonly SemanticModel semanticModel;
     private readonly Accessibility visibility;
     private readonly IMethodNamer namer;
+    private readonly IDocumentationLibrary documentationLibrary;
+
     public DelegationRequestParser(bool useExplicit, string postProcessName, SemanticModel semanticModel,
-        Accessibility visibility, IMethodNamer namer)
+        Accessibility visibility, IMethodNamer namer, IDocumentationLibrary documentationLibrary)
     {
         this.useExplicit = useExplicit;
         this.postProcessName = postProcessName;
         this.semanticModel = semanticModel;
         this.visibility = visibility;
         this.namer = namer;
+        this.documentationLibrary = documentationLibrary;
     }
 
     public IDelegatedMethodGenerator ParseFromMethod(IMethodSymbol symbol, SyntaxNode location) =>
@@ -52,7 +55,8 @@ public class DelegationRequestParser
         var wrappingStrategy = CreateWrappingStrategy(targetType, isMixIn);
 
         var options = new DelegationOptions(
-            typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility, namer);
+            typeToImplement, targetSymbol, methodPrefix, wrappingStrategy, visibility, namer,
+            documentationLibrary);
 
         return (typeToImplement.TypeKind, useExplicit, isMixIn) switch
         {
