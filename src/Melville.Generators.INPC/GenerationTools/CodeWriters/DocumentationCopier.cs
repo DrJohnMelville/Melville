@@ -18,7 +18,7 @@ public readonly struct DocumentationCopier
         Copy(provider.LookupDocumentationFor(symbol));
     public void Copy(ISymbol symbol) => Copy(symbol.GetDocumentationCommentXml());
 
-    private void Copy(string? docComment)
+    public void Copy(string? docComment)
     {
         if (docComment is not {Length:>0}) return;
         var firstIndex = docComment.IndexOf('>');

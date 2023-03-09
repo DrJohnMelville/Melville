@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Microsoft.CodeAnalysis;
@@ -15,17 +10,9 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
 public class DelegateToGenerator: IIncrementalGenerator
 {
     private const string QualifiedAttributeName = "Melville.INPC.DelegateToAttribute";
-    private readonly ModuleCacheLibrary moduleCache = new();
-    private readonly TrySymbolMethodLibrary docLibrary;
-
-    public DelegateToGenerator()
-    {
-        docLibrary = new(moduleCache);
-    }
-
+    
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.RegisterSourceOutput(context.CompilationProvider, RegisterCompilationWithDocumentationLibrary);
         RegisterGeneratorFor<PropertyDeclarationSyntax>(context,
             (item, fact)=> fact.ParseFromProperty((IPropertySymbol)item.TargetSymbol));
         RegisterGeneratorFor<MethodDeclarationSyntax>(context,
@@ -34,13 +21,6 @@ public class DelegateToGenerator: IIncrementalGenerator
             (item, fact)=> fact.ParseFromField((IFieldSymbol)item.TargetSymbol));
         RegisterGeneratorFor<TypeDeclarationSyntax>(context,
             (item, fact)=> fact.ParseFromType((ITypeSymbol)item.TargetSymbol));
-    }
-
-    private void RegisterCompilationWithDocumentationLibrary(
-        SourceProductionContext _, Compilation compilation)
-    {
-        moduleCache.RegisterAssemblies(compilation.ExternalReferences);
-        moduleCache.RegisterAssemblies(compilation.DirectiveReferences);
     }
 
     private void RegisterGeneratorFor<T>(
@@ -54,16 +34,20 @@ public class DelegateToGenerator: IIncrementalGenerator
         );
 
     private void Generate(
-        SourceProductionContext arg1, 
-        (GeneratorAttributeSyntaxContext i, Func<GeneratorAttributeSyntaxContext, DelegationRequestParser, IDelegatedMethodGenerator> func) context)
+        SourceProductionContext productionContext, 
+        (GeneratorAttributeSyntaxContext attributeContext, Func<GeneratorAttributeSyntaxContext, DelegationRequestParser, IDelegatedMethodGenerator> func) context)
     {
-        var targetAttributes = context.i;
-        var codeWriter = new SourceProductionCodeWriter(arg1);
+        var targetAttributes = context.attributeContext;
+        var codeWriter = new SourceProductionCodeWriter(productionContext);
         using var _ = codeWriter.GenerateInClassFile(targetAttributes.TargetNode, "GeneratedDelegator");
         foreach (var attr in targetAttributes.Attributes)
         {
-            var creator = DelegationRequestParserFactory.Create(attr, targetAttributes.SemanticModel, docLibrary);
-            context.func(context.i,creator).GenerateForwardingMethods(codeWriter);
+            var creator = DelegationRequestParserFactory.Create(
+                attr, 
+                targetAttributes.SemanticModel, 
+                new DocumentationFromSymbolOrPath(context.attributeContext.SemanticModel.Compilation));
+
+            context.func(context.attributeContext,creator).GenerateForwardingMethods(codeWriter);
         }
     }
 }

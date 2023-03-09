@@ -20,11 +20,13 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
     protected ITypeSymbol SourceType => Options.SourceType;
     public string MethodPrefix => Options.MethodPrefix;
     public ISymbol HostSymbol => Options.HostSymbol;
+    public string HostDocumentation { get; }
     public IMethodWrappingStrategy WrappingStrategy => Options.WrappingStrategy;
 
     protected ClassGenerator(DelegationOptions options)
     {
         Options = options;
+        HostDocumentation = options.DocumentationLibrary.LookupDocumentationFor(HostSymbol);
     }
 
     protected ITypeSymbol GeneratedMethodHostSymbol => Options.HostClass;

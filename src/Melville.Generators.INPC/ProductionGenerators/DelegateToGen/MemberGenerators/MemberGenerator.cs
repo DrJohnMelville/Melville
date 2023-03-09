@@ -44,8 +44,9 @@ namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGene
 
         private void MergeTargedAndSourceXmlDocumentation(CodeWriter cw)
         {
-            new DocumentationCopier(cw).Copy(SourceSymbol, this.host.Options.DocumentationLibrary);
-            new DocumentationCopier(cw).Copy(this.host.HostSymbol, this.host.Options.DocumentationLibrary);
+            var copier = new DocumentationCopier(cw);
+            copier.Copy(SourceSymbol, host.Options.DocumentationLibrary);
+            copier.Copy(host.HostDocumentation);
         }
 
         private void CopySourceAttributes(CodeWriter cw) => 
