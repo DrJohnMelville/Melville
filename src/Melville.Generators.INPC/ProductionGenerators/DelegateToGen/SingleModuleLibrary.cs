@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
@@ -34,9 +35,8 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
     private IDocumentationLibrary ParseXmlDocumentation()
     {
         if (dllPath.Length < 5) return AlwaysUseSymbolMethod.Instance;
-        ;
-        var filePath = PathToDocumentationFile();
-        if (File.Exists(filePath))
+        
+        if (PathToDocumentationFile() is { } filePath)
         {
             try
             {
@@ -50,8 +50,21 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
         return AlwaysUseSymbolMethod.Instance;
     }
 
-    private string PathToDocumentationFile() => 
-        dllPath.Substring(0, dllPath.Length - 3) + "xml";
+    private string? PathToDocumentationFile()
+    {
+        var ret = dllPath.Substring(0, dllPath.Length - 3) + "xml";
+        if (File.Exists(ret)) return ret;
+        ret = refReplacer.Replace(ret, "$1");
+        if (File.Exists(ret)) return ret;
+        return null;
+    }
+
+    private static Regex refReplacer = new Regex("""
+        [\\/]        # forward or backwad slash
+        ref
+        ([\\/])       #forward or backward slash + capture it for use in replacement
+        (?!.*[\\/]) # Lookahead to ensure no subsequent forward or backward slashes.
+        """, RegexOptions.IgnorePatternWhitespace);
 
     private IDocumentationLibrary LoadFromPathThatExists(string filePath)
     {
