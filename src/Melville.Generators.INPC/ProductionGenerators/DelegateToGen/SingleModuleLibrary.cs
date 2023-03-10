@@ -19,6 +19,7 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
 
     public XmlFileDocumentationLibrary(string dllPath)
     {
+        UdpConsole.WriteLine($"Potential Assembly {dllPath}");
         this.dllPath = dllPath;
     }
 
