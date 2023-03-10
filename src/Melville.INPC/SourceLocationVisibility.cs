@@ -5,7 +5,7 @@
 /// the values are specifically chosen so this can be casted directly to the
 /// Microsoft.CodeAnalysis.Accessability class. 
 /// </summary>
-public enum Visibility
+public enum SourceLocationVisibility
 {
     /// <summary>
     /// No accessibility specified.

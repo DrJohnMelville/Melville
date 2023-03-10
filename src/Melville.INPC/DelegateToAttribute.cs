@@ -15,7 +15,7 @@ public sealed class DelegateToAttribute : Attribute
     /// <summary>
     /// Sets the desired accessibility of the generated members,
     /// </summary>
-    public Visibility Visibility { get; set; }
+    public SourceLocationVisibility Visibility { get; set; }
     /// <summary>
     /// Sets the name of a method that will attempt to wrap the delegating call in another method if types are correct.
     /// </summary>

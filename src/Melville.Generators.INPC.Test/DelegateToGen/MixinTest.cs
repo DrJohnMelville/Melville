@@ -53,7 +53,7 @@ public class MixinTest
     [Fact]
     public void SwitchInternalToPublic()
     {
-        var res = RunTest("class", "internal int Foo()=>1;", "[DelegateTo(Visibility = Visibility.Public)] Mixin bar;");
+        var res = RunTest("class", "internal int Foo()=>1;", "[DelegateTo(Visibility = SourceLocationVisibility.Public)] Mixin bar;");
         res.LastFile().AssertContains("public int Foo() => this.bar.Foo();");
     }
     [Fact]

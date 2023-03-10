@@ -35,7 +35,7 @@ public class DelegateToSelfTest
     [Fact]
     public void ForwardProtectedMethods()
     {
-        var tb =RunTest("[DelegateTo(WrapWith=\"Wrap\", Rename=\"Long$0\" Visibility = Visibility.Public)]", "protected int X() => 1; private long Wrap(int x)=>x;");
+        var tb =RunTest("[DelegateTo(WrapWith=\"Wrap\", Rename=\"Long$0\" Visibility = SourceLocationVisibility.Public)]", "protected int X() => 1; private long Wrap(int x)=>x;");
         tb.LastFile().AssertContains("public long LongX() => Wrap(this.X())");
     }
     [Fact]
