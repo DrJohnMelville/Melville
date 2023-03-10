@@ -45,7 +45,8 @@ public class DelegateToGenerator: IIncrementalGenerator
             var creator = DelegationRequestParserFactory.Create(
                 attr, 
                 targetAttributes.SemanticModel, 
-                new DocumentationFromSymbolOrPath(context.attributeContext.SemanticModel.Compilation));
+                new DocumentationFromSymbolOrPath(context.attributeContext.SemanticModel.Compilation)
+                );
 
             context.func(context.attributeContext,creator).GenerateForwardingMethods(codeWriter);
         }

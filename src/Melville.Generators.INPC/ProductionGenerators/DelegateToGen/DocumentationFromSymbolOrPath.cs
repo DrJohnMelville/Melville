@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
+using System.Text;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
@@ -19,22 +21,22 @@ public partial class DocumentationFromSymbolOrPath : IDocumentationLibrary
 
     private IDocumentationLibrary LibraryForSymbol(ISymbol symbol)
     {
-        var path = CadidateModulePath(symbol);
+        var path = CandidateModulePath(symbol);
         if (path == null) return AlwaysUseSymbolMethod.Instance;
         if (moduleStrategies.TryGetValue(path, out var ret)) return ret;
         return SetStrategyForPath(path, DefaultStrategyForPath(path));
     }
 
-    private static IDocumentationLibrary SetStrategyForPath(string path, IDocumentationLibrary strategy) => 
+
+    private static IDocumentationLibrary SetStrategyForPath(string path, IDocumentationLibrary strategy) =>
         moduleStrategies[path] = strategy;
 
     private IDocumentationLibrary DefaultStrategyForPath(string path) =>
         new TwoStrategyDocumentationLibrary(
             new XmlFileDocumentationLibrary(path), path);
 
-    private string? CadidateModulePath(ISymbol symbol) =>
+    private string? CandidateModulePath(ISymbol symbol) =>
         compilation.GetMetadataReference(symbol.ContainingAssembly)?.Display;
 
     public IDocumentationLibrary OptimizedLibrary() => this;
 }
-
