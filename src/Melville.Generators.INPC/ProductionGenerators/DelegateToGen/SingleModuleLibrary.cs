@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Xml;
-using System.Xml.Linq;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
@@ -19,7 +14,6 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
 
     public XmlFileDocumentationLibrary(string dllPath)
     {
-        UdpConsole.WriteLine($"Potential Assembly {dllPath}");
         this.dllPath = dllPath;
     }
 
@@ -69,7 +63,7 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
 
     private IDocumentationLibrary LoadFromPathThatExists(string filePath)
     {
-       using var stream = File.Open(filePath, FileMode.Open);
+       using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         return ParseXmlDocumentation(XmlReader.Create(stream));
     }
 

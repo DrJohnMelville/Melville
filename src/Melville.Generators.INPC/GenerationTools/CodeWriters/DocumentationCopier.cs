@@ -26,10 +26,10 @@ public readonly struct DocumentationCopier
         if (firstIndex < 0 || lastIndex < 0) return;
         firstIndex++;
         if (firstIndex >= lastIndex) return;
-        Copy(docComment.AsSpan(firstIndex, lastIndex - firstIndex));
+        WriteSpanInDocCommentBlock(docComment.AsSpan(firstIndex, lastIndex - firstIndex));
     }
 
-    private void Copy(in ReadOnlySpan<char> docComment)
+    private void WriteSpanInDocCommentBlock(in ReadOnlySpan<char> docComment)
     {
         cw.CopyWithLinePrefix("/// ", docComment);
     }
