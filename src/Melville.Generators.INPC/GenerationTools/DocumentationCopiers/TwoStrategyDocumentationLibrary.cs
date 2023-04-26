@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+namespace Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 
 public partial class DocumentationFromSymbolOrPath
 {

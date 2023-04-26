@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Net.Sockets;
-using System.Text;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+namespace Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 
 public partial class DocumentationFromSymbolOrPath : IDocumentationLibrary
 {
@@ -32,7 +29,7 @@ public partial class DocumentationFromSymbolOrPath : IDocumentationLibrary
         moduleStrategies[path] = strategy;
 
     private IDocumentationLibrary DefaultStrategyForPath(string path) =>
-        new TwoStrategyDocumentationLibrary(
+        new DocumentationFromSymbolOrPath.TwoStrategyDocumentationLibrary(
             new XmlFileDocumentationLibrary(path), path);
 
     private string? CandidateModulePath(ISymbol symbol) =>

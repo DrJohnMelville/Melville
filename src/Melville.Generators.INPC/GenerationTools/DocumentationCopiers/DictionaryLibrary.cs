@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+namespace Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 
 public class DictionaryLibrary : IDocumentationLibrary
 {

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text.RegularExpressions;
-using Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.GenerationTools.CodeWriters;
+namespace Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 
 public readonly struct DocumentationCopier
 {

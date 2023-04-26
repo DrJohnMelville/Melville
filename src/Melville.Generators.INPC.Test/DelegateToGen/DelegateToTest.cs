@@ -56,6 +56,7 @@ public class DelegateToTest
     }
 
     [Theory]
+    [InlineData("private IInterface Field;", "#pragma warning disable CS1734, CS1735")]
     [InlineData("private IInterface Field;", "this.Field.A()")]
     [InlineData("public IInterface Field{get;}", "this.Field.A()")]
     [InlineData("public IInterface Field => null", "this.Field.A()")]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodNamers;
 using Microsoft.CodeAnalysis;
 

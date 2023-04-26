@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Microsoft.CodeAnalysis;
 
-namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen;
+namespace Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 
 public class XmlFileDocumentationLibrary : IDocumentationLibrary
 {
@@ -49,12 +48,15 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
     {
         var ret = dllPath.Substring(0, dllPath.Length - 3) + "xml";
         if (File.Exists(ret)) return ret;
-        ret = refReplacer.Replace(ret, "$1");
+        ret = TryRemoveTerminalRefFolderFromPath(ret);
         if (File.Exists(ret)) return ret;
         return null;
     }
 
-    private static Regex refReplacer = new Regex("""
+    private static string TryRemoveTerminalRefFolderFromPath(string ret) => 
+        refReplacer.Replace(ret, "$1");
+
+    private static Regex refReplacer = new("""
         [\\/]        # forward or backwad slash
         ref
         ([\\/])       #forward or backward slash + capture it for use in replacement
@@ -64,26 +66,7 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
     private IDocumentationLibrary LoadFromPathThatExists(string filePath)
     {
        using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        return ParseXmlDocumentation(XmlReader.Create(stream));
-    }
-
-    private IDocumentationLibrary ParseXmlDocumentation(XmlReader reader)
-    {
-        if (!reader.Read()) return AlwaysUseSymbolMethod.Instance;
-        var ret = new Dictionary<string, string>();
-        while (true)
-        {
-            if (reader.NodeType == XmlNodeType.Element && 
-                reader.Name.Equals("member", StringComparison.Ordinal) &&
-                reader.GetAttribute("name") is { Length: > 0 } name)
-            {
-                ret.Add(name, reader.ReadOuterXml());
-            }
-            else
-            {
-                if (!reader.Read()) return new DictionaryLibrary(ret);
-            }
-        }
+        return new XmlDocumentationParser(XmlReader.Create(stream)).ParseXmlDocumentation();
     }
 
     public IDocumentationLibrary OptimizedLibrary() => members ?? this;

@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

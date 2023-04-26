@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MemberGenerators

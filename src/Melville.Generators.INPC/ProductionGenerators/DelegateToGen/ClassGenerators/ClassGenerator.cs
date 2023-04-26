@@ -38,11 +38,20 @@ public abstract class ClassGenerator : IDelegatedMethodGenerator
 
     public void GenerateForwardingMethods(CodeWriter cw)
     {
+        SupressWarningFromInaccurateSourceDocumentation(cw);
         foreach (var symbol in MembersToGenerate())
         {
             symbol.WriteSymbol(cw);
             cw.AppendLine();
         }
+    }
+
+    private static void SupressWarningFromInaccurateSourceDocumentation(CodeWriter cw)
+    {
+        // The .NET framework classes contain erroneous documentation where casing is wrong,
+        // for example, in parameter names.  Since we cannot fix this in generated code, we
+        // simple ignore the warnings for these errors.
+        cw.AppendLine("#pragma warning disable CS1734, CS1735");
     }
 
     private IEnumerable<IMemberGenerator> MembersToGenerate() =>

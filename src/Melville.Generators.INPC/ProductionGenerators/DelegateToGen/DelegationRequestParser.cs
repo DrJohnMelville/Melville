@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
+using Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.ClassGenerators;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodNamers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;

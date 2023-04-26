@@ -1,6 +1,7 @@
 ﻿using System;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
+using Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 using Microsoft.CodeAnalysis;
 
 namespace Melville.Generators.INPC.ProductionGenerators.INPC;

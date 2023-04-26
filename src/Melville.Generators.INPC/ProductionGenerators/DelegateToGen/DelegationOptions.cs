@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using Melville.Generators.INPC.GenerationTools.DocumentationCopiers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.MethodNamers;
 using Melville.Generators.INPC.ProductionGenerators.DelegateToGen.OurputWrapping;
 using Microsoft.CodeAnalysis;
