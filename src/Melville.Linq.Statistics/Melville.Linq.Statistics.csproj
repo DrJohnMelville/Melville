@@ -1,7 +1,7 @@
 ﻿
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <DebugType>Full</DebugType>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -26,7 +26,7 @@
     <PackageReference Include="Accord.Statistics" Version="3.8.0" />
     <PackageReference Include="Castle.Core" Version="5.1.1" />
     <PackageReference Include="EPPlus.Core" Version="1.5.4" />
-    <PackageReference Include="LINQPad.Runtime" Version="7.6.6" />
+    <PackageReference Include="LINQPad.Runtime" Version="7.7.15" />
   </ItemGroup>
 
 

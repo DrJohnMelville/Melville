@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO.Pipelines;
+using System.Numerics;
 using System.Text;
 using Melville.INPC;
 
@@ -20,21 +21,21 @@ public ref partial struct SerialPipeWriter
         position = 0;
     }
 
-    [MacroItem("sbyte")]
-    [MacroItem("byte")]
-    [MacroItem("ushort")]
-    [MacroItem("short")]
-    [MacroItem("int")]
-    [MacroItem("uint")]
-    [MacroItem("long")]
-    [MacroItem("ulong")]
     [MacroItem("double")]
     [MacroItem("System.Single")]
-    [MacroCode(@"public void Write(~0~ value)
-{
-    System.BitConverter.TryWriteBytes(NextPosition(), value);
-    position += sizeof(~0~);
-}")]
+    [MacroCode("""
+               public void Write(~0~ value)
+               {
+                   System.BitConverter.TryWriteBytes(NextPosition(), value);
+                   position += sizeof(~0~);
+               }
+               """)]
+
+    public void Write<T>(T number) where T: IBinaryInteger<T>
+    {
+        number.TryWriteLittleEndian(NextPosition(), out var bytesWritten);
+        position += bytesWritten;
+    }
 
     public void Write(bool b) => Write((byte) (b ? 1 : 0));  
     public void Write(string s)

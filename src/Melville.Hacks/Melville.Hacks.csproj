@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.1;net8.0</TargetFrameworks>
         <Title>Melville.Hacks</Title>
         <PackageDescription>Little C# snippets I use a lot and like.</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

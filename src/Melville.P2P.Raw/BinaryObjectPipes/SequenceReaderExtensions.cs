@@ -1,5 +1,7 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Text;
 using Melville.INPC;
 
@@ -7,9 +9,6 @@ namespace Melville.P2P.Raw.BinaryObjectPipes;
 
 public static partial class SequenceReaderExtensions
 {
-    [MacroItem("ushort", "ToUInt16")]
-    [MacroItem("uint", "ToUInt32")]
-    [MacroItem("ulong", "ToUInt64")]
     [MacroItem("double", "ToDouble")]
     [MacroItem("System.Single", "ToSingle")]
     [MacroCode(
@@ -32,6 +31,21 @@ public static partial class SequenceReaderExtensions
         value = valueByte != 0;
         return true;
     }
+
+    public static bool TryReadLittleEndian<T>(this ref SequenceReader<byte> reader, out T value)
+        where T : IBinaryInteger<T>, IUnsignedNumber<T>
+    {  
+        var len = T.AdditiveIdentity.GetByteCount();
+        Span<byte> bytes = stackalloc byte[len];
+        if (!reader.TryCopyTo(bytes))
+        {
+            value = T.Zero;
+            return false;
+        }
+        reader.Advance(len);
+        return T.TryReadLittleEndian(bytes, T.Zero is IUnsignedNumber<T>, out value);
+    }
+
     public static bool TryRead(this ref SequenceReader<byte> reader, 
         [NotNullWhen(true)] out string? ret)
     {

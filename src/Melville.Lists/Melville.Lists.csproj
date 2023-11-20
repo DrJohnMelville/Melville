@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Title>Melville.Lists</Title>
         <PackageDescription>Threadsafe lists -- mainly for WPF.  Also persistent linq lists</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

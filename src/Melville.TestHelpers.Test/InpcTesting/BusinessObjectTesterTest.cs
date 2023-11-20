@@ -1,6 +1,7 @@
 ﻿#nullable disable warnings
 using Melville.MVVM.BusinessObjects;
 using Melville.TestHelpers.Assertions;
+using Melville.TestHelpers.DeepComparisons;
 using Melville.TestHelpers.InpcTesting;
 using Xunit;
 using Xunit.Sdk;

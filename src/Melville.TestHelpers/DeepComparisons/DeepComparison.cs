@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 using Xunit.Sdk;
 
 namespace Melville.TestHelpers.DeepComparisons;
@@ -114,7 +115,7 @@ public sealed class DeepComparison
     {
         if (assert && !test)
         {
-            throw new AssertActualExpectedException(expected, actual, 
+            throw new  AssertActualExpectedException(expected, actual, 
                 String.Join("", path.Reverse()) + postfix);
         }
 
@@ -181,4 +182,15 @@ public sealed class DeepComparison
             path.Pop();
         }
     }
+}
+
+public class AssertActualExpectedException : Exception
+{
+    public AssertActualExpectedException(object expected, object actual, string postfix) :
+        base($"""
+              Expected: {expected}
+              Actual:   {actual}
+              {postfix}
+              """){}
+
 }

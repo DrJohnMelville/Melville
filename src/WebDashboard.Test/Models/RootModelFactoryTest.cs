@@ -95,7 +95,7 @@ public class RootModelFactoryTest
     private const string ProjText = @"<?xml version=""1.0"" encoding=""utf-8""?>
 <Project Sdk=""Microsoft.NET.Sdk.Web"">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
     <UserSecretsId>5e7f3d51-4b7a-41f8-a32a-8f6c11c29274</UserSecretsId>
     
@@ -141,7 +141,7 @@ public class RootModelFactoryTest
         <EnableMSDeployBackup>True</EnableMSDeployBackup>
         <UserName>johnmelv</UserName>
         <_SavePWD>False</_SavePWD>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <SelfContained>true</SelfContained>
         <_IsPortable>false</_IsPortable>
         <RuntimeIdentifier>win-x86</RuntimeIdentifier>
