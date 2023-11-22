@@ -42,11 +42,11 @@ public readonly struct SearchForAttribute
     private bool SearchParentNameSpaces(string attributeName, SyntaxNode context)
     {
         var oldList = new List<string> {attributeName};
-        foreach (var usingList in (IEnumerable<SyntaxList<UsingDirectiveSyntax>>) context.UsingDeclarationListsForSurroundingScopes())
+        foreach (var usingList in context.UsingDeclarationListsForSurroundingScopes())
         {
-            IList<string> newList = usingList.Select(i => i.Name.ToString())
-                .SelectMany<string, string, string>(ns => oldList,
-                    (ns, item) => string.Concat((string) ns, (string) ".", (string) item))
+            IList<string> newList = usingList.Select(i => i.Name?.ToString()??"")
+                .SelectMany(ns => oldList,
+                    (ns, item) => string.Concat(ns, ".", item))
                 .ToList();
             foreach (var item in newList)
             {

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Melville.IOC.Activation;
+using System.Reflection;
+using Melville.INPC;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
@@ -9,22 +10,13 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy;
 
-public class FunctionActivationStrategy : IActivationStrategy
+public partial class FunctionActivationStrategy : IActivationStrategy
 {
-    private readonly Type functionDelegateType;
-    private readonly Type resultType;
-    private readonly ForwardFuncToMethodCall forwardFuncToMethodCall;
-    public FunctionActivationStrategy(Type functionDelegateType)
-    {
-        resultType = functionDelegateType.GetGenericArguments().Last();
-        this.functionDelegateType = functionDelegateType;
-        forwardFuncToMethodCall = new ForwardFuncToMethodCall(functionDelegateType, 
-            nameof(FunctionFactoryImplementation.CreateTargetObject),
-            typeof(FunctionFactoryImplementation));
-    }
+    [FromConstructor] private readonly Type functionDelegateType;
 
     public bool CanCreate(IBindingRequest bindingRequest) => 
-        bindingRequest.IocService.CanGet(new IBindingRequest[]{InnerRequestForCanCreate(bindingRequest)});
+        bindingRequest.IocService.CanGet(new IBindingRequest[]
+            {InnerRequestForCanCreate(bindingRequest)});
 
     private IBindingRequest InnerRequestForCanCreate(IBindingRequest bindingRequest)
     {
@@ -36,27 +28,23 @@ public class FunctionActivationStrategy : IActivationStrategy
     private static IEnumerable<object> CreateFakeObjectsFromFunctionParameters(List<Type> types) => 
         types.SkipLast(1).Select(i => (object) new ReplaceLiteralArgumentWithNonsenseValue(i));
 
+    public object? Create(IBindingRequest bindingRequest)
+    {
+        var genericArgs = functionDelegateType.GetGenericArguments();
+        return Delegate.CreateDelegate(functionDelegateType, 
+            new FunctionFactoryImplementation(bindingRequest, genericArgs[^1]), 
+            CreateSpecializedMethod(genericArgs)
+        );
+    }
 
-    public object? Create(IBindingRequest bindingRequest) =>
-        forwardFuncToMethodCall.CreateFuncDelegate(new FunctionFactoryImplementation(bindingRequest, resultType));
+    private static MethodInfo CreateSpecializedMethod(Type[] genericArgs) =>
+        typeof(FunctionFactoryImplementation)
+            .GetMethods()
+            .First(i => i.Name is nameof(FunctionFactoryImplementation.Call) &&
+                        i.GetGenericArguments().Length == genericArgs.Length)
+            .MakeGenericMethod(genericArgs);
 
     public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
 
     public bool ValidForRequest(IBindingRequest ret) => true;
-}
-
-public class FunctionFactoryImplementation
-{
-    private readonly IBindingRequest bindingRequest;
-    private readonly Type desiredType;
-    public FunctionFactoryImplementation(IBindingRequest bindingRequest, 
-        Type desiredType)
-    {
-        this.bindingRequest = bindingRequest;
-        this.desiredType = desiredType;
-    }
-        
-    public object? CreateTargetObject(object[] parameters) => 
-        bindingRequest.IocService.Get(bindingRequest.CreateSubRequest(desiredType, parameters)) 
-        ?? throw new IocException("Type resolved to null");
 }

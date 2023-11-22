@@ -24,7 +24,7 @@ public static class TypeActivatorFactory
     public static TypeActivationStrategy StrategyFromConstructor(ConstructorInfo constructor)
     {
         return new TypeActivationStrategy(
-            ActivationCompiler.Compile(constructor), constructor.GetParameters());
+            ConstructorInvoker.Create(constructor), constructor.GetParameters());
     }
 
     private static IList<ConstructorInfo> SortedConstructorList(Type type) =>

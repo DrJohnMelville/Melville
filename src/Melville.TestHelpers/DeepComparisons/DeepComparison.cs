@@ -188,9 +188,9 @@ public class AssertActualExpectedException : Exception
 {
     public AssertActualExpectedException(object expected, object actual, string postfix) :
         base($"""
+              {postfix}
               Expected: {expected}
               Actual:   {actual}
-              {postfix}
               """){}
 
 }

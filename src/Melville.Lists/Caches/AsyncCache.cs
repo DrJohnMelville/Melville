@@ -13,6 +13,10 @@ public class AsyncCache<TKey, TResult>
 
   public Task<TResult> Get(TKey key) => cache.Get(key).Task;
 
+  public void Forget(TKey key) => cache.Forget(key);
+
+  public void Clear() => cache.Clear();
+
   private class TaskHolder : IDisposable
   {
     public Task<TResult> Task;
@@ -26,7 +30,7 @@ public class AsyncCache<TKey, TResult>
     {
       (Task.Result as IDisposable)?.Dispose();
     }
+
   }
 
-  public void Forget(TKey key) => cache.Forget(key);
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Melville.IOC.Activation;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
@@ -13,7 +14,7 @@ public class MultipleValueActivator : IActivationStrategy
 {
     private readonly ITypeResolutionPolicy innerResolver;
     private readonly Type typeToResolve;
-    private readonly Func<object[], object> typedListCreator;
+    private readonly ConstructorInvoker typedListCreator;
 
     public MultipleValueActivator(ITypeResolutionPolicy innerResolver, Type typeToResolve)
     {
@@ -35,7 +36,7 @@ public class MultipleValueActivator : IActivationStrategy
 
     public bool ValidForRequest(IBindingRequest request) => true;
 
-    private IList CreateResultList() => (IList)typedListCreator(Array.Empty<object>());
+    private IList CreateResultList() => (IList)typedListCreator.Invoke();
     private IActivationStrategy? ResolveInnerType(IBindingRequest bindingRequest) => 
         innerResolver.ApplyResolutionPolicy(bindingRequest.CreateSubRequest(typeToResolve));
 

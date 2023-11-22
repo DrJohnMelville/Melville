@@ -65,7 +65,7 @@ public sealed partial class BusinessObjectTesterTest
   [Fact]
   public void CannotConstructField()
   {
-    AssertEx.Throws<TrueException>("Other is not tested in the property test.\r\nExpected: True\r\nActual:   False", () => 
+    AssertEx.Throws<TrueException>("Other is not tested in the property test.", () => 
       BusinessObjectTester.Create(()=>new NonDefaultConstructor(1)).DoTests());
   }
 

@@ -29,7 +29,7 @@ public partial class IndentedStringBuilder
         target.Append(InsertInternalIndentStrings(s));
     }
 
-    private string InsertInternalIndentStrings(string s) => s.Replace(Environment.NewLine, Environment.NewLine+indentString);
+    private string InsertInternalIndentStrings(string s) => s.Replace("\r\n", "\r\n"+indentString);
 
     private void AppendIndentIfNeeded()
     {

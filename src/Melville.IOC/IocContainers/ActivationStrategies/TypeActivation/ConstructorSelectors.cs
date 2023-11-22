@@ -25,7 +25,7 @@ public static class ConstructorSelectors
     public static TypeActivationStrategy AsActivationStrategy(this ConstructorInfo constructor)
     {
         return new TypeActivationStrategy(
-            ActivationCompiler.Compile(constructor), constructor.GetParameters());
+            ConstructorInvoker.Create(constructor), constructor.GetParameters());
     }
     public static ConstructorInfo WithArgumentTypes(this IList<ConstructorInfo> constructors,
         params Type[] argumentTypes)

@@ -2,32 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Melville.Hacks;
+using Melville.INPC;
 using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
-public class TypeActivationStrategy: IActivationStrategy
+public partial class TypeActivationStrategy: IActivationStrategy
 {
-    private readonly ParameterInfo[] paramTypes;
-    private readonly Func<object?[], object> activator;
+    [FromConstructor] private readonly ConstructorInvoker activator;
+    [FromConstructor] private readonly ParameterInfo[] paramTypes;
 
     public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
     public bool ValidForRequest(IBindingRequest request) => true;
-    public bool CanCreate(IBindingRequest bindingRequest) => 
-        bindingRequest.IocService.CanGet(ComputeDependencies(bindingRequest));
+    public bool CanCreate(IBindingRequest bindingRequest)
+    {
+        foreach (var parameterInfo in paramTypes)
+        {
+            if (!bindingRequest.IocService.CanGet(bindingRequest.CreateSubRequest(parameterInfo)))
+                return false;
+        }
+        return true;
+    }
 
-    public object? Create(IBindingRequest bindingRequest) => 
-        activator(bindingRequest.IocService.Get(ComputeDependencies(bindingRequest)));
+    public object? Create(IBindingRequest bindingRequest)
+    {
+        using var requests = new RentedBuffer<object?>(paramTypes.Length);
+        FillParamaterSpan(bindingRequest, requests.Span);
+        return activator.Invoke(requests.Span);
+    }
+
+    private void FillParamaterSpan(IBindingRequest bindingRequest, Span<object?> target)
+    {
+        for (int i = 0; i < target.Length; i++)
+        {
+            target[i] = bindingRequest.IocService.Get(bindingRequest.CreateSubRequest(paramTypes[i]));
+        }
+    }
 
     private List<IBindingRequest> ComputeDependencies(IBindingRequest bindingRequest) =>
         paramTypes
             .Select(bindingRequest.CreateSubRequest)
             .ToList();
 
-    public TypeActivationStrategy(Func<object?
-        [], object> activator, ParameterInfo[] paramTypes)
-    {
-        this.activator = activator;
-        this.paramTypes = paramTypes;
-    }
 }

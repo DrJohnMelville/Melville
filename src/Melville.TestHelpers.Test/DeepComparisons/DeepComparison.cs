@@ -111,7 +111,7 @@ public sealed class DeepComparisonTest
     [Fact]
     public void EnumLengthDiffers()
     {
-        AssertEx.Throws<Exception>("{Item} (Lengths Unequal)\r\nExpected: Int32[] [1]\r\nActual:   Int32[] [1, 2]", ()=> DeepComparison.AreSame(new[] {1}, new[] {1,2}, true));
+        AssertEx.Throws<Exception>("{Item} (Lengths Unequal)\r\nExpected: System.Int32[]\r\nActual:   System.Int32[]", ()=> DeepComparison.AreSame(new[] {1}, new[] {1,2}, true));
     }
     [Fact]
     public void CountTheEnums()

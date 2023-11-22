@@ -18,4 +18,11 @@
       <Compile Remove="IocContainers\OptionEnumerator.cs" />
       <Compile Remove="IocContainers\SharingScopeActivation.cs" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Melville.Hacks\Melville.Hacks.csproj" />
+      <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
+      <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" 
+                        OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+
+    </ItemGroup>
 </Project>

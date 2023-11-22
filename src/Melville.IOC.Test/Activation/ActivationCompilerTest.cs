@@ -18,10 +18,10 @@ public class ActivationCompilerTest
         Assert.NotNull(ret);
     }
 
-    private T MakeObject<T>(Type[] parameters, object[] arguments)
+    private T MakeObject<T>(Type[] parameters, object?[] arguments)
     {
         var func = ActivationCompiler.Compile(typeof(T), parameters);
-        return (T) func(arguments);
+        return (T) func.Invoke(arguments.AsSpan());
     }
 
     public class StringHolder
@@ -36,7 +36,7 @@ public class ActivationCompilerTest
     [Fact]
     public void StringHolderCreate()
     {
-        var ret = MakeObject<StringHolder>(new[] {typeof(string)}, new[] {"XXXy"});
+        var ret = MakeObject<StringHolder>([typeof(string)],["XXXy"]);
         Assert.Equal("XXXy", ret.Inside);
     }
 
@@ -56,8 +56,8 @@ public class ActivationCompilerTest
     [Fact]
     public void ComplexCreate()
     {
-        var ret = MakeObject<Complex>(new[] {typeof(string), typeof(string), typeof(int)}, 
-            new object[] {"A","B", 3});
+        var ret = MakeObject<Complex>([typeof(string), typeof(string), typeof(int)], 
+            ["A","B", 3]);
         Assert.Equal("A", ret.A);
         Assert.Equal("B", ret.B);
         Assert.Equal(3, ret.C);

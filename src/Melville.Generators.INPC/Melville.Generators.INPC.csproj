@@ -4,6 +4,7 @@
         <TargetFramework>netstandard2.0</TargetFramework>
 	    <IsRoslynComponent>true</IsRoslynComponent>
         <NoWarn>$(NoWarn);NU5128</NoWarn>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
     <PropertyGroup>
         <Title>Melville.Generators.INPC</Title>

@@ -47,11 +47,13 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
     private string? PathToDocumentationFile()
     {
         var ret = dllPath.Substring(0, dllPath.Length - 3) + "xml";
-        if (File.Exists(ret)) return ret;
+        if (Exists(ret)) return ret;
         ret = TryRemoveTerminalRefFolderFromPath(ret);
-        if (File.Exists(ret)) return ret;
+        if (Exists(ret)) return ret;
         return null;
     }
+
+    private bool Exists(string path) => new FileInfo(path).Exists;
 
     private static string TryRemoveTerminalRefFolderFromPath(string ret) => 
         refReplacer.Replace(ret, "$1");
@@ -65,7 +67,7 @@ public class XmlFileDocumentationLibrary : IDocumentationLibrary
 
     private IDocumentationLibrary LoadFromPathThatExists(string filePath)
     {
-       using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+       using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         return new XmlDocumentationParser(XmlReader.Create(stream)).ParseXmlDocumentation();
     }
 

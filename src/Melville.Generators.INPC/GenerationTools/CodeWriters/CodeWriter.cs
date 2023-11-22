@@ -17,7 +17,7 @@ public abstract class CodeWriter
     public void Append(char c) => target.Append(c);
     public IDisposable CurlyBlock() => target.CurlyBlock();
     public IDisposable IndentedRun() => target.IndentedRun();
-    public override string ToString() => string.Join(Environment.NewLine, prefixLines.Append(target.ToString()));
+    public override string ToString() => string.Join("\r\n", prefixLines.Append(target.ToString()));
     
     public abstract void PublishCodeInFile(string fileName);
     public abstract void ReportDiagnostic(Diagnostic diagnostic);

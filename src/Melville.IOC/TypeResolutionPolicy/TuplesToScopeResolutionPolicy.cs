@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Melville.Hacks;
 using Melville.IOC.Activation;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
@@ -50,7 +52,7 @@ public sealed class TuplesToScopeResolutionPolicy: ITypeResolutionPolicy
 public sealed class ScopedTupleActivationStrategy : IActivationStrategy  
 {
     private readonly Type desiredType;
-    private readonly Func<object?[], object> funcCreator;
+    private readonly ConstructorInvoker funcCreator;
 
     public ScopedTupleActivationStrategy(Type desiredType)
     {
@@ -66,11 +68,12 @@ public sealed class ScopedTupleActivationStrategy : IActivationStrategy
     
     public object? Create(IBindingRequest bindingRequest)
     {
-        var values = new object[desiredType.GetGenericArguments().Length];
+        using var buffer = new RentedBuffer<object?>(desiredType.GetGenericArguments().Length);
+        var values = buffer.Span;
         var scope = bindingRequest.IocService.CreateScope();
         values[0] = scope;
-        scope.Fill(values.AsSpan<object?>()[1..], RequestsForInnerItems(bindingRequest));
-        return funcCreator(values);
+        scope.Fill(values[1..], RequestsForInnerItems(bindingRequest));
+        return funcCreator.Invoke(values);
     }
     
     public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
