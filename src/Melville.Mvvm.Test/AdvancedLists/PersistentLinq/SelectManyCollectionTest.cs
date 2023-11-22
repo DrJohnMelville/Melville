@@ -82,7 +82,7 @@ public sealed class SelectManyCollectionTest
     int fired = 0;
     smc.CollectionChanged += (s, e) =>
     {
-      Assert.Equal(1, e.NewItems.Count);
+      Assert.Single(e.NewItems);
       Assert.Equal(100, e.NewItems[0]);
       Assert.Equal(8, e.NewStartingIndex);
       fired++;
@@ -101,7 +101,7 @@ public sealed class SelectManyCollectionTest
     int fired = 0;
     smc.CollectionChanged += (s, e) =>
     {
-      Assert.Equal(1, e.OldItems.Count);
+      Assert.Single(e.OldItems);
       Assert.Equal(8, e.OldItems[0]);
       Assert.Equal(8, e.OldStartingIndex);
       fired++;

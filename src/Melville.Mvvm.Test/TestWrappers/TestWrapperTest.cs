@@ -35,7 +35,7 @@ public sealed class TestWrapperTest
     try
     {
       code();
-      Assert.True(false, "Did not throw and exception");
+      Assert.Fail("Did not throw and exception");
     }
     catch (XunitException e)
     {

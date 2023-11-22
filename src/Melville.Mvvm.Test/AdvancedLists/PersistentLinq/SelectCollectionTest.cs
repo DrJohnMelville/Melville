@@ -106,7 +106,7 @@ public sealed class SelectCollectionTest
     data.Item2.CollectionChanged += (s, e) =>
     {
       collChangedCount++;
-      Assert.Equal(1, e.NewItems.Count);
+      Assert.Single(e.NewItems);
       Assert.Equal(-6, e.NewItems[0]);
       Assert.Equal(5, e.NewStartingIndex);
 
@@ -142,7 +142,7 @@ public sealed class SelectCollectionTest
     data.Item2.CollectionChanged += (s, e) =>
     {
       collChangedCount++;
-      Assert.Equal(1, e.OldItems.Count);
+      Assert.Single(e.OldItems);
       Assert.Equal(-3, e.OldItems[0]);
       Assert.Equal(3, e.OldStartingIndex);
       //        Assert.Equal(NotifyCollectionChangedAction.Reset, e.Action);
@@ -161,8 +161,8 @@ public sealed class SelectCollectionTest
     data.Item2.CollectionChanged += (s, e) =>
     {
       collChangedCount++;
-      Assert.Equal(1, e.OldItems.Count);
-      Assert.Equal(1, e.NewItems.Count);
+      Assert.Single(e.OldItems);
+      Assert.Single(e.NewItems);
       Assert.Equal(-2, e.OldItems[0]);
       Assert.Equal(-10, e.NewItems[0]);
     };
@@ -195,8 +195,8 @@ public sealed class SelectCollectionTest
     data.Item2.CollectionChanged += (s, e) =>
     {
       collChangedCount++;
-      Assert.Equal(1, e.OldItems.Count);
-      Assert.Equal(1, e.NewItems.Count);
+      Assert.Single(e.OldItems);
+      Assert.Single(e.NewItems);
       Assert.Equal(-2, e.OldItems[0]);
       Assert.Equal(-2, e.NewItems[0]);
       Assert.Equal(2, e.OldStartingIndex);

@@ -29,7 +29,7 @@ public class RelativeFileReferenceTest
     [InlineData("..\\Base\\Sib\\.\\Child\\b.txt", "Z:\\Base\\Sib\\Child\\b.txt")]
     [InlineData(".\\Sib\\..\\Sib\\Child\\b.txt", "Z:\\Base\\Sib\\Child\\b.txt")]
     [InlineData("b.1234.txt", "Z:\\Base\\b.1234.txt")]
-    public void RelativePathTest(string path, string result) =>
+    public void RelativePathTest(string path, string? result) =>
         Assert.Equal(result, baseFile.FileAtRelativePath(path)?.Path);
 
         

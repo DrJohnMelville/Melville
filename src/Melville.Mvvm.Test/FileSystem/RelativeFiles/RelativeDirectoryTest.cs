@@ -68,7 +68,7 @@ public sealed class RelativeDirectoryTest
   [InlineData("*.jpg", 2)]
   [InlineData("*.*", 4)]
   [InlineData(null, 4)]
-  public void AllFilesTest(string glob, int files)
+  public void AllFilesTest(string? glob, int files)
   {
     target.File("a.jpg").Create("a.jpg");
     target.File("B.jpg").Create("B.jpg");
