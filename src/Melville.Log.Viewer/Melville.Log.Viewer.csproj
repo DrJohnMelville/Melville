@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Remove="App.xaml" />
+    <Page Remove="App.xaml" />
     <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
