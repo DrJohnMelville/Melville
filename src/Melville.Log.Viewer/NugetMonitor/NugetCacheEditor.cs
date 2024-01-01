@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Melville.FileSystem;
+using Melville.Log.Viewer.NugetMonitor.HardDelete;
 using Serilog.Events;
 
 namespace Melville.Log.Viewer.NugetMonitor;
@@ -68,7 +69,7 @@ public sealed class NugetCacheEditor
 
         foreach (var file in folder.AllFiles())
         {
-            file.Delete();
+            file.HardDelete();
         }
         folder.Delete();
     }

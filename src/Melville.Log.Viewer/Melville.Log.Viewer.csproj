@@ -33,4 +33,7 @@
     <None Remove="ApplicationRoot\app.ico" />
     <Resource Include="ApplicationRoot\app.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="NugetMonitor\HardDelete\" />
+  </ItemGroup>
 </Project>
