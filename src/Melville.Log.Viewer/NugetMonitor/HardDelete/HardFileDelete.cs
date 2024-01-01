@@ -11,14 +11,17 @@ public static class HardFileDelete
 {
     public static void HardDelete(this IFile file)
     {
-        try
+        for (int i = 0; i < 5; i++)
         {
-            file.Delete();
-        }
-        catch (IOException)
-        {
-            TerminateProcessFor(file.Path);
-            file.Delete();
+            try
+            {
+                file.Delete();
+                return;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                TerminateProcessFor(file.Path);
+            }
         }
     }
 
