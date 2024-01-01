@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Melville.Log.NamedPipeEventSink\Melville.Log.NamedPipeEventSink.csproj" />
     <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
+    <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Melville.MVVM.Wpf\Melville.MVVM.Wpf.csproj" />
     <ProjectReference Include="..\Melville.WpfAppFramework\Melville.WpfAppFramework.csproj" />
     <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />

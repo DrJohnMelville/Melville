@@ -17,6 +17,9 @@
         <Button Click="{eventBindings:EventBinding ConnectToWeb}">Log Website</Button>
         
         <Button Margin="0 20" Click="{eventBindings:EventBinding ConnectToUdp}">Open UDP Console Log</Button>
+
         <Button Click="{eventBindings:EventBinding CopyUdpSender}">Copy UDP Sender to Clipboard</Button>
+
+        <Button Margin ="0 20" Click="{eventBindings:EventBinding MonitorLocalNuget}">Monitory Local Nuget Folder for Updates</Button>
     </StackPanel>
 </UserControl>

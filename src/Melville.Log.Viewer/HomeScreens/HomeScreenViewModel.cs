@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using Melville.FileSystem;
 using Melville.Lists;
 using Melville.Log.Viewer.LogViews;
 using Melville.Log.Viewer.NamedPipeServers;
+using Melville.Log.Viewer.NugetMonitor;
 using Melville.Log.Viewer.UdpServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.BusinessObjects;
+using Melville.MVVM.Wpf.DiParameterSources;
+using Melville.MVVM.Wpf.MvvmDialogs;
 
 namespace Melville.Log.Viewer.HomeScreens;
 
@@ -96,6 +100,16 @@ public class HomeScreenViewModel: NotifyBase
                 }
             }
             """);
+    }
+
+    public void MonitorLocalNuget(
+        [FromServices] LogConsole console,
+        [FromServices] IOpenSaveFile osf,
+        [FromServices] Func<IDirectory, ILogConsole, NugetServiceFolderMonitor> fact)
+    {
+        if (osf.GetDirectory() is not { } dir) return;
+        AddNewPage(new LogViewModel(console, "Local Nuget Monitor"));
+        fact(dir, console);
     }
 
     private void AddNewPage(LogViewModel page)

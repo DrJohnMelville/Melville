@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
+using Melville.FileSystem;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.Log.Viewer.NamedPipeServers;
+using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.WpfAppFramework.StartupBases;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +27,17 @@ public class Startup : StartupBase
         SetupConfiguration(service);
         SetupPipeListener(service);
         SetupMainWindowContent(service);
+        SetupNugetFolderMonitoring(service);
     }
+
+    private void SetupNugetFolderMonitoring(IBindableIocService service)
+    {
+        service.Bind<Func<Environment.SpecialFolder, string, IDirectory>>()
+            .ToConstant(FolderFactory);
+    }
+
+    private IDirectory FolderFactory(Environment.SpecialFolder parent, string child) => 
+        new FileSystemDirectory(Environment.GetFolderPath(parent) + child);
 
     private void SetupMainWindowContent(IBindableIocService service)
     {
@@ -33,6 +45,8 @@ public class Startup : StartupBase
         service.RegisterHomeViewModel<HomeScreenViewModel>();
         service.Bind<RootNavigationWindow>().And<Window>().And<IRootNavigationWindow>()
             .ToSelf().FixResult(SetIcon).AsSingleton();
+        service.Bind<IOpenSaveFile>().To<OpenSaveFileAdapter>();
+
     }
 
     private void SetIcon(RootNavigationWindow arg) => 

@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
         
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentAssertions" Version="6.12.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
       <PackageReference Include="Moq" Version="4.20.69" />
@@ -18,6 +19,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Melville.AspNetCoreLocalLog\Melville.AspNetCoreLocalLog.csproj" />
+      <ProjectReference Include="..\Melville.Log.Viewer\Melville.Log.Viewer.csproj" />
+      <ProjectReference Include="..\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="NugetMonitor\" />
     </ItemGroup>
 
 </Project>

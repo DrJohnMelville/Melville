@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Melville.Log.Viewer.LogViews;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Serilog.Events;
-using Serilog.Parsing;
 
 namespace Melville.Log.Viewer.UdpServers;
 
@@ -66,10 +66,7 @@ public class UdpLogConnection: ILogConnection
 
     private void SendToLog(string content)
     {
-        if (LogEventArrived is not { } target) return;
-        target(this, new LogEventArrivedEventArgs(new LogEvent(DateTimeOffset.Now, 
-            LogEventLevel.Information, null, new MessageTemplateParser().Parse(content),
-            Array.Empty<LogEventProperty>())));
+        LogEventArrived.Write(this, content);
     }
 
     public ValueTask SetDesiredLevel(LogEventLevel level)
