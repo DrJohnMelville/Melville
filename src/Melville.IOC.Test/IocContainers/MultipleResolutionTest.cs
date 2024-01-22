@@ -44,7 +44,7 @@ public class MultipleResolutionTest
     public void IfNeededRegistrationIgnoresLastOne()
     {
         sut.Bind<IMultipleImplementation>().To<Implementation1>();
-        sut.BindIfMNeeded<IMultipleImplementation>().To<Implementation2>();
+        sut.BindIfNeeded<IMultipleImplementation>().To<Implementation2>();
             
         Assert.True(sut.Get<IMultipleImplementation>() is Implementation1);
     }
@@ -52,7 +52,7 @@ public class MultipleResolutionTest
     public void IfNeededRegistrationIgnoresLastOneIsPerInterface()
     {
         sut.Bind<IMultipleImplementation>().To<Implementation1>();
-        sut.BindIfMNeeded<IMultipleImplementation>().And<IMultipleImplementation2>().To<Implementation2>();
+        sut.BindIfNeeded<IMultipleImplementation>().And<IMultipleImplementation2>().To<Implementation2>();
             
         Assert.True(sut.Get<IMultipleImplementation>() is Implementation1);
         Assert.True(sut.Get<IMultipleImplementation2>() is Implementation2);

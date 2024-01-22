@@ -29,7 +29,7 @@ public class MelvilleServiceProviderFactory: IServiceProviderFactory<IocContaine
     {
         containerBuilder.AllowDisposablesInGlobalScope = allowRootDisposables;
         var adapter = new ServiceProviderAdapter(containerBuilder);
-        containerBuilder.BindIfMNeeded<IServiceScopeFactory>().And<IServiceProvider>()
+        containerBuilder.BindIfNeeded<IServiceScopeFactory>().And<IServiceProvider>()
             .ToConstant(adapter).DisposeIfInsideScope();
         // The outermost scope never gets disposed, but this is ok because it is supposed to last for
         // the entire program.

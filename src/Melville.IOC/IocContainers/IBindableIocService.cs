@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
@@ -26,7 +27,11 @@ public static class BindableIocServiceOperations
         service.ConfigurePolicy<IPickBindingTargetSource>();
     public static IPickBindingTarget<T> Bind<T>(this IBindableIocService service) => 
         ClosedTypeBindings<T>(service).Bind<T>(false);
+    [Obsolete("This is a typo that will eventually be eliminated.  Use BindIfNeeded")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static IPickBindingTarget<T> BindIfMNeeded<T>(this IBindableIocService service) => 
+        service.BindIfNeeded<T>();
+    public static IPickBindingTarget<T> BindIfNeeded<T>(this IBindableIocService service) => 
         ClosedTypeBindings<T>(service).Bind<T>(true);
 
     #endregion
