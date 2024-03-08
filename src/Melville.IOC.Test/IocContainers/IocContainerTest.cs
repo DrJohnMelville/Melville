@@ -84,6 +84,28 @@ public class IocContainerTest
         var ret = sut.Get<SecondaryObject>();
         Assert.NotNull(ret.SimpleObject);
     }
+    [Fact]
+    public void BindUsingCustomMethodWithIoc()
+    {
+        sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+        sut.Bind<SecondaryObject>().ToMethod(static (ISimpleObject i) => new SecondaryObject(i));
+        var ret = sut.Get<SecondaryObject>();
+        Assert.NotNull(ret.SimpleObject);
+    }
+    [Fact]
+    public void BindUsingCustomMethodWithLocalIoc()
+    {
+        var holder = new LocalMethodHolder();
+        sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+        sut.Bind<SecondaryObject>().ToMethod(holder.Get);
+        var ret = sut.Get<SecondaryObject>();
+        Assert.NotNull(ret.SimpleObject);
+    }
+
+    private class LocalMethodHolder
+    {
+        public SecondaryObject Get(ISimpleObject is1) => new SecondaryObject(is1);
+    }
 
     [Fact]
     public void CannotBindOpenGeneric()

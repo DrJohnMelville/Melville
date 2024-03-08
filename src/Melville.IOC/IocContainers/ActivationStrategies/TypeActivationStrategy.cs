@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Melville.Hacks;
@@ -34,15 +33,7 @@ public partial class TypeActivationStrategy: IActivationStrategy
 
     private void FillParamaterSpan(IBindingRequest bindingRequest, Span<object?> target)
     {
-        for (int i = 0; i < target.Length; i++)
-        {
-            target[i] = bindingRequest.IocService.Get(bindingRequest.CreateSubRequest(paramTypes[i]));
-        }
-    }
-
-    private List<IBindingRequest> ComputeDependencies(IBindingRequest bindingRequest) =>
-        paramTypes
-            .Select(bindingRequest.CreateSubRequest)
-            .ToList();
-
+        bindingRequest.IocService.Fill(target, 
+            paramTypes.Select(bindingRequest.CreateSubRequest));
+     }
 }
