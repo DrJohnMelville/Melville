@@ -26,10 +26,9 @@ public abstract class IPickBindingTarget<TSource>
 
     public IActivationOptions<TSource> ToMethod(Func<IIocService, TSource> method) =>
         DoBinding(new MethodActivationStrategy<TSource>((s, r) => method(s)));
-
-    public IActivationOptions<TSource> ToMethod(Func<TSource> method) =>
-        DoBinding(new MethodActivationStrategy<TSource>((s, r) => method()));
-        
+    public IActivationOptions<TSource> ToMethod(Delegate method) => 
+        DoBinding(new ArbitraryFunctionActivator(method));
+    
     public abstract IActivationOptions<TSource> DoBinding(IActivationStrategy strategy);
     public abstract IPickBindingTarget<TSource> And<TDestination>();
 

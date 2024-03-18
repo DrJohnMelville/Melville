@@ -42,6 +42,13 @@ public abstract class DelegatingStream : Stream
     Inner.Dispose();
     base.Dispose(disposing);
   }
+
+  public override async ValueTask DisposeAsync()
+  {
+      await Inner.DisposeAsync();
+      await base.DisposeAsync();
+  }
+
   public override void Close()
   {
     Inner.Close();
