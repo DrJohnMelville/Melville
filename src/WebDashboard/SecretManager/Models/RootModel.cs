@@ -30,6 +30,7 @@ public class RootModel
             new XElement("location",
                 new XAttribute("path", "."),
                 new XAttribute("inheritInChildApplications", false),
+                TryAddCustomErrors(),
                 new XElement("system.webServer",
                     WebDavSupression()!, // this acutally works
                     new XElement("handlers",
@@ -47,10 +48,23 @@ public class RootModel
                         new XAttribute("stdoutLogFile", ".\\logs\\stdout"),
                         new XAttribute("hostingModel", "inprocess"),
                         new XElement("environmentVariables", SecretsToEnviornment())
-                    )
+                    ),
+                    TryAddHttpErrors()
                 )
             )
         );
+
+    private XElement? TryAddCustomErrors() =>
+        DevelopmentMode
+            ? new XElement("system.web",
+                new XElement("customErrors",
+                    new XAttribute("mode", "Off")))
+            : null;
+    private XElement? TryAddHttpErrors() =>
+        DevelopmentMode
+            ?   new XElement("httpErrors",
+                    new XAttribute("mode", "Detailed"))
+            : null;
 
     private XElement? WebDavSupression() =>
         SuppressWebDavModule?
