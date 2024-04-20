@@ -41,7 +41,8 @@ public class Startup : StartupBase
 
     private void SetupMainWindowContent(IBindableIocService service)
     {
-        service.Bind<Application>().To<App>().FixResult(i => ((App) i).InitializeComponent()).AsSingleton();
+        service.Bind<Application>().To<App>()
+            .FixResult(i => ((App) i).InitializeComponent()).AsSingleton();
         service.RegisterHomeViewModel<HomeScreenViewModel>();
         service.Bind<RootNavigationWindow>().And<Window>().And<IRootNavigationWindow>()
             .ToSelf().FixResult(SetIcon).AsSingleton();

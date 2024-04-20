@@ -47,7 +47,7 @@ public class NotifyBaseTests
       {
         return;
       }
-      Assert.True(false, "Should never get here");
+      Assert.Fail("Should never get here");
     }
 #endif
 

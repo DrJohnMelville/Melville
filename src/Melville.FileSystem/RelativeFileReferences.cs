@@ -12,7 +12,13 @@ public static class RelativeFileReferences
         var splitPath = PathElements(path);
         if (splitPath.Length == 0) return null;
         return NavigatePath(source, splitPath.AsSpan()[..^1])?.File(splitPath[^1]);
+    }
 
+    public static IDirectory? FolderRelativePath(this IDirectory source, string path)
+    {
+        var splitPath = PathElements(path);
+        if (splitPath.Length == 0) return null;
+        return NavigatePath(source, splitPath.AsSpan());
     }
 
     private static string[] PathElements(string path) => path.Split(new char[] {'/', '\\'}, StringSplitOptions.RemoveEmptyEntries);
