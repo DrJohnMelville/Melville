@@ -100,7 +100,8 @@ public sealed class FileSystemFile : FileSystemObject<FileInfo>, IFile
   public FileSystemFile(FileInfo fi): base(fi){}
   public FileSystemFile(string path):this(new FileInfo(path)){}
     
-  public Task<Stream> OpenRead() => Task.FromResult<Stream>(info.OpenRead());
+  public Task<Stream> OpenRead() => Task.FromResult<Stream>(
+      new FileStream(info.FullName, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true));
     
   public Task<Stream> CreateWrite(FileAttributes attributes) => Task.FromResult(CreateFile(attributes));
 
