@@ -15,11 +15,11 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Castle.Core" Version="5.1.1" />
-        <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.8.0">
+        <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.9.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />

@@ -27,23 +27,27 @@ public static partial class FileOperations
 
     public static string MakePageReferenceString(this IFile file, int offset) => 
         $"{file.Name}:{offset}";
+
+    [GeneratedRegex(@"^(?:[\\/][\\/]\?[\\/])?([A-Za-z]):[\\/]")]
+    public static partial Regex SimplePath();
     
-    public static readonly Regex SimplePath = new Regex(@"^(?:[\\/][\\/]\?[\\/])?([A-Za-z]):[\\/]");
-    public static readonly Regex UncPath = new Regex(@"^(?:[\\/][\\/]UNC[\\/])?[\\/][\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]");
+    [GeneratedRegex(@"^(?:[\\/][\\/]UNC[\\/])?[\\/][\\/]([^\\/]+)[\\/]([^\\/]+)[\\/]")]
+    public static partial Regex UncPath();
+
     public static bool SameVolume(string pathA, string pathB)
     {
-        var mA = SimplePath.Match(pathA);
-        var mB = SimplePath.Match(pathB);
+        var mA = SimplePath().Match(pathA);
+        var mB = SimplePath().Match(pathB);
 
         if (!(mA.Success && mB.Success))
         {
-            mA = UncPath.Match(pathA);
-            mB = UncPath.Match(pathB);
+            mA = UncPath().Match(pathA);
+            mB = UncPath().Match(pathB);
             if (!(mA.Success && mB.Success))
                 return false;
         }
-        return mA.Groups.Zip(
-            mB.Groups,
+        return mA.Groups.OfType<Group>().Zip(
+            mB.Groups.OfType<Group>(),
             (i, j) => i.Value.Equals(j.Value, StringComparison.OrdinalIgnoreCase)
         ).Skip(1).All(i => i);
     }
