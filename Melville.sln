@@ -112,6 +112,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyMapper", "src\Dep
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyMapper.Test", "src\DependencyMapper.Test\DependencyMapper.Test.csproj", "{545C78D4-4A63-458D-A54D-2EA407DF70CA}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.SimpleDb", "src\Melville.SimpleDb\Melville.SimpleDb.csproj", "{A639966E-2D89-4D9D-9AE3-1BC898A16855}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -287,6 +289,10 @@ Global
 		{545C78D4-4A63-458D-A54D-2EA407DF70CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{545C78D4-4A63-458D-A54D-2EA407DF70CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{545C78D4-4A63-458D-A54D-2EA407DF70CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -333,6 +339,7 @@ Global
 		{926EB770-4842-4067-A5F7-161F89CE17D1} = {E8931D25-A7BA-441D-A00E-A5813D6F3996}
 		{9C607766-1180-4F0B-8F8A-2D1E7A2726DA} = {180FAD0F-CEF1-43DF-B15B-C4D4D74EDF7C}
 		{545C78D4-4A63-458D-A54D-2EA407DF70CA} = {180FAD0F-CEF1-43DF-B15B-C4D4D74EDF7C}
+		{A639966E-2D89-4D9D-9AE3-1BC898A16855} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32830D18-8400-4B5A-9A71-3D3D1E19FCD7}

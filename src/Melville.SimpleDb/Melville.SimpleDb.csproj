@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Title>Melville.SimpleDb</Title>
+		<PackageDescription>
+			Thin wrapper around dapper with connection pooling, schema creation,
+			and migration for SqlLite
+		</PackageDescription>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer"
+		                  ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
+		<ProjectReference Include="..\Melville.Hacks\Melville.Hacks.csproj" />
+		<ProjectReference Include="..\Melville.Lists\Melville.Lists.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.35" />
+		<PackageReference Include="Dapper.Contrib" Version="2.0.78" />
+		<PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+	</ItemGroup>
+
+</Project>
