@@ -1,10 +1,21 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using Dapper;
 using Melville.INPC;
 
 namespace Melville.SimpleDb;
+
+public class MigratedRepo(IRepoDbConnection repo, Migrator migator, int desiredVersion = Int32.MaxValue) : IRepoDbConnection
+{
+    public async ValueTask<IDbConnection> GetConnectionAsync()
+    {
+        var connection = await repo.GetConnectionAsync();
+        await migator.UpgradeToVersionAsync(connection, desiredVersion);
+        return connection;
+    }
+}
 
 public partial class Migrator
 {
@@ -15,42 +26,37 @@ public partial class Migrator
         Array.Sort(migrations);
     }
 
-    public void UpgradeToCurrentSchema(IDbConnection connection) =>
-        UpgradeToVersion(connection, CurrentSchemaVersion());
+    public ValueTask UpgradeToCurrentSchemaAsync(IDbConnection connection) =>
+        UpgradeToVersionAsync(connection, CurrentSchemaVersion());
 
     private int CurrentSchemaVersion() => migrations.Max(i => i.Version);
 
-    public void UpgradeToVersion(IDbConnection connection, int desiredVersion)
+    public async ValueTask UpgradeToVersionAsync(IDbConnection connection, int desiredVersion)
     {
-        var oldVersion = connection.Query<int>("PRAGMA user_version").First();
+        var oldVersion = await QueryCurrentVersion(connection);
         if (desiredVersion <= oldVersion) return;
-        TryDatabaseUpgrade(connection, oldVersion, desiredVersion);
-    }
-
-    private void TryDatabaseUpgrade(IDbConnection connection, int oldVersion, int finalVersion)
-    {
+        
         using var transaction = connection.BeginTransaction();
-        ExecuteDatabaseUpgrade(connection, oldVersion, finalVersion);
+        
+        await ExecuteUpdateScriptsAsync(connection, oldVersion, desiredVersion);
+        await StoreFinalVersion(connection, desiredVersion);
         transaction.Commit();
     }
 
-    private void ExecuteDatabaseUpgrade(IDbConnection connection, int oldVersion, int finalVersion)
-    {
-        ExecuteUpdateScripts(connection, oldVersion, finalVersion);
-        StoreFinalVersion(connection, finalVersion);
-    }
-
-    private void ExecuteUpdateScripts(IDbConnection connection, int oldVersion, int finalVersion)
+    private async ValueTask ExecuteUpdateScriptsAsync(IDbConnection connection, int oldVersion, int finalVersion)
     {
         foreach (var migration in migrations)
         {
             if (migration.Version > oldVersion && migration.Version <= finalVersion)
             {
-                connection.Execute(migration.UpgradeScript);
+                await connection.ExecuteAsync(migration.UpgradeScript);
             }
         }
     }
 
-    private static void StoreFinalVersion(IDbConnection connection, int newVersion) =>
-        connection.Execute($"PRAGMA user_version={newVersion}");
+    private static Task<int> QueryCurrentVersion(IDbConnection connection) =>
+        connection.QuerySingleAsync<int>("PRAGMA user_version");
+
+    private static Task StoreFinalVersion(IDbConnection connection, int newVersion) =>
+        connection.ExecuteAsync($"PRAGMA user_version={newVersion}");
 }
