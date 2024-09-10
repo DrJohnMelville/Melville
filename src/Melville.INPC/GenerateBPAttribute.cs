@@ -16,7 +16,7 @@ namespace Melville.INPC;
 [AttributeUsage(
     AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Property | AttributeTargets.Field |
     AttributeTargets.Event | AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-public sealed class GenerateDPAttribute : Attribute
+public sealed class GenerateBPAttribute : Attribute
 {
     /// <summary>
     /// Generate an attached property.
@@ -38,7 +38,7 @@ public sealed class GenerateDPAttribute : Attribute
     /// <summary>
     /// Default constructor for GenerateDpAttribute
     /// </summary>
-    public GenerateDPAttribute()
+    public GenerateBPAttribute()
     {
     }
 
@@ -47,7 +47,7 @@ public sealed class GenerateDPAttribute : Attribute
     /// </summary>
     /// <param name="targetType">Type of the desired dependency property.</param>
     /// <param name="propName">Name of the desired dependency property.</param>
-    public GenerateDPAttribute(Type targetType, string propName = "")
+    public GenerateBPAttribute(Type targetType, string propName = "")
     {
     }
 }

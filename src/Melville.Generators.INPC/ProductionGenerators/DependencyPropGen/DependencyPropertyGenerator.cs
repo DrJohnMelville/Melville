@@ -11,12 +11,20 @@ public class DependencyPropertyGenerator: IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
+        RegisterPropertySeeker(context, "Melville.INPC.GenerateDPAttribute", Generate);
+        RegisterPropertySeeker(context, "Melville.INPC.GenerateBPAttribute", GenerateMaui);
+    }
+
+    private void RegisterPropertySeeker(
+        IncrementalGeneratorInitializationContext context, 
+        string attrName, Action<SourceProductionContext, DpRootItem> generate)
+    {
         context.RegisterSourceOutput(
             context.SyntaxProvider.ForAttributeWithMetadataName(
-                "Melville.INPC.GenerateDPAttribute", 
+                attrName, 
                 static (i,_)=>i is MemberDeclarationSyntax or VariableDeclaratorSyntax,
                 Factory)
-            , Generate);
+            , generate );
     }
 
     private record DpRootItem(
@@ -44,7 +52,13 @@ public class DependencyPropertyGenerator: IIncrementalGenerator
         member.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().FirstOrDefault();
 
     
-    private void Generate(SourceProductionContext context, DpRootItem item)
+    private void Generate(SourceProductionContext context, DpRootItem item) => 
+        InnerGenerate(context, item, FrameworkType.Wpf);
+    private void GenerateMaui(SourceProductionContext context, DpRootItem item) => 
+        InnerGenerate(context, item, FrameworkType.Maui);
+
+    private static void InnerGenerate(
+        SourceProductionContext context, DpRootItem item, FrameworkType ft)
     {
         var cw = new SourceProductionCodeWriter(context);
         if (item.Parent is null)
@@ -55,10 +69,12 @@ public class DependencyPropertyGenerator: IIncrementalGenerator
 
         using (cw.GenerateInClassFile(item.Target, "DepPropGen"))
         {
-            new GenerateMultipleDependencyPropertes(cw, item.SemanticModel, item.Target, item.Parent)
+            new GenerateMultipleDependencyPropertes(
+                    cw, item.SemanticModel, item.Target, item.Parent, ft)
                 .Generate();
         }
     }
+
     private static void ReportNoParentSymbol(CodeWriter cw, SyntaxNode targetMember) =>
         cw.ReportDiagnostic(Diagnostic.Create(
             new DiagnosticDescriptor("DPGen0001", "Cannot find symbol info",

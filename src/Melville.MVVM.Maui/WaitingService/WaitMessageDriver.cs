@@ -1,10 +1,11 @@
-﻿using  System;
+﻿using System.Net.Mail;
+using System;
 using System.Threading;
 using Melville.Hacks;
 using Melville.INPC;
 using Melville.MVVM.WaitingServices;
 
-namespace Melville.MVVM.Wpf.WaitingServices;
+namespace Melville.MVVM.Maui.WaitingService;
 
 public partial class WaitMessageDriver :IWaitingService
 {

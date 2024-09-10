@@ -4,8 +4,8 @@
     <DebugType>Full</DebugType>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    
-    <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+
+	  <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
   </PropertyGroup>
 
 
@@ -14,7 +14,6 @@
     
     
     <Title>Melville.MVM.WPF</Title>
-    
     <PackageDescription>WPF specific MVVM Goodies including the EventBinding</PackageDescription>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>

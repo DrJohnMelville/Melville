@@ -1,4 +1,5 @@
-﻿using Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
+﻿using FluentAssertions;
+using Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 using Melville.Generators.INPC.Test.UnitTests;
 using Melville.INPC;
 using Xunit;
@@ -47,14 +48,30 @@ public class PropGenUnitTest
     [InlineData("System.Collections.Generic.List<string>", "System.Collections.Generic.List<string>")]
     public void GenerateNamedType(string codeName, string expandedName) =>
         MultiContentTest($"[GenerateDP(typeof({codeName}),\"Prop\")]",
-            $"public static readonly System.Windows.DependencyProperty PropProperty =",
-            "    System.Windows.DependencyProperty.Register(",
+            $"public static readonly global::System.Windows.DependencyProperty PropProperty =",
+            "    global::System.Windows.DependencyProperty.Register(",
             $"    \"Prop\", typeof({expandedName}), typeof(Outer.C),",
-            $"    new System.Windows.FrameworkPropertyMetadata(default({expandedName})));",
+            $"    new global::System.Windows.FrameworkPropertyMetadata(default({expandedName})));",
             $"public {expandedName} Prop",
             "{\r\n",
-            $"    get => ({expandedName})this.GetValue(Outer.C.PropProperty);",
-            $"    set => this.SetValue(Outer.C.PropProperty, value);",
+            $"    get => ({expandedName})this.GetValue(global::Outer.C.PropProperty);",
+            $"    set => this.SetValue(global::Outer.C.PropProperty, value);",
+            "}\r\n",
+            $"/// DependencyProperty field for Prop",
+            $"/// DependencyProperty property for Prop"
+        );
+    
+    [Fact]
+    public void GenerateBindingProperty() =>
+        MultiContentTest($"[GenerateBP(typeof(int),\"Prop\")]",
+            $"public static readonly global::Microsoft.Maui.Controls.BindableProperty PropProperty =",
+            "    global::Microsoft.Maui.Controls.BindableProperty.Create(",
+            $"    \"Prop\", typeof(int), typeof(Outer.C),",
+            $"    default(int));",
+            $"public int Prop",
+            "{\r\n",
+            $"    get => (int)this.GetValue(global::Outer.C.PropProperty);",
+            $"    set => this.SetValue(global::Outer.C.PropProperty, value);",
             "}\r\n",
             $"/// DependencyProperty field for Prop",
             $"/// DependencyProperty property for Prop"
@@ -63,44 +80,51 @@ public class PropGenUnitTest
     [Fact]
     public void NullableAttachedProperty() =>
         MultiContentTest("[GenerateDP(typeof(int), \"NullProp\", Attached=true, Nullable=true",
-            "public static int? GetNullProp(System.Windows.DependencyObject obj)",
-            "(int?)obj.GetValue(Outer.C.NullPropProperty)",
-            "public static void SetNullProp(System.Windows.DependencyObject obj, int? value) =>");
+            "public static int? GetNullProp(global::System.Windows.DependencyObject obj)",
+            "(int?)obj.GetValue(global::Outer.C.NullPropProperty)",
+            "public static void SetNullProp(global::System.Windows.DependencyObject obj, int? value) =>");
+
+    [Fact]
+    public void NullableAttachedBindingProperty() =>
+        MultiContentTest("[GenerateBP(typeof(int), \"NullProp\", Attached=true, Nullable=true",
+            "public static int? GetNullProp(global::Microsoft.Maui.Controls.BindableObject obj)",
+            "(int?)obj.GetValue(global::Outer.C.NullPropProperty)",
+            "public static void SetNullProp(global::Microsoft.Maui.Controls.BindableObject obj, int? value) =>");
 
     [Fact]
     public void NullableProperty() =>
         MultiContentTest("[GenerateDP(typeof(int), \"NullProp\", Nullable=true",
             "public int? NullProp",
-            "get => (int?)this.GetValue(Outer.C.NullPropProperty);",
+            "get => (int?)this.GetValue(global::Outer.C.NullPropProperty);",
             "\"NullProp\", typeof(int?)",
             "default(int?)");
     [Fact]
     public void NullableReferenceProperty() =>
         MultiContentTest("[GenerateDP(typeof(string), \"NullProp\", Nullable=true",
             "public string? NullProp",
-            "get => (string?)this.GetValue(Outer.C.NullPropProperty);",
+            "get => (string?)this.GetValue(global::Outer.C.NullPropProperty);",
             "\"NullProp\", typeof(string)",
             "default(string?)");
 
     [Theory]
-    [InlineData("public static void OnPropChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+    [InlineData("public static void OnPropChanged(C obj, global::System.Windows.DependencyPropertyChangedEventArgs e) {}",
         "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i),j)")]
     [InlineData("public static void OnPropChanged(C obj, int newVal) {}",
         "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.NewValue))")]
     [InlineData("public static void OnPropChanged(C obj, int oldVal, int newVal) {}",
         "(i,j)=>Outer.C.OnPropChanged(((Outer.C)i), (int)(j.OldValue), (int)(j.NewValue))")]
 
-    [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+    [InlineData("public static void OnPropChanged(global::System.Windows.DependencyObject obj, global::System.Windows.DependencyPropertyChangedEventArgs e) {}",
         "Outer.C.OnPropChanged")]
-    [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int newVal) {}",
+    [InlineData("public static void OnPropChanged(global::System.Windows.DependencyObject obj, int newVal) {}",
         "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.NewValue))")]
-    [InlineData("public static void OnPropChanged(System.Windows.DependencyObject obj, int oldVal, int newVal) {}",
+    [InlineData("public static void OnPropChanged(global::System.Windows.DependencyObject obj, int oldVal, int newVal) {}",
         "(i,j)=>Outer.C.OnPropChanged(i, (int)(j.OldValue), (int)(j.NewValue))")]
     [InlineData("public static void OnPropChanged(string obj, int oldVal, int newVal) {}",
         "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.OldValue), (int)(j.NewValue))")]
     [InlineData("public static void OnPropChanged(string obj, int newVal) {}",
         "(i,j)=>Outer.C.OnPropChanged(((string)i), (int)(j.NewValue))")]
-    [InlineData("public void OnPropChanged(System.Windows.DependencyPropertyChangedEventArgs e) {}",
+    [InlineData("public void OnPropChanged(global::System.Windows.DependencyPropertyChangedEventArgs e) {}",
         "(i,j)=>((Outer.C)i).OnPropChanged(j)")]
     [InlineData("public void OnPropChanged() {}",
         "(i,j)=>((Outer.C)i).OnPropChanged()")]
@@ -111,19 +135,19 @@ public class PropGenUnitTest
     public void CallOnChangedMethod(string methodDecl, string callSyntax)
     {
         MultiContentTest(methodDecl + "[GenerateDP(typeof(int), \"Prop\"]",
-            $"    new System.Windows.FrameworkPropertyMetadata(default(int), {callSyntax}));"
+            $"    new global::System.Windows.FrameworkPropertyMetadata(default(int), {callSyntax}));"
         );
     }
 
     [Theory]
     [InlineData(
-        "[GenerateDP(typeof(int))] public static void OnPropertyChanged(System.Windows.DependencyObject obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+        "[GenerateDP(typeof(int))] public static void OnPropertyChanged(global::System.Windows.DependencyObject obj, global::System.Windows.DependencyPropertyChangedEventArgs e) {}",
         true)]
     [InlineData(
-        "[GenerateDP] public static void OnPropertyChanged(System.Windows.DependencyObject obj, int newValue) {}",
+        "[GenerateDP] public static void OnPropertyChanged(global::System.Windows.DependencyObject obj, int newValue) {}",
         true)]
     [InlineData(
-        "[GenerateDP(typeof(int))] public static void OnPropertyChanged(C obj, System.Windows.DependencyPropertyChangedEventArgs e) {}",
+        "[GenerateDP(typeof(int))] public static void OnPropertyChanged(C obj, global::System.Windows.DependencyPropertyChangedEventArgs e) {}",
         false)]
     [InlineData("[GenerateDP] public static void OnPropertyChanged(C obj, int newValue) {}",false)]
     [InlineData("[GenerateDP] public static void OnPropertyChanged(C obj, int newValue, int oldValue) {}", false)]
@@ -134,6 +158,23 @@ public class PropGenUnitTest
         MultiContentTest(code, 
             $"    \"Property\", typeof(int), typeof(Outer.C),",
             attached?"RegisterAttached(":".Register("
+        );
+    }
+
+    [Theory]
+    [InlineData(
+        "[GenerateBP] public static void OnPropertyChanged(global::Microsoft.Maui.Controls.BindableObject obj, int newValue) {}",
+        true)]
+    [InlineData("[GenerateBP] public static void OnPropertyChanged(C obj, int newValue) {}",false)]
+    [InlineData("[GenerateBP] public static void OnPropertyChanged(C obj, int newValue, int oldValue) {}", false)]
+    [InlineData("[GenerateBP] public void OnPropertyChanged(int newValue) {}",false)]
+    [InlineData("[GenerateBP] public void OnPropertyChanged(int newValue, int oldValue) {}", false)]
+    public void InferFromModifyMethodBindingProperty(string code, bool attached)
+    {
+        MultiContentTest(code, 
+            $"    \"Property\", typeof(int), typeof(Outer.C),",
+            attached?"CreateAttached(":".Create(",
+            "OnPropertyChanged("
         );
     }
 
@@ -159,14 +200,14 @@ public class PropGenUnitTest
         
     public void GenerateExplicitProperty(string source) =>
         MultiContentTest(source,
-            "public static readonly System.Windows.DependencyProperty PropProperty =",
-            "    System.Windows.DependencyProperty.RegisterAttached(",
+            "public static readonly global::System.Windows.DependencyProperty PropProperty =",
+            "    global::System.Windows.DependencyProperty.RegisterAttached(",
             "    \"Prop\", typeof(int), typeof(Outer.C),",
-            "    new System.Windows.FrameworkPropertyMetadata(default(int)));",
-            "public static int GetProp(System.Windows.DependencyObject obj) =>",
-            "    (int)obj.GetValue(Outer.C.PropProperty);",
-            "public static void SetProp(System.Windows.DependencyObject obj, int value) =>",
-            "    obj.SetValue(Outer.C.PropProperty, value);",
+            "    new global::System.Windows.FrameworkPropertyMetadata(default(int)));",
+            "public static int GetProp(global::System.Windows.DependencyObject obj) =>",
+            "    (int)obj.GetValue(global::Outer.C.PropProperty);",
+            "public static void SetProp(global::System.Windows.DependencyObject obj, int value) =>",
+            "    obj.SetValue(global::Outer.C.PropProperty, value);",
             "// DependencyProperty getter for Prop",
             "// DependencyProperty setter for Prop"
         );
@@ -175,13 +216,13 @@ public class PropGenUnitTest
     public void GenerateFromDeclaration()
     {
         var res = RunTest(@"
-              [GenerateDP] public static readonly System.Windows.DependencyProperty NovelProperty =
-                System.Windows.DependencyProperty.Register(""Novel"", typeof(int),
-                typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
+              [GenerateDP] public static readonly global::System.Windows.DependencyProperty NovelProperty =
+                global::System.Windows.DependencyProperty.Register(""Novel"", typeof(int),
+                typeof(c), new global::System.Windows.FrameworkPropertyMetadata(0));");
             
         res.LastFile().AssertDoesNotContain(".Register");
-        res.LastFile().AssertContains("get => (int)this.GetValue(Outer.C.NovelProperty);");
-        res.LastFile().AssertContains("set => this.SetValue(Outer.C.NovelProperty, value);");
+        res.LastFile().AssertContains("get => (int)this.GetValue(global::Outer.C.NovelProperty);");
+        res.LastFile().AssertContains("set => this.SetValue(global::Outer.C.NovelProperty, value);");
     }
 
     [Fact]
@@ -209,13 +250,13 @@ public class PropGenUnitTest
     }
     [Theory]
     [InlineData("[GenerateDP][field:FieldProp][property:PropProp] private void OnPropChanged(int new){}", 
-        "[FieldProp] public static readonly System.Windows.DependencyProperty PropProperty")]
+        "[FieldProp] public static readonly global::System.Windows.DependencyProperty PropProperty")]
     [InlineData("[GenerateDP][field:FieldProp][property:PropProp] private void OnPropChanged(int new){}", 
         "[PropProp] public int Prop")]
     [InlineData("[GenerateDP(Attached=true)][field:FieldProp][method:MethProp] private void OnPropChanged(int new){}", 
-        "[MethProp] public static int GetProp(System.Windows.DependencyObject")]
+        "[MethProp] public static int GetProp(global::System.Windows.DependencyObject")]
     [InlineData("[GenerateDP(Attached=true)][field:FieldProp][method:MethProp] private void OnPropChanged(int new){}", 
-        "[MethProp] public static void SetProp(System.Windows.DependencyObject")]
+        "[MethProp] public static void SetProp(global::System.Windows.DependencyObject")]
     public void CopyAppropriateAttributes(string prompt, string defaultText)
     {
         var res = RunTest(prompt);
@@ -226,15 +267,29 @@ public class PropGenUnitTest
     public void GenerateAttachedFromDeclaration()
     {
         var res = RunTest(@"
-              [GenerateDP] public static readonly System.Windows.DependencyProperty NovelProperty =
-                System.Windows.DependencyProperty.RegisterAttached(""Novel"", typeof(int),
-                typeof(c), new System.Windows.FrameworkPropertyMetadata(0));");
+              [GenerateDP] public static readonly global::System.Windows.DependencyProperty NovelProperty =
+                global::System.Windows.DependencyProperty.RegisterAttached(""Novel"", typeof(int),
+                typeof(c), new global::System.Windows.FrameworkPropertyMetadata(0));");
             
         res.LastFile().AssertDoesNotContain(".Register");
-        res.LastFile().AssertContains("public static int GetNovel(System.Windows.DependencyObject obj) =>");
-        res.LastFile().AssertContains("(int)obj.GetValue(Outer.C.NovelProperty);");
-        res.LastFile().AssertContains("public static void SetNovel(System.Windows.DependencyObject obj, int value) =>");
-        res.LastFile().AssertContains("obj.SetValue(Outer.C.NovelProperty, value);");
+        res.LastFile().AssertContains("public static int GetNovel(global::System.Windows.DependencyObject obj) =>");
+        res.LastFile().AssertContains("(int)obj.GetValue(global::Outer.C.NovelProperty);");
+        res.LastFile().AssertContains("public static void SetNovel(global::System.Windows.DependencyObject obj, int value) =>");
+        res.LastFile().AssertContains("obj.SetValue(global::Outer.C.NovelProperty, value);");
+    }
+    [Fact]
+    public void GenerateBindingAttachedFromDeclaration()
+    {
+        var res = RunTest(@"
+              [GenerateBP] public static readonly global::Microsoft.Maui.Controls.BindableProperty NovelProperty =
+                global::Microsoft.Maui.Controls.BindableProperty.CreateAttached(""Novel"", typeof(int),
+                typeof(c), 0);");
+            
+        res.LastFile().AssertDoesNotContain(".Create");
+        res.LastFile().AssertContains("public static int GetNovel(global::Microsoft.Maui.Controls.BindableObject obj) =>");
+        res.LastFile().AssertContains("(int)obj.GetValue(global::Outer.C.NovelProperty);");
+        res.LastFile().AssertContains("public static void SetNovel(global::Microsoft.Maui.Controls.BindableObject obj, int value) =>");
+        res.LastFile().AssertContains("obj.SetValue(global::Outer.C.NovelProperty, value);");
     }
 
     private void MultiContentTest(string source, params string[] contents)
@@ -242,6 +297,7 @@ public class PropGenUnitTest
         var res = RunTest(source);
         foreach (var content in contents)
         {
+            var s = res.LastFile().Text();
             res.LastFile().AssertContains(content);
         }
             
