@@ -23,7 +23,13 @@ public class RequestParser
     public bool Valid() => PropName.Length > 0 && Type != null;
     public bool FromCustomDpDeclaration => storedDependencyPropertyName != null;
     public string TargetType() => Type?.FullyQualifiedName()??"";
-    public string NullableTargetType() => (Type?.FullyQualifiedName()??"")+ (Nullable?"?":"");
+    public string GlobalTargetType()
+    {
+        var name = NullableTargetType();
+        return name.Contains(".") ? "global::" + name: name;
+    }
+
+    public string NullableTargetType() => (TargetType())+ (Nullable?"?":"");
     public string ParentType() => ParentSymbol.FullyQualifiedName();
     private string? storedDependencyPropertyName;
     public string DependencyPropName() => storedDependencyPropertyName?? (PropName + "Property");

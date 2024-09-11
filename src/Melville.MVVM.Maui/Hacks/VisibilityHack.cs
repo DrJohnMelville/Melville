@@ -14,6 +14,11 @@ public static partial class VisibilityHack
         }
     }
 
+    public static readonly global::Microsoft.Maui.Controls.BindableProperty CollapseIfProp2erty = 
+        global::Microsoft.Maui.Controls.BindableProperty.CreateAttached(
+            "CollapseIf", typeof(bool), typeof(Melville.MVVM.Maui.Hacks.VisibilityHack),
+            false, propertyChanged: (i,j,k)=>global::Melville.MVVM.Maui.Hacks.VisibilityHack.OnCollapseIfChanged(i,(bool)k));
+
     [GenerateBP]
     private static void OnCollapseIfChanged(BindableObject d, bool hide = false) => 
         ComputeVisibility(d, hide);
