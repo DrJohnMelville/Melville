@@ -112,7 +112,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyMapper.Test", "sr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.MVVM.Maui", "src\Melville.MVVM.Maui\Melville.MVVM.Maui.csproj", "{7BB22889-CA90-4B7C-A53D-AF0A53D1F920}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Maui.Scratch", "Src\Maui.Scratch\Maui.Scratch.csproj", "{46EFB100-6354-4524-904D-0BB603F83D2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maui.Scratch", "Src\Maui.Scratch\Maui.Scratch.csproj", "{46EFB100-6354-4524-904D-0BB603F83D2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Mvvm.Maui.Test", "src\Melville.Mvvm.Maui.Test\Melville.Mvvm.Maui.Test.csproj", "{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -294,6 +296,10 @@ Global
 		{46EFB100-6354-4524-904D-0BB603F83D2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46EFB100-6354-4524-904D-0BB603F83D2A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46EFB100-6354-4524-904D-0BB603F83D2A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -341,6 +347,7 @@ Global
 		{545C78D4-4A63-458D-A54D-2EA407DF70CA} = {180FAD0F-CEF1-43DF-B15B-C4D4D74EDF7C}
 		{7BB22889-CA90-4B7C-A53D-AF0A53D1F920} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{46EFB100-6354-4524-904D-0BB603F83D2A} = {1B5461D7-0B04-4F30-BB66-1EDA98450329}
+		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6} = {1B5461D7-0B04-4F30-BB66-1EDA98450329}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32830D18-8400-4B5A-9A71-3D3D1E19FCD7}

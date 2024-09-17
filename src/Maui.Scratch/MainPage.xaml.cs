@@ -10,16 +10,6 @@ public partial class MainPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
-
-    // private void OnCounterClicked(object sender, EventArgs e)
-    // {
-    //     count++;
-    //
-    //     if (count == 1)
-    //         CounterBtn.Text = $"Clicked {count} time";
-    //     else
-    //         CounterBtn.Text = $"Clicked {count} times";
-    // }
 }
 
 public partial class MainPageViewModel
@@ -30,7 +20,7 @@ public partial class MainPageViewModel
 
     public ICommand ClickCommand => new Command(Click);
 
-    private void Click()
+    private void Click(object o)
     {
         Count++;
     }
