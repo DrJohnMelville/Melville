@@ -24,10 +24,10 @@
     <ProjectReference Include="..\Melville.WpfControls\Melville.WpfControls.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
-    <PackageReference Include="Serilog.Formatting.Compact.Reader" Version="3.0.0" />
-    <PackageReference Include="TokenServiceClient.Native" Version="0.3.1" />
+    <PackageReference Include="Serilog.Formatting.Compact.Reader" Version="4.0.0" />
+    <PackageReference Include="TokenServiceClient.Native" Version="0.4.2" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="ApplicationRoot\app.ico" />

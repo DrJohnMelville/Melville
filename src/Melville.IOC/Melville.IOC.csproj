@@ -9,7 +9,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.8.0">
+      <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.11.0">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
@@ -21,8 +21,7 @@
     <ItemGroup>
       <ProjectReference Include="..\Melville.Hacks\Melville.Hacks.csproj" />
       <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
-      <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" 
-                        OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
+      <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
 
     </ItemGroup>
 </Project>
