@@ -107,7 +107,7 @@ public sealed class FileSystemFile : FileSystemObject<FileInfo>, IFile
 
   private Stream CreateFile(FileAttributes attributes)
   {
-    Stream ret = info.Create();
+    Stream ret = new FileStream(info.FullName, FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous);
     if (attributes != FileAttributes.Normal)
     {
       ret = new ExtendedCloseStream(ret, () =>
