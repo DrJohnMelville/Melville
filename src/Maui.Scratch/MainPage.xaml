@@ -30,6 +30,7 @@
             <Button
                 SemanticProperties.Hint="Counts the number of times you click"
                 Command="{Binding ClickCommand}"
+                CommandParameter="{Binding Source={RelativeSource Self}}"
                 Text="{Binding CounterText}"
                 HorizontalOptions="Fill" />
 

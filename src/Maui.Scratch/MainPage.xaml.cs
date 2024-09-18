@@ -1,5 +1,7 @@
 ﻿using System.Windows.Input;
 using Melville.INPC;
+using Melville.MVVM.Maui.Commands;
+using Melville.MVVM.WaitingServices;
 
 namespace Maui.Scratch;
 
@@ -18,10 +20,18 @@ public partial class MainPageViewModel
 
     [AutoNotify] public string CounterText => $"Clicked {Count} time{(Count == 1 ? "" : "s")}";
 
-    public ICommand ClickCommand => new Command(Click);
+    public ICommand ClickCommand => InheritedCommandFactory.Create(Click);
 
-    private void Click(object o)
+    private async Task Click(IShowProgress sp)
     {
+        var cancel = new CancellationTokenSource();
+        using var wait = sp.ShowProgress("Waiting for Timer", 5, cancel);
+        for (int i = 0; i < 5; i++)
+        {
+            if (cancel.Token.IsCancellationRequested) return;
+            wait.MakeProgress($"Item # {i}");
+            await Task.Delay(1000);
+        }
         Count++;
     }
 

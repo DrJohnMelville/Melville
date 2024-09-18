@@ -1,6 +1,8 @@
-﻿namespace Maui.Scratch;
+﻿using Melville.MVVM.Maui.WaitingService;
 
-public partial class AppShell : Shell
+namespace Maui.Scratch;
+
+public partial class AppShell : WaitableShell
 {
     public AppShell()
     {

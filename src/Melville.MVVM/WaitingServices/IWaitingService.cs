@@ -18,3 +18,13 @@ public interface IWaitingService : IReportProgress
   string? WaitMessage { get; set; }
   string? ErrorMessage { get; set; }
 }
+
+public interface IShowProgressContext: IReportProgress, IDisposable
+{
+}
+
+public interface IShowProgress
+{
+    IShowProgressContext ShowProgress(string waitMessage,
+        double total = double.MinValue, CancellationTokenSource? cancel = null);
+}

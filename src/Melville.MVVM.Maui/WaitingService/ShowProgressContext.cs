@@ -1,23 +1,23 @@
 ﻿using System.Net.Mail;
 using System;
+using System.Numerics;
 using System.Threading;
+using System.Windows.Input;
 using Melville.Hacks;
 using Melville.INPC;
 using Melville.MVVM.WaitingServices;
+using Microsoft.Maui.Controls;
 
 namespace Melville.MVVM.Maui.WaitingService;
 
-public partial class WaitMessageDriver :IWaitingService
+public partial class ShowProgressContext(INavigation navigation) :IShowProgressContext
 {
   /// <summary>
-  /// Message that updates infrequently on the wait screen.
+  /// A message that updates frequently on the progress screen showing the
+  /// current task.
   /// </summary>
   [AutoNotify] private string? waitMessage;
-  /// <summary>
-  /// An error message that shows in red at the bottom of the screen.
-  /// Intended to be used after a failed operation.
-  /// </summary>
-  [AutoNotify] private string? errorMessage;
+
   /// <summary>
   /// A message that updates frequently on the progress screen showing the
   /// current task.
@@ -40,7 +40,9 @@ public partial class WaitMessageDriver :IWaitingService
   /// </summary>
   [AutoNotify]private double progress;
 
-  public void MakeProgress(string? item = null)
+  [AutoNotify] public double ScaledProgress => Total == 0.0?0: Progress / Total;
+
+    public void MakeProgress(string? item = null)
   {
     Progress++;
     ProgressMessage = item ?? progressMessage;
@@ -55,28 +57,10 @@ public partial class WaitMessageDriver :IWaitingService
   /// A cancellation token source that will enable the user to cancel the operation.
   /// </summary>
   [AutoNotify]private CancellationTokenSource? cancellationTokenSource;
-  public void CancelWaitOperation() => CancellationTokenSource?.Cancel();
 
-  #endregion
+  public ICommand CancelCommand => new Command(_ => CancellationTokenSource?.Cancel());
 
-  public IDisposable WaitBlock(string message, double maximum = Double.MinValue, bool showCancelButton = false)
-  {
-    WaitMessage = message;
-    ErrorMessage = null;
-    Progress = 0.0;
-    Total = maximum;
-    if (showCancelButton)
-    {
-      CancellationTokenSource = new CancellationTokenSource();
-    }
+    #endregion
 
-    return new ActionOnDispose(CancelWaitBlock);
-  }
-
-  private void CancelWaitBlock()
-  {
-    WaitMessage = null;
-    Total = double.MinValue;
-    CancellationTokenSource = null;
-  }
+    public void Dispose() => navigation.PopModalAsync();
 }
