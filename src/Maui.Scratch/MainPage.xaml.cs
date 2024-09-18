@@ -22,7 +22,16 @@ public partial class MainPageViewModel
 
     public ICommand ClickCommand => InheritedCommandFactory.Create(Click);
 
-    private async Task Click(IShowProgress sp)
+    public class UniquelyPrivateClass: IDisposable
+    {
+        public void Dispose()
+        {
+            ;
+        }
+    }
+
+    private async Task Click(IShowProgress sp,
+        [FromServices] UniquelyPrivateClass upc)
     {
         var cancel = new CancellationTokenSource();
         using var wait = sp.ShowProgress("Waiting for Timer", 5, cancel);

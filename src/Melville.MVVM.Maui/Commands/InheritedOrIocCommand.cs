@@ -2,21 +2,22 @@
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Melville.INPC;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 
 namespace Melville.MVVM.Maui.Commands;
 
 [FromConstructor]
-internal partial class InternalOrIocCommand: InheritedCommand
+internal partial class InheritedOrIocCommand: InheritedCommand
 {
     public override void Execute(object? parameter)
     {
         object? result = null;
         var contextFactory = GetIocContext(parameter);
-        var context = contextFactory.CreateContext();
+        var context = contextFactory.CreateScope();
         try
         {
-            result = InnerExecute(parameter, context);
+            result = InnerExecute(parameter, context.ServiceProvider);
         }
         finally
         {
@@ -24,19 +25,15 @@ internal partial class InternalOrIocCommand: InheritedCommand
         }        
     }
 
-    private IIocContextFactory GetIocContext(object? parameter)
+    private IServiceScopeFactory GetIocContext(object? parameter)
     {
-        var current = parameter as Element;
-        while (current is not null)
-        {
-            if (GetIocContextFactory(current) is { } context)
-                return context;
-            current = (current as Element)?.Parent;
-        }
+        if (parameter is Element element &&
+            element.Handler?.MauiContext?.Services.GetService(typeof(IServiceScopeFactory)) is IServiceScopeFactory isf)
+            return isf;
         throw new InvalidOperationException("Cannot find an IOC Context");
     }
 
-    private static async void DoDispose(IIocContext context, object? result)
+    private static async void DoDispose(IDisposable context, object? result)
     {
         switch (result)
         {

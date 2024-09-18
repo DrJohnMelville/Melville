@@ -76,18 +76,27 @@ public class InheritedCommandTest
         context.Verify(i => i.Dispose(), Times.Once);
         result.Should().Be("World");
     }
-
-    private static Mock<IIocContext> SetupIocContext(out ConcreteElement win1)
+    
+    private static Mock<IServiceScope> SetupIocContext(out ConcreteElement win1)
     {
-        var context = new Mock<IIocContext>();
-        context.Setup(i => i.GetObject(typeof(string), It.IsAny<object>()))
+        var context = new Mock<IServiceProvider>();
+        context.Setup(i => i.GetService(typeof(string)))
             .Returns("World");
-        var factory = new Mock<IIocContextFactory>();
-        factory.Setup(i => i.CreateContext()).Returns(context.Object);
-        var win2 = new ConcreteElement();
-        InheritedCommand.SetIocContextFactory(win2, factory.Object);
-        win1 = new ConcreteElement() { Parent = win2 };
-        return context;
+        
+        var scope = new Mock<IServiceScope>();
+        scope.SetupGet(i => i.ServiceProvider).Returns(context.Object);
+        var factory = new Mock<IServiceScopeFactory>();
+        factory.Setup(i => i.CreateScope()).Returns(scope.Object);
+        context.Setup(i => i.GetService(typeof(IServiceScopeFactory)))
+            .Returns(factory.Object);
+
+        var mauiContext = new Mock<IMauiContext>();
+        mauiContext.SetupGet(i => i.Services).Returns(context.Object);
+        var handler = new Mock<IElementHandler>();
+        handler.SetupGet(i => i.MauiContext).Returns(mauiContext.Object);
+
+        win1 = new ConcreteElement() { Handler = handler.Object};
+        return scope;
     }
 
     [Fact]

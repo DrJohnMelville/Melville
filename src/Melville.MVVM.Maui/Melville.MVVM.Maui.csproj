@@ -18,7 +18,7 @@
 
 		<IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
 		<Title>Melville.MVM.WPF</Title>
-		<PackageDescription>WPF specific MVVM Goodies including the EventBinding</PackageDescription>
+		<PackageDescription>WPF specific MVVM Goodies including the InheritedCommand and WaitableShell/ShowProgressView</PackageDescription>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
 

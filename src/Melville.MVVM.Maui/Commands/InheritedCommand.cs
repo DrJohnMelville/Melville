@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Melville.INPC;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls;
 
 namespace Melville.MVVM.Maui.Commands;
@@ -10,9 +11,6 @@ namespace Melville.MVVM.Maui.Commands;
 [GenerateBP(typeof(object), "InheritedCommandParameter",
     Attached = true, Default = null, Nullable = true,
     XmlDocumentation = "Add an additional candidate to the inherited command chain")]
-[GenerateBP(typeof(IIocContextFactory), "IocContextFactory",
-    Attached = true, Default = null, Nullable = true,
-    XmlDocumentation = "IocFactory that can be used anywhere in the tree.")]
 public partial class InheritedCommand :CommandBase
 {
     private readonly Delegate action;
@@ -29,12 +27,12 @@ public partial class InheritedCommand :CommandBase
         InnerExecute(parameter, InvalidIocContext.Instance);
     }
 
-    protected object? InnerExecute(object? parameter, IIocContext context)
+    protected object? InnerExecute(object? parameter, IServiceProvider context)
     {
         var arguments = parameters
             .Select(i => 
                 GetFromIoc(i)?
-                    context.GetObject(i.ParameterType, parameter) :
+                    context.GetService(i.ParameterType) :
                 GetValueFor(i.ParameterType, parameter))
             .ToArray();
         return action.GetMethodInfo().Invoke(action.Target, arguments);

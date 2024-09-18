@@ -10,4 +10,9 @@
         <LangVersion>12.0</LangVersion>
         <AnalysisLevel>latest</AnalysisLevel>
     </PropertyGroup>
+
+	<Target Name="CopyPackage" AfterTargets="Pack">
+		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
+		      DestinationFolder="$(SolutionDir)..\TempNuget\" />
+	</Target>
 </Project>
