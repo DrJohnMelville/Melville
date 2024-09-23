@@ -59,7 +59,8 @@ public class RootModelFactory: IRootModelFactory
         JsonDocument doc = JsonDocument.Parse("{}");
         try
         {
-            doc= await JsonDocument.ParseAsync(await secretFile.OpenRead());
+            await using var secretStream = await secretFile.OpenRead();
+            doc= await JsonDocument.ParseAsync(secretStream);
         }
         catch (Exception)
         {
