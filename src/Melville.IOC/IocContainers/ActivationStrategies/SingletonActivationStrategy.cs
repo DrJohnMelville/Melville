@@ -33,7 +33,7 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
                 if (!valueExists)
                 {
                     value = ComputeSingleValue(bindingRequest);
-                    valueExists = true;
+                    if (!bindingRequest.IsCancelled) valueExists = true;
                 }
             }
         }

@@ -1,26 +1,15 @@
 ﻿using System;
 using System.Linq;
+using Melville.INPC;
 using Melville.IOC.IocContainers;
 
 namespace Melville.IOC.BindingRequests;
 
-public class ClonedBindingRequest: IBindingRequest
+public partial class ClonedBindingRequest(IBindingRequest rootRequest) : IBindingRequest
 {
-    private IBindingRequest rootRequest;
+    [DelegateTo] public IBindingRequest Parent { get; } = rootRequest;
 
-    public ClonedBindingRequest(IBindingRequest rootRequest)
-    {
-        this.rootRequest = rootRequest;
-        IocService = rootRequest.IocService;
-        // copy the array because it gets destroyed
-        ArgumentsFromParent = rootRequest.ArgumentsFromParent.ToArray(); 
-        ArgumentsFormChild = rootRequest.ArgumentsFormChild.ToArray();
-    }
-
-    public Type DesiredType => rootRequest.DesiredType;
-    public Type? TypeBeingConstructed => rootRequest.TypeBeingConstructed;
-    public string TargetParameterName => rootRequest.TargetParameterName;
-    public IIocService IocService { get; set; }
-    public object?[] ArgumentsFormChild { get; set; }
-    public object?[] ArgumentsFromParent { get; }
+    // copy the arrays because they get destroyed
+    public object?[] ArgumentsFormChild { get; set; } = rootRequest.ArgumentsFormChild.ToArray();
+    public object?[] ArgumentsFromParent { get; } = rootRequest.ArgumentsFromParent.ToArray();
 }

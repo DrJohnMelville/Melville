@@ -121,7 +121,11 @@ public class IocContainerTest
         }
         catch (Exception e)
         {
-            Assert.Equal("Cannot bind type: ISimpleObject\r\n    1. Melville.IOC.Test.IocContainers.ISimpleObject -- No Scope\r\n    2. Melville.IOC.Test.IocContainers.SecondaryObject -- No Scope", e.Message);
+            Assert.Equal("""
+                Cannot bind type: ISimpleObject
+                    1. Melville.IOC.Test.IocContainers.ISimpleObject -- No Scope
+                    2. Melville.IOC.Test.IocContainers.SecondaryObject -- No Scope
+                """, e.Message);
             return;
         }
         Assert.Fail("should have thrown an exception");

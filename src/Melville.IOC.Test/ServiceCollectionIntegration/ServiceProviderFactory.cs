@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Melville.IOC.AspNet.RegisterFromServiceCollection;
 using Melville.IOC.IocContainers;
 using Melville.IOC.Test.IocContainers;
@@ -33,6 +34,26 @@ public class ServiceProviderFactory
         {
             Assert.NotNull(scope.ServiceProvider.GetService<ISimpleObject>());               
         }
+    }
+
+    [Fact]
+    public void FailedBindingIsNull()
+    {
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(new ServiceCollection()));
+        prov.GetService(typeof(ISimpleObject)).Should().BeNull();
+    }
+    [Fact]
+    public void FailedSecondaryBindingIsNull()
+    {
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(new ServiceCollection()));
+        prov.GetService(typeof(SecondaryObject)).Should().BeNull();
+    }
+    [Fact]
+    public void FailedRequiredBindingThrows()
+    {
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(new ServiceCollection()));
+        prov.Invoking(i=>i.GetRequiredService(typeof(ISimpleObject))).Should().
+                Throw<InvalidOperationException>();
     }
 
     [Fact]

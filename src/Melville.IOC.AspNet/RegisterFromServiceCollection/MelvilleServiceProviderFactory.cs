@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.TypeResolutionPolicy;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -28,6 +29,7 @@ public class MelvilleServiceProviderFactory: IServiceProviderFactory<IocContaine
     public IServiceProvider CreateServiceProvider(IocContainer containerBuilder)
     {
         containerBuilder.AllowDisposablesInGlobalScope = allowRootDisposables;
+        containerBuilder.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
         var adapter = new ServiceProviderAdapter(containerBuilder);
         containerBuilder.BindIfNeeded<IServiceScopeFactory>().And<IServiceProvider>()
             .ToConstant(adapter).DisposeIfInsideScope();

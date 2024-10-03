@@ -1,4 +1,5 @@
-﻿using Melville.IOC.AspNet.RegisterFromServiceCollection;
+﻿using FluentAssertions;
+using Melville.IOC.AspNet.RegisterFromServiceCollection;
 using Melville.IOC.IocContainers;
 using Melville.IOC.Test.IocContainers;
 using Microsoft.Extensions.DependencyInjection;

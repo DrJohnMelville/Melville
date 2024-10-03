@@ -2,7 +2,7 @@
 
 namespace Maui.Scratch;
 
-public partial class AppShell : WaitableShell
+public partial class AppShell
 {
     public AppShell()
     {
