@@ -20,7 +20,7 @@ public readonly struct VisualTreeRunContext
         IDIIntegration diIntegration, DependencyObject root, string targetMethodName,
         IEnumerable<object?> inputParameters)
     {
-        DIIntegration = diIntegration;
+         DIIntegration = diIntegration;
         Root = root;
         TargetMethodName = targetMethodName;
         InputParameters = inputParameters.ToArray();

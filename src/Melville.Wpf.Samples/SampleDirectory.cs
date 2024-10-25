@@ -21,7 +21,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<MonitoredCopyViewModel>();
+        SearchTreeForSample<ParamBindingViewModel>();
 
     public SampleDirectory()
     {
@@ -50,7 +50,8 @@ public class SampleDirectory : SampleDirectoryDsl
                 Page<DiBindingViewModel>("DI Binding"),
                 Page<WaitSampleViewModel>("Waiting Screen"),
                 Page<MouseClickViewModel>("Mouse Clicks"),
-                Page<TreeDraggingViewModel>("Tree Dragging")
+                Page<TreeDraggingViewModel>("Tree Dragging"),
+                Page<ParamBindingViewModel>("Parameter Binding")
             ),
             Node("Statistics",
                 Page<LinqGraphViewModel>("LinqPad Graphics Module")),

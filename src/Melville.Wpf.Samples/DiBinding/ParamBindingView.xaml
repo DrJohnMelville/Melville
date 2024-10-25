@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.DiBinding.ParamBindingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.DiBinding"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel>
+        <TextBlock Margin="10" Text="{Binding Output}"/>
+
+        <Button eventBindings:EventBinding.Parameter="Option 1 Clicked" 
+                Click ="{eventBindings:EventBinding SetOutput}"> Option 1
+        </Button>
+        <Button eventBindings:EventBinding.Parameter="You clicked option 2" 
+                Click ="{eventBindings:EventBinding SetOutput}"> Option 2
+        </Button>
+    </StackPanel>
+</UserControl>
