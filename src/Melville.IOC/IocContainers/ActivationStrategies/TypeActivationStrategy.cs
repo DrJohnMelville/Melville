@@ -28,6 +28,14 @@ public partial class TypeActivationStrategy: IActivationStrategy
     {
         using var requests = new RentedBuffer<object?>(paramTypes.Length);
         FillParamaterSpan(bindingRequest, requests.Span);
+        if (bindingRequest.IsCancelled)
+        {
+            foreach (var item in requests.Span)
+            {
+                if (item is IDisposable disp) disp.Dispose();
+            }
+            return null;
+        }
         return activator.Invoke(requests.Span);
     }
 

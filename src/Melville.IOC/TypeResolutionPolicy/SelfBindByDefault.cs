@@ -28,5 +28,7 @@ public class SelfBindByDefault : ITypeResolutionPolicy
                 ConstructorSelectors.MaximumArgumentCount) : null;
 
     private bool IsCreatable(Type type) => (type.IsClass || type.IsValueType) 
-                                           && type.GetConstructors().Length > 0 && ! ForbiddenTypes.Contains(type);
+                                           && type.GetConstructors().Length > 0 && 
+                                           ! (type.IsAbstract ||
+                                               ForbiddenTypes.Contains(type));
 }

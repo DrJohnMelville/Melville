@@ -73,7 +73,7 @@ public sealed class ScopedTupleActivationStrategy : IActivationStrategy
         var scope = bindingRequest.IocService.CreateScope();
         values[0] = scope;
         scope.Fill(values[1..], RequestsForInnerItems(bindingRequest));
-        return funcCreator.Invoke(values);
+        return bindingRequest.IsCancelled? null: funcCreator.Invoke(values);
     }
     
     public SharingScope SharingScope() => IocContainers.SharingScope.Transient;

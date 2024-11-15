@@ -9,6 +9,14 @@ public interface  IActivationStrategy
     object? Create(IBindingRequest bindingRequest);
     SharingScope SharingScope();
     bool ValidForRequest(IBindingRequest request);
-    void CreateMany(IBindingRequest bindingRequest, Func<object?, int> accumulator) =>
-        accumulator(Create(bindingRequest) ?? throw new IocException("Type resolved to null"));
+    void CreateMany(IBindingRequest bindingRequest, Func<object?, int> accumulator)
+    {
+        var ret = Create(bindingRequest);
+        if (bindingRequest.IsCancelled)
+        {
+            if (ret is IDisposable disp) disp.Dispose();
+        }
+        if (ret is null) return;
+        accumulator(Create(bindingRequest) );
+    }
 }
