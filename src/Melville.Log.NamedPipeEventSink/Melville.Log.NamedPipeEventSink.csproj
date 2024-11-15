@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFramework>net9.0-windows</TargetFramework>
         
     </PropertyGroup>
     
@@ -17,7 +17,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Serilog" Version="4.0.1" />
+      <PackageReference Include="Serilog" Version="4.1.0" />
       <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0" />
       <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
     </ItemGroup>
