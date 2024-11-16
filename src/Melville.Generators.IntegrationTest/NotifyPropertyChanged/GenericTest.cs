@@ -25,6 +25,25 @@ public partial class GenericTest
         // the two items are the same static type
 
     }
+
+    [AutoNotify] public partial int Prop { get; set; }
+
+    [Fact]
+    public void PartialPropertyTest()
+    {
+        var calls = 0;
+        PropertyChanged += (s, e) =>
+        {
+            Assert.Equal("Prop", e.PropertyName);
+            calls++;
+        };
+
+        Assert.Equal(0, calls);
+        Assert.Equal(0, Prop);
+        Prop = 15;
+        Assert.Equal(1, calls);
+        Assert.Equal(15, Prop);
+    }
 }
 
 public class OuterClass

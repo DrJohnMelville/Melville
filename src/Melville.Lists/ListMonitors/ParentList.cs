@@ -18,8 +18,7 @@ public interface IChild<TParent>
 
 public partial class NotifyChildBase<T> :IChild<T> 
 {
-  [MaybeNull]
-  [AutoNotify]private T? parent = default;
+  [AutoNotify]public partial T? Parent { get; set; }
 }
 
 

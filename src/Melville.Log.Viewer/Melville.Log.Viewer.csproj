@@ -27,6 +27,8 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
     <PackageReference Include="Serilog.Formatting.Compact.Reader" Version="4.0.0" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="9.0.0" />
     <PackageReference Include="TokenServiceClient.Native" Version="0.4.2" />
   </ItemGroup>
   <ItemGroup>

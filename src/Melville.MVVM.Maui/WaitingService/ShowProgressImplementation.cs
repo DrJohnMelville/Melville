@@ -26,7 +26,7 @@ public class ShowProgressImplementation(INavigation navigation): IShowProgress
 public partial class AppNavigationSource(Application app): INavigation
 {
     [DelegateTo] INavigation Target => app.NavigationProxy ?? 
-                                       app.MainPage?.Navigation ??
+                                       app.Windows[0].Page?.Navigation ??
                                       throw new InvalidDataException("Need a navigation proxy");
 }
 
