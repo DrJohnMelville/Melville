@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Melville.Lists.Caches;
 
@@ -9,6 +10,7 @@ public sealed class SimpleCache<TKey, TResult>
   private readonly int size;
   private readonly Func<TKey, TResult> create;
   private List<(TKey, TResult)> data;
+  private readonly Lock mutex = new ();
 
   public SimpleCache(Func<TKey, TResult> create) : this(int.MaxValue, create)
   {
@@ -37,7 +39,7 @@ public sealed class SimpleCache<TKey, TResult>
 
   public TResult Get(TKey key)
   {
-    lock (data)
+    lock (mutex)
     {
       var item = GetOrCreateRequestedItem(key);
       data.Insert(0, item);
@@ -69,7 +71,7 @@ public sealed class SimpleCache<TKey, TResult>
 
   public void Dump()
   {
-    lock (data)
+    lock (mutex)
     {
       data.Clear();
 
@@ -78,7 +80,7 @@ public sealed class SimpleCache<TKey, TResult>
 
   public void Forget(TKey key)
   {
-    lock (data)
+    lock (mutex)
     {
       if (TryGet(key, out var item))
       {
@@ -96,7 +98,7 @@ public sealed class SimpleCache<TKey, TResult>
 
   public void Rekey(Func<TKey, TKey> func)
   {
-    lock (data)
+    lock (mutex)
     {
       data = data.Select(i => (func(i.Item1), i.Item2)).ToList();
 
@@ -105,7 +107,7 @@ public sealed class SimpleCache<TKey, TResult>
 
   public void Clear()
   {
-    lock (data)
+    lock (mutex)
     {
       data.ForEach(i => (i.Item2 as IDisposable)?.Dispose());
       data.Clear();

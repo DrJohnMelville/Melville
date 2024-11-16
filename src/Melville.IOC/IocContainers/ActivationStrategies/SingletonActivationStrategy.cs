@@ -1,4 +1,5 @@
-﻿using Melville.IOC.BindingRequests;
+﻿using System.Threading;
+using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
@@ -23,12 +24,13 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
         return value;
     }
 
+    private static Lock singletonLock = new();
     private void CreateValueExactlyOnceForAllThreads(IBindingRequest bindingRequest)
     {
         //the double check and lock pattern relies on value and valueExists being volitile fields
         if (!valueExists)
         {
-            lock (this)
+            lock (singletonLock)
             {
                 if (!valueExists)
                 {
