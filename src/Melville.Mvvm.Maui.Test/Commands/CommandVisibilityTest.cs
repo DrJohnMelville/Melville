@@ -39,10 +39,9 @@ public partial class CommandVisibilityTest
     {
         [AutoNotify] private int intA;
         [AutoNotify] private int intB;
-        [AutoNotify] private string stringA;
+        [AutoNotify] private string? stringA;
         [AutoNotify] private int intAQueryCount;
 
-        [AutoNotify]
         public int QueryCountedIntA
         {
             get

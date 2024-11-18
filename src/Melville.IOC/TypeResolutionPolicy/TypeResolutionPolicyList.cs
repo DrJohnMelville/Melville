@@ -20,6 +20,7 @@ public interface ITypeResolutionPolicyList:ITypeResolutionPolicy
     void AddResolutionPolicyBefore<T>(ITypeResolutionPolicy policy);
     void AddResolutionPolicyAfter<T>(ITypeResolutionPolicy policy);
     void RemoveTypeResolutionPolicy<T>();
+    void AddTypeResolutionPolicyToEnd(ITypeResolutionPolicy policy);
 }
 public class TypeResolutionPolicyList: ITypeResolutionPolicyList
 {
@@ -57,6 +58,10 @@ public class TypeResolutionPolicyList: ITypeResolutionPolicyList
             throw new IocException("Could not find the target resolution policy in AddResolutionPolicyBefore");
         }
     }
+
+    public void AddTypeResolutionPolicyToEnd(ITypeResolutionPolicy policy) => 
+        Policies.Add(policy);
+
     public void RemoveTypeResolutionPolicy<T>() => Policies.RemoveAll(IsResolver<T>);
 
     private bool IsResolver<T>(ITypeResolutionPolicy item) => item is T ||

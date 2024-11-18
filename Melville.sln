@@ -114,7 +114,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.MVVM.Maui", "src\M
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maui.Scratch", "Src\Maui.Scratch\Maui.Scratch.csproj", "{46EFB100-6354-4524-904D-0BB603F83D2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Mvvm.Maui.Test", "src\Melville.Mvvm.Maui.Test\Melville.Mvvm.Maui.Test.csproj", "{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.Mvvm.Maui.Test", "src\Melville.Mvvm.Maui.Test\Melville.Mvvm.Maui.Test.csproj", "{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.SimpleDb", "src\Melville.SimpleDb\Melville.SimpleDb.csproj", "{A639966E-2D89-4D9D-9AE3-1BC898A16855}"
 EndProject

@@ -17,4 +17,8 @@ public class RootBindingRequest : IBindingRequest
     public Type? TypeBeingConstructed => null;
     public object?[] ArgumentsFormChild { get; set;}
     public object?[] ArgumentsFromParent => Array.Empty<object>();
+
+    public bool IsCancelled { get; set; }
+
+    public IBindingRequest? Parent => null;
 }

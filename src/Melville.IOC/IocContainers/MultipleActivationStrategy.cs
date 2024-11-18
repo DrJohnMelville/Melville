@@ -33,7 +33,14 @@ public class MultipleActivationStrategy : IActivationStrategy
         {
             var request = bindingRequest.Clone();
             if (!strategy.ValidForRequest(request)) continue;
-            accumulator(strategy.Create(request) ?? throw new IocException("Type resolved to null"));
+            var o = strategy.Create(request);
+            if (request.IsCancelled)
+            {
+                if (o is IDisposable disp) disp.Dispose();
+                continue;
+            }
+            if (o is null) continue;
+            accumulator(o);
         }
     }
 

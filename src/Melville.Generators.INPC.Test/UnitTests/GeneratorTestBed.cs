@@ -88,6 +88,6 @@ public class GeneratorTestBed
 
     public void NoSuchFile(string fileName)
     {
-        Assert.Empty(compilation.SyntaxTrees.Where(i=>i.FilePath.Contains(fileName)));
+        Assert.DoesNotContain(compilation.SyntaxTrees,i=>i.FilePath.Contains(fileName));
     }
 }

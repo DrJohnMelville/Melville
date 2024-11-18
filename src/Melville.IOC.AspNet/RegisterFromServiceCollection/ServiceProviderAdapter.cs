@@ -1,4 +1,5 @@
 ﻿using System;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,17 +17,17 @@ public class ServiceProviderAdapter : IServiceProvider, ISupportRequiredService,
 
     public object? GetService(Type serviceType)
     {
-        try
-        {
-            return inner.Get(serviceType);
-        }
-        catch (IocException) // .Net provider does not throw when cannot create an object
-        {
-            return null;
-        }
+       return inner.Get(serviceType);
     }
 
-    public object GetRequiredService(Type serviceType) => inner.Get(serviceType);
+    public object GetRequiredService(Type serviceType)
+    {
+        var request = new RootBindingRequest(serviceType, inner);
+        var requiredService = inner.Get(request);
+        if (request.IsCancelled || requiredService is null)
+            throw new InvalidOperationException($"Service of type {serviceType} could not be constructed");
+        return requiredService;
+    }
 
     public void Dispose()
     {

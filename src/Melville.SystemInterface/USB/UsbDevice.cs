@@ -67,7 +67,7 @@ public abstract class UsbDevice: IDisposable
       var buf = new byte[readBufferLength];
       while (true)
       {
-        await deviceStream.ReadAsync(buf, 0, readBufferLength);
+        await deviceStream.ReadExactlyAsync(buf, 0, readBufferLength);
         DeviceInputEvent(buf);
       }
     }

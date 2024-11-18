@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.InjectionPolicies;
@@ -32,12 +31,13 @@ public static class IocServiceOperations
             service = service.ParentScope;
         }
     }
-    // make it so we car create scopes on IocContainer without casting
+    // make it so we can create scopes on IocContainer without casting
     public static IDisposableIocService CreateScope(this IIocService service) =>
         service.CreateSharingScope().CreateLifetimeScope();
     public static IIocService CreateSharingScope(this IIocService service) => new SharingScopeContainer(service);
     public static IDisposableIocService CreateLifetimeScope(this IIocService service) => 
         new DisposableIocService(service);
+
     public static bool CanGet<T>(this IIocService ioc, params object[] arguments) => 
         ioc.CanGet(typeof(T), arguments);
     public static bool CanGet(this IIocService ioc, Type type, params object[] arguments) => 
@@ -45,14 +45,13 @@ public static class IocServiceOperations
     public static bool CanGet(this IIocService ioc, IEnumerable<IBindingRequest> requests) => 
         requests.All(ioc.CanGet);
         
-    public static T Get<T>(this IIocService ioc, params object[] arguments) => (T) ioc.Get(typeof(T), arguments);
-    public static object Get(this IIocService ioc, Type serviceTppe, params object[] arguments)
+    public static T Get<T>(this IIocService ioc, params object[] arguments) => 
+        (T) (ioc.Get(typeof(T?), arguments) ??
+             throw new IocException($"Could not ceate a {typeof(T)}"));
+    public static object? Get(this IIocService ioc, Type serviceTppe, params object[] arguments)
     {
-        return RecursiveExceptionTracker.BasisCall(ioc.Get, new RootBindingRequest(serviceTppe, ioc, arguments)) 
-               ?? throw new IocException("Type resolved to null");
+        return ioc.Get(new RootBindingRequest(serviceTppe, ioc, arguments));
     }
-
-    private static bool IsDisposable([NotNullWhen(true)]object? item) => item is IDisposable || item is IAsyncDisposable;
 
 
     public static object?[] Get(this IIocService service, IList<IBindingRequest> requiredParameters)
@@ -69,10 +68,23 @@ public static class IocServiceOperations
         {
             if (pos >= destination.Length) return;
             destination[pos] = service.Get(request);
+            if (request.IsCancelled)
+            {
+                ClearAndTryDispose(destination);
+                return;
+            }
             pos++;
         }
     }
 
+    private static void ClearAndTryDispose(Span<object?> destination)
+    {
+        for (int i = 0; i < destination.Length; i++)
+        {
+            if (destination[i] is IDisposable disp) disp.Dispose();
+            destination[i] = null;
+        }
+    }
 }
 
 public class IocContainer: IBindableIocService, IIocService
@@ -96,20 +108,26 @@ public class IocContainer: IBindableIocService, IIocService
         TypeResolver.AddResolutionPolicyAfter<T>(policy);
     public void RemoveTypeResolutionPolicy<T>() => TypeResolver.RemoveTypeResolutionPolicy<T>();
 
+    public void AddTypeResolutionPolicyToEnd(ITypeResolutionPolicy policy) =>
+        TypeResolver.AddTypeResolutionPolicyToEnd(policy);
+
     #region Get
         
-    private object? GetImplementation(IBindingRequest bindingRequest)
+    public object? Get(IBindingRequest bindingRequest)
     {
         var activator = FindActivationStrategy(bindingRequest);
-        return activator.Create(bindingRequest);
+        var ret = activator.Create(bindingRequest);
+        if (bindingRequest.IsCancelled)
+        {
+            if (ret is IDisposable disp) disp.Dispose();
+            return null;
+        }
+        return ret;
     }
 
     private IActivationStrategy FindActivationStrategy(IBindingRequest bindingRequest) =>
         TypeResolver.ApplyResolutionPolicy(bindingRequest)??
-        throw new IocException("Cannot bind type: " + bindingRequest.DesiredType.Name);
-
-    object? IIocService.Get(IBindingRequest requestedType) => 
-        RecursiveExceptionTracker.RecursiveCall(GetImplementation, requestedType);
+        throw new IocException(bindingRequest.ConstructFailureMessage());
 
     #endregion
 
