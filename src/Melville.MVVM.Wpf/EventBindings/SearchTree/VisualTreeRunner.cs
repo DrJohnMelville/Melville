@@ -31,22 +31,24 @@ public partial class VisualTreeRunner : IVisualTreeRunner
         DependencyObject? target) => 
         target == null? this:new VisualTreeRunner(target);
 
+    public static event EventHandler<VisualTreeRunContext>? RunStarted;
+    public static event EventHandler<VisualTreeRunContext>? RunFailed;
+
     public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result)
     {
-        Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
         var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
         var methodName = pathComponents.LastOrDefault() ?? "";
         var context = CreateContext(inputParams, methodName);
+        RunStarted?.Invoke(this, context);
         var targets = AddPathFollowing(context.Targets, pathComponents);
 
         foreach (var target in targets)
         {
             if (target == null) continue;
-            Log.Debug("Searching Object: {target}", target.ToString());
             if (RunOnTarget(target, ref context, out result)) return true;
         }
 
-        Log.Error("Failed to bind method: {MethodName}", targetMethodName);
+        RunFailed?.Invoke(this, context);
         result = null;
         return false;
     }
@@ -65,7 +67,6 @@ public partial class VisualTreeRunner : IVisualTreeRunner
     {
         result = null;
         if (target == null) return false;
-        Log.Debug("Searching Object: {target}", target.ToString());
         return 
             TryInvokeMethod(ref context, target, out result) || 
             TryInvokeCommand(ref context, target);
