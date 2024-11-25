@@ -1,6 +1,6 @@
 <Project>
     <PropertyGroup>
-        <Version>0.7.5-preview</Version>
+        <Version>0.7.5</Version>
         <Authors>John Melville, MS, MD</Authors>
         <Company>Melville Computing</Company>
         <Copyright>2021 John Melville, MS, MD</Copyright>
