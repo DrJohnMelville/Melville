@@ -30,7 +30,9 @@ public class MultipleValueActivator : IActivationStrategy
     public object? Create(IBindingRequest bindingRequest)
     {
         var ret = CreateResultList();
+        if (bindingRequest.IsCancelled) return ret;
         ResolveInnerType(bindingRequest)?.CreateMany(bindingRequest, ret.Add);
+        bindingRequest.IsCancelled = false; // failure to bind a item successfully returns an empty list.
         return ret;
     }
 
