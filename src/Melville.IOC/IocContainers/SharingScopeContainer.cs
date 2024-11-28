@@ -31,7 +31,8 @@ public class GenericScope: IIocService
 
     public object? Get(IBindingRequest request)
     {
-        TrySetScopeValue(request); return ParentScope.Get(request);
+        TrySetScopeValue(request); 
+        return ParentScope.Get(request);
     }
 
     private void TrySetScopeValue(IBindingRequest request)
