@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Melville.IOC.BindingRequests;
@@ -26,8 +27,7 @@ public class MultipleActivationStrategy : IActivationStrategy
          throw new IocException($"No binding for {bindingRequest.DesiredType.Name} is valid in this context.")
         ).Create(bindingRequest);
 
-    public void CreateMany(IBindingRequest bindingRequest,
-        Func<object?, int> accumulator)
+    public void CreateMany(IBindingRequest bindingRequest, IList accumulator)
     {
         foreach (var strategy in strateies)
         {
@@ -40,10 +40,9 @@ public class MultipleActivationStrategy : IActivationStrategy
                 continue;
             }
             if (o is null) continue;
-            accumulator(o);
+            accumulator.Add(o);
         }
     }
-
 
     public SharingScope SharingScope() => strateies.Select(i => i.SharingScope()).Min();
     public bool ValidForRequest(IBindingRequest request) => SelectActivator(request) != null;

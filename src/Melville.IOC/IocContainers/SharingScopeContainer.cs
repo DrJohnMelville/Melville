@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers.ActivationStrategies;
+using Melville.IOC.IocContainers.Debuggers;
 
 
 namespace Melville.IOC.IocContainers;
@@ -30,8 +31,7 @@ public class GenericScope: IIocService
 
     public object? Get(IBindingRequest request)
     {
-        TrySetScopeValue(request);
-        return ParentScope.Get(request);
+        TrySetScopeValue(request); return ParentScope.Get(request);
     }
 
     private void TrySetScopeValue(IBindingRequest request)
@@ -42,6 +42,8 @@ public class GenericScope: IIocService
 
     private bool IsAChildOfThisScope(IIocService scope) => 
         scope.ScopeList().Contains(this);
+
+    public IIocDebugger Debugger => ParentScope.Debugger;
 }
 
 public interface IScope

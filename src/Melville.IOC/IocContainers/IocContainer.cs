@@ -4,6 +4,7 @@ using System.Linq;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
+using Melville.IOC.IocContainers.Debuggers;
 using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers;
@@ -16,7 +17,7 @@ public interface IIocService
     IIocService? ParentScope { get; }
     bool IsGlobalScope => ParentScope == null;
     bool AllowDisposablesInGlobalScope { get; set; }
-
+    IIocDebugger Debugger { get; }
 }
 
 public static class IocServiceOperations
@@ -115,6 +116,7 @@ public class IocContainer: IBindableIocService, IIocService
         
     public object? Get(IBindingRequest bindingRequest)
     {
+        Debugger.TypeRequested(bindingRequest);
         var activator = FindActivationStrategy(bindingRequest);
         var ret = activator.Create(bindingRequest);
         if (bindingRequest.IsCancelled)
@@ -137,9 +139,7 @@ public class IocContainer: IBindableIocService, IIocService
     {
         try
         {
-            var activator = TypeResolver.ApplyResolutionPolicy(request);
-            if (activator == null) return false;
-            return activator.CanCreate(request);
+            return TypeResolver.ApplyResolutionPolicy(request)?.CanCreate(request) ?? false;
         }
         catch (Exception )
         {
@@ -147,5 +147,9 @@ public class IocContainer: IBindableIocService, IIocService
             return false;
         }
     }
+    #endregion
+
+    #region Debug Hook
+    public IIocDebugger Debugger { get; set; } = SilentDebugger.Instance;
     #endregion
 }

@@ -24,4 +24,7 @@
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
 
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="IocContainers\Debuggers\" />
+    </ItemGroup>
 </Project>

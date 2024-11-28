@@ -4,6 +4,7 @@ using System.Reflection;
 using Melville.Hacks;
 using Melville.INPC;
 using Melville.IOC.BindingRequests;
+using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
@@ -24,8 +25,10 @@ public partial class TypeActivationStrategy: IActivationStrategy
         return true;
     }
 
+
     public object? Create(IBindingRequest bindingRequest)
     {
+        bindingRequest.IocService.Debugger.ActivationRequested(bindingRequest);
         using var requests = new RentedBuffer<object?>(paramTypes.Length);
         FillParamaterSpan(bindingRequest, requests.Span);
         if (bindingRequest.IsCancelled)

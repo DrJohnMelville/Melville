@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Xunit;
 
@@ -62,8 +63,14 @@ public class MultipleResolutionTest
     public void MultipleResolutionBindNone()
     {
         var objects = sut.Get<IList<IMultipleImplementation>>();
-            
         Assert.Empty(objects);
+    }
+
+    [Fact] public void MultipleResolutionBindNoneSharesResult()
+    {
+        var objects = sut.Get<IList<IMultipleImplementation>>();
+        var objects2 = sut.Get<IList<IMultipleImplementation>>();
+        objects2.Should().BeSameAs(objects);
     }
     [Fact]
     public void MultipleResolutionBindImplicit()

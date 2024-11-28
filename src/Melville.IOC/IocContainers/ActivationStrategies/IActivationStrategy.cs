@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
@@ -9,7 +10,7 @@ public interface  IActivationStrategy
     object? Create(IBindingRequest bindingRequest);
     SharingScope SharingScope();
     bool ValidForRequest(IBindingRequest request);
-    void CreateMany(IBindingRequest bindingRequest, Func<object?, int> accumulator)
+    void CreateMany(IBindingRequest bindingRequest, IList accumulator)
     {
         var ret = Create(bindingRequest);
         if (bindingRequest.IsCancelled)
@@ -17,6 +18,6 @@ public interface  IActivationStrategy
             if (ret is IDisposable disp) disp.Dispose();
         }
         if (ret is null) return;
-        accumulator(Create(bindingRequest) );
+        accumulator.Add(ret);
     }
 }

@@ -1,10 +1,13 @@
 ﻿using System;
 using FluentAssertions;
 using Melville.IOC.AspNet.RegisterFromServiceCollection;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.Debuggers;
 using Melville.IOC.Test.IocContainers;
 using Melville.IOC.TypeResolutionPolicy;
 using Microsoft.Extensions.DependencyInjection;
+using Moq;
 using Xunit;
 using ServiceCollection = Melville.IOC.AspNet.RegisterFromServiceCollection.ServiceCollection;
 
@@ -38,17 +41,27 @@ public class ServiceProviderFactory
     }
 
     [Fact]
+    public void IServiceProviderIsServiceTest()
+    {
+        var sc = new ServiceCollection();
+        sc.AddTransient<ISimpleObject, SimpleObjectImplementation>();
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
+
+        var isService = prov.GetRequiredService<IServiceProviderIsService>();
+
+        isService.IsService(typeof(ISimpleObject)).Should().BeTrue();
+        isService.IsService(typeof(ISimpleObject2)).Should().BeFalse();
+    }
+
+    [Fact]
     public void FailedBindingIsNull()
     {
-        var failCount = 0;
-
-        void OnFailRequestPolicyOnBindingFailed(object? sut, FailedRequestEventArgs e) => failCount++;
-
-        FailRequestPolicy.BindingFailed += OnFailRequestPolicyOnBindingFailed;
-        var prov = sut.CreateServiceProvider(sut.CreateBuilder(new ServiceCollection()));
+        var debug = new Mock<IIocDebugger>();
+        var builder = sut.CreateBuilder(new ServiceCollection());
+        builder.Debugger = debug.Object;
+        var prov = sut.CreateServiceProvider(builder);
         prov.GetService(typeof(ISimpleObject)).Should().BeNull();
-        FailRequestPolicy.BindingFailed -= OnFailRequestPolicyOnBindingFailed;
-        failCount.Should().Be(1);
+        debug.Verify(i => i.ResolutionFailed(It.IsAny<IBindingRequest>()), Times.Once);
     }
     [Fact]
     public void FailedSecondaryBindingIsNull()
