@@ -2,10 +2,27 @@
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.Debuggers;
+using Melville.IOC.TypeResolutionPolicy;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
+public static class ServiceProviderAdaptorFactory
+{
+    public static IServiceProvider CreateServiceProvider(this IocContainer containerBuilder, bool allDisposablesInRoot)
+    {
+        containerBuilder.AllowDisposablesInGlobalScope = allDisposablesInRoot;
+        containerBuilder.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
+        var adapter = new ServiceProviderAdapter(containerBuilder);
+        containerBuilder.BindIfNeeded<IServiceScopeFactory>()
+            .And<IServiceProvider>()
+            .And<IServiceProviderIsService>()
+            .And<IServiceScope>()
+            .And<ISupportRequiredService>()
+            .ToConstant(adapter).DisposeIfInsideScope();
+        return adapter;
+    }
+}
 public class ServiceProviderAdapter : 
     IServiceProvider, ISupportRequiredService, IServiceScope, IServiceScopeFactory,
     IServiceProviderIsService

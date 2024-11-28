@@ -17,17 +17,6 @@ public class MelvilleServiceProviderFactory(bool allowRootDisposables, Action<IB
         return ret;
     }
 
-    public IServiceProvider CreateServiceProvider(IocContainer containerBuilder)
-    {
-        containerBuilder.AllowDisposablesInGlobalScope = allowRootDisposables;
-        containerBuilder.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
-        var adapter = new ServiceProviderAdapter(containerBuilder);
-        containerBuilder.BindIfNeeded<IServiceScopeFactory>()
-            .And<IServiceProvider>()
-            .And<IServiceProviderIsService>()
-            .ToConstant(adapter).DisposeIfInsideScope();
-        // The outermost scope never gets disposed, but this is ok because it is supposed to last for
-        // the entire program.
-        return adapter;
-    }
+    public IServiceProvider CreateServiceProvider(IocContainer containerBuilder) => 
+        containerBuilder.CreateServiceProvider(allowRootDisposables);
 }
