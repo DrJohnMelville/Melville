@@ -56,6 +56,6 @@ public class MultipleValueActivator : IActivationStrategy
     {
         var type = typeof(Array);
         var meth = type.GetMethod("Empty", BindingFlags.Static | BindingFlags.Public);
-        return (IList) meth.MakeGenericMethod(typeToResolve).Invoke(null,[]);
+        return (IList) meth!.MakeGenericMethod(typeToResolve).Invoke(null,[])!;
     }
 }
