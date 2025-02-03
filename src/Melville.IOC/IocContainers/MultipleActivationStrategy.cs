@@ -12,8 +12,13 @@ public class MultipleActivationStrategy : IActivationStrategy
 {
     private readonly List<IActivationStrategy> strateies = new List<IActivationStrategy>();
 
-    public MultipleActivationStrategy(IActivationStrategy strategy) => strateies.Add(strategy);
-        
+    public MultipleActivationStrategy(
+        IActivationStrategy strategy1, IActivationStrategy strategy2)
+    {
+        strateies.Add(strategy1);
+        strateies.Add(strategy2);
+    }
+
     private IActivationStrategy? SelectActivator(IBindingRequest bindingRequest) => 
         strateies.LastOrDefault(i => i.ValidForRequest(bindingRequest));
         

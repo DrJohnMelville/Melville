@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Melville.IOC.InjectionPolicies;
@@ -8,7 +9,7 @@ namespace Melville.IOC.IocContainers;
 
 public class BindingRegistry
 {
-    private readonly Dictionary<Type, IActivationStrategy> bindings = new Dictionary<Type, IActivationStrategy>();
+    private readonly ConcurrentDictionary<Type, IActivationStrategy> bindings = new();
     private readonly IInterceptionRule interceptionPolicy;
 
     public BindingRegistry(IInterceptionRule interceptionPolicy)
@@ -46,16 +47,14 @@ public class BindingRegistry
         var existing = bindings.TryGetValue(type, out var e) ? e : null;
         switch (existing, ifNeeded)
         {
-            case (null, _): bindings[type] = ret;
+            case (null, _): bindings[type] = ret; // If nothing registered, register the first one
                 break;
-            case (_, true): break;
-            case (MultipleActivationStrategy mu, _): mu.AddStrategy(ret);
+            case (_, true): break; // if there is a prior  registration, and this is if needed quit
+            case (MultipleActivationStrategy mu, _): mu.AddStrategy(ret); // if there is already a multistrategy, add to it,
                 break;
-            default:
+            default: // otherwise, both existing and new strategies exist -- create a multistrategy to contain them both.
                 //The first clause above tests that existing is not null
-                var newMu = new MultipleActivationStrategy(existing!);
-                newMu.AddStrategy(ret);
-                bindings[type] = newMu;
+                bindings[type] = new MultipleActivationStrategy(existing, ret);
                 break;
         }
     }
