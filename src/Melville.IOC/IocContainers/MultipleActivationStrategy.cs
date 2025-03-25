@@ -51,4 +51,11 @@ public class MultipleActivationStrategy : IActivationStrategy
 
     public SharingScope SharingScope() => strateies.Select(i => i.SharingScope()).Min();
     public bool ValidForRequest(IBindingRequest request) => SelectActivator(request) != null;
+
+    /// <inheritdoc />
+    public IEnumerable<T> FindSubstrategy<T> () where T : class
+    {
+        var ret = strateies.SelectMany(i => i.FindSubstrategy<T>());
+        return this is T casted ? ret.Prepend(casted) : ret;
+    }
 }

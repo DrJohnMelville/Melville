@@ -2,10 +2,18 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.IocContainers;
+
+public enum BindingPriority
+{
+    KeepBoth = 0,
+    KeepOld = 1, // previously IfNeeded
+    KeepNew = 2, 
+}
 
 public class BindingRegistry
 {
@@ -45,6 +53,8 @@ public class BindingRegistry
     private void RegisterActivationStrategy(Type type, IActivationStrategy ret, bool ifNeeded)
     {
         var existing = bindings.TryGetValue(type, out var e) ? e : null;
+        if ((existing?.FindSubstrategy<FinalActivationStrategy>() ?? []).Any())
+            return;
         switch (existing, ifNeeded)
         {
             case (null, _): bindings[type] = ret; // If nothing registered, register the first one

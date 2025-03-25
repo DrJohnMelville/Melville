@@ -40,4 +40,6 @@ public abstract class IPickBindingTarget<TSource>
     public IActivationOptions<TSource> To<TDestination>(ConstructorSelector pickConstructor) 
         where TDestination : TSource =>
         To<TDestination>(i => pickConstructor(i).AsActivationStrategy());
+
+    public IActivationOptions<TSource> Prohibit() => DoBinding(new ProhibitedActivationStrategy());
 }

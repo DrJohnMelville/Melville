@@ -54,6 +54,8 @@ public interface ITypesafeActivationOptions<T>
     IActivationOptions<T> WithParameters(params object[] parameters) => AddActivationStrategy(i =>
         new AddParametersStrategy(i, parameters));
 
+    IActivationOptions<T> AsFinal() => AddActivationStrategy(i=>new FinalActivationStrategy(i));
+
 }
 public interface IActivationOptions<T>:ITypesafeActivationOptions<T>
 {

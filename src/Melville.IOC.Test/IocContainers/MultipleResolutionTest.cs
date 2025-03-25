@@ -182,4 +182,13 @@ public class MultipleResolutionTest
         var ret = sut.Get<IMultipleImplementation>();
         Assert.Equal(3, ((ImplementationList)ret).Impls.Count);
     }
+
+    [Fact]
+    public void CannotOverrideFinalBinding()
+    {
+        sut.Bind<int>().ToConstant(1).AsFinal();
+        sut.Bind<int>().ToConstant(2);
+        sut.Get<IList<int>>().Should().BeEquivalentTo([1]);
+    }
+
 }

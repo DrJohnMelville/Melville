@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
@@ -20,4 +21,7 @@ public interface  IActivationStrategy
         if (ret is null) return;
         accumulator.Add(ret);
     }
+
+    IEnumerable<T> FindSubstrategy<T>() where T:class =>     
+        this is T casted ? [casted] : [];
 }
