@@ -7,22 +7,22 @@ public class BindingConfiguration<TSource>: IPickBindingTarget<TSource>
 {
     private readonly Type targetType;
     protected BindingRegistry Registry { get; }
-    protected bool IfNeeded { get; }
+    protected BindingPriority Priority { get; }
 
-    public BindingConfiguration(BindingRegistry registry, bool ifNeeded):
-        this(typeof(TSource), registry, ifNeeded){}
+    public BindingConfiguration(BindingRegistry registry, BindingPriority priority):
+        this(typeof(TSource), registry, priority){}
         
-    public BindingConfiguration(Type targetType, BindingRegistry registry, bool ifNeeded)
+    public BindingConfiguration(Type targetType, BindingRegistry registry, BindingPriority priority)
     {
         this.targetType = targetType;
         Registry = registry;
-        IfNeeded = ifNeeded;
+        Priority = priority;
     }
 
     public override IActivationOptions<TSource> DoBinding(IActivationStrategy strategy) => 
-        Registry.Bind<TSource>(targetType, strategy, IfNeeded);
+        Registry.Bind<TSource>(targetType, strategy, Priority);
 
     public override IPickBindingTarget<TSource> And<TDestination>() =>
-        new MultiBindingConfiguration<TSource>(Registry, IfNeeded).And<TDestination>();
+        new MultiBindingConfiguration<TSource>(Registry, Priority).And<TDestination>();
 
 }

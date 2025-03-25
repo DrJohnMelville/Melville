@@ -79,7 +79,7 @@ public class GenericActivation
     public IActivationStrategy? GetStrategy(IBindingRequest request, CachedResolutionPolicy cache)
     {
         var finalTargetType = genericTemplate.MakeGenericType(request.DesiredType.GetGenericArguments());
-        var activator = cache.Bind(request.DesiredType, true).DoBinding(
+        var activator = cache.Bind(request.DesiredType, BindingPriority.KeepOld).DoBinding(
             TypeActivatorFactory.CreateTypeActivator(
                 finalTargetType, constructorSelector)
         );

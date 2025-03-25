@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Xunit;
@@ -191,4 +193,18 @@ public class MultipleResolutionTest
         sut.Get<IList<int>>().Should().BeEquivalentTo([1]);
     }
 
+    [Fact]
+    public void OverwiteBindingReplacesPriorBinding()
+    {
+        sut.Bind<int>().ToConstant(1);
+        sut.OverwriteBinding<int>().ToConstant(2);
+        sut.Get<IList<int>>().Should().BeEquivalentTo([2]);
+    }
+    [Fact]
+    public void CannotOverWriteFinalBinding()
+    {
+        sut.Bind<int>().ToConstant(1).AsFinal();
+        sut.Invoking(i => i.OverwriteBinding<int>().ToConstant(2))
+            .Should().Throw<IocException>();
+    }
 }

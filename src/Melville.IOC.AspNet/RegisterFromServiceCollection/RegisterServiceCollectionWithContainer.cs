@@ -73,7 +73,7 @@ public static class RegisterServiceCollectionWithContainer
     private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
     {
         return container.ConfigurePolicy<IPickBindingTargetSource>()
-            .Bind(service.ServiceType, false);
+            .Bind(service.ServiceType, BindingPriority.KeepBoth);
     }
 
     private static ITypesafeActivationOptions<object> CreateActivator(IPickBindingTarget<object> target, ServiceDescriptor service) =>
