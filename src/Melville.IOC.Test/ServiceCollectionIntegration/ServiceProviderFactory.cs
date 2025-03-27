@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Melville.IOC.AspNet.RegisterFromServiceCollection;
 using Melville.IOC.BindingRequests;
@@ -51,6 +53,29 @@ public class ServiceProviderFactory
 
         isService.IsService(typeof(ISimpleObject)).Should().BeTrue();
         isService.IsService(typeof(ISimpleObject2)).Should().BeFalse();
+    }
+
+    [Fact]
+    public void HandleSpfDispose()
+    {
+        var sc = new ServiceCollection();
+        var disposables = new List<Mock<IDisposable>>();
+        sc.AddScoped<IDisposable>(i =>
+        {
+            var mock = new Mock<IDisposable>();
+            disposables.Add(mock);
+            return mock.Object;
+        });
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
+        var scope = prov.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        var v1 = scope.ServiceProvider.GetRequiredService<IDisposable>();
+        var v2 = scope.ServiceProvider.GetRequiredService<IDisposable>();
+        v1.Should().BeSameAs(v2);
+        disposables.Should().HaveCount(1);
+        disposables.ForEach(i => i.Verify(j => j.Dispose(), Times.Never));
+        scope.Dispose();
+        disposables.ForEach(i => i.Verify(j => j.Dispose(), Times.Once));
+
     }
 
     [Fact]

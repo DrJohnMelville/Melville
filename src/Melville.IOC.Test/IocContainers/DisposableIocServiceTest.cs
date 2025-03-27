@@ -68,7 +68,7 @@ public class DisposableIocServiceTest
         scope.Dispose();
         Assert.Equal(disposes, obj.DisposeCount);
     }
-        
+
     [Theory]
     [InlineData(false, 0)]
     [InlineData(true, 1)]

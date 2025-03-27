@@ -65,7 +65,7 @@ public class ServiceProviderAdapter :
     }
 }
 
-public partial class ScopeWrapper (IIocService inner, ServiceProviderAdapter proxy) : IIocService
+public partial class ScopeWrapper (IIocService inner, ServiceProviderAdapter proxy) : IIocService, IDisposable
 {
     public bool CanGet(IBindingRequest request)
     {
@@ -93,4 +93,10 @@ public partial class ScopeWrapper (IIocService inner, ServiceProviderAdapter pro
     }
 
     public IIocDebugger Debugger => inner.Debugger;
+
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        (inner as IDisposable)?.Dispose();
+    }
 }
