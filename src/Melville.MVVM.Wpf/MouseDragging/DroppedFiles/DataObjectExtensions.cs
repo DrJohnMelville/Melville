@@ -1,4 +1,4 @@
-﻿using  System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,99 +6,103 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows;
+using Windows.Win32.UI.Shell;
 using Melville.FileSystem;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
+using System.Xml.Linq;
+using Windows.Win32;
+using IDataObject = System.Windows.IDataObject;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
 public static class DataObjectReaderExtensions
 {
-  public const int FileGroupDescriptorNameLocation = 75;
+    public const int FileGroupDescriptorNameLocation = 75;
 
-  public static IEnumerable<IFile> GetDroppedFiles(this System.Windows.IDataObject item, Func<string, IFile> fileFromDiskPath)
-  {
-    var fileNames = (item.GetData(DataFormats.FileDrop) as string[]) ?? new string[0];
-    return fileNames.Length > 0 ? fileNames.Select(fileFromDiskPath) : item.GetFileDescriptorFiles();
-  }
+    public static IEnumerable<IFile> GetDroppedFiles(this System.Windows.IDataObject item,
+        Func<string, IFile> fileFromDiskPath) =>
+        item.GetData(DataFormats.FileDrop) is string[]{Length:>0} fileNames ?
+            fileNames.Select(fileFromDiskPath) : 
+            item.GetFileDescriptorFiles();
 
-  public static IEnumerable<IFile> GetDroppedFiles(this IDropInfo item, Func<string, IFile> fileFromDiskPath) => item.Item.GetDroppedFiles(fileFromDiskPath);
-
-
-  public static IEnumerable<IFile> GetFileDescriptorFiles(this System.Windows.IDataObject data)
-  {
-    if (data == null || !data.GetDataPresent(WideFileGroupDescriptorFormat)) return new IFile[0];
-    return NamesWithPositions(data).Select(i => new LazyStreamFile(i.Item2, () => GetFileByIndex(data, i.Item1)));
-  }
+    public static IEnumerable<IFile> GetDroppedFiles(
+        this IDropInfo item, Func<string, IFile> fileFromDiskPath) =>
+        item.Item.GetDroppedFiles(fileFromDiskPath);
 
 
-  #region FileDescriptorStream Methods
-  private static IEnumerable<Tuple<int, string>> NamesWithPositions(this System.Windows.IDataObject target)
-  {
-    var files = InnerGetNamesWithPosition(target,
-      WideFileGroupDescriptorFormat, Encoding.Unicode, 0x250).ToArray();
-    if (files.Any())
+    public static IEnumerable<IFile> GetFileDescriptorFiles(this System.Windows.IDataObject data)
     {
-      return files;
+        return NamesWithPositions(data)
+            .Select((name, index) => new LazyStreamFile(name, () => GetFileByIndex(data, index)));
     }
-    return InnerGetNamesWithPosition(target,
-      NarrowFileGroupDescriptorFormat, Encoding.ASCII, 0x14C);
-  }
-  private static IEnumerable<Tuple<int, string>> InnerGetNamesWithPosition(System.Windows.IDataObject target,
-    string groupDescriptorTitle, Encoding encoding, int recordSize)
-  {
-    using (var inputStream = (MemoryStream)target.GetData(
-             groupDescriptorTitle))
-    {
-      int count = inputStream.ReadByte();
 
-      for (int i = 0; i < count; i++)
-      {
-        var buffer = new byte[recordSize];
-        int count1 = buffer.Length;
-        inputStream.FillBuffer(buffer, 0, count1);
-        var end = FileGroupDescriptorNameLocation;
-        while (buffer[end] != 0 || buffer[end + 1] != 0)
+
+    #region FileDescriptorStream Methods
+
+    private static string[] NamesWithPositions(
+        this System.Windows.IDataObject target) =>
+        GetWideFileNames(target) is { Length: > 0 } ret ? ret : GetNarrowFileNames(target);
+
+    private static string[] GetWideFileNames(System.Windows.IDataObject target)
+    {
+        var src = ReadFileNamesBlob(target, WideFileGroupDescriptorFormat);
+        if (src.Length == 0) return [];
+        var record = MemoryMarshal.Cast<byte, FILEGROUPDESCRIPTORW>(src)[0].Files();
+        return GetFileNames(record);
+    }
+ 
+    private static string[] GetNarrowFileNames(System.Windows.IDataObject target)
+    {
+        var src = ReadFileNamesBlob(target, NarrowFileGroupDescriptorFormat);
+        if (src.Length == 0) return [];
+        var record = MemoryMarshal.Cast<byte, FILEGROUPDESCRIPTORA>(src)[0].Files();
+        return GetFileNames(record);
+    }
+
+    private static Span<byte> ReadFileNamesBlob(IDataObject target, string format)
+    {
+        target.GetData(format);
+        using var inputStream = (MemoryStream?)target.GetData(format);
+        return (inputStream?.ToArray() ?? []).AsSpan();
+    }
+
+    private static string[] GetFileNames<T>(ReadOnlySpan<T> record) where T:IFileDescriptor
+    {
+        var ret = new string[record.Length];
+        for (int i = 0; i < ret.Length; i++)
         {
-          end += 2;
+            ret[i] =record[i].NameAsString();
         }
-        var retStr = encoding.GetString(buffer, FileGroupDescriptorNameLocation,
-          end - FileGroupDescriptorNameLocation);
-        yield return Tuple.Create(i, retStr);
-      }
+        return ret;
     }
-  }
 
-  private static class NativeMethods
-  {
-    [DllImport("User32.dll", CharSet = CharSet.Unicode)]
-    public static extern uint RegisterClipboardFormat(string lpszFormat);
-  }
-  // this must be a cast and not a ConvertTo call because we want an unchecked
-  // unsigned to signed conversion
-  private static readonly short FileContentIndex =
-    (short)(NativeMethods.RegisterClipboardFormat(FileContentsDescriptorFormat));
-  public static Stream GetFileByIndex(System.Windows.IDataObject target, int position)
-  {
-    var comDataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)target;
-    FORMATETC fmtCC = CreateStructToRequestStream(position);
-    STGMEDIUM result = new STGMEDIUM();
-    comDataObject.GetData(ref fmtCC, out result);
-    return result.ExtractFileStream();
-  }
-  public static FORMATETC CreateStructToRequestStream(int position)
-  {
-    return new FORMATETC
+    // this must be a cast and not a ConvertTo call because we want an unchecked
+    // unsigned to signed conversion
+    private static readonly short FileContentIndex =
+        (short)(PInvoke.RegisterClipboardFormat(FileContentsDescriptorFormat));
+
+    public static Stream GetFileByIndex(System.Windows.IDataObject target, int position)
     {
-      cfFormat = FileContentIndex,
-      dwAspect = DVASPECT.DVASPECT_CONTENT,
-      lindex = position,
-      ptd = IntPtr.Zero,
-      tymed = TYMED.TYMED_ISTREAM
-    };
-  }
-  #endregion
+        var comDataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)target;
+        FORMATETC fmtCC = CreateStructToRequestStream(position);
+        STGMEDIUM result = new STGMEDIUM();
+        comDataObject.GetData(ref fmtCC, out result);
+        return result.ExtractFileStream();
+    }
 
-  private const string WideFileGroupDescriptorFormat = "FileGroupDescriptorW";
-  private const string NarrowFileGroupDescriptorFormat = "FileGroupDescriptor";
-  private const string FileContentsDescriptorFormat = "FileContents";
+    public static FORMATETC CreateStructToRequestStream(int position) =>
+        new()
+        {
+            cfFormat = FileContentIndex,
+            dwAspect = DVASPECT.DVASPECT_CONTENT,
+            lindex = position,
+            ptd = IntPtr.Zero,
+            tymed = TYMED.TYMED_ISTREAM
+        };
+
+    #endregion
+
+    public const string WideFileGroupDescriptorFormat = "FileGroupDescriptorW";
+    public const string NarrowFileGroupDescriptorFormat = "FileGroupDescriptor";
+    private const string FileContentsDescriptorFormat = "FileContents";
 }
