@@ -2,24 +2,22 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
 using System.Windows;
 using Windows.Win32.UI.Shell;
 using Melville.FileSystem;
 using Melville.MVVM.Wpf.MouseDragging.Drop;
-using System.Xml.Linq;
 using Windows.Win32;
+using Melville.Hacks.Reflection;
 using IDataObject = System.Windows.IDataObject;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
 public static class DataObjectReaderExtensions
 {
-    public const int FileGroupDescriptorNameLocation = 75;
-
-    public static IEnumerable<IFile> GetDroppedFiles(this System.Windows.IDataObject item,
+    public static IEnumerable<IFile> GetDroppedFiles(this IDataObject item,
         Func<string, IFile> fileFromDiskPath) =>
         item.GetData(DataFormats.FileDrop) is string[]{Length:>0} fileNames ?
             fileNames.Select(fileFromDiskPath) : 
@@ -30,7 +28,7 @@ public static class DataObjectReaderExtensions
         item.Item.GetDroppedFiles(fileFromDiskPath);
 
 
-    public static IEnumerable<IFile> GetFileDescriptorFiles(this System.Windows.IDataObject data)
+    public static IEnumerable<IFile> GetFileDescriptorFiles(this IDataObject data)
     {
         return NamesWithPositions(data)
             .Select((name, index) => new LazyStreamFile(name, () => GetFileByIndex(data, index)));
@@ -40,20 +38,20 @@ public static class DataObjectReaderExtensions
     #region FileDescriptorStream Methods
 
     private static string[] NamesWithPositions(
-        this System.Windows.IDataObject target) =>
+        this IDataObject target) =>
         GetWideFileNames(target) is { Length: > 0 } ret ? ret : GetNarrowFileNames(target);
 
-    private static string[] GetWideFileNames(System.Windows.IDataObject target)
+    private static string[] GetWideFileNames(IDataObject target)
     {
-        var src = ReadFileNamesBlob(target, WideFileGroupDescriptorFormat);
+        var src = ReadFileNamesBlob(target, StreamingFileClipboardFormats.WideGroup);
         if (src.Length == 0) return [];
         var record = MemoryMarshal.Cast<byte, FILEGROUPDESCRIPTORW>(src)[0].Files();
         return GetFileNames(record);
     }
  
-    private static string[] GetNarrowFileNames(System.Windows.IDataObject target)
+    private static string[] GetNarrowFileNames(IDataObject target)
     {
-        var src = ReadFileNamesBlob(target, NarrowFileGroupDescriptorFormat);
+        var src = ReadFileNamesBlob(target, StreamingFileClipboardFormats.NarrowGroup);
         if (src.Length == 0) return [];
         var record = MemoryMarshal.Cast<byte, FILEGROUPDESCRIPTORA>(src)[0].Files();
         return GetFileNames(record);
@@ -79,19 +77,30 @@ public static class DataObjectReaderExtensions
     // this must be a cast and not a ConvertTo call because we want an unchecked
     // unsigned to signed conversion
     private static readonly short FileContentIndex =
-        (short)(PInvoke.RegisterClipboardFormat(FileContentsDescriptorFormat));
+        (short)DataFormats.GetDataFormat(StreamingFileClipboardFormats.FileContents).Id;
 
-    public static Stream GetFileByIndex(System.Windows.IDataObject target, int position)
+    public static Stream GetFileByIndex(IDataObject target, int position)
     {
-        var comDataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)target;
+         return target switch
+        {
+            System.Windows.DataObject swdo => 
+                GetFromDataObject(swdo, position),
+            System.Runtime.InteropServices.ComTypes.IDataObject comDataObject => 
+                ExtractFromComType(position, comDataObject),
+            _=> target.GetData(StreamingFileClipboardFormats.FileContents) as Stream??
+                throw new ArgumentNullException("Was not a stream")
+        };
+    }
+
+    private static Stream ExtractFromComType(int position, System.Runtime.InteropServices.ComTypes.IDataObject comDataObject)
+    {
         FORMATETC fmtCC = CreateStructToRequestStream(position);
         STGMEDIUM result = new STGMEDIUM();
         comDataObject.GetData(ref fmtCC, out result);
         return result.ExtractFileStream();
     }
 
-    public static FORMATETC CreateStructToRequestStream(int position) =>
-        new()
+    private static FORMATETC CreateStructToRequestStream(int position) => new()
         {
             cfFormat = FileContentIndex,
             dwAspect = DVASPECT.DVASPECT_CONTENT,
@@ -100,9 +109,22 @@ public static class DataObjectReaderExtensions
             tymed = TYMED.TYMED_ISTREAM
         };
 
-    #endregion
+    private static Stream GetFromDataObject(DataObject swdo, int position)
+    {
+        var inner = InnerData(swdo);
+        return PrivateGetData(inner, StreamingFileClipboardFormats.FileContents, true,
+            DVASPECT.DVASPECT_CONTENT, position) as Stream ??
+               throw new ArgumentNullException("Returned stream is null");
+    }
 
-    public const string WideFileGroupDescriptorFormat = "FileGroupDescriptorW";
-    public const string NarrowFileGroupDescriptorFormat = "FileGroupDescriptor";
-    private const string FileContentsDescriptorFormat = "FileContents";
+    [UnsafeAccessor(UnsafeAccessorKind.Field, Name= "_innerData")]
+    private static extern ref IDataObject InnerData(DataObject target);
+
+#warning -- in .net 10 we will be able to use an UnsafeAccessor for this method
+    private static object
+        PrivateGetData(object rec, string format, bool autoConvert, DVASPECT aspect, int index)=>
+        rec.Call("GetData", format, autoConvert, aspect, index) ?? 
+        throw new ArgumentNullException("Could not return a Data object");
+
+    #endregion
 }

@@ -1,4 +1,10 @@
 ﻿FILEGROUPDESCRIPTORW
 FILEGROUPDESCRIPTORA
 
-RegisterClipboardFormat
+GetClipboardFormatName
+
+GlobalLock
+GlobalUnlock
+GlobalAlloc
+GlobalSize
+GlobalFree

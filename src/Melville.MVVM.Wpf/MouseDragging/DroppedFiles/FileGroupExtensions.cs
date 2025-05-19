@@ -33,6 +33,16 @@ internal partial struct FILEDESCRIPTORW: IFileDescriptor
     private readonly ReadOnlySpan<char> NonZeros(ReadOnlySpan<char> asReadOnlySpan) =>
         (asReadOnlySpan.IndexOf((char)0) is var index and >= 0) ? 
             asReadOnlySpan[..index] : asReadOnlySpan;
+
+    public void SetData(string fileName)
+    {
+        dwFlags = 0x8000_0000;
+        var span = cFileName.AsSpan();
+        span.Fill((char)0);
+        if (fileName.Length > span.Length)
+            throw new InvalidOperationException("File name is too long to drag.");
+        fileName.AsSpan().CopyTo(span);
+    }
 }
 
 internal partial struct FILEDESCRIPTORA: IFileDescriptor
@@ -45,4 +55,14 @@ internal partial struct FILEDESCRIPTORA: IFileDescriptor
     private readonly ReadOnlySpan<byte> NonZeros(ReadOnlySpan<byte> asReadOnlySpan) =>
         (asReadOnlySpan.IndexOf((byte)0) is var index and >= 0) ? 
             asReadOnlySpan[..index] : asReadOnlySpan;
+
+    public void SetData(string fileName)
+    {
+        dwFlags = 0x8000_0000;
+        var span = MemoryMarshal.Cast<CHAR, byte>(cFileName.AsSpan());
+        span.Fill((byte)0);
+        if (fileName.Length > span.Length)
+            throw new InvalidOperationException("File name is too long to drag.");
+        Encoding.UTF8.GetBytes(fileName.AsSpan(), span);
+    }
 }
