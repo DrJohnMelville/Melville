@@ -22,6 +22,10 @@ public partial class DDFileViewModel
 
     public async Task DropItems(IDropAction drop)
     {
+        foreach (var format in drop.Item.GetFormats())
+        {
+            UdpConsole.WriteLine($"Received Type: {format}");
+        }
         var diskConnector = new DiskFileSystemConnector();
             foreach (var file in drop.Item.GetDroppedFiles(diskConnector.FileFromPath))
             {

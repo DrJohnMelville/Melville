@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Windows.Win32;
@@ -11,13 +12,15 @@ namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
 public readonly struct ClipboardItem(FORMATETC format, object data, bool release)
 {
-    public string FormatName => FormatNamer.NameForFormat(format.cfFormat);
     public void WriteFormat(ref FORMATETC target)
     {
         target = format;
+        target.lindex = -1;
     }
 
-    public bool Matches(ref FORMATETC candidate)
+    public short Format() => format.cfFormat;
+
+    public bool Matches(in FORMATETC candidate)
     {
         return candidate.cfFormat == format.cfFormat &&
                ((candidate.dwAspect | format.dwAspect) is not 0) &&
@@ -26,20 +29,20 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
                ((candidate.tymed | format.tymed) is not 0);
     }
 
-    public void ReturnValue(out STGMEDIUM medium)
+    public void ReturnValue(in FORMATETC formatetc, out STGMEDIUM medium)
     {
         switch (data)
         {
             case String str: WriteStringTo(str, out medium); break;
             case byte[] bytes: WriteBytesTo(bytes, out medium); break;
-            case Stream stream: WriteStreamTo(stream, out medium); break;
+            case Stream stream: WriteStreamTo(stream, formatetc.tymed, out medium); break;
             default: throw new NotImplementedException("cannot convert to hglobal");
         }
     }
 
     private void WriteStringTo(string str, out STGMEDIUM medium)
     {
-        var handle = HGlobalUtils.CreateMovableHGlobal((str.Length + 1)*2, target =>
+        var handle = CreateMovableHGlobal((str.Length + 1)*2, target =>
             {
                 var bytes = MemoryMarshal.Cast<char, byte>(str.AsSpan());
                 bytes.CopyTo(target);
@@ -51,17 +54,43 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
 
     private void WriteBytesTo(byte[] bytes, out STGMEDIUM medium)
     {
-        var handle = HGlobalUtils.CreateMovableHGlobal(bytes.Length, target=>
+        var handle = CreateMovableHGlobal(bytes.Length, target=>
             bytes.AsSpan().CopyTo(target));
         CreateStgMediumForHGlobal(handle, out medium);
     }
 
-    private void WriteStreamTo(Stream data, out STGMEDIUM medium)
+    private void WriteStreamTo(Stream data, TYMED tymed, out STGMEDIUM medium)
     {
-        if (data.Length == 0) throw new NotSupportedException("streams must declare their length");
-        data.Seek(0, SeekOrigin.Begin);
-        var handle = HGlobalUtils.CreateMovableHGlobal((int)data.Length, data.ReadExactly);
-        CreateStgMediumForHGlobal(handle, out medium);
+        if ((tymed & TYMED.TYMED_ISTREAM) == 0)
+        {
+            TryWriteAsHGlobal(data, tymed, out medium);
+            return;
+        }
+        var wrapper = data.WrapWithComIStream();
+        var handle = Marshal.GetIUnknownForObject(wrapper);
+        medium = new()
+        {
+            tymed = TYMED.TYMED_ISTREAM,
+            unionmember = handle,
+            pUnkForRelease = handle
+        };
+    }
+
+    private void TryWriteAsHGlobal(Stream stream, TYMED tymed, out STGMEDIUM medium)
+    {
+        if ((tymed & TYMED.TYMED_HGLOBAL) == 0)
+            throw new NotImplementedException("Cann only render to stream or hglobal");
+        if (stream.Length is 0)
+        {
+            var temp = new MemoryStream();
+            stream.CopyTo(temp);
+            stream.Dispose();
+            TryWriteAsHGlobal(temp, tymed, out medium);
+            return;
+        }
+        var bytes = new byte[stream.Length];
+        stream.ReadExactly(bytes.AsSpan());
+        WriteBytesTo(bytes, out medium);
     }
 
     private static void CreateStgMediumForHGlobal(nint global, out STGMEDIUM medium)
@@ -73,11 +102,8 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
             pUnkForRelease = null
         };
     }
-}
-
-public static class HGlobalUtils
-{
-    public static unsafe nint CreateMovableHGlobal(int size, Action<Span<byte>> fill)
+    
+    private static unsafe nint CreateMovableHGlobal(int size, Action<Span<byte>> fill)
     {
         var handle = PInvoke.GlobalAlloc(GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (uint)size);
         var ptr = PInvoke.GlobalLock(handle);
@@ -91,17 +117,5 @@ public static class HGlobalUtils
             PInvoke.GlobalUnlock(handle);
         }
         return handle;
-    }
-}
-
-public static class FormatNamer
-{
-    public static string NameForFormat(short format)
-    {
-        var buffer = new char[200];
-        var name = PInvoke.GetClipboardFormatName((ushort)format, buffer);
-        var asSpan = buffer.AsSpan();
-        asSpan = asSpan.Slice(0, asSpan.IndexOf('\0'));
-        return asSpan.ToString();
     }
 }

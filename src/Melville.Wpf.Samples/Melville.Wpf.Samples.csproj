@@ -5,6 +5,7 @@
         <TargetFramework>net9.0-windows10.0.18362.0</TargetFramework>
         <UseWPF>true</UseWPF>
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

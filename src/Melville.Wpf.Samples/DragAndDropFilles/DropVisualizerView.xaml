@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.DragAndDropFilles.DropVisualizerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.DragAndDropFilles"
+             xmlns:drop="clr-namespace:Melville.MVVM.Wpf.MouseDragging.Drop;assembly=Melville.MVVM.Wpf"
+             xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid drop:DropBinding.DropMethod="DropItems" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock FontSize="20" TextAlignment="Center">Drag here to log the drop operation</TextBlock>
+        <Grid wpfHacks:VisibilityHack.CollapseIfNull="{Binding Items}" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <DataGrid ItemsSource="{Binding Items}"></DataGrid>
+            </ScrollViewer>
+            <TextBlock Grid.Row="1" FontSize="20" TextAlignment="Center" Background="Green"
+                       MouseDown="{eventBindings:EventBinding StartDrag}">
+                Drag This Object
+            </TextBlock>
+        </Grid>
+        <TextBlock Grid.Row="2" FontSize="20" TextAlignment="Center" Background="Green"
+                   MouseDown="{eventBindings:EventBinding StartClipboardDrag}">
+            Drag The Clipboard
+        </TextBlock>
+    </Grid>
+</UserControl>

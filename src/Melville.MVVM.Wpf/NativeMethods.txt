@@ -1,8 +1,6 @@
 ﻿FILEGROUPDESCRIPTORW
 FILEGROUPDESCRIPTORA
 
-GetClipboardFormatName
-
 GlobalLock
 GlobalUnlock
 GlobalAlloc

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Windows.Forms;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
-internal class ComFormatEnumerator(List<ClipboardItem> items): IEnumFORMATETC
+internal class ComFormatEnumerator(ClipboardItem[] items): IEnumFORMATETC
 {
     private int position = 0;
 
@@ -21,11 +22,11 @@ internal class ComFormatEnumerator(List<ClipboardItem> items): IEnumFORMATETC
     /// <inheritdoc />
     public int Next(int celt, FORMATETC[] rgelt, int[]? pceltFetched)
     {
-        var source = CollectionsMarshal.AsSpan(items);
-        var count = Math.Min(celt, source.Length-position);
+        var count = Math.Min(celt, items.Length-position);
         for (int i = 0; i < count; i++)
         {
-            source[position++].WriteFormat(ref rgelt[i]);
+            items[position++].WriteFormat(ref rgelt[i]);
+            UdpConsole.WriteLine($"Enumerate", rgelt[i].cfFormat);
         }
 
         if (pceltFetched is not null) pceltFetched[0] = count;
@@ -43,7 +44,22 @@ internal class ComFormatEnumerator(List<ClipboardItem> items): IEnumFORMATETC
     /// <inheritdoc />
     public int Skip(int celt)
     {
-        position = Math.Min(position + celt, items.Count);
+        position = Math.Min(position + celt, items.Length);
         return 0;
+    }
+}
+
+public static class WrapIEnumFormatEtc
+{
+    public static IEnumerable<FORMATETC> Wrap(this IEnumFORMATETC items)
+    {
+        var fetched = new int[1];
+        var item = new FORMATETC[1];
+        while (true)
+        {
+            items.Next(1, item, fetched);
+            if (fetched[0] != 1) yield break;
+            yield return item[0];
+        }
     }
 }

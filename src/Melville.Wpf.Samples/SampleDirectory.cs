@@ -1,4 +1,5 @@
-﻿using Melville.Wpf.Samples.ApplicationBinding;
+﻿using System.Windows.Controls;
+using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.CalendarControls;
 using Melville.Wpf.Samples.DialogBox;
@@ -22,7 +23,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<DDFileViewModel>();
+        SearchTreeForSample<DropVisualizerViewModel>();
 
     public SampleDirectory()
     {
@@ -53,7 +54,8 @@ public class SampleDirectory : SampleDirectoryDsl
                 Page<MouseClickViewModel>("Mouse Clicks"),
                 Page<TreeDraggingViewModel>("Tree Dragging"),
                 Page<ParamBindingViewModel>("Parameter Binding"),
-                Page<DDFileViewModel>("Drag and Drop Virtual Files")
+                Page<DDFileViewModel>("Drag and Drop Virtual Files"),
+                Page<DropVisualizerViewModel>("Visualize the data from a drop operation")
             ),
             Node("Statistics",
                 Page<LinqGraphViewModel>("LinqPad Graphics Module")),
