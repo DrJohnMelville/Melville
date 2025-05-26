@@ -24,9 +24,7 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
     {
         return candidate.cfFormat == format.cfFormat &&
                ((candidate.dwAspect | format.dwAspect) is not 0) &&
-               (candidate.lindex == format.lindex || format.lindex is -1 || candidate.lindex is -1) &&
-               candidate.ptd == format.ptd &&
-               ((candidate.tymed | format.tymed) is not 0);
+               (candidate.lindex == format.lindex || format.lindex is -1 || candidate.lindex is -1);
     }
 
     public void ReturnValue(in FORMATETC formatetc, out STGMEDIUM medium)
@@ -34,7 +32,7 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
         switch (data)
         {
             case String str: WriteStringTo(str, out medium); break;
-            case byte[] bytes: WriteBytesTo(bytes, out medium); break;
+            case byte[] bytes: WriteBytesTo(bytes, formatetc.tymed, out medium); break;
             case Stream stream: WriteStreamTo(stream, formatetc.tymed, out medium); break;
             default: throw new NotImplementedException("cannot convert to hglobal");
         }
@@ -52,7 +50,22 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
         CreateStgMediumForHGlobal(handle, out medium);
     }
 
-    private void WriteBytesTo(byte[] bytes, out STGMEDIUM medium)
+    private void WriteBytesTo(byte[] bytes, TYMED tymed, out STGMEDIUM medium)
+    {
+        switch (tymed)
+        {
+            case var _ when tymed.HasFlag(TYMED.TYMED_HGLOBAL):
+                WriteAsHGlobal(bytes, out medium);
+                return;
+            case var _ when tymed.HasFlag(TYMED.TYMED_ISTREAM):
+                WriteAsStream(new MemoryStream(bytes), out medium);
+                return;
+            default:
+                throw new NotImplementedException("Cannot render in an acceptable type");
+        }
+    }
+
+    private static void WriteAsHGlobal(byte[] bytes, out STGMEDIUM medium)
     {
         var handle = CreateMovableHGlobal(bytes.Length, target=>
             bytes.AsSpan().CopyTo(target));
@@ -61,36 +74,44 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
 
     private void WriteStreamTo(Stream data, TYMED tymed, out STGMEDIUM medium)
     {
-        if ((tymed & TYMED.TYMED_ISTREAM) == 0)
+        switch (tymed)
         {
-            TryWriteAsHGlobal(data, tymed, out medium);
-            return;
+            case var _ when tymed.HasFlag(TYMED.TYMED_ISTREAM):
+                WriteAsStream(data, out medium);
+                return;
+            case var _ when tymed.HasFlag(TYMED.TYMED_HGLOBAL):
+                WriteAsHGlobal(data, out medium);
+                return;
+            default:
+                throw new NotImplementedException("Cannot render in an acceptable type");
         }
+    }
+
+    private static void WriteAsStream(Stream data, out STGMEDIUM medium)
+    {
         var wrapper = data.WrapWithComIStream();
         var handle = Marshal.GetIUnknownForObject(wrapper);
         medium = new()
         {
             tymed = TYMED.TYMED_ISTREAM,
             unionmember = handle,
-            pUnkForRelease = handle
+            pUnkForRelease = null
         };
     }
 
-    private void TryWriteAsHGlobal(Stream stream, TYMED tymed, out STGMEDIUM medium)
+    private void WriteAsHGlobal(Stream stream, out STGMEDIUM medium)
     {
-        if ((tymed & TYMED.TYMED_HGLOBAL) == 0)
-            throw new NotImplementedException("Cann only render to stream or hglobal");
         if (stream.Length is 0)
         {
             var temp = new MemoryStream();
             stream.CopyTo(temp);
             stream.Dispose();
-            TryWriteAsHGlobal(temp, tymed, out medium);
+            WriteAsHGlobal(temp.ToArray(), out medium);
             return;
         }
         var bytes = new byte[stream.Length];
         stream.ReadExactly(bytes.AsSpan());
-        WriteBytesTo(bytes, out medium);
+        WriteAsHGlobal(bytes, out medium);
     }
 
     private static void CreateStgMediumForHGlobal(nint global, out STGMEDIUM medium)

@@ -26,7 +26,6 @@ internal class ComFormatEnumerator(ClipboardItem[] items): IEnumFORMATETC
         for (int i = 0; i < count; i++)
         {
             items[position++].WriteFormat(ref rgelt[i]);
-            UdpConsole.WriteLine($"Enumerate", rgelt[i].cfFormat);
         }
 
         if (pceltFetched is not null) pceltFetched[0] = count;

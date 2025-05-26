@@ -50,11 +50,12 @@ public partial class DropVisualizerViewModel()
         return DragDropEffects.Copy;
     }
 
-    public void StartDrag(IMouseClickReport mcr)
+    public void StartDrag(IMouseClickReport mcr, [FromServices] DDInterceptor interceptor)
     {
         if (mcr.ClickCount() > 1) return;
         mcr.DragSource().DragTarget(0.5)
-            .Drag(DataToDrag2, DragDropEffects.Copy);
+            .Drag(interceptor.BeginIntercept(DataToDrag2()), DragDropEffects.Copy,
+                _=>interceptor.ShowTrace());
     }
 
     private DataObject DataToDrag2()
@@ -108,10 +109,11 @@ public partial class DataFormatViewModel
         try
         {
             var fmt = format with { tymed = SelectFormat(), lindex = index};
+            if (innerDo.QueryGetData(ref fmt) is not 0) return null;
             innerDo.GetData(ref fmt, out var medium);
             return medium.ConsumeToByteArray();
         }
-        catch (ArgumentException )
+        catch (Exception )
         {
             return null;
         }

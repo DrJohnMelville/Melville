@@ -23,31 +23,8 @@ internal class NativeConstants
     public const int S_OK = 0;
     public const int S_FALSE = 1;
     public const int DATA_S_SAMEFORMATETC = unchecked((int)0x00040130);
-    public const int DV_E_FORMATETC = -2147221404;
-}
-
-public static class UdpConsole
-{
-    private static UdpClient? client = null;
-    private static UdpClient Client
-    {
-        get
-        {
-            client ??= new UdpClient();
-            return client;
-        }
-    }
-
-    public static string WriteLine(string str)
-    {
-        var bytes = Encoding.UTF8.GetBytes(str);
-        Client.Send(bytes, bytes.Length, "127.0.0.1", 15321);
-        return str;
-    }
-
-    public static string WriteLine(string str, int code) =>
-        WriteLine($"{str} {DataFormats.GetFormat(code).Name}:  {code}");
-
+    public const int DV_E_FORMATETC = unchecked((int)0x80040064);
+    public const int DV_E_CLIPFORMAT = unchecked((int)0x8004006A);
 }
 
 public class ComDataObject : System.Runtime.InteropServices.ComTypes.IDataObject
@@ -96,14 +73,12 @@ public class ComDataObject : System.Runtime.InteropServices.ComTypes.IDataObject
             ref var item = ref items[i];
             if (item.Matches(ref format))
             {
-                UdpConsole.WriteLine($"Succeed ", format.cfFormat);
                 item.ReturnValue(in format, out medium);
                 return;
             }
         }
 
-        UdpConsole.WriteLine($"Fail ", format.cfFormat);
-
+        
         medium = new STGMEDIUM()
         {
             tymed = TYMED.TYMED_NULL
@@ -125,21 +100,16 @@ public class ComDataObject : System.Runtime.InteropServices.ComTypes.IDataObject
             ref var item = ref items[i];
             if (item.Matches(ref format))
             {
-                UdpConsole.WriteLine($"Query Succeed ", format.cfFormat);
                 return NativeConstants.S_OK;
             }
         }
 
-        UdpConsole.WriteLine($"Query Fail ", format.cfFormat);
-        return NativeConstants.DV_E_FORMATETC;
+        return format.cfFormat == 15 ? NativeConstants.DV_E_CLIPFORMAT: 1;
     }
 
     /// <inheritdoc />
-    public unsafe void SetData(ref FORMATETC formatIn, ref STGMEDIUM medium, bool release)
-    {
-        UdpConsole.WriteLine($"SetData from client ", formatIn.cfFormat);
-        this.SetData(formatIn, medium.ConsumeToByteArray());
-    }
+    public unsafe void SetData(ref FORMATETC formatIn, ref STGMEDIUM medium, bool release) => 
+        SetData(formatIn, medium.ConsumeToByteArray());
 
     public void SetData(in FORMATETC format, object item)
     {

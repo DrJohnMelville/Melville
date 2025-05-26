@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
@@ -145,6 +146,7 @@ public static class StgMediumExtension
             finally
             {
                 ArrayPool<byte>.Shared.Return(buffer);
+                TryCloseInnerStream();
             }
         }
 
@@ -160,7 +162,12 @@ public static class StgMediumExtension
                 Marshal.WriteInt32(pcbRead, bytesRead);
             }
 
-            if (bytesRead < cb) CloseInnerStream();
+            TryCloseInnerStream();
+        }
+
+        private void TryCloseInnerStream()
+        {
+          //  if (stream.Position == stream.Length && stream.Length > 0) CloseInnerStream();
         }
 
         private void CloseInnerStream()
@@ -196,8 +203,11 @@ public static class StgMediumExtension
             {
                 cbSize = stream.Length,
                 type = 2,
-                grfMode = 0,
-
+                grfMode = 32,
+                reserved = 33,
+                atime = DateTime.Now.ToOleFileTime(),
+                ctime = DateTime.Now.ToOleFileTime(),
+                mtime = DateTime.Now.ToOleFileTime(),
             };
         }
 
@@ -207,5 +217,18 @@ public static class StgMediumExtension
 
         /// <inheritdoc />
         public void Write(byte[] pv, int cb, IntPtr pcbWritten) => throw new NotSupportedException();
+    }
+}
+
+public static class FileTimeFactory
+{
+    public static FILETIME ToOleFileTime(this DateTime dt)
+    {
+        var longTime = dt.ToFileTime();
+        return new FILETIME()
+        {
+            dwHighDateTime = (int)(longTime >> 32),
+            dwLowDateTime = (int)(longTime)
+        };
     }
 }
