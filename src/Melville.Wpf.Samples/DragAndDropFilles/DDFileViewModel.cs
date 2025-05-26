@@ -60,10 +60,10 @@ public partial class DDFileViewModel
 
     private IDataObject DataToDrag()
     {
-        var ret = new DataObject();
+        var ret = new ComDataObject();
         ret.PushStreams(        
-            "File1.txt", new MemoryStream("File 1 data"u8.ToArray()));
-        return ret;
+            ("File1.txt", new MemoryStream("File 1 data"u8.ToArray())));
+        return new DataObject(ret);
     }
 
     public void Drag2(IMouseClickReport mcr)

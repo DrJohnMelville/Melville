@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Buffers;
+using System.CodeDom;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
@@ -10,7 +12,7 @@ using Windows.Win32.System.Memory;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
-public readonly struct ClipboardItem(FORMATETC format, object data, bool release)
+public readonly struct ClipboardItem(FORMATETC format, object data)
 {
     public void WriteFormat(ref FORMATETC target)
     {
@@ -139,4 +141,62 @@ public readonly struct ClipboardItem(FORMATETC format, object data, bool release
         }
         return handle;
     }
+
+    public void WriteToHere(ref STGMEDIUM medium)
+    {
+        switch (medium.tymed)
+        {
+            case TYMED.TYMED_HGLOBAL:
+                WriteToHGlobal(medium.unionmember);
+                break;
+            case TYMED.TYMED_ISTREAM:
+                WriteToIStream(medium.unionmember);
+                break;
+            default:
+                throw new NotSupportedException("Only HGlobal and Streams are supprted.");
+        }
+    }
+
+    private unsafe void WriteToHGlobal(IntPtr targetHandle)
+    {
+        var handle = new HGLOBAL(targetHandle);
+        var ptr = PInvoke.GlobalLock(handle);
+        var size = PInvoke.GlobalSize(handle);
+        var buffer = new Span<byte>(ptr, (int)size);
+        switch (data)
+        {
+            case string s: WriteBytesTo(buffer, MemoryMarshal.Cast<char,byte>(s.AsSpan())); break;
+            case byte[] b: WriteBytesTo(buffer, b.AsSpan()); break;
+            case Stream s: s.ReadAtLeast(buffer, buffer.Length, false); break;
+            default: throw new NotSupportedException("Only string, byte[] and stream are supported");
+        }
+
+        PInvoke.GlobalUnlock(handle);
+    }
+
+    private void WriteBytesTo(Span<byte> buffer, ReadOnlySpan<byte> data) => 
+        data[..Math.Min(buffer.Length, data.Length)].CopyTo(buffer);
+
+    private void WriteToIStream(IntPtr target)
+    {
+        var stream = (IStream)Marshal.GetObjectForIUnknown(target);
+        switch (data)
+        {
+            case string s: WriteBytesTo(stream, MemoryMarshal.Cast<char, byte>(s.AsSpan()).ToArray()); break;
+            case byte[] b: WriteBytesTo(stream, b); break;
+            case Stream s: WriteBytesTo(stream, s); break;
+            default: throw new NotSupportedException("Only string, byte[] and stream are supported");
+        }
+    }
+
+    private void WriteBytesTo(IStream stream, Stream source)
+    {
+        var buffer = ArrayPool<byte>.Shared.Rent(4096);
+        while (source.Read(buffer.AsSpan()) is var read and > 0)
+        {
+            stream.Write(buffer, read, IntPtr.Zero);
+        }
+    }
+
+    private void WriteBytesTo(IStream stream, byte[] data) => stream.Write(data, data.Length, IntPtr.Zero);
 }

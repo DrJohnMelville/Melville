@@ -9,7 +9,7 @@ namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
 public static class StgMediumExtensions
 {
-    public static byte[] ConsumeToByteArray(this ref STGMEDIUM medium)
+    public static byte[] ConsumeToByteArray(this ref STGMEDIUM medium, bool release)
     {
         try
         {
@@ -17,7 +17,7 @@ public static class StgMediumExtensions
         }
         finally
         {
-            ReleaseStgMedium(ref medium);
+            if (release) ReleaseStgMedium(ref medium);
         }
     }
 

@@ -44,9 +44,9 @@ internal class InterceptionShim(
     private static IComDataObject Unwrap(object? o) => o switch
     {
         DataObject => Unwrap(o.GetField("_innerData")),
-        _ when o.GetType().Name.Contains("OleConverter") => Unwrap(o.GetField("_innerData")),
+        not null when o.GetType().Name.Contains("OleConverter") => Unwrap(o.GetField("_innerData")),
         IComDataObject d => d,
-        _ => null
+        _ => throw new NotSupportedException("Could not unwrap supplied object")
     };
 
     public IDataObject Rewrapped() => new DataObject(this);
@@ -94,47 +94,6 @@ internal class InterceptionShim(
             {DumpObject(formatOut)}
             """);
         return ret;
-    }
-
-    [ComImport()]
-    [Guid("00020400-0000-0000-C000-000000000046")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IDispatch
-    {
-        [PreserveSig]
-        int GetTypeInfoCount(out int Count);
-
-        [PreserveSig]
-        int GetTypeInfo
-        (
-            [MarshalAs(UnmanagedType.U4)] int iTInfo,
-            [MarshalAs(UnmanagedType.U4)] int lcid,
-            out System.Runtime.InteropServices.ComTypes.ITypeInfo typeInfo
-        );
-
-        [PreserveSig]
-        int GetIDsOfNames
-        (
-            ref Guid riid,
-            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPWStr)]
-            string[] rgsNames,
-            int cNames,
-            int lcid,
-            [MarshalAs(UnmanagedType.LPArray)] int[] rgDispId
-        );
-
-        [PreserveSig]
-        int Invoke
-        (
-            int dispIdMember,
-            ref Guid riid,
-            uint lcid,
-            ushort wFlags,
-            ref System.Runtime.InteropServices.ComTypes.DISPPARAMS pDispParams,
-            out object pVarResult,
-            ref System.Runtime.InteropServices.ComTypes.EXCEPINFO pExcepInfo,
-            out UInt32 pArgErr
-        );
     }
 
     private int streamCounter;
@@ -230,7 +189,7 @@ internal class InterceptionShim(
          STGMEDIUM med => $"""
             Medium Type: {med.tymed},
             UnionMember: {med.unionmember:X16}
-            pUnkForRelease: {(nint)(&med.pUnkForRelease):X16}
+            pUnkForRelease: {med.pUnkForRelease}
             {DumpMedium(med)}
          """,
         _ => o.ToString()?? ""

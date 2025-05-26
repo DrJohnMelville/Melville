@@ -10,21 +10,6 @@ namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
 public static partial class PushFilesAsStreams
 {
-    public static void PushStreams(this IDataObject dataObj,
-        string Name, Stream file)
-    {
-       int filesLength = 1;
-        var wideBuffer = new NameBuffer<FILEDESCRIPTORW>(filesLength);
-        var narrowBuffer = new NameBuffer<FILEDESCRIPTORA>(filesLength);
-
-            dataObj.SetData(StreamingFileClipboardFormats.FileContents,
-                file);
-            wideBuffer.Files[0].SetData(Name);
-            narrowBuffer.Files[0].SetData(Name);
-        dataObj.SetData(StreamingFileClipboardFormats.WideGroup, new MemoryStream(wideBuffer.Buffer));
-        dataObj.SetData(StreamingFileClipboardFormats.NarrowGroup, new MemoryStream(narrowBuffer.Buffer));
-    }
-
     public static void PushStreams(this ComDataObject dataObj,
            params ReadOnlySpan<(string Name, Stream Data)> files)
        {

@@ -14,8 +14,6 @@ using static System.Windows.Forms.DataFormats;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
-#warning -- needs to be disposed when we are done with it
-
 internal class NativeConstants
 {
     public const int E_NOTIMPL = -2147467263;
@@ -67,49 +65,47 @@ public class ComDataObject : System.Runtime.InteropServices.ComTypes.IDataObject
     /// <inheritdoc />
     public void GetData(ref FORMATETC format, out STGMEDIUM medium)
     {
-        var items = CollectionsMarshal.AsSpan(this.items);
-        for (int i = items.Length - 1; i >= 0; i--)
+        if (FindItem(in format) is {} item)
         {
-            ref var item = ref items[i];
-            if (item.Matches(ref format))
+            item.ReturnValue(in format, out medium);
+        }
+        else
+        {
+
+            medium = new STGMEDIUM()
             {
-                item.ReturnValue(in format, out medium);
-                return;
-            }
+                tymed = TYMED.TYMED_NULL
+            };
+        }
+    }
+
+    private ClipboardItem? FindItem(in FORMATETC format)
+    {
+        var items = CollectionsMarshal.AsSpan(this.items);
+        foreach (var item in items)
+        {
+            if (item.Matches(format)) return item;
         }
 
-        
-        medium = new STGMEDIUM()
-        {
-            tymed = TYMED.TYMED_NULL
-        };
+        return null;
     }
 
     /// <inheritdoc />
     public void GetDataHere(ref FORMATETC format, ref STGMEDIUM medium)
     {
+        if (FindItem(in format) is not { } item) return;
+        item.WriteToHere(ref medium);
     }
 
     /// <inheritdoc />
-    public int QueryGetData(ref FORMATETC format)
+    public int QueryGetData(ref FORMATETC format) => 
+        FindItem(in format) is null ? NativeConstants.DV_E_CLIPFORMAT : NativeConstants.S_OK;
+
+    /// <inheritdoc />
+    public void SetData(ref FORMATETC formatIn, ref STGMEDIUM medium, bool release)
     {
-#warning unify this with GetData
-        var items = CollectionsMarshal.AsSpan(this.items);
-        for (int i = items.Length - 1; i >= 0; i--)
-        {
-            ref var item = ref items[i];
-            if (item.Matches(ref format))
-            {
-                return NativeConstants.S_OK;
-            }
-        }
-
-        return format.cfFormat == 15 ? NativeConstants.DV_E_CLIPFORMAT: 1;
+        SetData(formatIn, medium.ConsumeToByteArray(release));
     }
-
-    /// <inheritdoc />
-    public unsafe void SetData(ref FORMATETC formatIn, ref STGMEDIUM medium, bool release) => 
-        SetData(formatIn, medium.ConsumeToByteArray());
 
     public void SetData(in FORMATETC format, object item)
     {
@@ -117,11 +113,11 @@ public class ComDataObject : System.Runtime.InteropServices.ComTypes.IDataObject
         {
             if (items[i].Matches(in format))
             {
-                items[i] = new ClipboardItem(format, item, true);
+                items[i] = new ClipboardItem(format, item);
                 return;
             }
         }
-        items.Add(new ClipboardItem(format, item, true));
+        items.Add(new ClipboardItem(format, item));
     }
 }
 

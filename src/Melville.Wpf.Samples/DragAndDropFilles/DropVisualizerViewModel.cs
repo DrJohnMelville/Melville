@@ -21,7 +21,7 @@ namespace Melville.Wpf.Samples.DragAndDropFilles;
 public partial class DropVisualizerViewModel()
 {
     [AutoNotify] public partial IReadOnlyList<DataFormatViewModel>? Items { get; set; }
-    public async Task DropItems(IDropAction drop)
+    public void DropItems(IDropAction drop)
     {
         if (Unwrap(drop.Item) is not {} innerDo)
             return;
@@ -39,9 +39,9 @@ public partial class DropVisualizerViewModel()
     private IDataObject Unwrap(object? o) => o switch
     {
         DataObject => Unwrap(o.GetField("_innerData")),
-        _ when o.GetType().Name.Contains("OleConverter") => Unwrap(o.GetField("_innerData")),
+        not null when o.GetType().Name.Contains("OleConverter") => Unwrap(o.GetField("_innerData")),
         IDataObject d => d,
-        _ => null
+        _ => throw new NotImplementedException("Could not unwrap supplied type")
     };
 
     public DragDropEffects DropItems(IDropQuery query)
@@ -52,7 +52,7 @@ public partial class DropVisualizerViewModel()
 
     public void StartDrag(IMouseClickReport mcr, [FromServices] DDInterceptor interceptor)
     {
-        if (mcr.ClickCount() > 1) return;
+        if (mcr.ClickCount() > 1 ) return;
         mcr.DragSource().DragTarget(0.5)
             .Drag(interceptor.BeginIntercept(DataToDrag2()), DragDropEffects.Copy,
                 _=>interceptor.ShowTrace());
@@ -61,7 +61,7 @@ public partial class DropVisualizerViewModel()
     private DataObject DataToDrag2()
     {
         var ret = new ComDataObject();
-        foreach (var item in Items.Where(i=>i.Included))
+        foreach (var item in (Items ?? []).Where(i=>i.Included))
         {
             item.AddTo(ret);
         }
@@ -111,7 +111,7 @@ public partial class DataFormatViewModel
             var fmt = format with { tymed = SelectFormat(), lindex = index};
             if (innerDo.QueryGetData(ref fmt) is not 0) return null;
             innerDo.GetData(ref fmt, out var medium);
-            return medium.ConsumeToByteArray();
+            return medium.ConsumeToByteArray(true);
         }
         catch (Exception )
         {
