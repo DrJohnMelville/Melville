@@ -201,7 +201,7 @@ public static class StgMediumExtension
         {
             pstatstg = new STATSTG()
             {
-                cbSize = stream.Length,
+                cbSize = stream?.Length??0,
                 type = 2,
                 grfMode = 32,
                 reserved = 33,
