@@ -5,9 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
-      <PackageReference Include="System.Text.Encodings.Web" Version="9.0.1" />
-      <PackageReference Include="TokenServiceClient.Website" Version="0.4.2" />
+      <PackageReference Include="Serilog.AspNetCore" />
+      <PackageReference Include="System.Text.Encodings.Web" />
+      <PackageReference Include="TokenServiceClient.Website" />
     </ItemGroup>
 
     <ItemGroup>

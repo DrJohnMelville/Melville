@@ -43,12 +43,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
-      <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-      <PackageReference Include="System.Drawing.Common" Version="9.0.1" />
-      <PackageReference Include="System.Formats.Asn1" Version="9.0.1" />
-      <PackageReference Include="System.Text.Encodings.Web" Version="9.0.1" />
-      <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+      <PackageReference Include="Microsoft.Web.WebView2" />
+      <PackageReference Include="System.Data.SqlClient" />
+      <PackageReference Include="System.Drawing.Common" />
+      <PackageReference Include="System.Formats.Asn1" />
+      <PackageReference Include="System.Text.Encodings.Web" />
+      <PackageReference Include="System.Text.RegularExpressions" />
     </ItemGroup>
 
     <ItemGroup>

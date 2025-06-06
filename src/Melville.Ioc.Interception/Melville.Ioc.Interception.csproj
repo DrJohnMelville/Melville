@@ -14,12 +14,12 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Castle.Core" Version="5.1.1" />
-        <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.12.1">
+        <PackageReference Include="Castle.Core" />
+        <PackageReference Include="NuGet.Build.Tasks.Pack">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />

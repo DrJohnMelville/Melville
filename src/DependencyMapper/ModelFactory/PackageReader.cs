@@ -15,20 +15,18 @@ public partial class InnerPackageReader : PackageReader
 public class PackageReader(
     XName tagName,
     string nameAttribute,
-    string versionAttribute,
+    IPackageVersionReader versionAttribute,
     IDirectory nugetBase,
     IList<Dependency> dependencies)
 {
-    private readonly IDirectory nugetBase = nugetBase;
-    private readonly IList<Dependency> dependencies = dependencies;
     private PackageReader? innerReader = null;
-    public PackageReader InnerReader => innerReader ?? CreateInnerReader();
-    private readonly static XNamespace packageNamespace =
+    public PackageReader InnerReader => innerReader ??= CreateInnerReader();
+    private static readonly XNamespace PackageNamespace =
         XNamespace.Get("http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd");
 
     protected virtual PackageReader CreateInnerReader() =>
         new InnerPackageReader(
-            packageNamespace+"dependency", "id", "version", nugetBase, dependencies);
+            PackageNamespace+"dependency", "id", new AttributeVersionReader("version"), nugetBase, dependencies);
 
     public async Task LoadReferencedPackages(XElement source, Dependency parent)
     {
@@ -47,7 +45,7 @@ public class PackageReader(
 
     private (string name, string version)? Read2AttributeNode(XElement arg) =>
         arg.Attribute(nameAttribute)?.Value is { } title &&
-        arg.Attribute(versionAttribute)?.Value is { } version
+        versionAttribute.VersionFor(arg, title) is { } version
             ? (title, version)
             : null;
 
