@@ -63,7 +63,7 @@ public partial class DDFileViewModel
         var ret = new ComDataObject();
         ret.PushStreams(        
             ("File1.txt", new MemoryStream("File 1 data"u8.ToArray())));
-        return new DataObject(ret);
+        return ret;
     }
 
     public void Drag2(IMouseClickReport mcr)
@@ -80,7 +80,7 @@ public partial class DDFileViewModel
         ret.PushStreams(
             ("File1.txt", new MemoryStream("File 1 data"u8.ToArray())),
             ("File2.txt", new MemoryStream("File 2 data"u8.ToArray())));
-        return new DataObject(ret);
+        return ret;
     }
 
     [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_innerData")]

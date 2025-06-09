@@ -22,15 +22,21 @@ internal class ComFormatEnumerator(ClipboardItem[] items): IEnumFORMATETC
     /// <inheritdoc />
     public int Next(int celt, FORMATETC[] rgelt, int[]? pceltFetched)
     {
-        var count = Math.Min(celt, items.Length-position);
-        for (int i = 0; i < count; i++)
+        int fetched = 0;
+        while (fetched < celt && position < items.Length)
         {
-            items[position++].WriteFormat(ref rgelt[i]);
+            ref var item = ref items[position];
+            if (item.IsComCompatible())
+            {
+                item.WriteFormat(ref rgelt[fetched++]);
+            }
+
+            position++;
         }
 
-        if (pceltFetched is not null) pceltFetched[0] = count;
+        if (pceltFetched is not null) pceltFetched[0] = fetched;
 
-        return count == celt ? NativeConstants.S_OK: NativeConstants.S_FALSE;
+        return fetched == celt ? NativeConstants.S_OK: NativeConstants.S_FALSE;
     }
 
     /// <inheritdoc />

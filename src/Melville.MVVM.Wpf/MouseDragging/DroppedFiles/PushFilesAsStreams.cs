@@ -20,13 +20,13 @@ public static partial class PushFilesAsStreams
 
            for (int i = files.Length-1; i >= 0; i--)
            {
-               dataObj.SetData(StreamingFileClipboardFormats.FileContents,
+               dataObj.SetComData(StreamingFileClipboardFormats.FileContents,
                    files[i].Data, i);
                wideBuffer.Files[i].SetData(files[i].Name);
                narrowBuffer.Files[i].SetData(files[i].Name);
            }
-           dataObj.SetData(StreamingFileClipboardFormats.WideGroup, wideBuffer.Buffer);
-           dataObj.SetData(StreamingFileClipboardFormats.NarrowGroup, narrowBuffer.Buffer);
+           dataObj.SetComData(StreamingFileClipboardFormats.WideGroup, wideBuffer.Buffer);
+           dataObj.SetComData(StreamingFileClipboardFormats.NarrowGroup, narrowBuffer.Buffer);
        }
 
     internal readonly ref struct NameBuffer<T> where T: unmanaged

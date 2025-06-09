@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Buffers;
-using System.CodeDom;
 using System.IO;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.Memory;
@@ -28,6 +26,8 @@ public readonly struct ClipboardItem(FORMATETC format, object data)
                ((candidate.dwAspect | format.dwAspect) is not 0) &&
                (candidate.lindex == format.lindex || format.lindex is -1 || candidate.lindex is -1);
     }
+
+    public bool IsComCompatible()=> data is String or Stream or byte[];
 
     public void ReturnValue(in FORMATETC formatetc, out STGMEDIUM medium)
     {
@@ -199,4 +199,46 @@ public readonly struct ClipboardItem(FORMATETC format, object data)
     }
 
     private void WriteBytesTo(IStream stream, byte[] data) => stream.Write(data, data.Length, IntPtr.Zero);
+
+    public object? DotNetValue() => new DotnetClipboardFormatter(format.cfFormat, data).ToDotNet();
+}
+
+public readonly struct DotnetClipboardFormatter(short format, object? data)
+{
+    private const short cfText = 1;
+    private const short cfUnicodeText = 13;
+    private const short cfOemText = 7;
+
+    public object? ToDotNet() => (format, data) switch
+    {
+        (_, null) => null,
+        (cfText or cfUnicodeText or cfOemText, String s) => s,
+        (cfText or cfUnicodeText or cfOemText, Stream s) => 
+            new DotnetClipboardFormatter(format,BytesFrom(s)).ToDotNet(),
+        (cfText or cfOemText, byte[] data) => Encoding.UTF8.GetString(data),
+        (cfUnicodeText, byte[] data) => Encoding.Unicode.GetString(data),
+        (_, byte[] dataArray) => new MemoryStream(dataArray), // for compatibility with WPF implementation
+        _=> data
+    };
+
+    private byte[] BytesFrom(Stream stream) => stream switch
+    {
+        MemoryStream ms => ms.ToArray(),
+        {Length: > 0} => ReadToBuffer(stream),
+        _=> CopyToBuffer(stream)
+    };
+
+    private byte[] ReadToBuffer(Stream stream)
+    {
+        var ret = new byte[stream.Length];
+        stream.ReadExactly(ret.AsSpan());
+        return ret;
+    }
+
+    private byte[] CopyToBuffer(Stream stream)
+    {
+        var ret = new MemoryStream();
+        stream.CopyTo(ret);
+        return ret.ToArray();
+    }
 }

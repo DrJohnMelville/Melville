@@ -1,18 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Windows.Forms;
+using System.Windows;
 using IComDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
 using IWinDataObject = System.Windows.IDataObject;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
-public class ComDataObject : IComDataObject
+public class ComDataObject : IComDataObject, IWinDataObject
 {
     public readonly List<ClipboardItem> items = new();
+
+    #region IWinDDataObject
+
+    /// <inheritdoc />
+    public object? GetData(string format) => 
+        ItemsMatching(format).FirstOrDefault().DotNetValue();
+
+    /// <inheritdoc />
+    public object? GetData(string format, bool autoConvert) => GetData(format);
+    
+    /// <inheritdoc />
+    public object? GetData(Type format) =>
+        format.ToString() is {Length:>0} fmtName? GetData(fmtName) : null;
+
+    /// <inheritdoc />
+    public bool GetDataPresent(string format) => ItemsMatching(format).Any();
+
+    private IEnumerable<ClipboardItem> ItemsMatching(string format)
+    {
+        var formatAsInt = (short)DataFormats.GetDataFormat(format).Id;
+        return items.Where(i => i.Format() == formatAsInt);
+    }
+
+    /// <inheritdoc />
+    public bool GetDataPresent(string format, bool autoConvert) => GetDataPresent(format);
+
+    /// <inheritdoc />
+    public bool GetDataPresent(Type format) =>
+        format.ToString() is { Length: > 0 } fmtName && GetDataPresent(fmtName);
+    
+    /// <inheritdoc />
+    public string[] GetFormats() =>
+        items.Select(i => i.Format())
+            .Distinct()
+            .Select(i => DataFormats.GetDataFormat(i).Name)
+            .ToArray();
+
+    /// <inheritdoc />
+    public string[] GetFormats(bool autoConvert) => GetFormats();
+
+    /// <inheritdoc />
+    public void SetData(object data) => SetData(data.GetType(), data);
+    
+    /// <inheritdoc />
+    public void SetData(string format, object data) => SetComData(format, data, -1);
+
+    /// <inheritdoc />
+    public void SetData(string format, object data, bool autoConvert) => SetData(format, data);
+    
+    /// <inheritdoc />
+    public void SetData(Type format, object data)
+    {
+        if (format.ToString() is {Length: >0} formatName)
+            SetData(formatName, data);
+    }
+
+    #endregion
 
     #region IComDataObject
     /// <inheritdoc />
@@ -105,34 +162,22 @@ public class ComDataObject : IComDataObject
         }
         items.Add(new ClipboardItem(format, item));
     }
-}
+    #endregion
 
-public static class ComDataObjectExtensions
-{
-    public static void SetText(this ComDataObject target, string text, int index = -1) =>
-        target.SetData(CreateFormatEtc(DataFormats.UnicodeText, index, TYMED.TYMED_HGLOBAL),
+    public  void SetText(string text, int index = -1) =>
+        SetData(CreateFormatEtc(DataFormats.UnicodeText, index, TYMED.TYMED_HGLOBAL),
             text);
 
     private static FORMATETC CreateFormatEtc(string format, int index, TYMED type) =>
         new()
         {
-            cfFormat = (short)DataFormats.GetFormat(format).Id,
+            cfFormat = (short)DataFormats.GetDataFormat(format).Id,
             dwAspect = DVASPECT.DVASPECT_CONTENT,
             lindex = index,
             ptd = IntPtr.Zero,
             tymed = type
         };
 
-    public static void SetData(
-        this ComDataObject target, string format, Stream data, int index = -1)
-    {
-        target.SetData(CreateFormatEtc(format, index, TYMED.TYMED_HGLOBAL), data);
-    }
-
-    public static void SetData(
-        this ComDataObject target, string format, byte[] data, int index = -1)
-    {
-        target.SetData(CreateFormatEtc(format, index, TYMED.TYMED_HGLOBAL), data);
-    }
-    #endregion
+    public void SetComData(string format, object data, int index = -1) => 
+        SetData(CreateFormatEtc(format, index, TYMED.TYMED_ISTREAM | TYMED.TYMED_HGLOBAL), data);
 }
