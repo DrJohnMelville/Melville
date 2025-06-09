@@ -1,34 +1,20 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
-using System.Printing.IndexedProperties;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
+using IComDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
+using IWinDataObject = System.Windows.IDataObject;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
-internal class NativeConstants
-{
-    public const int E_NOTIMPL = -2147467263;
-    public const int E_ADVISENOTSUPPORTED = -2147221501;
-    public const int S_OK = 0;
-    public const int S_FALSE = 1;
-    public const int DATA_S_SAMEFORMATETC = unchecked((int)0x00040130);
-    public const int DV_E_FORMATETC = unchecked((int)0x80040064);
-    public const int DV_E_CLIPFORMAT = unchecked((int)0x8004006A);
-}
-
-public class ComDataObject : System.Runtime.InteropServices.ComTypes.IDataObject
+public class ComDataObject : IComDataObject
 {
     public readonly List<ClipboardItem> items = new();
 
+    #region IComDataObject
     /// <inheritdoc />
     public int DAdvise(ref FORMATETC pFormatetc, ADVF advf, IAdviseSink adviseSink, out int connection)
     {
@@ -148,4 +134,5 @@ public static class ComDataObjectExtensions
     {
         target.SetData(CreateFormatEtc(format, index, TYMED.TYMED_HGLOBAL), data);
     }
+    #endregion
 }

@@ -23,7 +23,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<DropVisualizerViewModel>();
+        SearchTreeForSample<DDFileViewModel>();
 
     public SampleDirectory()
     {
