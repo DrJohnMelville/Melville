@@ -59,9 +59,11 @@ public static class DataObjectReaderExtensions
 
     private static Span<byte> ReadFileNamesBlob(IDataObject target, string format)
     {
-        target.GetData(format);
-        using var inputStream = (MemoryStream?)target.GetData(format);
-        return (inputStream?.ToArray() ?? []).AsSpan();
+        return target.GetData(format) switch
+        {
+            MemoryStream ms => ms.ToArray().AsSpan(),
+            byte[] ba => ba.AsSpan(),
+        };
     }
 
     private static string[] GetFileNames<T>(ReadOnlySpan<T> record) where T:IFileDescriptor

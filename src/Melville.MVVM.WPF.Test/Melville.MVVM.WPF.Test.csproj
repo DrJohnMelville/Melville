@@ -26,4 +26,7 @@
         <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
         <ProjectReference Include="..\Melville.TestHelpers\Melville.TestHelpers.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="MouseDragging\DroppedFolder\" />
+    </ItemGroup>
 </Project>

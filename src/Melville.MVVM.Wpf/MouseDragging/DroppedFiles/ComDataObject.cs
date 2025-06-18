@@ -10,66 +10,9 @@ using IWinDataObject = System.Windows.IDataObject;
 
 namespace Melville.MVVM.Wpf.MouseDragging.DroppedFiles;
 
-public class ComDataObject : IComDataObject, IWinDataObject
+public class ComDataObject : IComDataObject
 {
     public readonly List<ClipboardItem> items = new();
-
-    #region IWinDDataObject
-
-    /// <inheritdoc />
-    public object? GetData(string format) => 
-        ItemsMatching(format).FirstOrDefault().DotNetValue();
-
-    /// <inheritdoc />
-    public object? GetData(string format, bool autoConvert) => GetData(format);
-    
-    /// <inheritdoc />
-    public object? GetData(Type format) =>
-        format.ToString() is {Length:>0} fmtName? GetData(fmtName) : null;
-
-    /// <inheritdoc />
-    public bool GetDataPresent(string format) => ItemsMatching(format).Any();
-
-    private IEnumerable<ClipboardItem> ItemsMatching(string format)
-    {
-        var formatAsInt = (short)DataFormats.GetDataFormat(format).Id;
-        return items.Where(i => i.Format() == formatAsInt);
-    }
-
-    /// <inheritdoc />
-    public bool GetDataPresent(string format, bool autoConvert) => GetDataPresent(format);
-
-    /// <inheritdoc />
-    public bool GetDataPresent(Type format) =>
-        format.ToString() is { Length: > 0 } fmtName && GetDataPresent(fmtName);
-    
-    /// <inheritdoc />
-    public string[] GetFormats() =>
-        items.Select(i => i.Format())
-            .Distinct()
-            .Select(i => DataFormats.GetDataFormat(i).Name)
-            .ToArray();
-
-    /// <inheritdoc />
-    public string[] GetFormats(bool autoConvert) => GetFormats();
-
-    /// <inheritdoc />
-    public void SetData(object data) => SetData(data.GetType(), data);
-    
-    /// <inheritdoc />
-    public void SetData(string format, object data) => SetComData(format, data, -1);
-
-    /// <inheritdoc />
-    public void SetData(string format, object data, bool autoConvert) => SetData(format, data);
-    
-    /// <inheritdoc />
-    public void SetData(Type format, object data)
-    {
-        if (format.ToString() is {Length: >0} formatName)
-            SetData(formatName, data);
-    }
-
-    #endregion
 
     #region IComDataObject
     /// <inheritdoc />
