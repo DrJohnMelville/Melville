@@ -11,11 +11,7 @@
         <TextBlock TextAlignment="Center" FontSize="20">John Melville's Log Viewer</TextBlock>
         <TextBlock Margin="0 20 0 0">This is the log viewer.  Local programs will connect 
         automatically.  To Connect to a website, use the combobox and button below.</TextBlock>
-        
-        <ComboBox Margin="20" ItemsSource="{Binding Sites}" SelectedItem="{Binding CurrentSite}"
-                  DisplayMemberPath="Url"/>
-        <Button Click="{eventBindings:EventBinding ConnectToWeb}">Log Website</Button>
-        
+
         <Button Margin="0 20" Click="{eventBindings:EventBinding ConnectToUdp}">Open UDP Console Log</Button>
 
         <Button Click="{eventBindings:EventBinding CopyUdpSender}">Copy UDP Sender to Clipboard</Button>

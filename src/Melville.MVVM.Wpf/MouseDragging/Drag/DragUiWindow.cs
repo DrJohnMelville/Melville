@@ -6,7 +6,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Melville.MVVM.Wpf.MouseDragging.LocalDraggers;
-using Serilog.Data;
 
 namespace Melville.MVVM.Wpf.MouseDragging.Drag;
 

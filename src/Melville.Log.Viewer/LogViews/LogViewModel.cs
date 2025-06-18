@@ -4,7 +4,7 @@ using Melville.INPC;
 using Melville.Lists;
 using Melville.Log.Viewer.HomeScreens;
 using Melville.MVVM.BusinessObjects;
-using Serilog.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.Log.Viewer.LogViews;
 
@@ -17,8 +17,8 @@ public partial class LogViewModel : NotifyBase, IHomeScreenPage
         set => AssignAndNotify(ref title, value);
     }
 
-    private LogEventLevel minimimLevel = LogEventLevel.Information;
-    public LogEventLevel MinimumLevel
+    private LogLevel minimimLevel = LogLevel.Information;
+    public LogLevel MinimumLevel
     {
         get => minimimLevel;
         set
@@ -48,19 +48,8 @@ public partial class LogViewModel : NotifyBase, IHomeScreenPage
         HandleEvent(args.LogEvent);
     private void HandleEvent(LogEvent logEvent)
     {
-        if (IsPrecessNameMessage(logEvent, out var value))
-        {
-            Title = value.ToString()[1..^1];
-        }
-        else
-        {
             Events.Add(new LogEntryViewModel(logEvent));
-        }
     }
-
-    private static bool IsPrecessNameMessage(LogEvent logEvent, 
-        [NotNullWhen(true)]out LogEventPropertyValue? value) =>
-        logEvent.Properties.TryGetValue("AssignProcessName", out value);
 
     private void SendDesiredLevelToSink() => logConnection.SetDesiredLevel(MinimumLevel);
     public void Stop() => logConnection.StopReading();

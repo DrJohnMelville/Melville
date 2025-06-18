@@ -5,7 +5,6 @@ using System.Windows.Input;
 using Melville.FileSystem;
 using Melville.Lists;
 using Melville.Log.Viewer.LogViews;
-using Melville.Log.Viewer.NamedPipeServers;
 using Melville.Log.Viewer.NugetMonitor;
 using Melville.Log.Viewer.UdpServers;
 using Melville.Log.Viewer.WelcomePage;
@@ -31,13 +30,11 @@ public class HomeScreenViewModel: NotifyBase
 
     public ICollection<IHomeScreenPage> Pages { get; } = new ThreadSafeBindableCollection<IHomeScreenPage>();
 
-    public HomeScreenViewModel(WelcomePageViewModel welcomePage, IPipeListener pipeListener,
+    public HomeScreenViewModel(WelcomePageViewModel welcomePage, 
         Func<ILogConnection, LogViewModel> modelCreator)
     {
         Pages.Add(welcomePage);
         currentPage = welcomePage;
-        pipeListener.NewClientConnection += (_, e) =>
-            AddNewPage(modelCreator(new StreamLogConnection(e.ClientConnection)));
     }
 
     public void Remove(IHomeScreenPage page)
@@ -57,21 +54,7 @@ public class HomeScreenViewModel: NotifyBase
 
         return false;
     }
-        
-    public void ConnectToWeb(IHasTargetUrl targetHolder)
-    {
-        try
-        {
-            if (targetHolder.CurrentSite == null) return;
-            AddNewPage(new LogViewModel(
-                new HubLogConnection(targetHolder.CurrentSite), targetHolder.CurrentSite.Name));
-        }
-        catch (Exception)
-        {
-            // failed to connect to website
-        }
-    }
-
+    
     public void ConnectToUdp()
     {
         AddNewPage(new LogViewModel(new UdpLogConnection(), "Udp Logger"));

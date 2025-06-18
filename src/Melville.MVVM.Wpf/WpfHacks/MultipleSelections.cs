@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using Melville.INPC;
-using Serilog;
 
 namespace Melville.MVVM.Wpf.WpfHacks;
 
@@ -52,8 +51,6 @@ public static partial class MultipleSelections
     /// <param name="e">EventArgs describing the changes to the source collection</param>
     private void ModelChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-      try
-      {
         switch (e.Action)
         {
           case NotifyCollectionChangedAction.Add:
@@ -75,11 +72,6 @@ public static partial class MultipleSelections
           default:
             throw new ArgumentOutOfRangeException();
         }
-      }
-      catch (InvalidOperationException exception)
-      {
-        Log.Error(exception, "Invalid operation binding to multiple select list box?  Is multiple selection enabled?");
-      }
 
       void AddItems()
       {
@@ -105,19 +97,11 @@ public static partial class MultipleSelections
     /// </summary>
     private void SetListBoxSelectionToModel()
     {
-      try
-      {
         selector.SelectedItems.Clear();
         foreach (var item in model)
         {
           selector.SelectedItems.Add(item);
         }
-      }
-      catch (InvalidOperationException e)
-      {
-        Log.Error(e, "Invalid operation binding to multiple select list box?  Is multiple selection enabled?");
-        throw;
-      }
     }
 
     /// <summary>

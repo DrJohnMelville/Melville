@@ -25,7 +25,6 @@ public sealed class Startup:StartupBase
 
     protected override void RegisterWithIocContainer(IBindableIocService service)
     {
-        service.AddLogging();
         RegisterRootWindow(service);
 
         service.Bind<IOpenSaveFile>().To<OpenSaveFileAdapter>();

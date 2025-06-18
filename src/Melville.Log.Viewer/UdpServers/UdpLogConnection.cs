@@ -5,8 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Melville.Log.Viewer.LogViews;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Serilog.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.Log.Viewer.UdpServers;
 
@@ -69,7 +68,7 @@ public class UdpLogConnection: ILogConnection
         LogEventArrived.Write(this, content);
     }
 
-    public ValueTask SetDesiredLevel(LogEventLevel level)
+    public ValueTask SetDesiredLevel(LogLevel level)
     {
         return ValueTask.CompletedTask;
     }

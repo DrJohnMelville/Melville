@@ -2,7 +2,7 @@
 using System.IO;
 using Melville.FileSystem;
 using Melville.Log.Viewer.NugetMonitor.HardDelete;
-using Serilog.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.Log.Viewer.NugetMonitor;
 
@@ -48,7 +48,7 @@ public sealed class NugetCacheEditor
             }
         }
         console.WriteToLog($"Cound not find package {packageName} in cache.",
-            LogEventLevel.Warning);
+            LogLevel.Warning);
     }
 
     private static bool ExtraCheckToOnlyDeleteNugetFolders(

@@ -1,8 +1,7 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
-using Melville.Log.NamedPipeEventSink;
 using Microsoft.Extensions.Configuration;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.WpfAppFramework.StartupBases;
 
@@ -18,7 +17,20 @@ public abstract class StartupBase
     {
         var service = new IocContainer();
         RegisterWithIocContainer(service);
+        AddLoggingIfNeeded(service);
         return service;
+    }
+
+    private void AddLoggingIfNeeded(IocContainer service)
+    {
+        if (service.CanGet(typeof(ILogger))) return;
+        var factory = LoggerFactory.Create(b =>
+        {
+            b.AddDebug();
+        });
+        service.Bind<ILoggerFactory>().ToConstant(factory).DisposeIfInsideScope();
+        service.BindGeneric(typeof(ILogger<>), typeof(Logger<>));
+        service.Bind<ILogger>().ToMethod((ILoggerFactory f) => f.CreateLogger(""));
     }
 
     protected abstract void RegisterWithIocContainer(IBindableIocService service);
@@ -26,16 +38,6 @@ public abstract class StartupBase
 
 public static class WpfServiceBindings
 {
-    public static IActivationOptions<ILogger> AddLogging(this IBindableIocService service)
-    {
-        Serilog.Log.Logger = new LoggerConfiguration()
-            .WriteTo.NamedPipe()
-            .MinimumLevel.Debug()
-            .WriteTo.Console()
-            .CreateLogger();
-        return service.Bind<ILogger>().ToConstant(Serilog.Log.Logger);
-    }
-
     public static IActivationOptions<IConfigurationRoot> AddConfigurationSources(this IBindableIocService service, Action<IConfigurationBuilder> build)
     {
         var builder = new ConfigurationBuilder();

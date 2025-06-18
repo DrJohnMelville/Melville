@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Serilog.Data;
 
 namespace Melville.WpfControls.CalendarControls;
 

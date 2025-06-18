@@ -1,13 +1,18 @@
 ﻿using System;
-using Serilog.Events;
-using Serilog.Parsing;
+using Melville.INPC;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.Log.Viewer.LogViews;
 
 public static class WriteStringToLog
 {
     public static void Write(this EventHandler<LogEventArrivedEventArgs>? handler,
-        object? sender, string content, LogEventLevel level = LogEventLevel.Information) =>
-        handler?.Invoke(sender, new LogEventArrivedEventArgs(new LogEvent(
-            DateTimeOffset.Now, level, null, new MessageTemplateParser().Parse(content), [])));
+        object? sender, string content, LogLevel level = LogLevel.Information) =>
+        handler?.Invoke(sender, new LogEventArrivedEventArgs(new StringLogEvent(
+            DateTimeOffset.Now, level, content)));
+}
+
+public partial class StringLogEvent : LogEvent
+{
+    [FromConstructor] public override string Text => "";
 }

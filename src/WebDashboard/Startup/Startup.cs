@@ -24,7 +24,6 @@ public class Startup : StartupBase
 
     protected override void RegisterWithIocContainer(IBindableIocService service)
     {
-        service.AddLogging();
         ConfigureNugetUpload(service);
         // window selectors
         service.Bind<IFileViewerFactory>().To<NugetManagerViewModelFactory>();

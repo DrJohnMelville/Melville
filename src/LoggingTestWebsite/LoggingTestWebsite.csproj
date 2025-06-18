@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Serilog.AspNetCore" />
       <PackageReference Include="System.Text.Encodings.Web" />
       <PackageReference Include="TokenServiceClient.Website" />
     </ItemGroup>
