@@ -12,7 +12,7 @@ public interface IFileSystemObject
   string Name { get; }
   bool Exists();
   bool ValidFileSystemPath();
-  DateTime LastAccess { get; set; }
+  DateTime LastAccess { get; }
   DateTime LastWrite { get; }
   DateTime Created { get; }
   FileAttributes Attributes { get; }

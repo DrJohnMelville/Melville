@@ -15,12 +15,12 @@
     <PackageVersion Include="LINQPad.Reference" Version="1.3.1" />
     <PackageVersion Include="LINQPad.Runtime" Version="8.3.7" />
     <PackageVersion Include="MailKit" Version="4.9.0" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.6" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.6" />
-    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.1" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.6" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />

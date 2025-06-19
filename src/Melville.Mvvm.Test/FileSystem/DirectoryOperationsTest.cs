@@ -1,5 +1,7 @@
 ﻿#nullable disable warnings
 using System.Linq;
+using System.Security.Permissions;
+using FluentAssertions;
 using Melville.FileSystem;
 using Melville.Mvvm.TestHelpers.MockFiles;
 using Xunit;
@@ -27,6 +29,15 @@ public sealed class DirectoryOperationsTest
     dir.File(name).Create("Content");
     Assert.Equal(exists, dir.AllFiles(glob).Any());
   }
-
-
 }
+
+public abstract class CommonDirectoryOperationsTest(IDirectory sut)
+{
+    [Fact]
+    public void HasName() => sut.Name.Should().Be("TestDir");
+
+    [Fact]
+    public void DoesNotExistByDefault() => sut.Exists().Should().BeFalse();
+}
+
+public class MemoryDirectoryTests():CommonDirectoryOperationsTest(new MockDirectory("TestDir"));

@@ -2,6 +2,7 @@
 using  System;
 using System.Windows;
 using System.Windows.Controls;
+using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 using Moq;
@@ -64,6 +65,7 @@ public sealed class EventBindingTest: TestWithServiceProvider
     }
 
     var del = markup.ProvideValue(CreateServiceProvider()) as Delegate;
+    DiIntegration.SetContainer(Elt, new FakeDIBridge());
     for (int i = 0; i < 10; i++)
     {
       del.DynamicInvoke(Elt, RoutedEventArgs);
@@ -156,6 +158,7 @@ public sealed class EventBindingTest: TestWithServiceProvider
   public void RunArbitraryFunc()
   {
     var realTb = new TextBlock {Text = "Foo"};
+    DiIntegration.SetContainer(realTb, new FakeDIBridge());
     var ret = new VisualTreeRunner(realTb).Run( (TextBlock tb) => tb.Text);
     Assert.Equal(ret, ret);
   }
@@ -163,6 +166,7 @@ public sealed class EventBindingTest: TestWithServiceProvider
   public void RunArbitraryAction()
   {
     var realTB = new TextBlock {Text = "Foo"};
+    DiIntegration.SetContainer(realTB, new FakeDIBridge());
     string s = "";
     new VisualTreeRunner(realTB).Run((TextBlock tb) =>
     {
@@ -175,6 +179,7 @@ public sealed class EventBindingTest: TestWithServiceProvider
   public void RunStaticArbitraryAction()
   {
     var realTB = new TextBlock();
+    DiIntegration.SetContainer(realTB, new FakeDIBridge());
     new VisualTreeRunner(realTB).Run(StaticModifyTb);
     Assert.Equal("Static Set", realTB.Text);
   }

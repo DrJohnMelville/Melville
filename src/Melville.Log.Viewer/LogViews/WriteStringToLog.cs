@@ -14,5 +14,5 @@ public static class WriteStringToLog
 
 public partial class StringLogEvent : LogEvent
 {
-    [FromConstructor] public override string Text => "";
+    [FromConstructor] public override string Text { get; }
 }

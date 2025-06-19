@@ -115,6 +115,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.Mvvm.Maui.Test", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.SimpleDb", "src\Melville.SimpleDb\Melville.SimpleDb.csproj", "{A639966E-2D89-4D9D-9AE3-1BC898A16855}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.FileSystem.Sqlite", "Melville.FileSystem.Sqlite\Melville.FileSystem.Sqlite.csproj", "{FC8195AC-69E9-4B0A-94C8-E08087C33E87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -293,6 +295,10 @@ Global
 		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A639966E-2D89-4D9D-9AE3-1BC898A16855}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC8195AC-69E9-4B0A-94C8-E08087C33E87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC8195AC-69E9-4B0A-94C8-E08087C33E87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC8195AC-69E9-4B0A-94C8-E08087C33E87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC8195AC-69E9-4B0A-94C8-E08087C33E87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -340,6 +346,7 @@ Global
 		{7BB22889-CA90-4B7C-A53D-AF0A53D1F920} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6} = {1B5461D7-0B04-4F30-BB66-1EDA98450329}
 		{A639966E-2D89-4D9D-9AE3-1BC898A16855} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
+		{FC8195AC-69E9-4B0A-94C8-E08087C33E87} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32830D18-8400-4B5A-9A71-3D3D1E19FCD7}
