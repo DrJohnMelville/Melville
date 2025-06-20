@@ -1,13 +1,12 @@
 ﻿using System.Data.SQLite;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Melville.FileSystem.Sqlite;
 
-public class SqliteReadingStream(SqliteFileStore store, long objectId, long blockSize, long size) : Stream
+public class SqliteReadingStream(SqliteFileStore store, long objectId, long blockSize, long size) 
+    : SqliteBlobStream(blockSize)
 {
-    private long blockIndex = 0;
-    private long blockPosition = 0;
-    private SQLiteBlob? blob;
-
     /// <inheritdoc />
     public override void Flush()
     {
@@ -29,7 +28,7 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
             EnsureHasBlob();
             var readLen = Math.Min((int)Math.Min(bytesLeftInStream, BytesLeftInBlock()),
                 buffer.Length);
-            blob.Read(buffer[..readLen], (int)blockPosition);
+            blob.Read(buffer[..readLen], (int)positionInBlock);
             IncrementPosition(readLen);
             outerBytesRead += readLen;
             buffer = buffer[readLen..];
@@ -39,46 +38,7 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
 
     private long BytesLeftInBlock()
     {
-        return blockSize - blockPosition;
-    }
-
-    private void IncrementPosition(int readLen)
-    {
-        blockPosition += readLen;
-        if (blockPosition >= blockSize)
-        {
-            blockIndex++;
-            blockPosition = 0;
-            blob?.Dispose();
-            blob = null;
-        }
-    }
-
-    private void EnsureHasBlob()
-    {
-        if (blob is not null || Position >= Length) return;
-        blob = store.GetBlobForReading(objectId, blockIndex);
-    }
-
-
-    /// <inheritdoc />
-    public override long Seek(long offset, SeekOrigin origin)
-    {
-        switch (origin)
-        {
-            case SeekOrigin.Begin:
-                Position = offset;
-                break;
-            case SeekOrigin.Current:
-                Position += offset;
-                break;
-            case SeekOrigin.End:
-                Position = Length + offset;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(origin), origin, null);
-        }
-        return Position;
+        return blockSize - positionInBlock;
     }
 
     /// <inheritdoc />
@@ -101,22 +61,17 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     public override long Length { get; } = size;
 
     /// <inheritdoc />
-    public override long Position
+    protected override void JumpTo(long block, long offset)
     {
-        get => (blockIndex*blockSize)+blockPosition;
-        set
-        {
-            if ((ulong)value >= (ulong)Length)
-                throw new ArgumentOutOfRangeException(nameof(value), "Position is beyond the end of the stream.");
-            blockIndex = value / blockSize;
-            blockPosition = value % blockSize;
-        }
+        currentBlock = block;
+        positionInBlock = offset;
     }
 
-    private void SetBlockIndex(int newIndex)
+    /// <inheritdoc />
+    protected override SQLiteBlob GetNewBlob()
     {
-        if (blockIndex == newIndex) return;
         blob?.Dispose();
-        blob = null;
+        
+        return store.GetBlobForReading(objectId, (int)currentBlock);
     }
 }

@@ -9,23 +9,40 @@ public static partial class SqliteBlobSpanAdapters
 {
     public static unsafe void Read(this SQLiteBlob blob, Span<byte> target, int sourceOffset)
     {
+        var handle = GetHandle(blob, sourceOffset);
+        fixed (byte* ptr = target)
+        {
+                ThrowOnError(sqlite3_blob_read(handle, ptr, target.Length, sourceOffset));
+        }
+    }
+
+    private static IntPtr GetHandle(SQLiteBlob blob, int sourceOffset)
+    {
         CheckDisposed(blob);
         CheckOpen(blob);
         if (sourceOffset < 0) throw new ArgumentException("Source offset must be >= 0");
-
         var blobHandle = (CriticalHandle)blob.GetField("_sqlite_blob");
         var handle = GetHandle(blobHandle);
-
-        fixed (byte* ptr = target)
+        if (handle == IntPtr.Zero)
         {
-            if (handle != IntPtr.Zero)
-            {
-                var ret = sqlite3_blob_read(handle,
-                    ptr, target.Length, sourceOffset);
-                if (ret != SQLiteErrorCode.Ok)
-                    throw new SQLiteException(ret, "Error in custom read method");
-            }
+            throw new InvalidOperationException("Blob handle is not open or has been disposed.");
         }
+        return handle;
+    }
+
+    public static unsafe void Write(this SQLiteBlob blob, ReadOnlySpan<byte> data, int sourceOffset)
+    {
+        var handle = GetHandle(blob, sourceOffset);
+        fixed (byte* ptr = data)
+        {
+                ThrowOnError(sqlite3_blob_write(handle, ptr, data.Length, sourceOffset));
+        }
+    }
+
+    private static void ThrowOnError(SQLiteErrorCode ret)
+    {
+        if (ret != SQLiteErrorCode.Ok)
+            throw new SQLiteException(ret, "Error in custom blob operation");
     }
 
     [UnsafeAccessor(UnsafeAccessorKind.Method)]
@@ -45,5 +62,13 @@ public static partial class SqliteBlobSpanAdapters
         byte* buffer,
         int count,
         int offset);
+
+    [DllImport("SQLite.Interop.dll", EntryPoint = "SI5c335fd80f71405f", CallingConvention = CallingConvention.Cdecl)]
+    static extern unsafe SQLiteErrorCode sqlite3_blob_write(
+        IntPtr blob,
+        byte* buffer,
+        int count,
+        int offset);
+
 
 }

@@ -1,14 +1,12 @@
 ﻿using System.Data.SQLite;
-using System.Security.Cryptography;
+using System.Diagnostics.CodeAnalysis;
+
 
 namespace Melville.FileSystem.Sqlite;
 
 public class SqliteWritingStream(SqliteFileStore store, long objectId, long blockSize,
-    SqliteFile file) : Stream
+    SqliteFile file) : SqliteBlobStream(blockSize)
 {
-    private int currentBlock;
-    private int positionInBlock;
-    private SQLiteBlob? currentBlob;
     /// <inheritdoc />
     public override void Flush()
     {
@@ -34,9 +32,6 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
 
-    /// <inheritdoc />
-    public override long Seek(long offset, SeekOrigin origin) => 
-        throw new NotSupportedException();
 
     /// <inheritdoc />
     public override void SetLength(long value)
@@ -52,39 +47,20 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     public override void Write(ReadOnlySpan<byte> buffer)
     {
-#warning right now I am doing something stupid performance wise, because I think that later I can write spans to the blob
         while (buffer.Length > 0)
         {
             EnsureHasBlob();
             var destSize = (int)Math.Min(blockSize - positionInBlock, buffer.Length);
-            var data = buffer.Slice(0, destSize).ToArray();
-            currentBlob.Write(data, destSize, positionInBlock);
+            blob.Write(buffer[..destSize], (int)positionInBlock);
             buffer = buffer[destSize..];
-            IncrementalPosition(destSize);
-        }
-    }
-
-    private void IncrementalPosition(int destSize)
-    {
-        positionInBlock += destSize;
-        if (positionInBlock >= blockSize)
-        {
-            CloseCurrentBlob();
-            positionInBlock = 0;
-            currentBlock++;
+            IncrementPosition(destSize);
         }
     }
 
     private void CloseCurrentBlob()
     {
-        currentBlob?.Close();
-        currentBlob = null;
-    }
-
-    private void EnsureHasBlob()
-    {
-        if (currentBlob is not null) return;
-        currentBlob = store.GetBlobForWriting(objectId, blockSize, currentBlock);
+        blob?.Close();
+        blob = null;
     }
 
     /// <inheritdoc />
@@ -100,9 +76,12 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     public override long Length => Position;
 
     /// <inheritdoc />
-    public override long Position
+    protected override void JumpTo(long block, long offset) => throw new NotSupportedException();
+
+    /// <inheritdoc />
+    protected override SQLiteBlob GetNewBlob()
     {
-        get => (blockSize*currentBlock)+positionInBlock;
-        set => throw new NotSupportedException("Cannot seek a SqliteWritingStream");
+        CloseCurrentBlob();
+        return store.GetBlobForWriting(objectId, blockSize, (int)currentBlock);
     }
 }
