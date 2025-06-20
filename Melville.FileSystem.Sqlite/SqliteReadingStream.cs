@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Melville.FileSystem.Sqlite;
 
-public class SqliteReadingStream(SqliteFileStore store, long objectId, long blockSize, long size) 
+public class SqliteReadingStream(SqliteFileStore store, long objectId, long blockSize, long size)
     : SqliteBlobStream(blockSize)
 {
     /// <inheritdoc />
@@ -13,39 +13,68 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     }
 
     /// <inheritdoc />
-    public override int Read(byte[] buffer, int offset, int count)
+    protected override void Dispose(bool disposing)
     {
-        return Read(buffer.AsSpan(offset, count));
+        base.Dispose(disposing);
+        blob?.Dispose();
+        blob = null;
     }
+
+    /// <inheritdoc />
+    public override int Read(byte[] buffer, int offset, int count) =>
+        Read(buffer.AsSpan(offset, count));
 
     /// <inheritdoc />
     public override int Read(Span<byte> buffer)
     {
-#warning we should reuse our blob objects rather than opening and closing them
-        int outerBytesRead = 0;
-        while (buffer.Length > 0 && Length-Position is var bytesLeftInStream and > 0)
+        int outerReadSize = 0;
+        while (InnerReadLength(buffer.Length - outerReadSize) is var innerReadSize and > 0)
         {
             EnsureHasBlob();
-            var readLen = Math.Min((int)Math.Min(bytesLeftInStream, BytesLeftInBlock()),
-                buffer.Length);
-            blob.Read(buffer[..readLen], (int)positionInBlock);
-            IncrementPosition(readLen);
-            outerBytesRead += readLen;
-            buffer = buffer[readLen..];
+            blob.Read(buffer.Slice(outerReadSize, innerReadSize), (int)positionInBlock);
+            IncrementPosition(innerReadSize);
+            outerReadSize += innerReadSize;
         }
-        return outerBytesRead;
+
+        return outerReadSize;
     }
 
-    private long BytesLeftInBlock()
+    /// <inheritdoc />
+    public override Task<int> ReadAsync(
+        byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
+        ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+
+
+    /// <inheritdoc />
+    public override async ValueTask<int> ReadAsync(
+        Memory<byte> buffer, CancellationToken cancellationToken = new CancellationToken())
     {
-        return blockSize - positionInBlock;
+        var outerReadSize = 0;
+        while (InnerReadLength(buffer.Length - outerReadSize) is var innerReadSize and > 0)
+        {
+            await EnsureHasBlobAsync();
+            blob.Read(buffer.Slice(outerReadSize, innerReadSize).Span, (int)positionInBlock);
+            IncrementPosition(innerReadSize);
+            outerReadSize += innerReadSize;
+        }
+
+        return outerReadSize;
     }
+
+    private int InnerReadLength(int bufferSizeAvailable) =>
+        Math.Min(
+            (int)Math.Min(BytesLeftToRead(), BytesLeftInBlock()),
+            bufferSizeAvailable);
+
+    private long BytesLeftToRead() => Length - Position;
+
+    private long BytesLeftInBlock() => blockSize - positionInBlock;
 
     /// <inheritdoc />
     public override void SetLength(long value) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public override void Write(byte[] buffer, int offset, int count) => 
+    public override void Write(byte[] buffer, int offset, int count) =>
         throw new NotSupportedException();
 
     /// <inheritdoc />
@@ -61,17 +90,14 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     public override long Length { get; } = size;
 
     /// <inheritdoc />
-    protected override void JumpTo(long block, long offset)
-    {
-        currentBlock = block;
-        positionInBlock = offset;
-    }
+    protected override void JumpTo(long block, long offset) =>
+        (currentBlock, positionInBlock) = (block, offset);
 
     /// <inheritdoc />
-    protected override SQLiteBlob GetNewBlob()
-    {
-        blob?.Dispose();
-        
-        return store.GetBlobForReading(objectId, (int)currentBlock);
-    }
+    protected override SQLiteBlob GetNewBlob() =>
+        store.GetBlobForReading(objectId, currentBlock, blob);
+
+    /// <inheritdoc />
+    protected override Task<SQLiteBlob> GetNewBlobAsync() => 
+        store.GetBlobForReadingAsync(objectId, currentBlock, blob);
 }

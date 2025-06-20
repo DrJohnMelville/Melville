@@ -57,6 +57,26 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
         }
     }
 
+    /// <inheritdoc />
+    public override Task WriteAsync(
+        byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
+    WriteAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+
+    /// <inheritdoc />
+    public override async ValueTask WriteAsync(
+        ReadOnlyMemory<byte> buffer, 
+        CancellationToken cancellationToken = new CancellationToken())
+    {
+        while (buffer.Length > 0)
+        {
+            await EnsureHasBlobAsync();
+            var destSize = (int)Math.Min(blockSize - positionInBlock, buffer.Length);
+            blob.Write(buffer[..destSize].Span, (int)positionInBlock);
+            buffer = buffer[destSize..];
+            IncrementPosition(destSize);
+        }
+    }
+
     private void CloseCurrentBlob()
     {
         blob?.Close();
@@ -81,7 +101,11 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     protected override SQLiteBlob GetNewBlob()
     {
-        CloseCurrentBlob();
-        return store.GetBlobForWriting(objectId, blockSize, (int)currentBlock);
+        return store.GetBlobForWriting(objectId, blockSize, currentBlock, blob);
     }
+
+    #warning  Make this a real async
+    /// <inheritdoc />
+    protected override Task<SQLiteBlob> GetNewBlobAsync() =>
+        store.GetBlobForWritingAsync(objectId, blockSize, currentBlock, blob);
 }

@@ -112,28 +112,54 @@ public readonly struct SqliteFileStore(IDbConnection connection)
         return new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId };
     }
 
-    public SQLiteBlob GetBlobForWriting(long fileId, long blockSize, int blockIndex)
+    private const string GetWriteBlockQuery = """
+        INSERT INTO Blocks (FileId, SequenceNumber, Bytes) 
+        VALUES (@fileId, @blockIndex, zeroblob(@blockSize))
+        ON CONFLICT(FileId, SequenceNumber) DO UPDATE SET Bytes = zeroblob(@blockSize)
+        RETURNING Id
+        """;
+    
+    public SQLiteBlob GetBlobForWriting(long fileId, long blockSize, long blockIndex, SQLiteBlob? blob)
     {
-        var blockId = connection.ExecuteScalar<long>("""
-            INSERT INTO Blocks (FileId, SequenceNumber, Bytes) 
-            VALUES (@fileId, @blockIndex, zeroblob(@blockSize))
-            ON CONFLICT(FileId, SequenceNumber) DO UPDATE SET Bytes = zeroblob(@blockSize)
-            RETURNING Id
-            """, new { fileId, blockSize,blockIndex });
-        return CreateBlob(blockId, false);
+        var blockId = connection.ExecuteScalar<long>(
+            GetWriteBlockQuery, new { fileId, blockSize,blockIndex });
+        return CreateBlob(blockId, false, blob);
     }
 
-    private SQLiteBlob CreateBlob(long blockId, bool readOnly) =>
-        SQLiteBlob.Create((SQLiteConnection)connection, 
-            "main", "Blocks", "Bytes", blockId, readOnly);
-
-    public SQLiteBlob GetBlobForReading(long fileId, long sequence)
+    public async Task<SQLiteBlob> GetBlobForWritingAsync(
+        long fileId, long blockSize, long blockIndex, SQLiteBlob? blob)
     {
-        var id = connection.ExecuteScalar<long>("""
+        var blockId = await connection.ExecuteScalarAsync<long>(
+            GetWriteBlockQuery, new { fileId, blockSize,blockIndex });
+        return CreateBlob(blockId, false, blob);
+    }
+
+    private SQLiteBlob CreateBlob(long blockId, bool readOnly, SQLiteBlob? blob)
+    {
+        if (blob is null)
+        return SQLiteBlob.Create((SQLiteConnection)connection,
+                "main", "Blocks", "Bytes", blockId, readOnly); 
+        blob.Reopen(blockId);
+        return blob;
+    }
+
+    private const string GetReadBlockQuery = """
         SELECT Id FROM Blocks 
         WHERE FileId = @fileId AND SequenceNumber = @sequence
-        """, new { fileId, sequence });
-        return CreateBlob(id, true);
+        """;
+
+    public SQLiteBlob GetBlobForReading(long fileId, long sequence, SQLiteBlob? blob)
+    {
+        var id = connection.ExecuteScalar<long>(GetReadBlockQuery, new { fileId, sequence });
+        return CreateBlob(id, true, blob);
+    }
+
+    public async Task<SQLiteBlob> GetBlobForReadingAsync(
+        long fileId, long sequence, SQLiteBlob? blob)
+    {
+        var id = await connection.ExecuteScalarAsync<long>(
+            GetReadBlockQuery, new { fileId, sequence });
+        return CreateBlob(id, true, blob);
     }
 }
 

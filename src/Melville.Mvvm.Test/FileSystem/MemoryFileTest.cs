@@ -65,19 +65,35 @@ public abstract class GenericFileTest(IFile sut)
     }
 
     [Fact]
-    public async Task BigFileRoundTrip()
+    public async Task BigFileRoundTripAsync()
     {
         var size = 10_000;
         byte[] data = Enumerable.Range(0, size).Select(i => (byte)i).ToArray();
-        await using (var str = await sut.CreateWrite(FileAttributes.Normal))
+        await using (var str = await sut.CreateWrite())
         {
             await str.WriteAsync(data);
         }
         await using (var rstr = await sut.OpenRead())
         {
             var buf = new byte[size];
-            int count = buf.Length;
-            await rstr.FillBufferAsync(buf, (int)0, count);
+            await rstr.FillBufferAsync(buf, 0, buf.Length);
+            buf.Should().BeEquivalentTo(data);
+        }
+    }
+
+    [Fact]
+    public async Task BigFileRoundTrip()
+    {
+        var size = 10_000;
+        byte[] data = Enumerable.Range(0, size).Select(i => (byte)i).ToArray();
+        using (var str = await sut.CreateWrite())
+        {
+            str.Write(data, 0, data.Length);
+        }
+        using (var rstr = await sut.OpenRead())
+        {
+            var buf = new byte[size];
+            rstr.FillBuffer(buf, 0, buf.Length);
             buf.Should().BeEquivalentTo(data);
         }
     }

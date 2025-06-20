@@ -59,10 +59,17 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
     public void EnsureHasBlob()
     {
         if (blob is not null && blobIsForBlock == currentBlock) return;
-        blob?.Dispose();
         blob = GetNewBlob();
+        blobIsForBlock = currentBlock;
+    }
+    [MemberNotNull(nameof(blob))]
+    public async ValueTask EnsureHasBlobAsync()
+    {
+        if (blob is not null && blobIsForBlock == currentBlock) return;
+        blob = await GetNewBlobAsync();
         blobIsForBlock = currentBlock;
     }
 
     protected abstract SQLiteBlob GetNewBlob();
+    protected abstract Task<SQLiteBlob> GetNewBlobAsync();
 }
