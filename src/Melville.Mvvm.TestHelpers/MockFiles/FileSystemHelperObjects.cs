@@ -69,7 +69,7 @@ public static class FileSystemHelperObjects
     using (var reader = new StreamReader(s2))
     {
       var actualContent = reader.ReadToEnd();
-      var regex = new Regex($"^{RegexExtensions.GlobToRexex(content)}$", RegexOptions.IgnoreCase);
+      var regex = new Regex($"^{RegexExtensions.GlobToRegex(content)}$", RegexOptions.IgnoreCase);
       Assert.True(regex.IsMatch(actualContent),
         string.Format("\r\n{0} and \r\n{1} do not match.", actualContent, content));
     }

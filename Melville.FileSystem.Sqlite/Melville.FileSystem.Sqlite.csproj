@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\Melville.FileSystem\Melville.FileSystem.csproj" />
+    <ProjectReference Include="..\src\Melville.SimpleDb\Melville.SimpleDb.csproj" />
   </ItemGroup>
 
 </Project>
