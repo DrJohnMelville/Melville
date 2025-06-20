@@ -3,6 +3,7 @@
 public sealed class SqliteFile(SqliteFileStore store, string _name, string _path, long parentId) :
     SqliteFileSystemObject(store, _name, _path, parentId), IFile
 {
+    private long blockSize = 4096;
     public SqliteFile(SqliteFileStore sqliteFileStore, FSObject dto, string path) :
         this(sqliteFileStore, dto.Name, $"{path}/{dto.Name}", dto.Parent ?? 0)
     {
@@ -12,9 +13,8 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
     /// <inheritdoc />
     public async Task<Stream> OpenRead()
     {
-        if (!Exists())
-            throw new IOException("File does not exist.");
-        return new MemoryStream();
+        MustExist();
+        return new SqliteReadingStream(store, objectId, blockSize, Size);
     }
 
     /// <inheritdoc />
@@ -23,14 +23,18 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
         if (!Exists())
         {
             var dto = await store.CreateItemAsync(Name, parentDirectoryId,
-                attributes & ~FileAttributes.Directory, 4096);
+                attributes & ~FileAttributes.Directory, blockSize);
             PopulateFrom(dto);
         }
-        return new MemoryStream();
+        else
+        {
+            await store.DeleteBlocksForAsync(objectId);
+        }
+        return new SqliteWritingStream(store, objectId, blockSize, this);
     }
 
     /// <inheritdoc />
-    public byte FinalProgress => 0;
+    public byte FinalProgress => 255;
 
     /// <inheritdoc />
     public Task WaitForFinal => Task.CompletedTask;
@@ -44,6 +48,10 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
         Size = source.Length;
         if (source.BlockSize <= 0)
             throw new InvalidOperationException("Block size must be positive files.");
+        blockSize = source.BlockSize;
+        Size = source.Length;
         base.PopulateFrom(source);
     }
+
+    internal void UpdateFileData(long length) => Size = length;
 }

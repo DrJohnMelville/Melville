@@ -151,8 +151,20 @@ public abstract class CommonDirectoryOperationsTest(IDirectory sut)
 public class MemoryDirectoryTests():CommonDirectoryOperationsTest(new MockDirectory("TestDir"));
 
 public class SqliteDirectoryTests() : CommonDirectoryOperationsTest(
-    new SqliteDirectory(CreateStoreSync(), "TestDir", "TestDir", 0))
+    TestSqliteFileSystemCreator.SqliteDirectory("TestDir"));
+
+public static class TestSqliteFileSystemCreator
 {
-    private static SqliteFileStore CreateStoreSync() => 
+    public static IFile SqliteFile(string dirName, string fileName)
+    {
+        var dir = SqliteDirectory(dirName);
+        dir.Create();
+        return dir.File(fileName);
+    }
+
+    public static IDirectory SqliteDirectory(string name) =>
+        new SqliteDirectory(CreateStoreSync(), name, name, 0);
+    private static SqliteFileStore CreateStoreSync() =>
         (Task.Run(() => SqliteFileStore.Create())).GetAwaiter().GetResult();
+
 }

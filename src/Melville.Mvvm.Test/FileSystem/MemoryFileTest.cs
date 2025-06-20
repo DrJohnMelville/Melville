@@ -1,45 +1,44 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Melville.FileSystem;
+using Microsoft.VisualBasic;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel.Utilities;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem;
 
-public sealed class MemoryFileTest
+public sealed class MemoryFileTest() : GenericFileTest(new MemoryFile("xxyy"));
+
+public sealed class SqliteFileTest() : GenericFileTest(
+    TestSqliteFileSystemCreator.SqliteFile("", "xxyy"))
+{
+}
+
+public abstract class GenericFileTest(IFile sut)
 {
     [Fact]
-    public void PathTest()
-    {
-        Assert.Equal("xxyy", new MemoryFile("xxyy").Path);
-    }
+    public void PathTest() => sut.Path.Should().EndWith("xxyy");
 
     [Fact]
-    public void FinalProgressTest()
-    {
-        Assert.Equal(255, new MemoryFile("xxyy").FinalProgress);
-    }
-    [Fact]
-    public void WaitForFinalTest()
-    {
-        Assert.True(new MemoryFile("xxyy").WaitForFinal.IsCompleted);
-    }
+    public void FinalProgressTest() => Assert.Equal(255, sut.FinalProgress);
 
     [Fact]
-    public void FileSystemPathTest()
-    {
-        Assert.False(new MemoryFile("xxyy").ValidFileSystemPath());
-    }
+    public void WaitForFinalTest() => Assert.True(sut.WaitForFinal.IsCompleted);
+
     [Fact]
-    public void ParentDir()
-    {
-        Assert.NotNull(new MemoryFile("xxyy").Directory);
-    }
+    public void FileSystemPathTest() => Assert.False(sut.ValidFileSystemPath());
+
+    [Fact]
+    public void ParentDir() => Assert.NotNull(sut.Directory);
 
     [Fact]
     public async Task ExistaBetweenCreateAndDelete()
     {
-        var file = new MemoryFile("xxyy");
+        var file = sut;
         Assert.False(file.Exists());
         using (var str = await file.CreateWrite(FileAttributes.Normal))
         {
@@ -52,17 +51,34 @@ public sealed class MemoryFileTest
     [Fact]
     public async Task ReadFile()
     {
-        var file = new MemoryFile("xxyy");
-        using (var str = await file.CreateWrite(FileAttributes.Normal))
+        using (var str = await sut.CreateWrite(FileAttributes.Normal))
         {
             str.Write(Encoding.UTF8.GetBytes("Foo bar"));
         }
-        using (var rstr = await file.OpenRead())
+        using (var rstr = await sut.OpenRead())
         {
             var buf = new byte[40];
             int count = buf.Length;
             var len = rstr.FillBuffer(buf, (int) 0, count);
             Assert.Equal("Foo bar", Encoding.UTF8.GetString(buf, 0, len));
+        }
+    }
+
+    [Fact]
+    public async Task BigFileRoundTrip()
+    {
+        var size = 10_000;
+        byte[] data = Enumerable.Range(0, size).Select(i => (byte)i).ToArray();
+        await using (var str = await sut.CreateWrite(FileAttributes.Normal))
+        {
+            await str.WriteAsync(data);
+        }
+        await using (var rstr = await sut.OpenRead())
+        {
+            var buf = new byte[size];
+            int count = buf.Length;
+            await rstr.FillBufferAsync(buf, (int)0, count);
+            buf.Should().BeEquivalentTo(data);
         }
     }
 }

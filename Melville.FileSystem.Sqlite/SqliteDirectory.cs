@@ -5,7 +5,7 @@ namespace Melville.FileSystem.Sqlite;
 public sealed class SqliteDirectory(SqliteFileStore store, string _name, string _path, long parentId):
     SqliteFileSystemObject(store,_name,_path, parentId), IDirectory
 {
-    private SqliteDirectory(SqliteFileStore sqliteFileStore, FSObject dto, string path) : 
+    public SqliteDirectory(SqliteFileStore sqliteFileStore, FSObject dto, string path) : 
         this(sqliteFileStore, dto.Name, $"{path}/{dto.Name}", dto.Parent ?? 0)
     {
         PopulateFrom(dto);
@@ -19,12 +19,6 @@ public sealed class SqliteDirectory(SqliteFileStore store, string _name, string 
         var dto = store.FindObject(name, objectId);
         if (dto is {BlockSize: < 0}) ret.PopulateFrom(dto);
         return ret;
-    }
-
-    private void MustExist()
-    {
-        if (!Exists())
-            throw new InvalidOperationException("A directory must exist to do this operation");
     }
 
     /// <inheritdoc />

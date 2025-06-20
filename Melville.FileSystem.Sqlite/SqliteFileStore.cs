@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SQLite;
 using System.Xml.Linq;
 using Dapper;
 using Melville.SimpleDb;
@@ -18,12 +19,10 @@ public readonly struct SqliteFileStore(IDbConnection connection)
     }
 
     private const string CreateFsObjectSql = """
-        BEGIN;
         INSERT INTO FsObjects 
         (Name, Parent, CreatedTime, LastWrite, Attributes, Length, BlockSize) VALUES 
-        (@Name, @Parent, @CreatedTime, @LastWrite, @Attributes, @Length, @BlockSize);
-        SELECT last_insert_rowid();
-        COMMIT;
+        (@Name, @Parent, @CreatedTime, @LastWrite, @Attributes, @Length, @BlockSize)
+        RETURNING Id;
         """;
 
     public FSObject CreateItem(string name, long parentDirectoryId, FileAttributes attributes,
@@ -84,18 +83,58 @@ public readonly struct SqliteFileStore(IDbConnection connection)
 
     public void DeleteItem(long objectId) => 
         connection.Execute("DELETE FROM FsObjects WHERE Id = @Id", new { Id = objectId });
-}
 
-public class FSObject
-{
-    public required long Id { get; set; }
-    public required string Name { get; init; }
-    public required long? Parent { get; init; }
-    public required long CreatedTime { get; init; }
-    public required long LastWrite { get; init; }
-    public required FileAttributes Attributes { get; init; }
-    public required long Length { get; init; }
-    public required long BlockSize { get; init; }
+    public FSObject? DirectoryById(long id)
+    {
+        return connection.QuerySingleOrDefault<FSObject>("""
+        SELECT Id, Name, Parent, CreatedTime, LastWrite, Attributes, Length, BlockSize FROM FsObjects 
+        WHERE Id = @id 
+        """, new {id});
+    }
+
+    public Task DeleteBlocksForAsync(long fileId) =>
+        connection.ExecuteAsync("""
+            DELETE FROM Blocks WHERE FileId = @fileId
+            """, new { fileId });
+
+    public void UpdateFileData(long fileId, long length) => 
+        connection.Execute(UpdateFileQuery, UpdateParameters(fileId, length));
+
+    public Task UpdateFileDataAsync(long fileId, long length) => 
+        connection.ExecuteAsync(UpdateFileQuery, UpdateParameters(fileId, length));
+
+    private const string UpdateFileQuery = """
+        UPDATE FsObjects SET Length = @Length, LastWrite = @LastWrite 
+        WHERE Id = @Id
+        """;
+    private static object UpdateParameters(long fileId, long length)
+    {
+        return new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId };
+    }
+
+    public SQLiteBlob GetBlobForWriting(long fileId, long blockSize, int blockIndex)
+    {
+        var blockId = connection.ExecuteScalar<long>("""
+            INSERT INTO Blocks (FileId, SequenceNumber, Bytes) 
+            VALUES (@fileId, @blockIndex, zeroblob(@blockSize))
+            ON CONFLICT(FileId, SequenceNumber) DO UPDATE SET Bytes = zeroblob(@blockSize)
+            RETURNING Id
+            """, new { fileId, blockSize,blockIndex });
+        return CreateBlob(blockId, false);
+    }
+
+    private SQLiteBlob CreateBlob(long blockId, bool readOnly) =>
+        SQLiteBlob.Create((SQLiteConnection)connection, 
+            "main", "Blocks", "Bytes", blockId, readOnly);
+
+    public SQLiteBlob GetBlobForReading(long fileId, long sequence)
+    {
+        var id = connection.ExecuteScalar<long>("""
+        SELECT Id FROM Blocks 
+        WHERE FileId = @fileId AND SequenceNumber = @sequence
+        """, new { fileId, sequence });
+        return CreateBlob(id, true);
+    }
 }
 
 public static class DbTables
@@ -114,6 +153,15 @@ public static class DbTables
         
         FOREIGN KEY(Parent) REFERENCES FsObjects(Id) ON DELETE CASCADE ON UPDATE CASCADE,
         UNIQUE (Name COLLATE NOCASE, Parent) ON CONFLICT REPLACE
+        );
+        
+        CREATE TABLE Blocks (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        FileId INTEGER NOT NULL,
+        SequenceNumber INTEGER NOT NULL,
+        Bytes BLOB NOT NULL,
+        UNIQUE (FileId, SequenceNumber),
+        FOREIGN KEY (FileId) REFERENCES FsObjects(Id) ON DELETE CASCADE ON UPDATE CASCADE
         );
         """)
     ];

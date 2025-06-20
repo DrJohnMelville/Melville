@@ -1,6 +1,8 @@
-﻿namespace Melville.FileSystem.Sqlite;
+﻿using System.Text.RegularExpressions;
 
-public abstract class SqliteFileSystemObject(
+namespace Melville.FileSystem.Sqlite;
+
+public abstract partial class SqliteFileSystemObject(
     SqliteFileStore store, string name, string path, long parentId) : IFileSystemObject
 {
     protected readonly SqliteFileStore store = store;
@@ -11,7 +13,21 @@ public abstract class SqliteFileSystemObject(
     public string Path { get; } = path;
 
     /// <inheritdoc />
-    public IDirectory? Directory => null;
+    public IDirectory? Directory
+    {
+        get
+        {
+            if (parentDirectoryId == 0) return null;
+            var parentFso = store.DirectoryById(parentDirectoryId);
+            if (parentFso is not { BlockSize: < 0 }) return null;
+                return new SqliteDirectory(store, parentFso, RemoveTwoLevels(Path));
+        }
+    }
+
+    private string RemoveTwoLevels(string s) => TwoLeafRemover().Replace(s,"");
+
+    [GeneratedRegex(@"([/\\]?[^/\\]*){2}$")]
+    private static partial Regex TwoLeafRemover();
 
     /// <inheritdoc />
     public string Name { get; } = name;
@@ -52,5 +68,11 @@ public abstract class SqliteFileSystemObject(
         Created = new DateTime(source.CreatedTime);
         LastWrite = new DateTime(source.LastWrite);
         Attributes = (FileAttributes)source.Attributes;
+    }
+
+    protected void MustExist()
+    {
+        if (!Exists())
+            throw new InvalidOperationException("A directory must exist to do this operation");
     }
 }
