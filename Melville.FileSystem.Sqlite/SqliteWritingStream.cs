@@ -79,8 +79,8 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
 
     private void CloseCurrentBlob()
     {
-        blob?.Close();
-        blob = null;
+        blob.Dispose();
+        blob = default;
     }
 
     /// <inheritdoc />
@@ -99,13 +99,12 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     protected override void JumpTo(long block, long offset) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    protected override SQLiteBlob GetNewBlob()
+    protected override SQLiteBlobWrapper GetNewBlob()
     {
         return store.GetBlobForWriting(objectId, blockSize, currentBlock, blob);
     }
 
-    #warning  Make this a real async
     /// <inheritdoc />
-    protected override Task<SQLiteBlob> GetNewBlobAsync() =>
+    protected override Task<SQLiteBlobWrapper> GetNewBlobAsync() =>
         store.GetBlobForWritingAsync(objectId, blockSize, currentBlock, blob);
 }

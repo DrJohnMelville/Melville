@@ -11,10 +11,11 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
     }
 
     /// <inheritdoc />
-    public async Task<Stream> OpenRead()
+    public Task<Stream> OpenRead()
     {
         MustExist();
-        return new SqliteReadingStream(store, objectId, blockSize, Size);
+        return Task.FromResult<Stream>(
+            new SqliteReadingStream(store, objectId, blockSize, Size));
     }
 
     /// <inheritdoc />

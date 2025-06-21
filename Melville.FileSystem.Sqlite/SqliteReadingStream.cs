@@ -16,8 +16,8 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        blob?.Dispose();
-        blob = null;
+        blob.Dispose();
+        blob = default;
     }
 
     /// <inheritdoc />
@@ -94,10 +94,10 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
         (currentBlock, positionInBlock) = (block, offset);
 
     /// <inheritdoc />
-    protected override SQLiteBlob GetNewBlob() =>
+    protected override SQLiteBlobWrapper GetNewBlob() =>
         store.GetBlobForReading(objectId, currentBlock, blob);
 
     /// <inheritdoc />
-    protected override Task<SQLiteBlob> GetNewBlobAsync() => 
+    protected override Task<SQLiteBlobWrapper> GetNewBlobAsync() => 
         store.GetBlobForReadingAsync(objectId, currentBlock, blob);
 }

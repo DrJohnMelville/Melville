@@ -8,7 +8,7 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
 {
     protected long currentBlock;
     protected long positionInBlock;
-    protected SQLiteBlob? blob;
+    protected SQLiteBlobWrapper blob;
     protected long blobIsForBlock = -1;
     protected long blockSize = blockSize;
 
@@ -55,21 +55,20 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
         }
     }
 
-    [MemberNotNull(nameof(blob))]
     public void EnsureHasBlob()
     {
-        if (blob is not null && blobIsForBlock == currentBlock) return;
+        if (blob.IsValid && blobIsForBlock == currentBlock) return;
         blob = GetNewBlob();
         blobIsForBlock = currentBlock;
     }
-    [MemberNotNull(nameof(blob))]
+    
     public async ValueTask EnsureHasBlobAsync()
     {
-        if (blob is not null && blobIsForBlock == currentBlock) return;
+        if (blob.IsValid && blobIsForBlock == currentBlock) return;
         blob = await GetNewBlobAsync();
         blobIsForBlock = currentBlock;
     }
 
-    protected abstract SQLiteBlob GetNewBlob();
-    protected abstract Task<SQLiteBlob> GetNewBlobAsync();
+    protected abstract SQLiteBlobWrapper GetNewBlob();
+    protected abstract Task<SQLiteBlobWrapper> GetNewBlobAsync();
 }

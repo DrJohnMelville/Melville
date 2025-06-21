@@ -107,10 +107,8 @@ public readonly struct SqliteFileStore(IDbConnection connection)
         UPDATE FsObjects SET Length = @Length, LastWrite = @LastWrite 
         WHERE Id = @Id
         """;
-    private static object UpdateParameters(long fileId, long length)
-    {
-        return new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId };
-    }
+    private static object UpdateParameters(long fileId, long length) => 
+        new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId };
 
     private const string GetWriteBlockQuery = """
         INSERT INTO Blocks (FileId, SequenceNumber, Bytes) 
@@ -119,26 +117,27 @@ public readonly struct SqliteFileStore(IDbConnection connection)
         RETURNING Id
         """;
     
-    public SQLiteBlob GetBlobForWriting(long fileId, long blockSize, long blockIndex, SQLiteBlob? blob)
+    public SQLiteBlobWrapper GetBlobForWriting(
+        long fileId, long blockSize, long blockIndex, SQLiteBlobWrapper blob)
     {
         var blockId = connection.ExecuteScalar<long>(
             GetWriteBlockQuery, new { fileId, blockSize,blockIndex });
         return CreateBlob(blockId, false, blob);
     }
 
-    public async Task<SQLiteBlob> GetBlobForWritingAsync(
-        long fileId, long blockSize, long blockIndex, SQLiteBlob? blob)
+    public async Task<SQLiteBlobWrapper> GetBlobForWritingAsync(
+        long fileId, long blockSize, long blockIndex, SQLiteBlobWrapper blob)
     {
         var blockId = await connection.ExecuteScalarAsync<long>(
             GetWriteBlockQuery, new { fileId, blockSize,blockIndex });
         return CreateBlob(blockId, false, blob);
     }
 
-    private SQLiteBlob CreateBlob(long blockId, bool readOnly, SQLiteBlob? blob)
+    private SQLiteBlobWrapper CreateBlob(long blockId, bool readOnly, SQLiteBlobWrapper blob)
     {
-        if (blob is null)
-        return SQLiteBlob.Create((SQLiteConnection)connection,
-                "main", "Blocks", "Bytes", blockId, readOnly); 
+        if (!blob.IsValid)
+        return new SQLiteBlobWrapper(SQLiteBlob.Create((SQLiteConnection)connection,
+                "main", "Blocks", "Bytes", blockId, readOnly)); 
         blob.Reopen(blockId);
         return blob;
     }
@@ -148,47 +147,17 @@ public readonly struct SqliteFileStore(IDbConnection connection)
         WHERE FileId = @fileId AND SequenceNumber = @sequence
         """;
 
-    public SQLiteBlob GetBlobForReading(long fileId, long sequence, SQLiteBlob? blob)
+    public SQLiteBlobWrapper GetBlobForReading(long fileId, long sequence, SQLiteBlobWrapper blob)
     {
         var id = connection.ExecuteScalar<long>(GetReadBlockQuery, new { fileId, sequence });
         return CreateBlob(id, true, blob);
     }
 
-    public async Task<SQLiteBlob> GetBlobForReadingAsync(
-        long fileId, long sequence, SQLiteBlob? blob)
+    public async Task<SQLiteBlobWrapper> GetBlobForReadingAsync(
+        long fileId, long sequence, SQLiteBlobWrapper blob)
     {
         var id = await connection.ExecuteScalarAsync<long>(
             GetReadBlockQuery, new { fileId, sequence });
         return CreateBlob(id, true, blob);
     }
-}
-
-public static class DbTables
-{
-    public static readonly Migration[] All = [
-        new(1,"""
-        CREATE TABLE FsObjects (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        Name STRING NOT NULL,
-        Parent INTEGER,
-        CreatedTime INTEGER NOT NULL,
-        LastWrite INTEGER NOT NULL,
-        Attributes INTEGER NOT NULL,
-        Length INTEGER NOT NULL,
-        BlockSize INTEGER NOT NULL,
-        
-        FOREIGN KEY(Parent) REFERENCES FsObjects(Id) ON DELETE CASCADE ON UPDATE CASCADE,
-        UNIQUE (Name COLLATE NOCASE, Parent) ON CONFLICT REPLACE
-        );
-        
-        CREATE TABLE Blocks (
-        Id INTEGER PRIMARY KEY AUTOINCREMENT,
-        FileId INTEGER NOT NULL,
-        SequenceNumber INTEGER NOT NULL,
-        Bytes BLOB NOT NULL,
-        UNIQUE (FileId, SequenceNumber),
-        FOREIGN KEY (FileId) REFERENCES FsObjects(Id) ON DELETE CASCADE ON UPDATE CASCADE
-        );
-        """)
-    ];
 }
