@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Melville.SimpleDb;
 
-
+[Obsolete("Use MigratedRepoConnection instead.")]
 public class ConnectionCache(IRepoDbConnection inner) : IRepoDbConnection
 {
-    private readonly Lazy<Task<IDbConnection>> connection =
-        new(() => inner.GetConnectionAsync().AsTask(), LazyThreadSafetyMode.ExecutionAndPublication);
+    private readonly Lazy<IDbConnection> connection =
+        new(inner.GetConnection, LazyThreadSafetyMode.ExecutionAndPublication);
 
-    public ValueTask<IDbConnection> GetConnectionAsync() => new(connection.Value);
+    public IDbConnection GetConnection() => connection.Value;
 }
 
 public class RepoDbConfiguration

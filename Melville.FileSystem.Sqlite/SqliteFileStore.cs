@@ -19,15 +19,11 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection)
         return TryCreateObject(ret, 0, true);
     }
 
-    public static async Task<SqliteFileStore> Create(string filePath = "")
+    public static SqliteFileStore Create(string filePath = "")
     {
-        var conn =
-            new MigratedRepo(
-                new RepoConnection(new RepoDbConfiguration() { FolderPath = filePath }),
-                new Migrator(DbTables.All));
-        var connectionAsync = await conn.GetConnectionAsync();
-        connectionAsync.Execute("PRAGMA journal_mode = 'wal';"); // Enable WAL mode for better concurrency 
-        return new(connectionAsync);
+        var repo = new MigratedRepoConnection(
+            new RepoDbConfiguration() { FolderPath = filePath }, DbTables.All);
+        return new(new SqliteTransactionScope(repo.GetConnection(), null));
     }
 
     private const string CreateFsObjectSql = """

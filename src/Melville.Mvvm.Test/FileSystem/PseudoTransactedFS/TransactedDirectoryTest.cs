@@ -21,7 +21,7 @@ public class TransactedDirectoryTest : RootTransactedDirectoryTest
 
 public class SqliteTransactedDirectoryTest : RootTransactedDirectoryTest
 {
-    public SqliteTransactedDirectoryTest() : this(TestSqliteFileSystemCreator.CreateStoreSync())
+    public SqliteTransactedDirectoryTest() : this(SqliteFileStore.Create())
     {
     }
     private SqliteTransactedDirectoryTest(SqliteFileStore dir) : 
