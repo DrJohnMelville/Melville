@@ -36,4 +36,10 @@ public readonly struct SqliteTransactionScope(
     public void Commit() => transaction?.Commit();
     public void Rollback() => transaction?.Rollback();
     public void DisposeTransaction() =>  transaction?.Dispose();
+
+    public void Dispose()
+    {
+        DisposeTransaction();
+        connection.Dispose();
+    }
 }

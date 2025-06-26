@@ -6,7 +6,7 @@ using Melville.SimpleDb;
 
 namespace Melville.FileSystem.Sqlite;
 
-public readonly struct SqliteFileStore(SqliteTransactionScope connection)
+public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisposable
 {
     public SqliteFileStore(IDbConnection connection, IDbTransaction? transaction = null) :
         this(new(connection, transaction))
@@ -23,7 +23,9 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection)
     {
         var repo = new MigratedRepoConnection(
             new RepoDbConfiguration() { FolderPath = filePath }, DbTables.All);
-        return new(new SqliteTransactionScope(repo.GetConnection(), null));
+        var dbConnection = repo.GetConnection();
+        dbConnection.Execute("PRAGMA locking_mode = EXCLUSIVE;");
+        return new(new SqliteTransactionScope(dbConnection, null));
     }
 
     private const string CreateFsObjectSql = """
@@ -181,4 +183,6 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection)
     public void Rollback() => connection.Rollback();
     public void DisposeTransaction() => connection.DisposeTransaction();
     #endregion
+
+    public void Dispose() => connection.Dispose();
 }
