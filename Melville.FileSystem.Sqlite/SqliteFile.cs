@@ -1,4 +1,6 @@
-﻿namespace Melville.FileSystem.Sqlite;
+﻿using System.Data.SQLite;
+
+namespace Melville.FileSystem.Sqlite;
 
 public sealed class SqliteFile(SqliteFileStore store, string _name, string _path, long parentId) :
     SqliteFileSystemObject(store, _name, _path, parentId), IFile
@@ -19,19 +21,19 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
     }
 
     /// <inheritdoc />
-    public async Task<Stream> CreateWrite(FileAttributes attributes = FileAttributes.Normal)
+    public Task<Stream> CreateWrite(FileAttributes attributes = FileAttributes.Normal)
     {
         if (!Exists())
         {
-            var dto = await store.CreateItemAsync(Name, parentDirectoryId,
+            var dto = store.CreateItem(Name, parentDirectoryId,
                 attributes & ~FileAttributes.Directory, blockSize);
             PopulateFrom(dto);
         }
         else
         {
-            await store.DeleteBlocksForAsync(objectId);
+            store.DeleteBlocksFor(objectId);
         }
-        return new SqliteWritingStream(store, objectId, blockSize, this);
+        return Task.FromResult<Stream>(new SqliteWritingStream(store, objectId, blockSize, this));
     }
 
     /// <inheritdoc />
@@ -48,7 +50,7 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
     {
         Size = source.Length;
         if (source.BlockSize <= 0)
-            throw new InvalidOperationException("Block size must be positive files.");
+            throw new InvalidOperationException("Block size must be positive for files.");
         blockSize = source.BlockSize;
         Size = source.Length;
         base.PopulateFrom(source);

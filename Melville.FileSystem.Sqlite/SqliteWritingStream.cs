@@ -18,9 +18,8 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     public override Task FlushAsync(CancellationToken cancellationToken)
     {
-        CloseCurrentBlob();
-        file.UpdateFileData(Length);
-        return store.UpdateFileDataAsync(objectId, Length);
+        Flush();
+        return Task.CompletedTask;
     }
 
     /// <inheritdoc />
@@ -59,22 +58,19 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
 
     /// <inheritdoc />
     public override Task WriteAsync(
-        byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
-    WriteAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+        byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+    {
+        Write(buffer, offset, count);
+        return Task.CompletedTask;
+    }
 
     /// <inheritdoc />
-    public override async ValueTask WriteAsync(
+    public override ValueTask WriteAsync(
         ReadOnlyMemory<byte> buffer, 
         CancellationToken cancellationToken = new CancellationToken())
     {
-        while (buffer.Length > 0)
-        {
-            await EnsureHasBlobAsync();
-            var destSize = (int)Math.Min(blockSize - positionInBlock, buffer.Length);
-            blob.Write(buffer[..destSize].Span, (int)positionInBlock);
-            buffer = buffer[destSize..];
-            IncrementPosition(destSize);
-        }
+        Write(buffer.Span);
+        return ValueTask.CompletedTask;
     }
 
     private void CloseCurrentBlob()
@@ -99,12 +95,6 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     protected override void JumpTo(long block, long offset) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    protected override SQLiteBlobWrapper GetNewBlob()
-    {
-        return store.GetBlobForWriting(objectId, blockSize, currentBlock, blob);
-    }
-
-    /// <inheritdoc />
-    protected override Task<SQLiteBlobWrapper> GetNewBlobAsync() =>
-        store.GetBlobForWritingAsync(objectId, blockSize, currentBlock, blob);
+    protected override SQLiteBlobWrapper GetNewBlob() => 
+        store.GetBlobForWriting(objectId, blockSize, currentBlock, blob);
 }

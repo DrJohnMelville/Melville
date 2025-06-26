@@ -1,8 +1,24 @@
 ﻿using System.Text.RegularExpressions;
+using Melville.FileSystem.PseudoTransactedFS;
 
 namespace Melville.FileSystem.Sqlite;
 
-public sealed class SqliteDirectory(SqliteFileStore store, string _name, string _path, long parentId):
+public sealed class SqliteTransactedDirectory(
+    SqliteFileStore store, string _name, string _path, long parentId) :
+    SqliteDirectory(store, _name, _path, parentId), ITransactedDirectory
+{
+    public ValueTask Commit()
+    {
+        store.Commit();
+        return ValueTask.CompletedTask;
+    }
+
+    public void Rollback() => store.Rollback();
+
+    public void Dispose() => store.DisposeTransaction();
+}
+
+public class SqliteDirectory(SqliteFileStore store, string _name, string _path, long parentId):
     SqliteFileSystemObject(store,_name,_path, parentId), IDirectory
 {
     public SqliteDirectory(SqliteFileStore sqliteFileStore, FSObject dto, string path) : 
@@ -16,9 +32,7 @@ public sealed class SqliteDirectory(SqliteFileStore store, string _name, string 
     {
         MustExist();
         var ret = new SqliteDirectory(store, name, $"{Path}\\{name}", objectId);
-        var dto = store.FindObject(name, objectId);
-        if (dto is {BlockSize: < 0}) ret.PopulateFrom(dto);
-        return ret;
+        return store.TryCreateObject(ret, objectId, true);
     }
 
     /// <inheritdoc />
@@ -26,12 +40,7 @@ public sealed class SqliteDirectory(SqliteFileStore store, string _name, string 
     {
         MustExist();
         var ret = new SqliteFile(store, name, $"{Path}\\{name}", objectId);
-        var dto = store.FindObject(name, objectId);
-        if (dto is { BlockSize: > 0 })
-        {
-            ret.PopulateFrom(dto);
-        }
-        return ret;
+        return store.TryCreateObject(ret, objectId, false);
     }
 
     /// <inheritdoc />
