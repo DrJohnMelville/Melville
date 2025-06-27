@@ -1,5 +1,4 @@
-﻿using System.Windows.Controls;
-using Melville.Wpf.Samples.ApplicationBinding;
+﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
 using Melville.Wpf.Samples.CalendarControls;
 using Melville.Wpf.Samples.DialogBox;
@@ -12,18 +11,20 @@ using Melville.Wpf.Samples.MouseClicks;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
 using Melville.Wpf.Samples.ScopedMethodCalls;
 using Melville.Wpf.Samples.ShellCommands;
+using Melville.Wpf.Samples.SqliteFileSystem;
 using Melville.Wpf.Samples.ThumbDrives;
 using Melville.Wpf.Samples.TranscriptionPedal;
 using Melville.Wpf.Samples.TreeDragging;
 using Melville.Wpf.Samples.WaitMessageTest;
 using Melville.Wpf.Samples.WebView2Integration;
+using System.Windows.Controls;
 
 namespace Melville.Wpf.Samples;
 
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<DDFileViewModel>();
+        SearchTreeForSample<SqliteFsViewModel>();
 
     public SampleDirectory()
     {
@@ -63,6 +64,9 @@ public class SampleDirectory : SampleDirectoryDsl
                 Page<CalendarControlViewModel>("Calendar Control"),
                 Page<DialogBoxSheetViewModel>("Dialog Box"),
                 Page<PopupWindowSheetViewModel>("Popup Box"),
-                Page<MonitoredCopyViewModel>("Copy with Progress"))
+                Page<MonitoredCopyViewModel>("Copy with Progress")),
+            Node("Performance",
+                Page<SqliteFsViewModel>("Sqlite File System")
+                )
         );
 }

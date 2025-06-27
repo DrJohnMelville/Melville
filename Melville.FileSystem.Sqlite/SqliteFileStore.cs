@@ -28,18 +28,16 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisp
         return new(new SqliteTransactionScope(dbConnection, null));
     }
 
-    private const string CreateFsObjectSql = """
-                                             INSERT INTO FsObjects 
-                                             (Name, Parent, CreatedTime, LastWrite, Attributes, Length, BlockSize) VALUES 
-                                             (@Name, @Parent, @CreatedTime, @LastWrite, @Attributes, @Length, @BlockSize)
-                                             RETURNING Id;
-                                             """;
-
     public FSObject CreateItem(string name, long parentDirectoryId, FileAttributes attributes,
         long blockSize)
     {
         var dto = CreateFsObject(name, parentDirectoryId, attributes, blockSize);
-        dto.Id = connection.ExecuteScalar<long>(CreateFsObjectSql, dto);
+        dto.Id = connection.ExecuteScalar<long>("""
+                                                INSERT INTO FsObjects 
+                                                (Name, Parent, CreatedTime, LastWrite, Attributes, Length, BlockSize) VALUES 
+                                                (@Name, @Parent, @CreatedTime, @LastWrite, @Attributes, @Length, @BlockSize)
+                                                RETURNING Id;
+                                                """, dto);
         return dto;
     }
 
@@ -111,37 +109,25 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisp
                                 DELETE FROM Blocks WHERE FileId = @fileId
                                 """, new { fileId });
 
-    public void UpdateFileData(long fileId, long length) =>
-        connection.Execute(UpdateFileQuery, UpdateParameters(fileId, length));
+    public void UpdateFileData(long fileId, long length, long blockSize) =>
+        connection.Execute("""
+                           UPDATE FsObjects SET Length = @Length, LastWrite = @LastWrite, BlockSize = @blockSize 
+                           WHERE Id = @Id
+                           """, UpdateParameters(fileId, length, blockSize));
 
-    private const string UpdateFileQuery = """
-                                           UPDATE FsObjects SET Length = @Length, LastWrite = @LastWrite 
-                                           WHERE Id = @Id
-                                           """;
-
-    private static object UpdateParameters(long fileId, long length) =>
-        new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId };
-
-    private const string GetWriteBlockQuery = """
-                                              INSERT INTO Blocks (FileId, SequenceNumber, Bytes) 
-                                              VALUES (@fileId, @blockIndex, zeroblob(@blockSize))
-                                              ON CONFLICT(FileId, SequenceNumber) DO UPDATE SET Bytes = zeroblob(@blockSize)
-                                              RETURNING Id
-                                              """;
+    private static object UpdateParameters(long fileId, long length, long blockSize) =>
+        new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId, blockSize };
 
     public SQLiteBlobWrapper GetBlobForWriting(
         long fileId, long blockSize, long blockIndex, SQLiteBlobWrapper blob)
     {
         var blockId = connection.ExecuteScalar<long>(
-            GetWriteBlockQuery, new { fileId, blockSize, blockIndex });
-        return CreateBlob(blockId, false, blob);
-    }
-
-    public async Task<SQLiteBlobWrapper> GetBlobForWritingAsync(
-        long fileId, long blockSize, long blockIndex, SQLiteBlobWrapper blob)
-    {
-        var blockId = await connection.ExecuteScalarAsync<long>(
-            GetWriteBlockQuery, new { fileId, blockSize, blockIndex });
+            """
+            INSERT INTO Blocks (FileId, SequenceNumber, Bytes) 
+            VALUES (@fileId, @blockIndex, zeroblob(@blockSize))
+            ON CONFLICT(FileId, SequenceNumber) DO UPDATE SET Bytes = zeroblob(@blockSize)
+            RETURNING Id
+            """, new { fileId, blockSize, blockIndex });
         return CreateBlob(blockId, false, blob);
     }
 
@@ -152,14 +138,12 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisp
         return blob;
     }
 
-    private const string GetReadBlockQuery = """
-                                             SELECT Id FROM Blocks 
-                                             WHERE FileId = @fileId AND SequenceNumber = @sequence
-                                             """;
-
     public SQLiteBlobWrapper GetBlobForReading(long fileId, long sequence, SQLiteBlobWrapper blob)
     {
-        var id = connection.ExecuteScalar<long>(GetReadBlockQuery, new { fileId, sequence });
+        var id = connection.ExecuteScalar<long>("""
+                                                SELECT Id FROM Blocks 
+                                                WHERE FileId = @fileId AND SequenceNumber = @sequence
+                                                """, new { fileId, sequence });
         return CreateBlob(id, true, blob);
     }
 
@@ -167,7 +151,10 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisp
         long fileId, long sequence, SQLiteBlobWrapper blob)
     {
         var id = await connection.ExecuteScalarAsync<long>(
-            GetReadBlockQuery, new { fileId, sequence });
+            """
+            SELECT Id FROM Blocks 
+            WHERE FileId = @fileId AND SequenceNumber = @sequence
+            """, new { fileId, sequence });
         return CreateBlob(id, true, blob);
     }
 

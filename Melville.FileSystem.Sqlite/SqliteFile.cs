@@ -56,5 +56,9 @@ public sealed class SqliteFile(SqliteFileStore store, string _name, string _path
         base.PopulateFrom(source);
     }
 
-    internal void UpdateFileData(long length) => Size = length;
+    internal void UpdateFileData(long length, long newBlockSize)
+    {
+        Size = length;
+        blockSize = newBlockSize;
+    }
 }

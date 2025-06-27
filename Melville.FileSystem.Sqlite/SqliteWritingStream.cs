@@ -11,8 +11,8 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     public override void Flush()
     {
         CloseCurrentBlob();
-        store.UpdateFileData(objectId, Length);
-        file.UpdateFileData(Length);
+        store.UpdateFileData(objectId, Length, blockSize);
+        file.UpdateFileData(Length, blockSize);
     }
 
     /// <inheritdoc />
@@ -35,8 +35,8 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     public override void SetLength(long value)
     {
-#warning maybe I can do an optimization by using SetLength to allocate a single blob when I know the final length.
-        // if I mess with blocksize, I have to set it in the flush methods;
+       if (Position == 0)
+            blockSize = value > 0 ? value : 4096;
     }
 
     /// <inheritdoc />
