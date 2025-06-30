@@ -5,6 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+	  <Title>Melville.FileSystem.Sqlite</Title>
+	  <PackageDescription>Sqlite implementation of the melville file system abstraction</PackageDescription>
+	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
   </PropertyGroup>
 
   <ItemGroup>
