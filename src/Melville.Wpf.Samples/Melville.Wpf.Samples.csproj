@@ -34,6 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Melville.FileSystem.Sqlite\Melville.FileSystem.Sqlite.csproj" />
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
       <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
       <ProjectReference Include="..\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj" />

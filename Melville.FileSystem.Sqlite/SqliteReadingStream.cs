@@ -42,24 +42,13 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     public override Task<int> ReadAsync(
         byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
-        ReadAsync(buffer.AsMemory(offset, count), cancellationToken).AsTask();
+        Task.FromResult(Read(buffer.AsSpan(offset, count)));
 
 
     /// <inheritdoc />
-    public override async ValueTask<int> ReadAsync(
-        Memory<byte> buffer, CancellationToken cancellationToken = new CancellationToken())
-    {
-        var outerReadSize = 0;
-        while (InnerReadLength(buffer.Length - outerReadSize) is var innerReadSize and > 0)
-        {
-            await EnsureHasBlobAsync();
-            blob.Read(buffer.Slice(outerReadSize, innerReadSize).Span, (int)positionInBlock);
-            IncrementPosition(innerReadSize);
-            outerReadSize += innerReadSize;
-        }
-
-        return outerReadSize;
-    }
+    public override  ValueTask<int> ReadAsync(
+        Memory<byte> buffer, CancellationToken cancellationToken = new CancellationToken()) =>
+        new(Read(buffer.Span));
 
     private int InnerReadLength(int bufferSizeAvailable) =>
         Math.Min(
@@ -96,8 +85,4 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     /// <inheritdoc />
     protected override SQLiteBlobWrapper GetNewBlob() =>
         store.GetBlobForReading(objectId, currentBlock, blob);
-
-    /// <inheritdoc />
-    protected override Task<SQLiteBlobWrapper> GetNewBlobAsync() => 
-        store.GetBlobForReadingAsync(objectId, currentBlock, blob);
 }

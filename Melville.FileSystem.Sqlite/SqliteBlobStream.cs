@@ -62,13 +62,5 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
         blobIsForBlock = currentBlock;
     }
     
-    public async ValueTask EnsureHasBlobAsync()
-    {
-        if (blob.IsValid && blobIsForBlock == currentBlock) return;
-        blob = await GetNewBlobAsync();
-        blobIsForBlock = currentBlock;
-    }
-
     protected abstract SQLiteBlobWrapper GetNewBlob();
-    protected abstract Task<SQLiteBlobWrapper> GetNewBlobAsync();
-}
+ }

@@ -163,8 +163,5 @@ public static class TestSqliteFileSystemCreator
     }
 
     public static IDirectory SqliteDirectory(string name) =>
-        new SqliteDirectory(CreateStoreSync(), name, name, 0);
-    private static SqliteFileStore CreateStoreSync() =>
-        (Task.Run(() => SqliteFileStore.Create())).GetAwaiter().GetResult();
-
+        SqliteFileStore.Create().UntransactedRoot(name);
 }
