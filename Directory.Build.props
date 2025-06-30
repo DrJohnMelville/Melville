@@ -15,4 +15,4 @@
 		<Copy SourceFiles="$(PackageOutputPath)\$(PackageId).$(PackageVersion).nupkg"
 		      DestinationFolder="$(SolutionDir)..\TempNuget\" />
 	</Target>
-</Project>+
+</Project>
