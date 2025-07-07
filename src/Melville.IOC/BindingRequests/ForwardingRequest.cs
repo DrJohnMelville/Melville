@@ -32,3 +32,15 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
 
     public string Trace => this.ConstructFailureMessage();
 }
+
+public class SingletonBindingRequest(IBindingRequest inner) : ForwardingRequest(inner)
+{
+    public override IIocService IocService
+    {
+        get => inner.IocService.GlobalScope();
+        set
+        {
+            throw new NotImplementedException("Attempted to set scope when creating a singleton");
+        }
+    }
+}

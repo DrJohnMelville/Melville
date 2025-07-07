@@ -17,7 +17,8 @@ namespace Melville.IOC.Test.ServiceCollectionIntegration;
 
 public class ServiceProviderFactory
 {
-    private readonly IServiceProviderFactory<IocContainer> sut = new MelvilleServiceProviderFactory(false);
+    private readonly IServiceProviderFactory<IocContainer> sut =
+        new MelvilleServiceProviderFactory(false);
 
     [Fact]
     public void Integration()

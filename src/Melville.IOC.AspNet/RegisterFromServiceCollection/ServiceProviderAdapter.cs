@@ -42,6 +42,7 @@ public class ServiceProviderAdapter :
     public object GetRequiredService(Type serviceType)
     {
         var request = new RootBindingRequest(serviceType, inner);
+        
         var requiredService = inner.Get(request);
         if (request.IsCancelled || requiredService is null)
             throw new InvalidOperationException($"Service of type {serviceType} could not be constructed");
