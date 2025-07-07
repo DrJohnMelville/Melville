@@ -1,6 +1,7 @@
 ﻿using System.Data.SQLite;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using Melville.SimpleDb;
 
 namespace Melville.FileSystem.Sqlite;
 

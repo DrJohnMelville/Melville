@@ -8,6 +8,7 @@
 			and migration for SqlLite
 		</PackageDescription>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<ItemGroup>

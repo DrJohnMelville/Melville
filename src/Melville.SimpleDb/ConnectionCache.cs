@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,13 @@ public class ConnectionCache(IRepoDbConnection inner) : IRepoDbConnection
         new(inner.GetConnection, LazyThreadSafetyMode.ExecutionAndPublication);
 
     public IDbConnection GetConnection() => connection.Value;
+
+    /// <inheritdoc />
+    public IRepoDbConnection Clone() => this;
+
+    /// <inheritdoc />
+    public SQLiteBlobWrapper BlobWrapper(string table, string column, long key, bool readOnly) => 
+        inner.BlobWrapper(table, column, key, readOnly);
 }
 
 public class RepoDbConfiguration

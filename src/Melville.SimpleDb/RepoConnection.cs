@@ -22,4 +22,11 @@ public class RepoConnection(RepoDbConfiguration config) : IRepoDbConnection
 
         return ret;
     }
+
+    /// <inheritdoc />
+    public IRepoDbConnection Clone() => this;
+
+    /// <inheritdoc />
+    public SQLiteBlobWrapper BlobWrapper(string table, string column, long key, bool readOnly) => 
+        throw new NotImplementedException();
 }
