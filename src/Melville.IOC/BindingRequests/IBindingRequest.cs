@@ -22,6 +22,7 @@ public interface IBindingRequest
 
     object?[] ArgumentsFormChild { get; set; }
     object?[] ArgumentsFromParent { get; }
+    string Trace { get; }
 }
 
 public static class BindingRequestExtensions

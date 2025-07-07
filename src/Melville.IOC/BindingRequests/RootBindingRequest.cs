@@ -21,4 +21,6 @@ public class RootBindingRequest : IBindingRequest
     public bool IsCancelled { get; set; }
 
     public IBindingRequest? Parent => null;
+
+    public string Trace => this.ConstructFailureMessage();
 }

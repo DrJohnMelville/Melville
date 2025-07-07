@@ -31,7 +31,7 @@ public class ServiceProviderAdapter :
 
     public ServiceProviderAdapter(IIocService inner)
     {
-        this.inner = new ScopeWrapper(inner, this);
+        this.inner = new ScopeWrapper(inner.CreateScope(), this);
     }
 
     public object? GetService(Type serviceType)

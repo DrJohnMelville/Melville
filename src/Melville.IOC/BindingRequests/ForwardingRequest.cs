@@ -29,4 +29,6 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
         get => Parent.IsCancelled;
         set => Parent.IsCancelled = value;
     }
+
+    public string Trace => this.ConstructFailureMessage();
 }
