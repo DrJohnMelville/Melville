@@ -73,6 +73,4 @@ public interface IActivationOptions<T>:ITypesafeActivationOptions<T>
     IActivationOptions<T> WrapWith<TWrapper>() where TWrapper : T;
     IActivationOptions<T> WrapWith<TWrapper>(params object[] parameters) where TWrapper : T;
 
-    IActivationOptions<T> RegisterWrapperForDisposal() =>
-        AddActivationStrategy(i => new AttemptDisposeRegistration(i));
 }

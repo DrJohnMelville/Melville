@@ -10,11 +10,7 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
     public virtual string TargetParameterName => Parent.TargetParameterName;
     public virtual Type? TypeBeingConstructed => Parent.TypeBeingConstructed;
 
-    public virtual IIocService IocService
-    {
-        get => Parent.IocService;
-        set => Parent.IocService = value;
-    }
+    public virtual IIocService IocService => Parent.IocService;
 
     public object?[] ArgumentsFromParent => Parent.ArgumentsFormChild;
     public object?[] ArgumentsFormChild { get; set;} = Array.Empty<object>();
@@ -33,14 +29,7 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
     public string Trace => this.ConstructFailureMessage();
 }
 
-public class SingletonBindingRequest(IBindingRequest inner) : ForwardingRequest(inner)
+public class ChangeScopeRequest(IBindingRequest inner, IIocService newScope) : ForwardingRequest(inner)
 {
-    public override IIocService IocService
-    {
-        get => inner.IocService.GlobalScope();
-        set
-        {
-            throw new NotImplementedException("Attempted to set scope when creating a singleton");
-        }
-    }
+    public override IIocService IocService => newScope;
 }

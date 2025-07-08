@@ -1,30 +1,38 @@
 ﻿using System.Linq;
+using Melville.INPC;
 using Melville.IOC.BindingRequests;
+using Melville.IOC.IocContainers.ChildContainers;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
-public sealed class ForbidDisposalStrategy : ForwardingActivationStrategy
+public sealed class ForbidDisposalStrategy(
+       IActivationStrategy inner, bool forbidDisposeEvenIfInScope)
+    : ForwardingActivationStrategy(inner)
 {
-    private readonly bool forbidDisposeEvenIfInScope;
+    public override object? Create(IBindingRequest bindingRequest) => 
+        InnerActivationStrategy.Create(WrapIfNeeded(bindingRequest));
 
-    public ForbidDisposalStrategy(IActivationStrategy inner, bool forbidDisposeEvenIfInScope): base(inner)
+    private IBindingRequest WrapIfNeeded (IBindingRequest req)=>
+       (HasNoDisposeScope(req) || forbidDisposeEvenIfInScope)
+           ? new ChangeScopeRequest(req, new DisposableIocService(
+               req.IocService))
+           : req;
+
+    private static bool HasNoDisposeScope(IBindingRequest bindingRequest) => 
+        !(bindingRequest.IocService.ScopeList()
+            .OfType<IRegisterDispose>().
+            FirstOrDefault()?.SatisfiesDisposeRequirement ?? false);
+}
+
+public partial class DoNotDuspose : IIocService, IRegisterDispose
+{
+    [FromConstructor][DelegateTo] private readonly IIocService inner;
+
+    public void RegisterForDispose(object obj)
     {
-        this.forbidDisposeEvenIfInScope = forbidDisposeEvenIfInScope;
+        // do nothing
     }
 
-    public override object? Create(IBindingRequest bindingRequest)
-    {
-        if ((!bindingRequest.IocService.ScopeList().OfType<IRegisterDispose>().Any()) ||
-            forbidDisposeEvenIfInScope)
-        {
-            SetDisposalContextToAContextThatWillNeverGetDisposed(bindingRequest);
-        }
-
-        return InnerActivationStrategy.Create(bindingRequest);
-    }
-
-    private static void SetDisposalContextToAContextThatWillNeverGetDisposed(IBindingRequest bindingRequest)
-    {
-        bindingRequest.IocService = new DisposableIocService(bindingRequest.IocService);
-    }
+    // this object says it will dispose of the given object, but it does not.
+    public bool SatisfiesDisposeRequirement => true;
 }

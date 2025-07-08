@@ -50,7 +50,6 @@ public readonly struct Writer
 {
     private readonly int TotalSize;
     private readonly int blocks, extra;
-    private readonly int bytes;
     private readonly byte[] data;
     private readonly Action<string> WriteLine;
 

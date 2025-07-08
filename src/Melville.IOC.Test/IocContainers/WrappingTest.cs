@@ -124,16 +124,4 @@ public sealed class WrappingTest
         }
         Assert.Equal("Pre Target Post Disposed!", sb.ToString());
     }
-    [Fact]
-    public void WrapAndDisposeFunction()
-    {
-        sut.Bind<ITarget>().To<Target>()
-            .WrapWith(i=>new DisposableTargetWrapper(i, sb))
-            .RegisterWrapperForDisposal();
-        using (var scope = sut.CreateScope())
-        {
-            scope.Get<ITarget>().Write();
-        }
-        Assert.Equal("Pre Target Post Disposed!", sb.ToString());
-    }
 }

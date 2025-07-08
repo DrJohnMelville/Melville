@@ -21,11 +21,6 @@ public class DefaultInterceptionPolicy : IInterceptionPolicy, IInterceptionRule
 {
     private readonly List<IInterceptionRule> rules = new List<IInterceptionRule>();
 
-    public DefaultInterceptionPolicy()
-    {
-        rules.Add(new AttemptDisposeRule());
-    }
-
     public object? Intercept(IBindingRequest request, object? source) =>
         rules.Aggregate(source, (item, rule) => rule.Intercept(request, item));
 

@@ -12,6 +12,7 @@ public interface IDisposableIocService : IIocService, IAsyncDisposable, IDisposa
 public interface IRegisterDispose
 {
     void RegisterForDispose(object obj);
+    bool SatisfiesDisposeRequirement { get; }
 }
     
 public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
@@ -69,6 +70,7 @@ public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
         GC.KeepAlive(DisposeAsync());
     }
 
+    public bool SatisfiesDisposeRequirement => true;
 }
 
 public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
@@ -85,4 +87,6 @@ public class DisposableIocService: GenericScope, IDisposableIocService, IRegiste
         if (obj == this) return;
         register.RegisterForDispose(obj);
     }
+
+    public bool SatisfiesDisposeRequirement => register.SatisfiesDisposeRequirement;
 }

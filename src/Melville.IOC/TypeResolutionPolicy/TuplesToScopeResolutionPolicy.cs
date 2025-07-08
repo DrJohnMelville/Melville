@@ -72,7 +72,8 @@ public sealed class ScopedTupleActivationStrategy : IActivationStrategy
         var values = buffer.Span;
         var scope = bindingRequest.IocService.CreateScope();
         values[0] = scope;
-        scope.Fill(values[1..], RequestsForInnerItems(bindingRequest));
+        var scopedRequest = new ChangeScopeRequest(bindingRequest, scope);
+        scope.Fill(values[1..], RequestsForInnerItems(scopedRequest));
         return bindingRequest.IsCancelled? null: funcCreator.Invoke(values);
     }
     

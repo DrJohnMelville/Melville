@@ -11,7 +11,7 @@ public interface IBindingRequest
     Type DesiredType { get; }
     Type? TypeBeingConstructed { get; }
     string TargetParameterName { get; }
-    IIocService IocService { get; set; }
+    IIocService IocService { get; }
     bool IsCancelled { get; set; }
 
     bool HasDefaultValue(out object? value)

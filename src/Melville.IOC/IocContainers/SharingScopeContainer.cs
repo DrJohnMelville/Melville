@@ -23,26 +23,11 @@ public class GenericScope: IIocService
         set => ParentScope.AllowDisposablesInGlobalScope = value;
     }
 
-    public bool CanGet(IBindingRequest request)
-    {
-        TrySetScopeValue(request);
-        return ParentScope.CanGet(request);
-    }
+    public bool CanGet(IBindingRequest request) => 
+        ParentScope.CanGet(request);
 
-    public object? Get(IBindingRequest request)
-    {
-        TrySetScopeValue(request); 
-        return ParentScope.Get(request);
-    }
-
-    private void TrySetScopeValue(IBindingRequest request)
-    {
-        if (IsAChildOfThisScope(request.IocService)) return;
-        request.IocService = this;
-    }
-
-    private bool IsAChildOfThisScope(IIocService scope) => 
-        scope.ScopeList().Contains(this);
+    public object? Get(IBindingRequest request) => 
+        ParentScope.Get(request);
 
     public IIocDebugger Debugger => ParentScope.Debugger;
 }

@@ -39,7 +39,7 @@ public partial class TypeActivationStrategy: IActivationStrategy
             }
             return null;
         }
-        return activator.Invoke(requests.Span);
+        return activator.Invoke(requests.Span).TryRegisterDisposeAndReturn(bindingRequest);
     }
 
     private void FillParamaterSpan(IBindingRequest bindingRequest, Span<object?> target)

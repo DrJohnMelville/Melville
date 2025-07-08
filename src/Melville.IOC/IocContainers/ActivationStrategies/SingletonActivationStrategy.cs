@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
+using Melville.INPC;
 using Melville.IOC.BindingRequests;
+using Melville.IOC.IocContainers.ChildContainers;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
@@ -37,11 +41,50 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
 
     private object? ComputeSingleValue(IBindingRequest bindingRequest)
     {
-        return base.Create(new SingletonBindingRequest(bindingRequest));
+        var context = ContextForSingletonCreation(bindingRequest);
+        return base.Create(context);
+    }
+
+    private static IBindingRequest ContextForSingletonCreation(IBindingRequest bindingRequest) =>
+        MustWrapContexxt(bindingRequest) ?
+            new ChangeScopeRequest(bindingRequest, new SingleltonCreator(bindingRequest.IocService)):
+            bindingRequest;
+
+    private static bool MustWrapContexxt(IBindingRequest bindingRequest)
+    {
+        var scope = bindingRequest.IocService.ScopeList().OfType<IRegisterDispose>().FirstOrDefault();
+        return scope switch
+        {
+            null => false,
+            DisposableChildContainer  => false,
+            _ => true
+        };
+        return bindingRequest.IocService.ScopeList().OfType<IDisposableIocService>().Any();
     }
 
     public static IActivationStrategy EnsureSingleton(IActivationStrategy inner) =>
         inner.SharingScope() == IocContainers.SharingScope.Singleton
             ? inner
             : new SingletonActivationStrategy(inner);
+}
+
+public partial class SingleltonCreator : IIocService, IRegisterDispose, IScope
+{
+    [FromConstructor][DelegateTo] private readonly IIocService inner;
+    public void RegisterForDispose(object obj)
+    {
+        if (!inner.AllowDisposablesInGlobalScope)
+            throw new IocException("Attempted to create a Disposable object in singleton scope");
+    }
+
+    public bool SatisfiesDisposeRequirement => false;
+    public bool TryGetValue(IActivationStrategy source, [NotNullWhen(true)] out object? result)
+    {
+        throw new IocException("Attempted to create a scoped object in singleton scope");
+    }
+
+    public void SetScopeValue(IActivationStrategy source, object? value)
+    {
+        throw new IocException("Attempted to create a scoped object in singleton scope");
+    }
 }

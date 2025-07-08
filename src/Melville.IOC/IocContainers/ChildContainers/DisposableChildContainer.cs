@@ -2,12 +2,10 @@
 
 namespace Melville.IOC.IocContainers.ChildContainers;
 
-public class DisposableChildContainer : ChildContainer, IDisposableIocService, IRegisterDispose
+public class DisposableChildContainer(IBindableIocService parent)
+    : ChildContainer(parent), IDisposableIocService, IRegisterDispose
 {
-    private readonly DisposalRegister innerService = new DisposalRegister();
-    public DisposableChildContainer(IBindableIocService parent) : base(parent)
-    {
-    }
+    private readonly DisposalRegister innerService = new();
 
     public ValueTask DisposeAsync() => innerService.DisposeAsync();
     public void Dispose() => innerService.Dispose();
@@ -16,4 +14,6 @@ public class DisposableChildContainer : ChildContainer, IDisposableIocService, I
         if (obj == this) return;
         innerService.RegisterForDispose(obj);
     }
+
+    public bool SatisfiesDisposeRequirement => innerService.SatisfiesDisposeRequirement;
 }
