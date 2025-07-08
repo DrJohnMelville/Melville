@@ -48,15 +48,15 @@ public partial class SqliteFsViewModel
 
 public readonly struct Writer
 {
-    private readonly int TotalSize;
+    private readonly int totalSize;
     private readonly int blocks, extra;
     private readonly byte[] data;
-    private readonly Action<string> WriteLine;
+    private readonly Action<string> writeLine;
 
     public Writer(int totalSize, int bufferSize, Action<string> writeline)
     {
-        WriteLine = writeline;
-        TotalSize = totalSize;
+        writeLine = writeline;
+        this.totalSize = totalSize;
         data = new byte[bufferSize];
         new Random().NextBytes(data);
         (blocks, extra) = Math.DivRem(totalSize, bufferSize);
@@ -70,7 +70,7 @@ public readonly struct Writer
         {
             if(setSize)
             {
-                stream.SetLength(TotalSize);
+                stream.SetLength(totalSize);
             }
             for (int i = 0; i < blocks; i++)
             {
@@ -83,14 +83,14 @@ public readonly struct Writer
             }
         }
 
-        WriteLine($"Wrote {TotalSize} bytes in {DateTime.Now - prior}");
+        writeLine($"Wrote {totalSize} bytes in {DateTime.Now - prior}");
         prior = DateTime.Now;
         await using (var stream = await file.OpenRead())
         {
             while ((await stream.ReadAsync(data.AsMemory())) > 0) ;
         }
 
-        WriteLine($"Read {TotalSize} bytes in {DateTime.Now - prior}");
+        writeLine($"Read {totalSize} bytes in {DateTime.Now - prior}");
         file.Delete();
     }
 

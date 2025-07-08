@@ -8,7 +8,7 @@ namespace Melville.FileSystem.Sqlite;
 
 public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisposable
 {
-    public SqliteFileStore(IDbConnection connection, IDbTransaction? transaction = null) :
+    public SqliteFileStore(IRepoDbConnection connection, IDbTransaction? transaction = null) :
         this(new(connection, transaction))
     {
     }
@@ -25,7 +25,7 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection): IDisp
             new RepoDbConfiguration() { FolderPath = filePath }, DbTables.All);
         var dbConnection = repo.GetConnection();
         dbConnection.Execute("PRAGMA locking_mode = EXCLUSIVE;");
-        return new(new SqliteTransactionScope(dbConnection, null));
+        return new(new SqliteTransactionScope(repo, null));
     }
 
     public FSObject CreateItem(string name, long parentDirectoryId, FileAttributes attributes,
