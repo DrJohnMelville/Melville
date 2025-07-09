@@ -14,7 +14,7 @@ public class ForwardingActivationStrategy : IActivationStrategy
         this.InnerActivationStrategy = innerActivationStrategy;
     }
 
-    public bool CanCreate(IBindingRequest bindingRequest) => 
+    public virtual bool CanCreate(IBindingRequest bindingRequest) => 
         InnerActivationStrategy.CanCreate(bindingRequest);
 
     public virtual object? Create(IBindingRequest bindingRequest) => 

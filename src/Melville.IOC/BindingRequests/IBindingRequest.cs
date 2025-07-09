@@ -19,7 +19,7 @@ public interface IBindingRequest
         return false;
     }
 
-    object?[] ArgumentsFormChild { get; set; }
+    object?[] ArgumentsFromChild { get; set; }
     object?[] ArgumentsFromParent { get; }
     string Trace { get; }
 }

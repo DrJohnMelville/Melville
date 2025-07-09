@@ -10,7 +10,11 @@ public class FailRequestPolicy : ITypeResolutionPolicy, IActivationStrategy
 {
     public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) => this;
 
-    public bool CanCreate(IBindingRequest bindingRequest) => false;
+    public bool CanCreate(IBindingRequest bindingRequest)
+    {
+        bindingRequest.IocService.Debugger.ResolutionQueryFailed(bindingRequest);
+        return false;
+    }
 
     public object? Create(IBindingRequest bindingRequest)
     {

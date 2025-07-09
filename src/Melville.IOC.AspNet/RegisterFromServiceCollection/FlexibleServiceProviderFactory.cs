@@ -90,4 +90,6 @@ public class FlexibleServiceProviderFactory
 
     public void SetDebugHook(IIocDebugger debugger) =>
         container.Debugger = debugger;
+
+    public IocContainer IocContainer => container;
 }

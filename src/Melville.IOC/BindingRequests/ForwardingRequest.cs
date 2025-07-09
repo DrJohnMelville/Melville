@@ -12,8 +12,8 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
 
     public virtual IIocService IocService => Parent.IocService;
 
-    public object?[] ArgumentsFromParent => Parent.ArgumentsFormChild;
-    public object?[] ArgumentsFormChild { get; set;} = Array.Empty<object>();
+    public object?[] ArgumentsFromParent => Parent.ArgumentsFromChild;
+    public object?[] ArgumentsFromChild { get; set;} = Array.Empty<object>();
     public virtual bool HasDefaultValue(out object? value)
     {
         value = null;
@@ -27,4 +27,6 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
     }
 
     public string Trace => this.ConstructFailureMessage();
+    public override string ToString() => Trace;
+
 }

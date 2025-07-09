@@ -9,13 +9,13 @@ public class RootBindingRequest : IBindingRequest
     {
         DesiredType = targetType;
         IocService = iocService;
-        ArgumentsFormChild = arguments;
+        ArgumentsFromChild = arguments;
     }
     public Type DesiredType { get; }
     public string TargetParameterName => "!Root Request!";
     public IIocService IocService { get; set; }
     public Type? TypeBeingConstructed => null;
-    public object?[] ArgumentsFormChild { get; set;}
+    public object?[] ArgumentsFromChild { get; set;}
     public object?[] ArgumentsFromParent => Array.Empty<object>();
 
     public bool IsCancelled { get; set; }
@@ -23,4 +23,5 @@ public class RootBindingRequest : IBindingRequest
     public IBindingRequest? Parent => null;
 
     public string Trace => this.ConstructFailureMessage();
+    public override string ToString() => Trace;
 }

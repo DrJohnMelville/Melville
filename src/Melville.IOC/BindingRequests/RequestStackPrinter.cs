@@ -9,7 +9,7 @@ public static class RequestStackPrinter
     public static string ConstructFailureMessage(this IBindingRequest request)
     {
         var sb = new StringBuilder();
-        sb.Append($"Cannot bind type: {request.DesiredType.Name}");
+        sb.Append($"Requested type: {request.DesiredType.Name}");
         AppendRequestList(request, sb);
         return sb.ToString();
     }

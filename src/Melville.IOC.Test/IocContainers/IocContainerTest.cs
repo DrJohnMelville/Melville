@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Xunit;
@@ -30,6 +31,15 @@ public class SecondaryObject
 public class IocContainerTest
 {
     private readonly IocContainer sut = new IocContainer();
+
+    [Fact]
+    public void CreateWithParameter()
+    {
+        var parameter = new SimpleObjectImplementation();
+        sut.Bind<SecondaryObject>().ToSelf().WithParameters(parameter);
+        sut.Get<SecondaryObject>().Should().Be(parameter);
+        sut.CanGet<SecondaryObject>().Should().BeTrue();
+    }
         
     [Fact]
     public void CreateSimpleObject()
@@ -122,7 +132,7 @@ public class IocContainerTest
         catch (Exception e)
         {
             Assert.Equal("""
-                Cannot bind type: ISimpleObject
+                Requested type: ISimpleObject
                 [1] Melville.IOC.Test.IocContainers.ISimpleObject (No Scope, Global Dispose Not Allowed)
                 [1] Melville.IOC.Test.IocContainers.SecondaryObject (No Scope, Global Dispose Not Allowed)
                 """, e.Message);
