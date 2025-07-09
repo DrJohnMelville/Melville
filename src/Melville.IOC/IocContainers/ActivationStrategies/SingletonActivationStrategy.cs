@@ -41,13 +41,13 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
 
     private object? ComputeSingleValue(IBindingRequest bindingRequest)
     {
-        var context = ContextForSingletonCreation(bindingRequest);
-        return base.Create(context);
+            var context = ContextForSingletonCreation(bindingRequest);
+            return base.Create(context);
     }
 
     private static IBindingRequest ContextForSingletonCreation(IBindingRequest bindingRequest) =>
         MustWrapContexxt(bindingRequest) ?
-            new ChangeScopeRequest(bindingRequest, new SingleltonCreator(bindingRequest.IocService)):
+            new ChangeIocServiceRequest(bindingRequest, new SingleltonCreator(bindingRequest.IocService)):
             bindingRequest;
 
     private static bool MustWrapContexxt(IBindingRequest bindingRequest)

@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Melville.IOC.InjectionPolicies;
 using Melville.IOC.IocContainers.ActivationStrategies;
+using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers;
 
@@ -15,7 +16,7 @@ public enum BindingPriority
     KeepNew = 2, 
 }
 
-public class BindingRegistry
+public class BindingRegistry: ISuggestCreatableTypes
 {
     private readonly ConcurrentDictionary<Type, IActivationStrategy> bindings = new();
     private readonly IInterceptionRule interceptionPolicy;
@@ -78,4 +79,7 @@ public class BindingRegistry
     }
 
     public bool TryGetBinding(Type key, [NotNullWhen(true)] out IActivationStrategy? output) => bindings.TryGetValue(key, out output);
+
+    /// <inheritdoc />
+    public IEnumerable<Type> CreatableTypes => bindings.Keys;
 }

@@ -123,8 +123,8 @@ public class IocContainerTest
         {
             Assert.Equal("""
                 Cannot bind type: ISimpleObject
-                    1. Melville.IOC.Test.IocContainers.ISimpleObject -- No Scope
-                    2. Melville.IOC.Test.IocContainers.SecondaryObject -- No Scope
+                [1] Melville.IOC.Test.IocContainers.ISimpleObject (No Scope, Global Dispose Not Allowed)
+                [1] Melville.IOC.Test.IocContainers.SecondaryObject (No Scope, Global Dispose Not Allowed)
                 """, e.Message);
             return;
         }

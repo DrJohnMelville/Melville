@@ -63,6 +63,7 @@ public static class DataObjectReaderExtensions
         {
             MemoryStream ms => ms.ToArray().AsSpan(),
             byte[] ba => ba.AsSpan(),
+            _ => []
         };
     }
 

@@ -14,7 +14,7 @@ public sealed class ForbidDisposalStrategy(
 
     private IBindingRequest WrapIfNeeded (IBindingRequest req)=>
        (HasNoDisposeScope(req) || forbidDisposeEvenIfInScope)
-           ? new ChangeScopeRequest(req, new DisposableIocService(
+           ? new ChangeIocServiceRequest(req, new DisposableIocService(
                req.IocService))
            : req;
 

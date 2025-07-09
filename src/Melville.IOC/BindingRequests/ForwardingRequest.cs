@@ -28,8 +28,3 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
 
     public string Trace => this.ConstructFailureMessage();
 }
-
-public class ChangeScopeRequest(IBindingRequest inner, IIocService newScope) : ForwardingRequest(inner)
-{
-    public override IIocService IocService => newScope;
-}

@@ -24,7 +24,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<SqliteFsViewModel>();
+        SearchTreeForSample<DDFileViewModel>();
 
     public SampleDirectory()
     {

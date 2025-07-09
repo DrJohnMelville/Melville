@@ -2,8 +2,8 @@
 
 namespace Melville.IOC.IocContainers.ChildContainers;
 
-public class DisposableChildContainer(IBindableIocService parent)
-    : ChildContainer(parent), IDisposableIocService, IRegisterDispose
+public class DisposableChildContainer(IBindableIocService parent, IIocService parentServ)
+    : ChildContainer(parent, parentServ), IDisposableIocService, IRegisterDispose
 {
     private readonly DisposalRegister innerService = new();
 
