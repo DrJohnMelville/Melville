@@ -14,9 +14,7 @@ public partial class FunctionActivationStrategy : IActivationStrategy
 {
     [FromConstructor] private readonly Type functionDelegateType;
 
-    public bool CanCreate(IBindingRequest bindingRequest) => 
-        bindingRequest.IocService.CanGet(new IBindingRequest[]
-            {InnerRequestForCanCreate(bindingRequest)});
+    public bool CanCreate(IBindingRequest bindingRequest) => true;
 
     private IBindingRequest InnerRequestForCanCreate(IBindingRequest bindingRequest)
     {
