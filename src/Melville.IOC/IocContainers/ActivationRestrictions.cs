@@ -31,13 +31,22 @@ public class AddParametersStrategy : ForwardingActivationStrategy
         // here we needed to copy the array anyway so that multiple invocations get their own set of
         // variables anyway.  We append our vars to the end of the array so any values provided by a
         // factory will get precedence;
-        bindingRequest.ArgumentsFromChild = 
-            bindingRequest.ArgumentsFromChild.Concat(parameters).ToArray();
+        AugmentParameters(bindingRequest);
         return base.Create(bindingRequest);
+    }
+
+#warning -- eventually I need to make ArgumentsFromChild read only lists and save a lot of copies
+    //When I do parameterstrategy ises writing the arrays to keep multiple arguments from being 
+    // reused, but I could fix this with a separate argument proposing step
+
+    private void AugmentParameters(IBindingRequest bindingRequest)
+    {
+        bindingRequest.ArgumentsFromChild = [..bindingRequest.ArgumentsFromChild, ..parameters];
     }
 
     public override bool CanCreate(IBindingRequest bindingRequest)
     {
+        AugmentParameters(bindingRequest);
         return base.CanCreate(bindingRequest);
     }
 }

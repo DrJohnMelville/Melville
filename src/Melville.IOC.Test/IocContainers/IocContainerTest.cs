@@ -37,7 +37,7 @@ public class IocContainerTest
     {
         var parameter = new SimpleObjectImplementation();
         sut.Bind<SecondaryObject>().ToSelf().WithParameters(parameter);
-        sut.Get<SecondaryObject>().Should().Be(parameter);
+        sut.Get<SecondaryObject>().SimpleObject.Should().Be(parameter);
         sut.CanGet<SecondaryObject>().Should().BeTrue();
     }
         
