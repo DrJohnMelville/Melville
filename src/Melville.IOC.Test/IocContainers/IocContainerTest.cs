@@ -133,8 +133,8 @@ public class IocContainerTest
         {
             Assert.Equal("""
                 Requested type: ISimpleObject
-                [1] Melville.IOC.Test.IocContainers.ISimpleObject (No Scope, Global Dispose Not Allowed)
-                [1] Melville.IOC.Test.IocContainers.SecondaryObject (No Scope, Global Dispose Not Allowed)
+                [1, 1] Melville.IOC.Test.IocContainers.ISimpleObject (No Scope, Global Dispose Not Allowed)
+                [1, 1] Melville.IOC.Test.IocContainers.SecondaryObject (No Scope, Global Dispose Not Allowed)
                 """, e.Message);
             return;
         }
@@ -152,7 +152,7 @@ public class IocContainerTest
     [Fact]
     public void QueryCanCreateFactory()
     {
-        Assert.False(sut.CanGet<Func<SecondaryObject>>());
+        Assert.True(sut.CanGet<Func<SecondaryObject>>());
         Assert.True(sut.CanGet<Func<ISimpleObject,SecondaryObject>>());
     }
 

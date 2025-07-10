@@ -6,11 +6,13 @@ namespace Melville.IOC.IocContainers.ChildContainers;
 
 public class ChildContainer : IocContainer
 {
+    public int Depth { get; }
     public ChildContainer(IBindableIocService parent, IIocService parentContext)
     {
         var paretCache = parent.ConfigurePolicy<CachedResolutionPolicy>();
         ConfigurePolicy<ISetBackupCache>().SetBackupCache(
             new CreateInContextPolicy(paretCache, parentContext));
+        Depth = 1 + ((parent as ChildContainer)?.Depth ?? 1);
     }
 }
 

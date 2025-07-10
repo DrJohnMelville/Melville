@@ -52,7 +52,7 @@ public class VerifierTest
     [Theory]
     [InlineData("Abab", 3)]
     [InlineData("Compo", 2)]
-    [InlineData("^I.$", 1)]
+    [InlineData("I.$", 1)]
     [InlineData(".*", 0)]
     public void IfNotNamedTest(string filter, int count)
     {
@@ -64,7 +64,7 @@ public class VerifierTest
     [Theory]
     [InlineData("Abab", 0)]
     [InlineData("Compo", 1)]
-    [InlineData("^I.$", 2)]
+    [InlineData("I.$", 2)]
     [InlineData(".*", 3)]
     public void IfNamed(string filter, int count)
     {

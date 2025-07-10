@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ChildContainers;
 
 namespace Melville.IOC.BindingRequests;
 
@@ -27,8 +28,10 @@ public static class RequestStackPrinter
     {
         sb.AppendLine();
         sb.Append(
-            $"[{ChildLevels(item)}] {RequestedTypeName(item)} ({ScopeTag(item)}, {DisposeTag(item)})");
+            $"[{ChildLevels(item)}, {CountIndirections(item.IocService)}] {RequestedTypeName(item)} ({ScopeTag(item)}, {DisposeTag(item)})");
     }
+
+    private static int CountIndirections(IIocService itemIocService) => (itemIocService as ChildContainer)?.Depth ?? 1;
 
     private static int ChildLevels(IBindingRequest item)
     {
