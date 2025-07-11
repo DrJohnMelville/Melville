@@ -14,6 +14,7 @@ public static class ServiceProviderAdaptorFactory
         containerBuilder.AllowDisposablesInGlobalScope = allDisposablesInRoot;
         containerBuilder.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
         var adapter = new ServiceProviderAdapter(containerBuilder);
+
         containerBuilder.BindIfNeeded<IServiceScopeFactory>()
             .And<IServiceProvider>()
             .And<IServiceProviderIsService>()
@@ -57,7 +58,7 @@ public class ServiceProviderAdapter :
     public IServiceProvider ServiceProvider => this;
     public IServiceScope CreateScope()
     {
-        return new ServiceProviderAdapter(inner.CreateScope());
+        return new ServiceProviderAdapter(inner);
     }
 
     public bool IsService(Type serviceType)

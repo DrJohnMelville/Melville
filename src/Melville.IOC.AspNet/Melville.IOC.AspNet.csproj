@@ -22,5 +22,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Melville.IOC\Melville.IOC.csproj" />
+      <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     </ItemGroup>
 </Project>

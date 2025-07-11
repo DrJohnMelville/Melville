@@ -44,8 +44,7 @@ public sealed class SharingScopeContainer : GenericScope, IScope
     {
     }
 
-    private readonly Dictionary<IActivationStrategy, object?> scopeItems =
-        new Dictionary<IActivationStrategy, object?>();
+    private readonly Dictionary<IActivationStrategy, object?> scopeItems = new();
         
     public bool TryGetValue(IActivationStrategy source, [NotNullWhen(true)] out object? value) =>
         scopeItems.TryGetValue(source, out value!) ||
