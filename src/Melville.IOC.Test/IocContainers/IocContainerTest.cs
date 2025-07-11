@@ -18,15 +18,8 @@ public interface ISimpleObject2
 public class SimpleObjectImplementation : ISimpleObject, ISimpleObject2
 {
 }
-public class SecondaryObject
-{
-    public ISimpleObject SimpleObject { get; }
 
-    public SecondaryObject(ISimpleObject simpleObject)
-    {
-        SimpleObject = simpleObject;
-    }
-}
+public record SecondaryObject(ISimpleObject SimpleObject);
 
 public class IocContainerTest
 {

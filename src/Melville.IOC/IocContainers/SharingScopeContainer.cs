@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Melville.IOC.BindingRequests;
@@ -34,21 +35,19 @@ public class GenericScope: IIocService
 
 public interface IScope
 {
-    bool TryGetValue(IActivationStrategy source, [NotNullWhen(true)] out object? result);
-    void SetScopeValue(IActivationStrategy source, object? value);
+    bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? result);
+    void SetScopeValue(IBindingRequest source, object? value);
 }
     
-public sealed class SharingScopeContainer : GenericScope, IScope
+public class SharingScopeContainer(IIocService parentScope) : 
+    GenericScope(parentScope), IScope
 {
-    public SharingScopeContainer(IIocService parentScope) : base(parentScope)
-    {
-    }
-
-    private readonly Dictionary<IActivationStrategy, object?> scopeItems = new();
+    private readonly Dictionary<Type, object?> scopeItems = new();
         
-    public bool TryGetValue(IActivationStrategy source, [NotNullWhen(true)] out object? value) =>
-        scopeItems.TryGetValue(source, out value!) ||
-        ((ParentScope as IScope)?.TryGetValue(source, out value!) ?? false);
+    public virtual bool TryGetValue(
+        IBindingRequest source, [NotNullWhen(true)] out object? value) =>
+        scopeItems.TryGetValue(source.DesiredType, out value);
 
-    public void SetScopeValue(IActivationStrategy source, object? value) => scopeItems.Add(source, value);
+    public void SetScopeValue(IBindingRequest source, object? value) => 
+        scopeItems.Add(source.DesiredType, value);
 }

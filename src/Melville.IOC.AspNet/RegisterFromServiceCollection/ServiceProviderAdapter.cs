@@ -9,96 +9,26 @@ namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
 public static class ServiceProviderAdaptorFactory
 {
-    public static IServiceProvider CreateServiceProvider(this IocContainer containerBuilder, bool allDisposablesInRoot)
+    public static IServiceProvider CreateServiceProvider(this IocContainer ioc, bool allDisposablesInRoot)
     {
-        containerBuilder.AllowDisposablesInGlobalScope = allDisposablesInRoot;
-        containerBuilder.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
-        var adapter = new ServiceProviderAdapter(containerBuilder);
+        ioc.AllowDisposablesInGlobalScope = allDisposablesInRoot;
+        ioc.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
+        //var adapter = new ServiceProviderAdapter(ioc);
 
-        containerBuilder.BindIfNeeded<IServiceScopeFactory>()
-            .And<IServiceProvider>()
-            .And<IServiceProviderIsService>()
-            .And<IServiceScope>()
-            .And<ISupportRequiredService>()
-            .ToConstant(adapter).DisposeIfInsideScope();
-        return adapter;
-    }
-}
-public class ServiceProviderAdapter : 
-    IServiceProvider, ISupportRequiredService, IServiceScope, IServiceScopeFactory,
-    IServiceProviderIsService
-{
-    private IIocService inner;
+        //We are binding these all to null specifically because the special scope
+        ioc.Bind<IServiceProvider>().ToMethod(ShouldNeverGetHere).AsScoped();
+        ioc.Bind<ISupportRequiredService>().ToMethod(ShouldNeverGetHere).AsScoped();
+        ioc.Bind<IServiceScope>().ToMethod(ShouldNeverGetHere).AsScoped();
+        ioc.Bind<IServiceScopeFactory>().ToMethod(ShouldNeverGetHere).AsScoped();
+        ioc.Bind<IServiceProviderIsService>().ToMethod(ShouldNeverGetHere).AsScoped();
 
-    public ServiceProviderAdapter(IIocService inner)
-    {
-        this.inner = new ScopeWrapper(inner.CreateScope(), this);
+        return new ServiceProviderSharingScope(ioc);
+
     }
 
-    public object? GetService(Type serviceType)
+    private static IServiceProvider ShouldNeverGetHere(IIocService arg1, IBindingRequest arg2)
     {
-       return inner.Get(serviceType);
-    }
-
-    public object GetRequiredService(Type serviceType)
-    {
-        var request = new RootBindingRequest(serviceType, inner);
-        
-        var requiredService = inner.Get(request);
-        if (request.IsCancelled || requiredService is null)
-            throw new InvalidOperationException($"Service of type {serviceType} could not be constructed");
-        return requiredService;
-    }
-
-    public void Dispose()
-    {
-        (inner as IDisposable)?.Dispose();
-    }
-
-    public IServiceProvider ServiceProvider => this;
-    public IServiceScope CreateScope()
-    {
-        return new ServiceProviderAdapter(inner);
-    }
-
-    public bool IsService(Type serviceType)
-    {
-        return inner.CanGet(serviceType);
-    }
-}
-
-public partial class ScopeWrapper (IIocService inner, ServiceProviderAdapter proxy) : IIocService, IDisposable
-{
-    public bool CanGet(IBindingRequest request)
-    {
-        return IsKnownType(request.DesiredType) || inner.CanGet(request);
-    }
-
-    private bool IsKnownType(Type type)
-    {
-        return type == typeof(IServiceProvider) || 
-               type == typeof(IServiceScope) || 
-               type == typeof(IServiceProviderIsService) || 
-               type == typeof(IServiceScopeFactory) ||
-               type == typeof(ISupportRequiredService);
-    }
-
-    public object? Get(IBindingRequest request) => 
-        IsKnownType(request.DesiredType) ? proxy : inner.Get(request);
-
-    public IIocService? ParentScope => inner;
-
-    public bool AllowDisposablesInGlobalScope
-    {
-        get => inner.AllowDisposablesInGlobalScope;
-        set => inner.AllowDisposablesInGlobalScope = value;
-    }
-
-    public IIocDebugger Debugger => inner.Debugger;
-
-    /// <inheritdoc />
-    public void Dispose()
-    {
-        (inner as IDisposable)?.Dispose();
+        throw new InvalidOperationException(
+            $"{arg2.DesiredType} was requested outside of an ServiceProviderSharingScope");
     }
 }

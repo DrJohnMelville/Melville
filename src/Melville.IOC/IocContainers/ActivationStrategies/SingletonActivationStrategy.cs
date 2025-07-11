@@ -44,10 +44,11 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
             var context = ContextForSingletonCreation(bindingRequest);
             return base.Create(context);
     }
-
+      
     private static IBindingRequest ContextForSingletonCreation(IBindingRequest bindingRequest) =>
         MustWrapContexxt(bindingRequest) ?
-            new ChangeIocServiceRequest(bindingRequest, new SingleltonCreator(bindingRequest.IocService)):
+            new ChangeIocServiceRequest(bindingRequest,
+                new SingleltonCreator(bindingRequest.IocService)):
             bindingRequest;
 
     private static bool MustWrapContexxt(IBindingRequest bindingRequest)
@@ -59,7 +60,6 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
             DisposableChildContainer  => false,
             _ => true
         };
-        return bindingRequest.IocService.ScopeList().OfType<IDisposableIocService>().Any();
     }
 
     public static IActivationStrategy EnsureSingleton(IActivationStrategy inner) =>
@@ -78,12 +78,12 @@ public partial class SingleltonCreator : IIocService, IRegisterDispose, IScope
     }
 
     public bool SatisfiesDisposeRequirement => false;
-    public bool TryGetValue(IActivationStrategy source, [NotNullWhen(true)] out object? result)
+    public bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? result)
     {
         throw new IocException("Attempted to create a scoped object in singleton scope");
     }
 
-    public void SetScopeValue(IActivationStrategy source, object? value)
+    public void SetScopeValue(IBindingRequest source, object? value)
     {
         throw new IocException("Attempted to create a scoped object in singleton scope");
     }

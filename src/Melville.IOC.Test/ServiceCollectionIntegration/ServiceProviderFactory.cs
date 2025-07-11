@@ -8,6 +8,7 @@ using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.Debuggers;
 using Melville.IOC.Test.IocContainers;
 using Melville.IOC.TypeResolutionPolicy;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
@@ -76,7 +77,18 @@ public class ServiceProviderFactory
         disposables.ForEach(i => i.Verify(j => j.Dispose(), Times.Never));
         scope.Dispose();
         disposables.ForEach(i => i.Verify(j => j.Dispose(), Times.Once));
+    }
 
+    private record RequiresServiceProvider(IServiceProvider SP);
+
+    [Fact]
+    public void CanUseSpecialTypesInASingleton()
+    {
+        var sc = new ServiceCollection();
+        sc.AddSingleton<RequiresServiceProvider>();
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
+        prov.GetRequiredService<RequiresServiceProvider>()
+            .SP.Should().BeSameAs(prov);
     }
 
     [Fact]
@@ -117,5 +129,19 @@ public class ServiceProviderFactory
         var sut2 = new MelvilleServiceProviderFactory(false, i => i.Bind<string>().ToConstant("Hello World"));
         var sp = sut2.CreateServiceProvider(sut2.CreateBuilder(new ServiceCollection()));
         Assert.Equal("Hello World", sp.GetRequiredService<string>());
+    }
+
+    private record DependsOnServiceProvider(IServiceProvider Provider);
+
+    [Fact]
+    public void DependentObjectsFindTheOuterScopeServiceProvider()
+    {
+        var sc = new ServiceCollection();
+        sc.AddTransient<DependsOnServiceProvider>();
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
+        using var scope = prov.CreateScope();
+        var dep = scope.ServiceProvider.GetRequiredService<DependsOnServiceProvider>();
+        dep.Provider.Should().BeSameAs(scope);
+
     }
 }
