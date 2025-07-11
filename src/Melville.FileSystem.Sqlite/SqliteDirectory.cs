@@ -15,7 +15,7 @@ public sealed class SqliteTransactedDirectory(
 
     public void Rollback() => store.Rollback();
 
-    public void Dispose() => store.DisposeTransaction();
+    public void Dispose() => store.Dispose();
 }
 
 public class SqliteDirectory(SqliteFileStore store, string _name, string _path, long parentId):

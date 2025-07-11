@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.IO;
 using System.Threading.Tasks;
 using Accord;
@@ -33,14 +34,13 @@ public partial class SqliteFsViewModel
             await writer.RunFile(file, false);
         }
         WriteLine("Write untransacted db blocks");
-        using var fs = SqliteFileStore.Create(FilePath);
-        var utr = fs.UntransactedRoot("");
-        utr.Create();
-        await writer.RunFile(utr.File("untrans.txt"), false);
+        await using var fs = new SqliteTransactableStore(FilePath+".db");
         WriteLine("Transacted File");
-        await writer.RunFile(fs.TransactedRoot("").File("trans.txt"), false);
+        using var root = fs.BeginTransaction();
+        root.Create();
+        await writer.RunFile(root.File("trans.txt"), false);
         WriteLine("Transacted File with explicit length");
-        await writer.RunFile(fs.TransactedRoot("").File("trans2.txt"), true);
+        await writer.RunFile(root.File("trans2.txt"), true);
     }
 
     private void WriteLine(string text) => Console += Environment.NewLine + text;

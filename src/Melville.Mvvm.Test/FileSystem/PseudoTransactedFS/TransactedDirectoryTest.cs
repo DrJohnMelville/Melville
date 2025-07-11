@@ -21,18 +21,21 @@ public class TransactedDirectoryTest : RootTransactedDirectoryTest
 
 public class SqliteTransactedDirectoryTest : RootTransactedDirectoryTest
 {
-    public SqliteTransactedDirectoryTest() : this(SqliteFileStore.Create())
-    {
-    }
-    private SqliteTransactedDirectoryTest(SqliteFileStore dir) : 
-        base(Create(dir.UntransactedRoot("")), dir.TransactedRoot(""), false)
+    public SqliteTransactedDirectoryTest() : this(DoCreate(new SqliteTransactableStore("")))
     {
     }
 
-    private static IDirectory Create(IDirectory item)
+    private static SqliteTransactableStore DoCreate(SqliteTransactableStore store)
     {
-        item.Create();
-        return item;
+        using var dir = store.BeginTransaction();
+        dir.Create();
+        dir.Commit();
+        return store;
+    }
+
+    private SqliteTransactedDirectoryTest(SqliteTransactableStore dir) : 
+        base(dir.UntransactedRoot, dir.BeginTransaction(), false)
+    {
     }
 }
 

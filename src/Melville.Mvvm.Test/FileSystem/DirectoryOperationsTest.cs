@@ -8,6 +8,7 @@ using FluentAssertions;
 using Melville.FileSystem;
 using Melville.FileSystem.Sqlite;
 using Melville.Mvvm.TestHelpers.MockFiles;
+using Melville.SimpleDb;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem;
@@ -24,10 +25,10 @@ public sealed class DirectoryOperationsTest
 
 // this abstract class is inherited by classes that run these tests on both
 // MemoryDirectory and SqliteDirectory.
-public abstract class CommonDirectoryOperationsTest(IDirectory sut)
+public abstract class CommonDirectoryOperationsTest(IDirectory sut, string rootName)
 {
     [Fact]
-    public void HasName() => sut.Name.Should().Be("TestDir");
+    public void HasName() => sut.Name.Should().Be(rootName);
 
     [Fact]
     public void DoesNotExistByDefault() => sut.Exists().Should().BeFalse();
@@ -50,7 +51,7 @@ public abstract class CommonDirectoryOperationsTest(IDirectory sut)
         sut.Create();
         var subDir = sut.SubDirectory("Foo");
         subDir.Name.Should().Be("Foo");
-        subDir.Path.Should().Be("TestDir\\Foo");
+        subDir.Path.Should().Be($"{rootName}\\Foo");
         subDir.Exists().Should().BeFalse();
         subDir.Create();
         subDir.Exists().Should().BeTrue();
@@ -148,20 +149,20 @@ public abstract class CommonDirectoryOperationsTest(IDirectory sut)
     }
 }
 
-public class MemoryDirectoryTests():CommonDirectoryOperationsTest(new MockDirectory("TestDir"));
+public class MemoryDirectoryTests():CommonDirectoryOperationsTest(new MockDirectory("TestDir"), "TestDir");
 
 public class SqliteDirectoryTests() : CommonDirectoryOperationsTest(
-    TestSqliteFileSystemCreator.SqliteDirectory("TestDir"));
+    TestSqliteFileSystemCreator.SqliteDirectory(), "");
 
 public static class TestSqliteFileSystemCreator
 {
     public static IFile SqliteFile(string dirName, string fileName)
     {
-        var dir = SqliteDirectory(dirName);
+        var dir = SqliteDirectory();
         dir.Create();
         return dir.File(fileName);
     }
 
-    public static IDirectory SqliteDirectory(string name) =>
-        SqliteFileStore.Create().UntransactedRoot(name);
+    public static IDirectory SqliteDirectory() =>
+        new SqliteTransactableStore("").BeginTransaction();
 }

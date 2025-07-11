@@ -1,16 +1,23 @@
 ﻿using Melville.FileSystem.PseudoTransactedFS;
+using Melville.SimpleDb;
 
 namespace Melville.FileSystem.Sqlite;
 
-public class SqliteTransactableStore(SqliteFileStore fileStore) : ITransactableStore
+public class SqliteTransactableStore(IRepoConnectionFactory repo) : ITransactableStore
 {
-    public SqliteTransactableStore(string path): this(SqliteFileStore.Create(path))
+    private readonly SqliteTransactionScope readerScope = 
+        new SqliteTransactionScope(repo.CreateReadOnly(), false);
+
+    public SqliteTransactableStore(string path): this(new RepoDbConfiguration()
+    {
+        FolderPath = path
+    }.CreateFactory(DbTables.All))
     {
     }
     
     public ValueTask DisposeAsync()
     {
-        fileStore.Dispose();
+        readerScope.Dispose();
         return ValueTask.CompletedTask;
     }
 
@@ -23,8 +30,10 @@ public class SqliteTransactableStore(SqliteFileStore fileStore) : ITransactableS
         }
     }
 
-    public IDirectory UntransactedRoot => fileStore.UntransactedRoot("");
-    public ITransactedDirectory BeginTransaction() => fileStore.TransactedRoot("");   
+    public IDirectory UntransactedRoot => new SqliteFileStore(readerScope).GetRoot("");
+    public ITransactedDirectory BeginTransaction() => 
+       new SqliteFileStore(new SqliteTransactionScope(repo.Create(), true))
+           .GetTransactedRoot("");   
 
     public bool IsLocalStore => true;
     public IDownloadProgressStore? ProgressStore => null;

@@ -10,20 +10,16 @@ public readonly struct SqliteTransactionScope
     private readonly IRepoDbConnection connection;
     private readonly IDbTransaction? transaction;
 
-    public SqliteTransactionScope(IRepoDbConnection connection,
-        IDbTransaction? transaction)
+    public SqliteTransactionScope(IRepoDbConnection connection, bool withTransaction)
     {
         this.connection = connection;
-        this.transaction = transaction;
-        if (this.transaction?.Connection is {} innerConn &&
-            innerConn != connection.GetConnection())
-            throw new ArgumentException("Transaction attached to the wrong connection");
+        if (withTransaction)
+        {
+            transaction = connection.GetConnection().BeginTransaction();
+        }
     }
 
-    IDbConnection Target()
-    {
-        return connection.GetConnection();
-    }
+    IDbConnection Target() => connection.GetConnection();
 
     public void Execute(string sql, object? param = null) =>
         Target().Execute(sql, param, transaction);
@@ -46,20 +42,12 @@ public readonly struct SqliteTransactionScope
     public SQLiteBlobWrapper BlobWrapper(long blockId, bool readOnly) =>
         connection.BlobWrapper("Blocks", "Bytes", blockId, readOnly);
 
-    public SqliteTransactionScope NewTransactions()
-    {
-        var clonedRepo = connection.Clone();
-        return new SqliteTransactionScope(clonedRepo, 
-            clonedRepo.GetConnection().BeginTransaction());
-    }
-
     public void Commit() => transaction?.Commit();
     public void Rollback() => transaction?.Rollback();
-    public void DisposeTransaction() =>  transaction?.Dispose();
 
     public void Dispose()
     {
-        DisposeTransaction();
-        (connection as IDisposable)?.Dispose();
+        transaction?.Dispose();
+        connection.Dispose();
     }
 }

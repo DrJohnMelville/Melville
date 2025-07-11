@@ -8,14 +8,9 @@ using Melville.Hacks.Reflection;
 
 namespace Melville.SimpleDb;
 
-public interface IRepoDbConnection
+public interface IRepoDbConnection: IDisposable
 {
-    [Obsolete("Sqlite is synchronous so use GetConnection instead")]
-    ValueTask<IDbConnection> GetConnectionAsync() => ValueTask.FromResult(GetConnection());
     IDbConnection GetConnection();
-
-    IRepoDbConnection Clone();
-
     SQLiteBlobWrapper BlobWrapper(string table, string column, long key, bool readOnly);
 }
 

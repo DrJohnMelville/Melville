@@ -6,24 +6,6 @@ using Melville.INPC;
 
 namespace Melville.SimpleDb;
 
-[Obsolete("Use MigratedRepoConnection instead.")]
-public class MigratedRepo(IRepoDbConnection repo, Migrator migator, int desiredVersion = Int32.MaxValue) : IRepoDbConnection
-{
-    public IDbConnection GetConnection()
-    {
-        var connection = repo.GetConnection();
-        migator.UpgradeToVersion(connection, desiredVersion);
-        return connection;
-    }
-
-    /// <inheritdoc />
-    public IRepoDbConnection Clone() => this;
-
-    /// <inheritdoc />
-    public SQLiteBlobWrapper BlobWrapper(string table, string column, long key, bool readOnly) => 
-        repo.BlobWrapper(table, column, key, readOnly);
-}
-
 public partial class Migrator
 {
     [FromConstructor] private readonly Migration[] migrations;

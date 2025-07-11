@@ -5,6 +5,7 @@ using Dapper;
 
 namespace Melville.SimpleDb;
 
+[Obsolete("Such a short life -- never made it to a full release")]
 public class MigratedRepoConnection: IRepoDbConnection, IDisposable
 {
     static MigratedRepoConnection()
