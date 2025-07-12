@@ -31,6 +31,7 @@ public class MultipleValueActivator : IActivationStrategy
 
     public object? Create(IBindingRequest bindingRequest)
     {
+#warning I am almost positve that there is something wrong with this code, but I caannot make it fail in a test
         if (bindingRequest.IsCancelled) return null;
         var resolver = ResolveInnerType(bindingRequest);
         if (resolver == null || !resolver.CanCreate(bindingRequest))

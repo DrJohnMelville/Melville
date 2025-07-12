@@ -92,6 +92,9 @@ public class ServiceProviderFactory
         sc.AddSingleton<TransitiveRequireServiceProvider>();
         var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
         prov.GetService(desiredType);
+        var isServ = prov.GetService<IServiceProviderIsService>();
+        isServ.IsService(desiredType).Should().BeTrue();
+        isServ.IsService(typeof(IServiceProviderIsService)).Should().BeTrue();
     }
 
     [Fact]
