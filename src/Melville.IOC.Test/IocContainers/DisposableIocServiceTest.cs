@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Xunit;
 
@@ -29,7 +31,7 @@ public class DisposableIocServiceTest
         sut.Get<Disposable>(); // does not throw;
     }
     [Fact]
-    public void REgisterActivationStrategiesAsConstructor()
+    public void RegisterActivationStrategiesAsConstructor()
     {
         Assert.Throws<IocException>(() => sut.Get<Disposable>());
         Assert.Throws<IocException>(() => sut.Get<Disposable>());
@@ -82,6 +84,17 @@ public class DisposableIocServiceTest
         Assert.Equal(disposes, obj.DisposeCount);
         outer.Dispose();
         Assert.Equal(disposes, obj.DisposeCount);
+    }
+
+    [Fact]
+    public void FactoryProductsGetDisposed()
+    {
+        RegisterDisposeType(true);
+        var scope = sut.CreateScope();
+        var item = scope.Get<Func<Disposable>>()();
+        item.DisposeCount.Should().Be(0);
+        scope.Dispose();
+        item.DisposeCount.Should().Be(1);
     }
 
     public class DisposeHolder:IDisposable

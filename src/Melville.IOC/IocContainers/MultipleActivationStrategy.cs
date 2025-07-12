@@ -36,6 +36,7 @@ public class MultipleActivationStrategy : IActivationStrategy
     {
         foreach (var strategy in strateies)
         {
+#warning -- if we even go to immutable binding requests (already 90% there) we can avoid this clone.
             var request = bindingRequest.Clone();
             if (!strategy.ValidForRequest(request)) continue;
             var o = strategy.Create(request);
