@@ -1,8 +1,9 @@
-﻿using System.Data.SqlTypes;
+﻿using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ChildContainers;
+using System;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
-using Melville.IOC.IocContainers;
-using Melville.IOC.IocContainers.ChildContainers;
 
 namespace Melville.IOC.BindingRequests;
 
@@ -56,10 +57,20 @@ public static class RequestStackPrinter
             { SatisfiesDisposeRequirement: true } => "Dispose Allowed:",
             _ => "Dispose Not Allowed"
         };
-    private static string RequestedTypeName(IBindingRequest requestedType)
+    private static string RequestedTypeName(IBindingRequest requestedType) => 
+        requestedType.DesiredType.PrettyName();
+
+    public static string PrettyName(this Type objType)
     {
-        return requestedType.DesiredType.Name;
-            
+
+        string result = objType.Name;
+        if (objType.IsGenericType)
+        {
+            var name = objType.Name.AsSpan(0,objType.Name.IndexOf('`'));
+            var genericTypes = objType.GenericTypeArguments;
+            result = $"{name}<{string.Join(",", genericTypes.Select(PrettyName))}>";
+        }
+        return result;
     }
 
 }

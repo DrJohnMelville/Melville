@@ -124,15 +124,14 @@ public class IocContainerTest
         }
         catch (Exception e)
         {
-            Assert.Equal("""
+            e.Message.Should().StartWith("""
                 Requested type: ISimpleObject
                 [1, 1] ISimpleObject (No Scope, Global Dispose Not Allowed)
                 [1, 1] SecondaryObject (No Scope, Global Dispose Not Allowed)
                 
                 Active Scopes:
-                IocContainer(0x1CCA86F) 
-                
-                """, e.Message);
+                IocContainer(0x
+                """);
             return;
         }
         Assert.Fail("should have thrown an exception");

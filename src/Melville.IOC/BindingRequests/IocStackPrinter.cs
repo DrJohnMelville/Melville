@@ -23,7 +23,7 @@ public static class IocStackPrinter
 
     private static void PrintSingleLine(IIocService service, StringBuilder sb, IBindingRequest? query)
     {
-        sb.AppendLine($"{service.GetType().Name}(0x{service.GetHashCode():X}) {ScopeDot(service, query)}");
+        sb.AppendLine($"{service.GetType().PrettyName()}(0x{service.GetHashCode():X}) {ScopeDot(service, query)}");
     }
 
     private static string ScopeDot(IIocService service, IBindingRequest? query)
