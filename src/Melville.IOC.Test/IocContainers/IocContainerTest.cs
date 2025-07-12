@@ -126,8 +126,12 @@ public class IocContainerTest
         {
             Assert.Equal("""
                 Requested type: ISimpleObject
-                [1, 1] Melville.IOC.Test.IocContainers.ISimpleObject (No Scope, Global Dispose Not Allowed)
-                [1, 1] Melville.IOC.Test.IocContainers.SecondaryObject (No Scope, Global Dispose Not Allowed)
+                [1, 1] ISimpleObject (No Scope, Global Dispose Not Allowed)
+                [1, 1] SecondaryObject (No Scope, Global Dispose Not Allowed)
+                
+                Active Scopes:
+                IocContainer(0x1CCA86F) 
+                
                 """, e.Message);
             return;
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Data.SqlTypes;
+using System.Linq;
 using System.Text;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
@@ -12,6 +13,10 @@ public static class RequestStackPrinter
         var sb = new StringBuilder();
         sb.Append($"Requested type: {request.DesiredType.Name}");
         AppendRequestList(request, sb);
+        sb.AppendLine();
+        sb.AppendLine();
+        sb.AppendLine("Active Scopes:");
+        request.IocService.PrintTraceTo(sb, request);
         return sb.ToString();
     }
 
@@ -53,7 +58,7 @@ public static class RequestStackPrinter
         };
     private static string RequestedTypeName(IBindingRequest requestedType)
     {
-        return requestedType.DesiredType.FullName??requestedType.DesiredType.Name;
+        return requestedType.DesiredType.Name;
             
     }
 

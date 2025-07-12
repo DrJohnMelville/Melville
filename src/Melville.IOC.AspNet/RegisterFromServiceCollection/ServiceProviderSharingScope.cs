@@ -11,10 +11,10 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
     IServiceProvider, ISupportRequiredService, IServiceScope, IServiceScopeFactory,
     IServiceProviderIsService
 {
-    #region Add this, with all its overrides, to the scope
+    #region Add this, with all its interfaces to the scope
     public override bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? value)
     {
-        if (RequestingAtTypeThisImplements(source.DesiredType))
+        if (RequestingATypeThisImplements(source.DesiredType))
         {
             value = this;
             return true;
@@ -22,7 +22,7 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
         return base.TryGetValue(source, out value);
     }
 
-    private static bool RequestingAtTypeThisImplements(Type type)
+    private static bool RequestingATypeThisImplements(Type type)
     {
         return type == typeof(IServiceProvider) ||
                type == typeof(IServiceScope) ||
@@ -38,7 +38,7 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
 
     public void RegisterForDispose(object obj)
     {
-        if (!RequestingAtTypeThisImplements(obj.GetType()))
+        if (!RequestingATypeThisImplements(obj.GetType()))
             disposeContainer.RegisterForDispose(obj);
     }
 
@@ -47,7 +47,7 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
     public void Dispose() => disposeContainer.Dispose();
 
     public bool AllowSingletonInside(Type request) =>
-        RequestingAtTypeThisImplements(request);
+        RequestingATypeThisImplements(request);
 
     #endregion
 

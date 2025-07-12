@@ -18,6 +18,7 @@ public interface IIocService
     bool IsGlobalScope => ParentScope == null;
     bool AllowDisposablesInGlobalScope { get; set; }
     IIocDebugger Debugger { get; }
+    string Trace => this.IocStackTrace(null);
 }
 
 public static class IocServiceOperations
