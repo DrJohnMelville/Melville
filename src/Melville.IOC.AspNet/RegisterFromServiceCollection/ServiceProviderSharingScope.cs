@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Melville.IOC.BindingRequests;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
@@ -12,14 +13,15 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
     IServiceProviderIsService
 {
     #region Add this, with all its interfaces to the scope
-    public override bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? value)
+    public override bool TryGetValue(IBindingRequest source, IActivationStrategy key,
+        [NotNullWhen(true)] out object? value)
     {
         if (RequestingATypeThisImplements(source.DesiredType))
         {
             value = this;
             return true;
         }
-        return base.TryGetValue(source, out value);
+        return base.TryGetValue(source, key, out value);
     }
 
     private static bool RequestingATypeThisImplements(Type type)

@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Xunit;
 
@@ -33,6 +35,19 @@ public sealed class ScopedItemTest
         var innerObject = innerScope.Get<SimpleObjectImplementation>();
         var outerObject = outerScope.Get<SimpleObjectImplementation>();
         innerObject.Should().BeSameAs(outerObject);
+    }
+
+    [Fact]
+    public void ScopesArePerBindingNotPerObjectType()
+    {
+        sut.Bind<SimpleObjectImplementation>().ToSelf().AsScoped();
+        sut.Bind<SimpleObjectImplementation>().ToSelf().AsScoped();
+        var innerScope = sut.CreateScope();
+        var a = innerScope.Get<IList<SimpleObjectImplementation>>();
+        var b = innerScope.Get<IList<SimpleObjectImplementation>>();
+        a.Should().HaveCount(2);
+        a.Zip(b, object.ReferenceEquals).All(x => x).Should().BeTrue();
+        a[0].Should().NotBeSameAs(a[1]);
     }
 
     [Fact]

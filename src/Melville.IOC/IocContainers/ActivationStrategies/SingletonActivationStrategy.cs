@@ -87,7 +87,7 @@ public partial class ForbidScopedInsideSingleton : IIocService, IRegisterDispose
 
     public bool SatisfiesDisposeRequirement => false;
 
-    public bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? result)
+    public bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result)
     {
         if (!ShouldOverride(source))
             throw new IocException("Attempted to create a scoped object in singleton scope");
@@ -95,7 +95,7 @@ public partial class ForbidScopedInsideSingleton : IIocService, IRegisterDispose
         return false;
     }
 
-    public void SetScopeValue(IBindingRequest source, object? value)
+    public void SetScopeValue(IBindingRequest source, object? value, IActivationStrategy key)
     {
         if (!ShouldOverride(source))
             throw new IocException("Attempted to create a scoped object in singleton scope");

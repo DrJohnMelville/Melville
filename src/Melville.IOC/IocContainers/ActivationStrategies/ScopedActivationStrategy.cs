@@ -29,7 +29,7 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
         var parentScopes = ParentScopes(bindingRequest);
         foreach (var parentScope in parentScopes)
         {
-            if (parentScope.TryGetValue(bindingRequest, out var ret)) return ret;
+            if (parentScope.TryGetValue(bindingRequest, this, out var ret)) return ret;
         }
 
         return RecordScopedValue(bindingRequest, base.Create(bindingRequest));
@@ -38,7 +38,7 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
     private object? 
         RecordScopedValue(IBindingRequest bindingRequest, in object? create)
     {
-        Scope(bindingRequest).SetScopeValue(bindingRequest, create);
+        Scope(bindingRequest).SetScopeValue(bindingRequest, create, this);
         return create;
     }
 }

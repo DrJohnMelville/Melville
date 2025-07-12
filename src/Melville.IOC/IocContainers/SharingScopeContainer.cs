@@ -15,7 +15,7 @@ public class GenericScope: IIocService
     {
         ParentScope = parentScope;
     }
-
+    
     public IIocService ParentScope { get; }
 
     public bool AllowDisposablesInGlobalScope
@@ -35,19 +35,19 @@ public class GenericScope: IIocService
 
 public interface IScope
 {
-    bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? result);
-    void SetScopeValue(IBindingRequest source, object? value);
+    bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result);
+    void SetScopeValue(IBindingRequest source, object? value, IActivationStrategy key);
 }
     
 public class SharingScopeContainer(IIocService parentScope) : 
     GenericScope(parentScope), IScope
 {
-    private readonly Dictionary<Type, object?> scopeItems = new();
+    private readonly Dictionary<IActivationStrategy, object?> scopeItems = new();
         
-    public virtual bool TryGetValue(
-        IBindingRequest source, [NotNullWhen(true)] out object? value) =>
-        scopeItems.TryGetValue(source.DesiredType, out value);
+    public virtual bool TryGetValue(IBindingRequest source, IActivationStrategy key,
+        [NotNullWhen(true)] out object? value) =>
+        scopeItems.TryGetValue(key, out value);
 
-    public void SetScopeValue(IBindingRequest source, object? value) => 
-        scopeItems.Add(source.DesiredType, value);
+    public void SetScopeValue(IBindingRequest source, object? value, IActivationStrategy key) => 
+        scopeItems.Add(key, value);
 }
