@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Melville.INPC;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers.ChildContainers;
@@ -35,4 +36,5 @@ public partial class DoNotDuspose : IIocService, IRegisterDispose
 
     // this object says it will dispose of the given object, but it does not.
     public bool SatisfiesDisposeRequirement => true;
+    public bool AllowSingletonInside(Type request) => false;
 }

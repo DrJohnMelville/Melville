@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers;
 
@@ -13,6 +14,7 @@ public interface IRegisterDispose
 {
     void RegisterForDispose(object obj);
     bool SatisfiesDisposeRequirement { get; }
+    bool AllowSingletonInside(Type request);
 }
     
 public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
@@ -71,6 +73,8 @@ public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
     }
 
     public bool SatisfiesDisposeRequirement => true;
+    public bool AllowSingletonInside(Type request) => false;
+
 }
 
 public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
@@ -89,4 +93,6 @@ public class DisposableIocService: GenericScope, IDisposableIocService, IRegiste
     }
 
     public bool SatisfiesDisposeRequirement => register.SatisfiesDisposeRequirement;
+    public bool AllowSingletonInside(Type request) => false;
+
 }

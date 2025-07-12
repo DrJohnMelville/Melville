@@ -10,57 +10,54 @@ namespace Melville.IOC.IocContainers.ActivationStrategies;
 
 public class SingletonActivationStrategy : ForwardingActivationStrategy
 {
-    private IBindingRequest? lastRequst;
+    private volatile object? value;
+    private Lock? mutex = new();
 
-    private Lazy<object?> value;
 
-    public SingletonActivationStrategy(IActivationStrategy innerActivationStrategyStrategy): base(innerActivationStrategyStrategy)
-    { 
+    public SingletonActivationStrategy(IActivationStrategy innerActivationStrategyStrategy) : base(
+        innerActivationStrategyStrategy)
+    {
         if (innerActivationStrategyStrategy.SharingScope() != IocContainers.SharingScope.Transient)
         {
             throw new IocException("Bindings may only specify at most one lifetime.");
         }
-        value = new Lazy<object?>(ComputeSingleValue, LazyThreadSafetyMode.ExecutionAndPublication);
     }
+
     public override SharingScope SharingScope() => IocContainers.SharingScope.Singleton;
 
     public override object? Create(IBindingRequest bindingRequest)
     {
-        try
+        if (mutex is not { } capturedMutex) return value;
+        lock (capturedMutex)
         {
-            lastRequst = bindingRequest;
-            return value.Value;
+            if (mutex is null) return value;
+            mutex = null;
+            value = ComputeSingleValue(bindingRequest);
         }
-        finally
-        {
-            lastRequst = null;
-        }
+        return value;
     }
-    private object? ComputeSingleValue() => ComputeSingleValue(lastRequst??
-       throw new InvalidOperationException("Should have a lastRequest at this point"));
 
-    private object? ComputeSingleValue(IBindingRequest bindingRequest)
-    {
-            var context = ContextForSingletonCreation(bindingRequest);
-            return base.Create(context);
-    }
-      
+
+    private object? ComputeSingleValue(IBindingRequest bindingRequest) => 
+        base.Create(ContextForSingletonCreation(bindingRequest));
+
     private static IBindingRequest ContextForSingletonCreation(IBindingRequest bindingRequest) =>
-        MustWrapContexxt(bindingRequest) ?
-            new ChangeIocServiceRequest(bindingRequest,
-                new SingleltonCreator(bindingRequest.IocService)):
-            bindingRequest;
+        DisposalScope(bindingRequest) is { } scopeParent
+            ? NoScopesInsideSingleton(bindingRequest, scopeParent)
+            : bindingRequest;
 
-    private static bool MustWrapContexxt(IBindingRequest bindingRequest)
+    private static ChangeIocServiceRequest NoScopesInsideSingleton(IBindingRequest bindingRequest, IRegisterDispose scopeParent)
     {
-        var scope = bindingRequest.IocService.ScopeList().OfType<IRegisterDispose>().FirstOrDefault();
-        return scope switch
-        {
-            null => false,
-            DisposableChildContainer  => false,
-            _ => true
-        };
+        return new ChangeIocServiceRequest(bindingRequest,
+            new ForbidScopedInsideSingleton(bindingRequest.IocService,
+                scopeParent));
     }
+
+    private static IRegisterDispose? DisposalScope(IBindingRequest bindingRequest) =>
+        bindingRequest.IocService
+            .ScopeList()
+            .OfType<IRegisterDispose>()
+            .FirstOrDefault(x => x.SatisfiesDisposeRequirement);
 
     public static IActivationStrategy EnsureSingleton(IActivationStrategy inner) =>
         inner.SharingScope() == IocContainers.SharingScope.Singleton
@@ -68,23 +65,41 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
             : new SingletonActivationStrategy(inner);
 }
 
-public partial class SingleltonCreator : IIocService, IRegisterDispose, IScope
+public partial class ForbidScopedInsideSingleton : IIocService, IRegisterDispose, IScope
 {
-    [FromConstructor][DelegateTo] private readonly IIocService inner;
+    [FromConstructor] [DelegateTo] private readonly IIocService inner;
+    [FromConstructor] private readonly IRegisterDispose overrideQuery;
+
+    public bool ShouldOverride(IBindingRequest br) =>
+        overrideQuery.AllowSingletonInside(br.DesiredType);
+
     public void RegisterForDispose(object obj)
     {
-        if (!inner.AllowDisposablesInGlobalScope)
+        if (inner.AllowDisposablesInGlobalScope || obj is null ||
+            overrideQuery.AllowSingletonInside(obj.GetType()))
+            overrideQuery.RegisterForDispose(obj);
+        else
             throw new IocException("Attempted to create a Disposable object in singleton scope");
     }
 
+    public IIocService? ParentScope => inner;
+
+
     public bool SatisfiesDisposeRequirement => false;
+
     public bool TryGetValue(IBindingRequest source, [NotNullWhen(true)] out object? result)
     {
-        throw new IocException("Attempted to create a scoped object in singleton scope");
+        if (!ShouldOverride(source))
+            throw new IocException("Attempted to create a scoped object in singleton scope");
+        result = null;
+        return false;
     }
 
     public void SetScopeValue(IBindingRequest source, object? value)
     {
-        throw new IocException("Attempted to create a scoped object in singleton scope");
+        if (!ShouldOverride(source))
+            throw new IocException("Attempted to create a scoped object in singleton scope");
     }
+
+    public bool AllowSingletonInside(Type request) => false;
 }

@@ -7,7 +7,7 @@ using Melville.IOC.BindingRequests;
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
 public partial class ServiceProviderSharingScope(IIocService outer) :
-    SharingScopeContainer(new DisposableIocService(outer)),
+    SharingScopeContainer(outer), IRegisterDispose,
     IServiceProvider, ISupportRequiredService, IServiceScope, IServiceScopeFactory,
     IServiceProviderIsService
 {
@@ -32,6 +32,25 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
     }
     #endregion
 
+    #region Disposal
+
+    private readonly DisposalRegister disposeContainer = new();
+
+    public void RegisterForDispose(object obj)
+    {
+        if (!RequestingAtTypeThisImplements(obj.GetType()))
+            disposeContainer.RegisterForDispose(obj);
+    }
+
+    public bool SatisfiesDisposeRequirement => true;
+
+    public void Dispose() => disposeContainer.Dispose();
+
+    public bool AllowSingletonInside(Type request) =>
+        RequestingAtTypeThisImplements(request);
+
+    #endregion
+
     #region Asp.Net overrides
 
     public object? GetService(Type serviceType) => this.Get(serviceType);
@@ -40,8 +59,6 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
         GetService(serviceType) ?? 
         throw new InvalidOperationException(
             $"Service of type {serviceType} could not be constructed");
-
-    public void Dispose() => (ParentScope as IDisposable)!.Dispose();
 
     public IServiceProvider ServiceProvider => this;
     public IServiceScope CreateScope() => new ServiceProviderSharingScope(ParentScope);

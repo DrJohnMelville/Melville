@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using Melville.IOC.BindingRequests;
+using System.Threading.Tasks;
 
 namespace Melville.IOC.IocContainers.ChildContainers;
 
@@ -16,4 +18,7 @@ public class DisposableChildContainer(IBindableIocService parent, IIocService pa
     }
 
     public bool SatisfiesDisposeRequirement => innerService.SatisfiesDisposeRequirement;
+
+    public bool AllowSingletonInside(Type request) => true;
+
 }

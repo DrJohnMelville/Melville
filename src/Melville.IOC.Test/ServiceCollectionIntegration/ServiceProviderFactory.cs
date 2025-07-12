@@ -80,15 +80,18 @@ public class ServiceProviderFactory
     }
 
     private record RequiresServiceProvider(IServiceProvider SP);
+    private record TransitiveRequireServiceProvider(RequiresServiceProvider R);
 
-    [Fact]
-    public void CanUseSpecialTypesInASingleton()
+    [Theory]
+    [InlineData(typeof(RequiresServiceProvider))]
+    [InlineData(typeof(TransitiveRequireServiceProvider))]
+    public void CanUseSpecialTypesInASingleton(Type desiredType)
     {
         var sc = new ServiceCollection();
         sc.AddSingleton<RequiresServiceProvider>();
+        sc.AddSingleton<TransitiveRequireServiceProvider>();
         var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
-        prov.GetRequiredService<RequiresServiceProvider>()
-            .SP.Should().BeSameAs(prov);
+        prov.GetService(desiredType);
     }
 
     [Fact]
@@ -131,17 +134,16 @@ public class ServiceProviderFactory
         Assert.Equal("Hello World", sp.GetRequiredService<string>());
     }
 
-    private record DependsOnServiceProvider(IServiceProvider Provider);
 
     [Fact]
     public void DependentObjectsFindTheOuterScopeServiceProvider()
     {
         var sc = new ServiceCollection();
-        sc.AddTransient<DependsOnServiceProvider>();
+        sc.AddTransient<RequiresServiceProvider>();
         var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
         using var scope = prov.CreateScope();
-        var dep = scope.ServiceProvider.GetRequiredService<DependsOnServiceProvider>();
-        dep.Provider.Should().BeSameAs(scope);
+        var dep = scope.ServiceProvider.GetRequiredService<RequiresServiceProvider>();
+        dep.SP.Should().BeSameAs(scope);
 
     }
 }

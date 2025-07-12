@@ -25,6 +25,7 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
 
     public override object? Create(IBindingRequest bindingRequest)
     {
+        var bag = bindingRequest.IocService.ScopeList();
         var parentScopes = ParentScopes(bindingRequest);
         foreach (var parentScope in parentScopes)
         {
