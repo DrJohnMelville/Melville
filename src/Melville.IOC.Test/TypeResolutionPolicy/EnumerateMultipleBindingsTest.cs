@@ -28,12 +28,13 @@ public class EnumerateMultipleBindingsTest
         var result = sut.Get<IEnumerable<IItem>>();
         result.Should().ContainSingle().Which.Value.Should().Be("Hello");
     }
-
     [Fact]
-    public void ResolveToCreateSingleItem()
+    public void ResolveSingleScopedItemList()
     {
-        sut.Bind<IItem>().To<Item>().WithParameters("Hello");
-        var result = sut.Get<IEnumerable<IItem>>();
+        sut.Bind<IItem>().ToMethod(()=>new Item("Hello")).AsScoped();
+        using var scope = sut.CreateScope();
+        var result = scope.Get<IEnumerable<IItem>>();
         result.Should().ContainSingle().Which.Value.Should().Be("Hello");
     }
+
 }
