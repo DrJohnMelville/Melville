@@ -117,4 +117,14 @@ public class ChildContainerTest
         Assert.True(obj.Disposed);
     }
 
+    [Fact]
+    public void CanCreateScopedInASingletonContext()
+    {
+        sut.Bind<DisposableChildContainer>()
+            .ToSelf().DisposeIfInsideScope().AsSingleton();
+        var c1 = sut.Get<DisposableChildContainer>();
+        c1.Bind<DisposableSingleton>().ToSelf().AsScoped();
+        var obj = c1.CreateScope().Get<DisposableSingleton>();
+
+    }
 }

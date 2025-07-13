@@ -70,19 +70,14 @@ public sealed class ScopedTupleActivationStrategy : IActivationStrategy
     {
         using var buffer = new RentedBuffer<object?>(desiredType.GetGenericArguments().Length);
         var values = buffer.Span;
-        var scope = new IsolatingDisposalScope(new SharingScopeContainer(
-            bindingRequest.IocService));
+        var scope = bindingRequest.IocService.CreateScope();
         values[0] = scope;
-        var scopedRequest = new ChangeIocServiceRequest(bindingRequest, scope);
+        var scopedRequest = new ChangeIocServiceRequest(
+            RemoveSingletonParentRequest.StripOuterSingletonScope(bindingRequest), scope);
         scope.Fill(values[1..], RequestsForInnerItems(scopedRequest));
         return bindingRequest.IsCancelled? null: funcCreator.Invoke(values);
     }
     
     public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
     public bool ValidForRequest(IBindingRequest request) => true;
-}
-
-public class IsolatingDisposalScope(IIocService parent): DisposableIocService(parent)
-{
-    public override bool AllowSingletonInside(Type request) => true;
 }

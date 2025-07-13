@@ -17,7 +17,7 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
     public override SharingScope SharingScope() => IocContainers.SharingScope.Scoped;
     
     private IScope Scope(IBindingRequest req) => 
-        ParentScopes(req).FirstOrDefault()??
+         ParentScopes(req).FirstOrDefault()??
         throw new IocException($"Attempted to create a scoped {req.DesiredType.Name} outside of a scope.");
 
     private static IEnumerable<IScope> ParentScopes(IBindingRequest req) => 
@@ -25,6 +25,8 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
 
     public override object? Create(IBindingRequest bindingRequest)
     {
+        bindingRequest.SingletonRequestParent?.TryCreateScopedChild(bindingRequest);
+
         var bag = bindingRequest.IocService.ScopeList();
         var parentScopes = ParentScopes(bindingRequest);
         foreach (var parentScope in parentScopes)

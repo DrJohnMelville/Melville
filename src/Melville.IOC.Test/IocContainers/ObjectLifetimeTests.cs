@@ -46,7 +46,7 @@ public sealed class ObjectLifetimeTests
         Assert.Throws<IocException>(()=>sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>().AsSingleton().AsScoped());
     }
     [Fact]
-    public void ForbidScopedObjectsInStaticContext()
+    public void ForbidScopedObjectsInSingletonContext()
     {
         var scope = sut.CreateScope();
         sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>().AsScoped();

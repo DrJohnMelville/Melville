@@ -39,25 +39,7 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
 
 
     private object? ComputeSingleValue(IBindingRequest bindingRequest) => 
-        base.Create(ContextForSingletonCreation(bindingRequest));
-
-    private static IBindingRequest ContextForSingletonCreation(IBindingRequest bindingRequest) =>
-        DisposalScope(bindingRequest) is { } scopeParent
-            ? NoScopesInsideSingleton(bindingRequest, scopeParent)
-            : bindingRequest;
-
-    private static ChangeIocServiceRequest NoScopesInsideSingleton(IBindingRequest bindingRequest, IRegisterDispose scopeParent)
-    {
-        return new ChangeIocServiceRequest(bindingRequest,
-            new ForbidScopedInsideSingleton(bindingRequest.IocService,
-                scopeParent));
-    }
-
-    private static IRegisterDispose? DisposalScope(IBindingRequest bindingRequest) =>
-        bindingRequest.IocService
-            .ScopeList()
-            .OfType<IRegisterDispose>()
-            .FirstOrDefault(x => x.SatisfiesDisposeRequirement);
+        base.Create(new CreateSingletonRequest(bindingRequest));
 
     public static IActivationStrategy EnsureSingleton(IActivationStrategy inner) =>
         inner.SharingScope() == IocContainers.SharingScope.Singleton
@@ -65,42 +47,30 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
             : new SingletonActivationStrategy(inner);
 }
 
-public partial class ForbidScopedInsideSingleton : IIocService, IRegisterDispose, IScope
+public class CreateSingletonRequest(IBindingRequest parent) : ForwardingRequest(parent)
 {
-    [FromConstructor] [DelegateTo] private readonly IIocService inner;
-    [FromConstructor] private readonly IRegisterDispose overrideQuery;
+    public override CreateSingletonRequest? SingletonRequestParent => this;
 
-#warning -- I think I nned two properties allow singletonsinside and mah be scoped inside of singleton
-    public bool ShouldOverride(IBindingRequest br) =>
-        overrideQuery.AllowSingletonInside(br.DesiredType);
-
-    public void RegisterForDispose(object obj)
+    public void TryCreateScopedChild(IBindingRequest childRequest)
     {
-        if (inner.AllowDisposablesInGlobalScope || obj is null ||
-            overrideQuery.AllowSingletonInside(obj.GetType()))
-            overrideQuery.RegisterForDispose(obj);
-        else
-            throw new IocException("Attempted to create a Disposable object in singleton scope");
+        throw new IocException(
+            $"Cannot create a scoped {childRequest.DesiredType.PrettyName()} inside of a singleton {DesiredType.PrettyName()}");
     }
+}
 
-    public IIocService? ParentScope => inner;
+public class AllowScopedInsideSingletonActivationStrategy(
+    IActivationStrategy innerActivationStrategy) : ForwardingActivationStrategy(innerActivationStrategy)
+{
+    public override object? Create(IBindingRequest bindingRequest) => 
+        base.Create(
+            RemoveSingletonParentRequest.StripOuterSingletonScope(bindingRequest));
+}
 
+public class RemoveSingletonParentRequest(IBindingRequest parent) : ForwardingRequest(parent)
+{
+    public override CreateSingletonRequest? SingletonRequestParent => null;
 
-    public bool SatisfiesDisposeRequirement => false;
+    public static IBindingRequest StripOuterSingletonScope(IBindingRequest request) =>
+        request.SingletonRequestParent is null ? request : new RemoveSingletonParentRequest(request);
 
-    public bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result)
-    {
-        if (!ShouldOverride(source))
-            throw new IocException("Attempted to create a scoped object in singleton scope");
-        result = null;
-        return false;
-    }
-
-    public void SetScopeValue(IBindingRequest source, object? value, IActivationStrategy key)
-    {
-        if (!ShouldOverride(source))
-            throw new IocException("Attempted to create a scoped object in singleton scope");
-    }
-
-    public bool AllowSingletonInside(Type request) => false;
 }

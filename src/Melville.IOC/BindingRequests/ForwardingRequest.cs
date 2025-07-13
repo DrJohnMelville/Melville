@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.BindingRequests;
 
@@ -28,5 +29,5 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
 
     public string Trace => this.ConstructFailureMessage();
     public override string ToString() => Trace;
-
+    public virtual CreateSingletonRequest? SingletonRequestParent => inner.SingletonRequestParent;
 }

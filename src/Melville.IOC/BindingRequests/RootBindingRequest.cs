@@ -1,5 +1,6 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.BindingRequests;
 
@@ -24,4 +25,6 @@ public class RootBindingRequest : IBindingRequest
 
     public string Trace => this.ConstructFailureMessage();
     public override string ToString() => Trace;
+
+    public CreateSingletonRequest? SingletonRequestParent => null;
 }

@@ -17,16 +17,19 @@ public class ChildContainer : IocContainer
 }
 
 public class CreateInContextPolicy(
-    ITypeResolutionPolicy inner, IIocService parentContext): ITypeResolutionPolicy
+    ITypeResolutionPolicy inner,
+    IIocService parentContext) : ITypeResolutionPolicy
 {
     /// <inheritdoc />
     public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
     {
-        return inner.ApplyResolutionPolicy(request) is { } strategy
+        return inner.ApplyResolutionPolicy(RemoveSingletonParentRequest.StripOuterSingletonScope(request)) is { } strategy
             ? new StrategyInContext(strategy, parentContext)
             : null;
     }
+
 }
+
 
 public class StrategyInContext (
     IActivationStrategy strategy, IIocService parentContext) : IActivationStrategy

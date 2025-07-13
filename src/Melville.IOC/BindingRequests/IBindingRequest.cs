@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.BindingRequests;
 
@@ -22,6 +23,8 @@ public interface IBindingRequest
     object?[] ArgumentsFromChild { get; set; }
     object?[] ArgumentsFromParent { get; }
     string Trace { get; }
+
+    CreateSingletonRequest? SingletonRequestParent { get; }
 }
 
 public static class BindingRequestExtensions

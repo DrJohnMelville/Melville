@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 namespace Melville.IOC.IocContainers.ChildContainers;
 
 public class DisposableChildContainer(IBindableIocService parent, IIocService parentServ)
-    : ChildContainer(parent, parentServ), IDisposableIocService, IRegisterDispose
+    : ChildContainer(parent, parentServ), 
+        IDisposableIocService, IRegisterDispose
 {
     private readonly DisposalRegister innerService = new();
 

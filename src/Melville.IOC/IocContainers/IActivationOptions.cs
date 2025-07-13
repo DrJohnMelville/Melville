@@ -21,6 +21,7 @@ public interface ITypesafeActivationOptions<T>
     // sharing scopes
     IActivationOptions<T> AsSingleton() => AddActivationStrategy(SingletonActivationStrategy.EnsureSingleton);
     IActivationOptions<T> AsScoped() => AddActivationStrategy(i => new ScopedActivationStrategy(i));
+    IActivationOptions<T> AllowScopeInsideSingleton() => AddActivationStrategy(i => new AllowScopedInsideSingletonActivationStrategy(i));
 
     // Disposal scopes
     IActivationOptions<T> DoNotDispose() => AddActivationStrategy(i => new ForbidDisposalStrategy(i,true));

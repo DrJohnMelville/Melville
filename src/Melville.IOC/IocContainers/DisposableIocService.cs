@@ -14,6 +14,7 @@ public interface IRegisterDispose
 {
     void RegisterForDispose(object obj);
     bool SatisfiesDisposeRequirement { get; }
+    [Obsolete("This should go away becaus bindingrequest tracks the scope")]
     bool AllowSingletonInside(Type request);
 }
     

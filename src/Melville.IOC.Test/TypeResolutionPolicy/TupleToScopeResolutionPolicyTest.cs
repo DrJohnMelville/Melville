@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Melville.IOC.IocContainers;
@@ -65,7 +66,6 @@ public class TupleToScopeResolutionPolicyTest
 
     private record HoldsScope((IDisposable Key, IDisp1 Value) item);
 
-    [Fact]
     public void SingletonsCanHoldScopeContainers()
     {
         sut.Bind<HoldsScope>().ToSelf().AsSingleton();
