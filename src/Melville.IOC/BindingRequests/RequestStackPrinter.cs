@@ -54,7 +54,7 @@ public static class RequestStackPrinter
             null => br.IocService.AllowDisposablesInGlobalScope
                 ? "Global Dispose Allowed"
                 : "Global Dispose Not Allowed",
-            { SatisfiesDisposeRequirement: true } => "Dispose Allowed:",
+            { IsDisposalContainer: true } => "Dispose Allowed:",
             _ => "Dispose Not Allowed"
         };
     private static string RequestedTypeName(IBindingRequest requestedType) => 

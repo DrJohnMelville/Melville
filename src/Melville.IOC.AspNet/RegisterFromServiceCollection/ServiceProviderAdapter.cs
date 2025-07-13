@@ -11,7 +11,7 @@ public static class ServiceProviderAdaptorFactory
 {
     public static IServiceProvider CreateServiceProvider(this IocContainer ioc, bool allDisposablesInRoot)
     {
-        ioc.AllowDisposablesInGlobalScope = allDisposablesInRoot;
+        ioc.DefaultDisposeRegistration= PreventDisposal.Instance;
         ioc.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
         var ret = new ServiceProviderSharingScope(ioc);
         ioc.Bind<IServiceProvider>().

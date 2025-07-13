@@ -30,4 +30,5 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
     public string Trace => this.ConstructFailureMessage();
     public override string ToString() => Trace;
     public virtual CreateSingletonRequest? SingletonRequestParent => inner.SingletonRequestParent;
+    public virtual IRegisterDispose DisposeScope => inner.DisposeScope;
 }

@@ -18,16 +18,17 @@ public class GenericScope: IIocService
     
     public IIocService ParentScope { get; }
 
-    public bool AllowDisposablesInGlobalScope
+
+    public IRegisterDispose DefaultDisposeRegistration
     {
-        get => ParentScope.AllowDisposablesInGlobalScope;
-        set => ParentScope.AllowDisposablesInGlobalScope = value;
+        get => ParentScope.DefaultDisposeRegistration;
+        set => ParentScope.DefaultDisposeRegistration = value;
     }
 
-    public bool CanGet(IBindingRequest request) => 
+    public virtual bool CanGet(IBindingRequest request) => 
         ParentScope.CanGet(request);
 
-    public object? Get(IBindingRequest request) => 
+    public virtual object? Get(IBindingRequest request) => 
         ParentScope.Get(request);
 
     public IIocDebugger Debugger => ParentScope.Debugger;

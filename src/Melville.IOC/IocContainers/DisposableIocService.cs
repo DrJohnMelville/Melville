@@ -10,12 +10,6 @@ public interface IDisposableIocService : IIocService, IAsyncDisposable, IDisposa
 { 
 }
 
-public interface IRegisterDispose
-{
-    void RegisterForDispose(object obj);
-    bool SatisfiesDisposeRequirement { get; }
-}
-    
 public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
 {
     private readonly List<object> itemsToDispose = new List<object>();
@@ -71,24 +65,24 @@ public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
         GC.KeepAlive(DisposeAsync());
     }
 
-    public bool SatisfiesDisposeRequirement => true;
+    public bool IsDisposalContainer => true;
 }
 
-public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
+public class DisposableIocService: GenericScope, IDisposableIocService
 {
-    private readonly DisposalRegister register = new DisposalRegister();
+    private readonly DisposalRegister register = new();
     public DisposableIocService(IIocService parentScope) : base(parentScope)
     {
     }
 
-    public ValueTask DisposeAsync() => register.DisposeAsync();
-    public void Dispose() => register.Dispose();
-    public void RegisterForDispose(object obj)
+    public bool CanGet(IBindingRequest request) => 
+        base.CanGet(ChangeDisposeRegistration.TryDisposeChange(request, register));
+
+    public object? Get(IBindingRequest request)
     {
-        if (obj == this) return;
-        register.RegisterForDispose(obj);
+        return base.Get(ChangeDisposeRegistration.TryDisposeChange(request, register));
     }
 
-    public bool SatisfiesDisposeRequirement => register.SatisfiesDisposeRequirement;
-
+    public ValueTask DisposeAsync() => register.DisposeAsync();
+    public void Dispose() => register.Dispose();
 }

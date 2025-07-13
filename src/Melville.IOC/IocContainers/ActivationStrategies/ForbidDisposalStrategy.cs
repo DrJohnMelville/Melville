@@ -13,27 +13,8 @@ public sealed class ForbidDisposalStrategy(
     public override object? Create(IBindingRequest bindingRequest) => 
         InnerActivationStrategy.Create(WrapIfNeeded(bindingRequest));
 
-    private IBindingRequest WrapIfNeeded (IBindingRequest req)=>
-       (HasNoDisposeScope(req) || forbidDisposeEvenIfInScope)
-           ? new ChangeIocServiceRequest(req, new DisposableIocService(
-               req.IocService))
-           : req;
-
-    private static bool HasNoDisposeScope(IBindingRequest bindingRequest) => 
-        !(bindingRequest.IocService.ScopeList()
-            .OfType<IRegisterDispose>().
-            FirstOrDefault()?.SatisfiesDisposeRequirement ?? false);
-}
-
-public partial class DoNotDuspose : IIocService, IRegisterDispose
-{
-    [FromConstructor][DelegateTo] private readonly IIocService inner;
-
-    public void RegisterForDispose(object obj)
-    {
-        // do nothing
-    }
-
-    // this object says it will dispose of the given object, but it does not.
-    public bool SatisfiesDisposeRequirement => true;
+    private IBindingRequest WrapIfNeeded(IBindingRequest req) =>
+        forbidDisposeEvenIfInScope ?
+            ChangeDisposeRegistration.ForceDisposeChange(req, PreventDisposal.Instance):
+            ChangeDisposeRegistration.TryDisposeChange(req, PreventDisposal.Instance);
 }

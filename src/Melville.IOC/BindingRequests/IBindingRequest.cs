@@ -25,6 +25,7 @@ public interface IBindingRequest
     string Trace { get; }
 
     CreateSingletonRequest? SingletonRequestParent { get; }
+    IRegisterDispose DisposeScope { get; }
 }
 
 public static class BindingRequestExtensions

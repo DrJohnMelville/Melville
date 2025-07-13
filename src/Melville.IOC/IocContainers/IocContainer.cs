@@ -16,15 +16,17 @@ public interface IIocService
 
     IIocService? ParentScope { get; }
     bool IsGlobalScope => ParentScope == null;
-    bool AllowDisposablesInGlobalScope { get; set; }
+    IRegisterDispose DefaultDisposeRegistration { get; set; }
+    bool AllowDisposablesInGlobalScope => 
+        DefaultDisposeRegistration != RequireDisposal.Instance;
     IIocDebugger Debugger { get; }
     string Trace => this.IocStackTrace(null);
+    IBindingRequest SwitchRequestToMyContext(IBindingRequest prior) =>
+        new ChangeIocServiceRequest(prior, this);
 }
 
 public static class IocServiceOperations
 {
-    public static IIocService GlobalScope(this IIocService scope) => scope.ScopeList().Last();
-
     public static IEnumerable<IIocService> ScopeList(this IIocService? service)
     {
         while (service != null)
@@ -50,10 +52,9 @@ public static class IocServiceOperations
     public static T Get<T>(this IIocService ioc, params object[] arguments) => 
         (T) (ioc.Get(typeof(T?), arguments) ??
              throw new IocException($"Could not ceate a {typeof(T)}"));
-    public static object? Get(this IIocService ioc, Type serviceTppe, params object[] arguments)
-    {
-        return ioc.Get(new RootBindingRequest(serviceTppe, ioc, arguments));
-    }
+  
+    public static object? Get(this IIocService ioc, Type serviceTppe, params object[] arguments) => 
+        ioc.Get(new RootBindingRequest(serviceTppe, ioc, arguments));
 
 
     public static object?[] Get(this IIocService service, IList<IBindingRequest> requiredParameters)
@@ -99,9 +100,8 @@ public class IocContainer: IBindableIocService, IIocService
     }
         
     public IIocService? ParentScope => null;
-    public bool AllowDisposablesInGlobalScope { get; set; }
-
-
+    public virtual IRegisterDispose DefaultDisposeRegistration { get; set; } = RequireDisposal.Instance;
+  
     public T ConfigurePolicy<T>() => TypeResolver.GetInstantiationPolicy<T>();
     public IInterceptionPolicy InterceptionPolicy => TypeResolver.InterceptionPolicy;
     public void AddTypeResolutionPolicyBefore<T>(ITypeResolutionPolicy policy) => 

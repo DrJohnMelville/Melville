@@ -27,7 +27,7 @@ public class DisposableIocServiceTest
     [Fact]
     public void CanAllowDisposableConstruction()
     {
-        sut.AllowDisposablesInGlobalScope = true;
+        sut.DefaultDisposeRegistration = PreventDisposal.Instance;
         sut.Get<Disposable>(); // does not throw;
     }
     [Fact]

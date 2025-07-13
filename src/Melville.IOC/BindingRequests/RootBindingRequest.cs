@@ -27,4 +27,5 @@ public class RootBindingRequest : IBindingRequest
     public override string ToString() => Trace;
 
     public CreateSingletonRequest? SingletonRequestParent => null;
+    public IRegisterDispose DisposeScope => IocService.DefaultDisposeRegistration;
 }

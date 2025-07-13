@@ -8,10 +8,20 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
 public partial class ServiceProviderSharingScope(IIocService outer) :
-    SharingScopeContainer(outer), IRegisterDispose,
+    SharingScopeContainer(outer),
     IServiceProvider, ISupportRequiredService, IServiceScope, IServiceScopeFactory,
     IServiceProviderIsService
 {
+    #region
+
+    public override bool CanGet(IBindingRequest request) => 
+        base.CanGet(ChangeDisposeRegistration.TryDisposeChange(request, disposeContainer));
+
+    public override object? Get(IBindingRequest request) => 
+        base.Get(ChangeDisposeRegistration.TryDisposeChange(request, disposeContainer));
+
+    #endregion
+
     #region Add this, with all its interfaces to the scope
     public override bool TryGetValue(IBindingRequest source, IActivationStrategy key,
         [NotNullWhen(true)] out object? value)
@@ -38,14 +48,6 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
 
     private readonly DisposalRegister disposeContainer = new();
 
-    public void RegisterForDispose(object obj)
-    {
-        if (!RequestingATypeThisImplements(obj.GetType()))
-            disposeContainer.RegisterForDispose(obj);
-    }
-
-    public bool SatisfiesDisposeRequirement => true;
-
     public void Dispose() => disposeContainer.Dispose();
 
     #endregion
@@ -60,7 +62,8 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
             $"Service of type {serviceType} could not be constructed");
 
     public IServiceProvider ServiceProvider => this;
-    public IServiceScope CreateScope() => new ServiceProviderSharingScope(ParentScope);
+    public IServiceScope CreateScope() => 
+        new ServiceProviderSharingScope(ParentScope);
 
     public bool IsService(Type serviceType) => this.CanGet(serviceType);
 
