@@ -5,14 +5,9 @@ using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
-public class ForwardingActivationStrategy : IActivationStrategy
+public class ForwardingActivationStrategy(IActivationStrategy innerActivationStrategy) : IActivationStrategy
 {
-    protected IActivationStrategy InnerActivationStrategy { get; set; }
-
-    public ForwardingActivationStrategy(IActivationStrategy innerActivationStrategy)
-    {
-        this.InnerActivationStrategy = innerActivationStrategy;
-    }
+    protected IActivationStrategy InnerActivationStrategy { get; set; } = innerActivationStrategy;
 
     public virtual bool CanCreate(IBindingRequest bindingRequest) => 
         InnerActivationStrategy.CanCreate(bindingRequest);

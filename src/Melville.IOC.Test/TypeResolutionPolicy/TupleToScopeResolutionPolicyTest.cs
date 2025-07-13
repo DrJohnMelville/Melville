@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Xunit;
 
@@ -60,6 +62,17 @@ public class TupleToScopeResolutionPolicyTest
         Assert.Equal(1, d1.DisposeCount);
         Assert.Equal(1, d2.DisposeCount);
     }
-        
+
+    private record HoldsScope((IDisposable Key, IDisp1 Value) item);
+
+    [Fact]
+    public void SingletonsCanHoldScopeContainers()
+    {
+        sut.Bind<HoldsScope>().ToSelf().AsSingleton();
+        var item = sut.CreateScope().Get<HoldsScope>();
+        item.item.Value.DisposeCount.Should().Be(0);
+        item.item.Key.Dispose();
+        item.item.Value.DisposeCount.Should().Be(1);
+    }
         
 }

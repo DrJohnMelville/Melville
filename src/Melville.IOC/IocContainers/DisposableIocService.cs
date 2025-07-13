@@ -93,6 +93,6 @@ public class DisposableIocService: GenericScope, IDisposableIocService, IRegiste
     }
 
     public bool SatisfiesDisposeRequirement => register.SatisfiesDisposeRequirement;
-    public bool AllowSingletonInside(Type request) => false;
+    public virtual bool AllowSingletonInside(Type request) => false;
 
 }

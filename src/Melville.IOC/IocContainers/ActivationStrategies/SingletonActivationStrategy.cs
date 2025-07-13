@@ -70,6 +70,7 @@ public partial class ForbidScopedInsideSingleton : IIocService, IRegisterDispose
     [FromConstructor] [DelegateTo] private readonly IIocService inner;
     [FromConstructor] private readonly IRegisterDispose overrideQuery;
 
+#warning -- I think I nned two properties allow singletonsinside and mah be scoped inside of singleton
     public bool ShouldOverride(IBindingRequest br) =>
         overrideQuery.AllowSingletonInside(br.DesiredType);
 
