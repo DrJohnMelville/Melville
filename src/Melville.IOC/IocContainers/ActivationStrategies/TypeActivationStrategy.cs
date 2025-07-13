@@ -17,12 +17,7 @@ public partial class TypeActivationStrategy: IActivationStrategy
     public bool ValidForRequest(IBindingRequest request) => true;
     public bool CanCreate(IBindingRequest bindingRequest)
     {
-        foreach (var parameterInfo in paramTypes)
-        {
-            if (!bindingRequest.IocService.CanGet(bindingRequest.CreateSubRequest(parameterInfo)))
-                return false;
-        }
-        return true;
+        return bindingRequest.IocService.CanGet(paramTypes.Select(bindingRequest.CreateSubRequest));
     }
 
 

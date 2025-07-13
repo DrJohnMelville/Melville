@@ -60,8 +60,5 @@ public static class RunWithIocImplementation
         BindingFlags.InvokeMethod;
 
     private static bool CanSupplyAllParameters(IBindingRequest request, MethodInfo method) =>
-        method.GetParameters().All(j => CanSupplyParameter(request, j));
-
-    private static bool CanSupplyParameter(IBindingRequest request, ParameterInfo parameter) => 
-        request.IocService.CanGet(request.CreateSubRequest(parameter).Clone());
+        request.IocService.CanGet(method.GetParameters().Select(request.CreateSubRequest));
 }

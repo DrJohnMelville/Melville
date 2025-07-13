@@ -46,8 +46,6 @@ public static class IocServiceOperations
         ioc.CanGet(typeof(T), arguments);
     public static bool CanGet(this IIocService ioc, Type type, params object[] arguments) => 
         ioc.CanGet(new RootBindingRequest(type, ioc, arguments));
-    public static bool CanGet(this IIocService ioc, IEnumerable<IBindingRequest> requests) => 
-        requests.All(ioc.CanGet);
         
     public static T Get<T>(this IIocService ioc, params object[] arguments) => 
         (T) (ioc.Get(typeof(T?), arguments) ??
@@ -62,31 +60,6 @@ public static class IocServiceOperations
         object?[] argumentArray = new object[requiredParameters.Count()];
         service.Fill(argumentArray.AsSpan(), requiredParameters);
         return argumentArray;
-    }
-
-    public static void Fill(this IIocService service, Span<object?> destination, IEnumerable<IBindingRequest> requests)
-    {
-        int pos = 0;
-        foreach (var request in requests)
-        {
-            if (pos >= destination.Length) return;
-            destination[pos] = service.Get(request);
-            if (request.IsCancelled)
-            {
-                ClearAndTryDispose(destination);
-                return;
-            }
-            pos++;
-        }
-    }
-
-    private static void ClearAndTryDispose(Span<object?> destination)
-    {
-        for (int i = 0; i < destination.Length; i++)
-        {
-            if (destination[i] is IDisposable disp) disp.Dispose();
-            destination[i] = null;
-        }
     }
 }
 
