@@ -20,6 +20,4 @@ public class DisposableChildContainer(IBindableIocService parent, IIocService pa
 
     public bool SatisfiesDisposeRequirement => innerService.SatisfiesDisposeRequirement;
 
-    public bool AllowSingletonInside(Type request) => true;
-
 }

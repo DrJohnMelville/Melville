@@ -48,9 +48,6 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
 
     public void Dispose() => disposeContainer.Dispose();
 
-    public bool AllowSingletonInside(Type request) =>
-        RequestingATypeThisImplements(request);
-
     #endregion
 
     #region Asp.Net overrides

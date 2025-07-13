@@ -14,8 +14,6 @@ public interface IRegisterDispose
 {
     void RegisterForDispose(object obj);
     bool SatisfiesDisposeRequirement { get; }
-    [Obsolete("This should go away becaus bindingrequest tracks the scope")]
-    bool AllowSingletonInside(Type request);
 }
     
 public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
@@ -74,8 +72,6 @@ public class DisposalRegister: IDisposable, IAsyncDisposable, IRegisterDispose
     }
 
     public bool SatisfiesDisposeRequirement => true;
-    public bool AllowSingletonInside(Type request) => false;
-
 }
 
 public class DisposableIocService: GenericScope, IDisposableIocService, IRegisterDispose
@@ -94,6 +90,5 @@ public class DisposableIocService: GenericScope, IDisposableIocService, IRegiste
     }
 
     public bool SatisfiesDisposeRequirement => register.SatisfiesDisposeRequirement;
-    public virtual bool AllowSingletonInside(Type request) => false;
 
 }
