@@ -5,12 +5,14 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 namespace Melville.IOC.IocContainers;
 
 public class ScopeChain(
-    IBindingRequest prior, IScope items, IRegisterDispose disposer): 
+    IBindingRequest prior, IIocService parentIoc, IScope items, IRegisterDispose disposer): 
     ForwardingRequest(prior), IScope
 {
     public override IScope SharingScope => this;
     public override IRegisterDispose DisposeScope => disposer;
-    private IScope PriorScope() => prior.SharingScope;
+    public override IIocService IocService => parentIoc;
+
+    private IScope PriorScope() => base.SharingScope;
 
     public bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result) =>
         PriorScope().TryGetValue(source, key, out result)||

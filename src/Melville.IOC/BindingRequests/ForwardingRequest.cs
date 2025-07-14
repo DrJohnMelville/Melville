@@ -28,7 +28,7 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
         set => Parent.IsCancelled = value;
     }
 
-    public string Trace => this.ConstructFailureMessage();
+    public string Trace => this.Print();
     public override string ToString() => Trace;
     public virtual CreateSingletonRequest? SingletonRequestParent => inner.SingletonRequestParent;
     public virtual IRegisterDispose DisposeScope => inner.DisposeScope;

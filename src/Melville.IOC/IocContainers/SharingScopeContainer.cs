@@ -10,5 +10,5 @@ public class SharingScopeContainer(IIocService parentScope) :
 
     /// <inheritdoc />
     protected override IBindingRequest WrapRequest(IBindingRequest request) =>
-        new ScopeChain(request, scopeItems, request.DisposeScope);
+        new ScopeChain(request, ParentScope, scopeItems, request.DisposeScope);
 }

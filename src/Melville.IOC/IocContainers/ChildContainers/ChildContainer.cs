@@ -24,7 +24,7 @@ public class ChildContainer : IocContainer
         /// <inheritdoc />
         public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
         {
-            return inner.ApplyResolutionPolicy(RemoveSingletonParentRequest.StripOuterSingletonScope(request)) is
+            return inner.ApplyResolutionPolicy(request) is
                 { } strategy
                 ? new StrategyInContext(strategy, parentContext)
                 : null;

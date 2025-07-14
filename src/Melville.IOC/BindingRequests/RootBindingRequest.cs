@@ -24,7 +24,7 @@ public class RootBindingRequest : IBindingRequest
 
     public IBindingRequest? Parent => null;
 
-    public string Trace => this.ConstructFailureMessage();
+    public string Trace => this.Print();
     public override string ToString() => Trace;
 
     public CreateSingletonRequest? SingletonRequestParent => null;

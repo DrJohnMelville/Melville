@@ -9,7 +9,7 @@ namespace Melville.IOC.BindingRequests;
 
 public static class RequestStackPrinter
 {
-    public static string ConstructFailureMessage(this IBindingRequest request)
+    public static string Print(this IBindingRequest request)
     {
         var sb = new StringBuilder();
         sb.Append($"Requested type: {request.DesiredType.Name}");
@@ -34,7 +34,7 @@ public static class RequestStackPrinter
     {
         sb.AppendLine();
         sb.Append(
-            $"[{ChildLevels(item)}, {CountIndirections(item.IocService)}] {RequestedTypeName(item)} ({ScopeTag(item)}, {DisposeTag(item)})");
+            $"[{ChildLevels(item)}, {CountIndirections(item.IocService)}] {item.GetType().PrettyName()} {RequestedTypeName(item)}");
     }
 
     private static int CountIndirections(IIocService itemIocService) => (itemIocService as ChildContainer)?.Depth ?? 1;
@@ -44,19 +44,6 @@ public static class RequestStackPrinter
         return item.IocService.ScopeList().Count();
     }
 
-    private static string ScopeTag(IBindingRequest request) => 
-        request.IocService.ScopeList().OfType<IScope>().Any()?
-       "Scoped": "No Scope";
-
-    private static string DisposeTag(IBindingRequest br) =>
-        br.IocService.ScopeList().OfType<IRegisterDispose>().FirstOrDefault() switch
-        {
-            null => br.IocService.AllowDisposablesInGlobalScope
-                ? "Global Dispose Allowed"
-                : "Global Dispose Not Allowed",
-            { IsDisposalContainer: true } => "Dispose Allowed:",
-            _ => "Dispose Not Allowed"
-        };
     private static string RequestedTypeName(IBindingRequest requestedType) => 
         requestedType.DesiredType.PrettyName();
 

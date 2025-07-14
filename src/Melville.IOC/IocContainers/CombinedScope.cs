@@ -10,7 +10,7 @@ public class CombinedScope(IIocService parent) : GenericScope(parent), IDisposab
 
     /// <inheritdoc />
     protected override IBindingRequest WrapRequest(IBindingRequest request) => 
-        new ScopeChain(request, WrapScope(scopeItems), 
+        new ScopeChain(request, ParentScope, WrapScope(scopeItems), 
             ChangeDisposeRegistration.TryDisposeChange(request.DisposeScope, register));
 
     protected virtual IScope WrapScope(IScope inner) => inner;

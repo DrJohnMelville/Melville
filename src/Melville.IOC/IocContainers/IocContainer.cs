@@ -105,7 +105,7 @@ public class IocContainer: IBindableIocService, IIocService
 
     private IActivationStrategy FindActivationStrategy(IBindingRequest bindingRequest) =>
         TypeResolver.ApplyResolutionPolicy(bindingRequest)??
-        throw new IocException(bindingRequest.ConstructFailureMessage());
+        throw new IocException(bindingRequest.Print());
 
     #endregion
 

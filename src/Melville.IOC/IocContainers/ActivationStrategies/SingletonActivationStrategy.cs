@@ -47,30 +47,21 @@ public class SingletonActivationStrategy : ForwardingActivationStrategy
             : new SingletonActivationStrategy(inner);
 }
 
-public class CreateSingletonRequest(IBindingRequest parent) : ForwardingRequest(parent)
+public class CreateSingletonRequest(IBindingRequest parent) : ForwardingRequest(parent), IScope
 {
-    public override CreateSingletonRequest? SingletonRequestParent => this;
+    public override IScope SharingScope => this;
 
-    public void TryCreateScopedChild(IBindingRequest childRequest)
+    /// <inheritdoc />
+    public bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result)
     {
-        throw new IocException(
-            $"Cannot create a scoped {childRequest.DesiredType.PrettyName()} inside of a singleton {DesiredType.PrettyName()}");
+        result = null;
+        return false;
+    }
+
+    /// <inheritdoc />
+    public bool TrySetValue(IBindingRequest source, IActivationStrategy key, object? value)
+    {
+        return false;
     }
 }
 
-public class AllowScopedInsideSingletonActivationStrategy(
-    IActivationStrategy innerActivationStrategy) : ForwardingActivationStrategy(innerActivationStrategy)
-{
-    public override object? Create(IBindingRequest bindingRequest) => 
-        base.Create(
-            RemoveSingletonParentRequest.StripOuterSingletonScope(bindingRequest));
-}
-
-public class RemoveSingletonParentRequest(IBindingRequest parent) : ForwardingRequest(parent)
-{
-    public override CreateSingletonRequest? SingletonRequestParent => null;
-
-    public static IBindingRequest StripOuterSingletonScope(IBindingRequest request) =>
-        request.SingletonRequestParent is null ? request : new RemoveSingletonParentRequest(request);
-
-}

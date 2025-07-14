@@ -126,8 +126,8 @@ public class IocContainerTest
         {
             e.Message.Should().StartWith("""
                 Requested type: ISimpleObject
-                [1, 1] ISimpleObject (No Scope, Global Dispose Not Allowed)
-                [1, 1] SecondaryObject (No Scope, Global Dispose Not Allowed)
+                [1, 1] ParameterBindingRequest ISimpleObject
+                [1, 1] RootBindingRequest SecondaryObject
                 
                 Active Scopes:
                 IocContainer(0x

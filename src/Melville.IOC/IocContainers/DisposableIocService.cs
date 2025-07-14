@@ -14,7 +14,7 @@ public class DisposableIocService(IIocService parentScope) : GenericScope(parent
 
     /// <inheritdoc />
     protected override IBindingRequest WrapRequest(IBindingRequest request) => 
-        ChangeDisposeRegistration.TryDisposeChange(request, register);
+        new ScopeChain(request, ParentScope, RootScope.Instance, register);
 
     public ValueTask DisposeAsync() => register.DisposeAsync();
     public void Dispose() => register.Dispose();
