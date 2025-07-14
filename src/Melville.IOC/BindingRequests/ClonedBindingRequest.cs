@@ -9,9 +9,5 @@ public partial class ClonedBindingRequest(IBindingRequest rootRequest) : IBindin
 {
     [DelegateTo] public IBindingRequest Parent { get; } = rootRequest;
 
-    // copy the arrays because they get destroyed
-    public object?[] ArgumentsFromChild { get; set; } = rootRequest.ArgumentsFromChild.ToArray();
-    public object?[] ArgumentsFromParent { get; } = rootRequest.ArgumentsFromParent.ToArray();
-
     public override string ToString() => Trace;
 }

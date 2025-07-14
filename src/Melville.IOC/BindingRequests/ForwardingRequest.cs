@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
@@ -13,8 +14,8 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
 
     public virtual IIocService IocService => Parent.IocService;
 
-    public object?[] ArgumentsFromParent => Parent.ArgumentsFromChild;
-    public object?[] ArgumentsFromChild { get; set;} = Array.Empty<object>();
+    public virtual IEnumerable<object> Arguments => Parent.Arguments;
+
     public virtual bool HasDefaultValue(out object? value)
     {
         value = null;

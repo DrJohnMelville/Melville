@@ -39,16 +39,16 @@ public interface ITypesafeActivationOptions<T>
         When(p => p.TypeBeingConstructed == null || !type.IsAssignableFrom(p.TypeBeingConstructed));
     IActivationOptions<T> WhenNotConstructingType<TTarget>() => WhenNotConstructingType(typeof(TTarget));
     IActivationOptions<T> BlockSelfInjection() => WhenNotConstructingType(typeof(T));
-    IActivationOptions<T> WhenParameterHasValue(object value) => When(i => i.ArgumentsFromChild.Contains(value));
+    IActivationOptions<T> WhenParameterHasValue(object value) => When(i => i.Arguments.Contains(value));
     IActivationOptions<T> WhenParameterHasValue(string value, StringComparison compareType) =>
         When(i => 
-            i.ArgumentsFromChild
+            i.Arguments
                 .OfType<string>()
                 .Any(j => j.Equals(value, compareType)));
     IActivationOptions<T> WhenParameterHasType<TParameter>() => WhenParameterHasType(typeof(TParameter));
 
     IActivationOptions<T> WhenParameterHasType(Type parameterType) =>
-        When(i => i.ArgumentsFromChild.Any(parameterType.IsInstanceOfType));
+        When(i => i.Arguments.Any(parameterType.IsInstanceOfType));
 
         
     // Additional construction info.

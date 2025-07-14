@@ -68,7 +68,7 @@ public ref partial struct ParameterMatcher
 
     private bool TryFindArgumentForRequest(IBindingRequest request, int parameterPosition, out object? argument)
     {
-        foreach (var (argumentPosition, arg) in request.ArgumentsFromParent.Index())
+        foreach (var (argumentPosition, arg) in request.Arguments.Index())
         {
             if (ArgumentSatisfiesRequest(arg, argumentPosition, request))
             {
