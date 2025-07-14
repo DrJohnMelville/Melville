@@ -26,17 +26,6 @@ public class BindingRequestIsCancelableTest
     }
 
     [Fact]
-    public void ClonedRequestIsCancelable()
-    {
-        var cloned = root.Clone();
-        root.IsCancelled.Should().BeFalse();
-        cloned.IsCancelled.Should().BeFalse();
-        cloned.IsCancelled = true;
-        root.IsCancelled.Should().BeTrue();
-        cloned.IsCancelled.Should().BeTrue();
-    }
-
-    [Fact]
     public void ForwardedRequestIsCancelable()
     {
         var cloned = root.CreateSubRequest(typeof(BindingRequestIsCancelableTest));

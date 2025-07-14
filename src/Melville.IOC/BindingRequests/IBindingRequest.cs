@@ -33,6 +33,4 @@ public static class BindingRequestExtensions
     public static IBindingRequest CreateSubRequest(this IBindingRequest req, ParameterInfo info)=> new ParameterBindingRequest(info, req);
     public static IBindingRequest CreateSubRequest(this IBindingRequest req, Type type)=> new TypeChangeBindingRequest(req, type);
     public static IBindingRequest CreateSubRequest(this IBindingRequest req, Type type, params object[] parameters)=> new ParameterizedRequest(req, type, parameters);
-#warning this should become a no-op because binding requests are immutable
-    public static IBindingRequest Clone(this IBindingRequest req) => new ClonedBindingRequest(req);
 }

@@ -17,15 +17,15 @@ public class MultiConstructorStrategy : IActivationStrategy
     }
 
     public bool CanCreate(IBindingRequest bindingRequest) => 
-        constructors.Any(i => i.Value.CanCreate(bindingRequest.Clone()));
+        constructors.Any(i => i.Value.CanCreate(bindingRequest));
 
     public object? Create(IBindingRequest bindingRequest)
     {
-        foreach (var constructor in constructors.Where(i=>i.Value.CanCreate(bindingRequest.Clone())))
+        foreach (var constructor in constructors.Where(i=>i.Value.CanCreate(bindingRequest)))
         {
             try
             {
-                return constructor.Value.Create(bindingRequest.Clone());
+                return constructor.Value.Create(bindingRequest);
             }
             catch (IocException)
             {
