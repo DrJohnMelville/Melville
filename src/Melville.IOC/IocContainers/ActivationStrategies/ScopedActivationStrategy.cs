@@ -29,7 +29,7 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
 
         if (bindingRequest.SharingScope.TryGetValue(bindingRequest, this, out var ret)) return ret;
         var value = base.Create(bindingRequest);
-        if (!bindingRequest.SharingScope.TrySetValue(bindingRequest, value, this))
+        if (!bindingRequest.SharingScope.TrySetValue(bindingRequest, this, value))
             throw new IocException("Attempted to create a scoped value outside of a scope.");
         return value;
     }

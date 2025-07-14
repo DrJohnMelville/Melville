@@ -6,6 +6,7 @@ namespace Melville.IOC.IocContainers;
 
 public interface IScope
 {
-    bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result);
-    bool TrySetValue(IBindingRequest source, object? value, IActivationStrategy key);
+    bool TryGetValue(
+        IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result);
+    bool TrySetValue(IBindingRequest source, IActivationStrategy key, object? value);
 }

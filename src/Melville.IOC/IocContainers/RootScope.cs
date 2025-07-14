@@ -16,5 +16,5 @@ public partial class RootScope : IScope
     }
 
     /// <inheritdoc />
-    public bool TrySetValue(IBindingRequest source, object? value, IActivationStrategy key) => false;
-}
+    public bool TrySetValue(IBindingRequest source, IActivationStrategy key, object? value) => false;
+ }
