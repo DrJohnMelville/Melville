@@ -1,31 +1,6 @@
 ﻿using System;
-using Melville.IOC.BindingRequests;
-using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy;
-
-public class ArgumentBindingPolicy: ITypeResolutionPolicy
-{
-    public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
-    {
-        var objects = request.ArgumentsFromParent;
-        for (int i = 0; i < objects.Length; i++)
-        {
-            if (objects[i] is {} ret && ObjectFillsRequest(ret, request))
-            {
-                RemoveArgumentSoNooneElseCanUseIt(objects, i);
-                return new ConstantActivationStrategy(ret);
-            }
-        }
-        return null;
-    }
-
-    private static void RemoveArgumentSoNooneElseCanUseIt(object?[] objects, int i) => objects[i] = null;
-
-    private bool ObjectFillsRequest(object value, IBindingRequest request) =>
-        request.DesiredType.IsInstanceOfType(value) ||
-        (value is ReplaceLiteralArgumentWithNonsenseValue fake && fake.CanAssignTo(request.DesiredType));
-}
 
 /// <summary>
 /// When checking if a function based factory can be created we need to check if the function could actually be

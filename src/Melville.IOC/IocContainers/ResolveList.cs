@@ -1,91 +1,12 @@
 using System;
-using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Melville.INPC;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers;
-
-public ref partial struct ParameterMatcher
-{
-    [FromConstructor] private readonly IIocService service;
-    [FromConstructor] private readonly IEnumerable<IBindingRequest> requests;
-    [FromConstructor] private readonly Span<object?> destination;
-    [FromConstructor ] private Span<int> paramUsed;
-
-    public void Fill()
-    {
-        if (destination.Length == 0) return;
-        paramUsed.Fill(-1);
-        foreach (var (pos, request) in requests.Index())
-        {
-            if (pos >= destination.Length) return;
-            FillSingle(pos, request);
-            if (request.IsCancelled)
-            {
-                CleanUp();
-                return;
-            }
-        }
-    }
-
-    private void CleanUp()
-    {
-        foreach (var dest in destination)
-        {
-            (dest as IDisposable)?.Dispose();
-        }
-    }
-#warning lots of duplication in this class needs to be cleaned up.
-    private void FillSingle(int pos, IBindingRequest request)
-    {
-        foreach (var (position, value) in request.ArgumentsFromParent.Index())
-        {
-            if (ObjectFillsRequest(value, request))
-            {
-                if (paramUsed.IndexOf(position) is >= 0 and var priorPosition &&
-                    Object.Equals(value, destination[priorPosition])) continue;
-
-                destination[pos] = value;
-                paramUsed[pos] = position;
-                return;
-            }
-        }
-        destination[pos] = service.Get(request);
-    }
-    private static bool ObjectFillsRequest(object value, IBindingRequest request) =>
-        request.DesiredType.IsInstanceOfType(value) ||
-        (value is ReplaceLiteralArgumentWithNonsenseValue fake && fake.CanAssignTo(request.DesiredType));
-
-    public bool CanFill()
-    {
-        if (destination.Length == 0) return true;
-        paramUsed.Fill(-1);
-        foreach (var (pos, request) in requests.Index())
-        {
-            if (pos >= destination.Length) return true;
-            if (!CanFillSingle(pos, request)) return false;
-        }
-        return true;
-    }
-
-    public bool CanFillSingle(int pos, IBindingRequest request)
-    {
-        foreach (var (position, value) in request.ArgumentsFromParent.Index())
-        {
-            if (ObjectFillsRequest(value, request))
-            {
-                if (paramUsed.IndexOf(position) is >= 0 and var priorPosition &&
-                    Object.Equals(value, destination[priorPosition])) continue;
-                return true;
-            }
-        }
-        return service.CanGet(request);
-    }
-
-}
 
 public static class ResolveList
 {
@@ -96,15 +17,85 @@ public static class ResolveList
     public static bool CanGet(this IIocService ioc, IEnumerable<IBindingRequest> requests)
     {
         var requestCol = requests as IReadOnlyCollection<IBindingRequest> ?? requests.ToList();
-        object?[] buffer = ArrayPool<object?>.Shared.Rent(requestCol.Count);
-        try
+        return CanGet(ioc, requestCol, requestCol.Count);
+    }
+
+    public static bool CanGet(IIocService ioc, IEnumerable<IBindingRequest> requestCol, int length)
+    {
+            return new ParameterMatcher(ioc, requestCol, [], stackalloc int[length]).CanFill();
+    }
+}
+
+public ref partial struct ParameterMatcher
+{
+    [FromConstructor] private readonly IIocService service;
+    [FromConstructor] private readonly IEnumerable<IBindingRequest> requests;
+    [FromConstructor] private readonly Span<object?> destination;
+    [FromConstructor ] private Span<int> parametersFilled;
+
+    public void Fill()
+    {
+        if (!TryFindArguments(request => (request.IocService.Get(request), !request.IsCancelled))) CleanUpAfterFailedCreate();
+    }
+
+    public bool CanFill() => TryFindArguments(request => (null, request.IocService.CanGet(request)));
+
+    private bool TryFindArguments(Func<IBindingRequest, (object? value, bool success)> getArgument)
+    {
+        if (parametersFilled.Length == 0) return true;
+        parametersFilled.Fill(-1);
+        foreach (var (parameterPosition, request) in requests.Take(parametersFilled.Length).Index())
         {
-            return new ParameterMatcher(ioc, requestCol, buffer.AsSpan(0, requestCol.Count),
-                stackalloc int[requestCol.Count]).CanFill();
+            if (TryFindArgumentForRequest(request, parameterPosition, out var argument))
+            {
+                TrySetDestination(parameterPosition, argument);
+            }
+            else
+            {
+                var (value, success) = getArgument(request);
+                if (!success) return false;
+                TrySetDestination(parameterPosition, value);
+            }
         }
-        finally
+        return true;
+    }
+
+    private void TrySetDestination(int parameterPosition, object? argument)
+    {
+        if (parameterPosition < destination.Length)
+            destination[parameterPosition] = argument;
+    }
+
+    private bool TryFindArgumentForRequest(IBindingRequest request, int parameterPosition, out object? argument)
+    {
+        foreach (var (argumentPosition, arg) in request.ArgumentsFromParent.Index())
         {
-            ArrayPool<object?>.Shared.Return(buffer);
+            if (ArgumentSatisfiesRequest(arg, argumentPosition, request))
+            {
+                argument = arg;
+                parametersFilled[parameterPosition] = argumentPosition;
+                return true;
+            }
+        }
+        argument = null;
+        return false;
+    }
+
+    private bool ArgumentSatisfiesRequest(object? argument, int argumentPosition, IBindingRequest request) => 
+        ObjectFillsRequest(argument, request) && !ParameterHasBeenUsed(argumentPosition);
+
+    private static bool ObjectFillsRequest(object? value, IBindingRequest request) =>
+        request.DesiredType.IsInstanceOfType(value) ||
+        (value is ReplaceLiteralArgumentWithNonsenseValue fake && fake.CanAssignTo(request.DesiredType));
+
+    private bool ParameterHasBeenUsed(int position) => parametersFilled.IndexOf(position) is >= 0;
+
+    private void CleanUpAfterFailedCreate()
+    {
+        foreach (var dest in destination)
+        {
+            (dest as IDisposable)?.Dispose();
         }
     }
+
 }
