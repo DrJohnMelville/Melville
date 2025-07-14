@@ -4,7 +4,7 @@ using System.Data.SQLite;
 
 namespace Melville.SimpleDb;
 
-internal sealed class SqliteDiskFactory(string connectionString) : IRepoConnectionFactory
+internal class SqliteDiskFactory(string connectionString) : IRepoConnectionFactory
 {
     /// <inheritdoc />
     public IRepoDbConnection Create() => 

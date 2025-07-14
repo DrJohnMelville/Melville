@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SQLite;
 using System.Reflection.Metadata.Ecma335;
+using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 
@@ -10,8 +11,9 @@ public class RepoDbConfiguration
 {
     public string FolderPath { get; set; } = "";
 
+    private static volatile int uniqueNum=1;
     public string ConnectionString => IsOnDiskDatabase() ? 
-        $"DataSource={FolderPath}" : "DataSource=:memory:";
+        $"DataSource={FolderPath}" : $"DataSource=file{Interlocked.Increment(ref uniqueNum)};Mode=Memory;Cache=Shared";
 
     public bool IsOnDiskDatabase() => FolderPath.Length > 0;
 
@@ -37,7 +39,7 @@ public class RepoDbConfiguration
     private IRepoConnectionFactory CreateFactory() =>
         IsOnDiskDatabase() ?
             new SqliteDiskFactory(ConnectionString) :
-            new ExclusiveRepoFactory(new SQLiteConnection(ConnectionString).OpenAndReturn());
+            new MemoryRepoFactory(new SQLiteConnection(ConnectionString).OpenAndReturn());
 }
 
 public interface IRepoConnectionFactory

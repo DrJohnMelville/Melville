@@ -49,7 +49,7 @@ public abstract class RootTransactedDirectoryTest(IDirectory rawTarget, ITransac
         if (supportsIsolation) Assert.False(rawTarget.File("a.b").Exists());
         await dir.Commit();
         Assert.True(rawTarget.File("a.b").Exists());
-        rawTarget.File("a.b").AssertContent("value");
+        rawTarget.File("a.b").AssertContent("value");                                                                                                                               
         Assert.Single(rawTarget.AllFiles());
     }
     [Fact]
@@ -68,7 +68,8 @@ public abstract class RootTransactedDirectoryTest(IDirectory rawTarget, ITransac
     public void RollbackErasesFile()
     {
         dir.File("a.b").Create("value"); 
-        Assert.Single(rawTarget.AllFiles());
+        // this line no longer works because Sqlite supports genuine transaction isolation.
+//        Assert.Single(rawTarget.AllFiles());
         if (supportsIsolation) Assert.False(rawTarget.File("a.b").Exists());
         dir.Rollback();
         Assert.False(rawTarget.File("a.b").Exists());
