@@ -54,13 +54,17 @@ public class CreateSingletonRequest(IBindingRequest parent) : ForwardingRequest(
     /// <inheritdoc />
     public bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result)
     {
-        result = null;
+        // someone prior to us may have an AllowScopedInSingleton that lets us read through the
+        // singleton barrier.  This class will complain about it by returning false, but the captured
+        // value is propogated in Result so AllowScopedSingleton can restore the true response.
+        base.SharingScope.TryGetValue(source, key, out result);
         return false;
     }
 
     /// <inheritdoc />
     public bool TrySetValue(IBindingRequest source, IActivationStrategy key, object? value)
     {
+        // no one gets to write through the static barrier.
         return false;
     }
 }

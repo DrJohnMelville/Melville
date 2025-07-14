@@ -24,7 +24,6 @@ public interface IBindingRequest
     IEnumerable<object> Arguments { get; }
     string Trace { get; }
 
-    CreateSingletonRequest? SingletonRequestParent { get; }
     IRegisterDispose DisposeScope { get; }
     IScope SharingScope { get; }
 }
