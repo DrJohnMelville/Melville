@@ -33,6 +33,16 @@ public class ServiceProviderFactory
     }
 
     [Fact]
+    public void MethodConstructorShouldNotEscapeScope()
+    {
+        var sc = new ServiceCollection();
+        sc.AddScoped<ISimpleObject, SimpleObjectImplementation>();
+        sc.AddTransient(sp => new SecondaryObject(sp.GetService<ISimpleObject>()));
+        var prov = sut.CreateServiceProvider(sut.CreateBuilder(sc));
+        prov.GetService<SecondaryObject>();
+    }
+
+    [Fact]
     public void Scoped()
     {
         var sc = new ServiceCollection();

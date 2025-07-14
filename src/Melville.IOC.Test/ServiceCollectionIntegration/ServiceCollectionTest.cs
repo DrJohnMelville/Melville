@@ -44,7 +44,8 @@ public class ServiceCollectionTest
         // note this would be illegal in .net, but we will self bind SimpleObject
         source.AddTransient<ISimpleObject2>(isp => isp.GetService<SimpleObjectImplementation>());
         sut.BindServiceCollection(source);
-        Assert.True(sut.Get<ISimpleObject2>() is SimpleObjectImplementation);
+        var prov = sut.CreateServiceProvider(true);
+        Assert.True(prov.GetService<ISimpleObject2>() is SimpleObjectImplementation);
     }
 
     [Fact]
