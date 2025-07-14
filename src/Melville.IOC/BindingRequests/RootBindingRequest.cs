@@ -29,4 +29,5 @@ public class RootBindingRequest : IBindingRequest
 
     public CreateSingletonRequest? SingletonRequestParent => null;
     public IRegisterDispose DisposeScope => IocService.DefaultDisposeRegistration;
+    public IScope SharingScope => RootScope.Instance;
 }

@@ -15,7 +15,6 @@ public interface IIocService
     object? Get(IBindingRequest request);
 
     IIocService? ParentScope { get; }
-    bool IsGlobalScope => ParentScope == null;
     IRegisterDispose DefaultDisposeRegistration { get; set; }
     bool AllowDisposablesInGlobalScope => 
         DefaultDisposeRegistration != RequireDisposal.Instance;
@@ -37,8 +36,11 @@ public static class IocServiceOperations
     }
     // make it so we can create scopes on IocContainer without casting
     public static IDisposableIocService CreateScope(this IIocService service) =>
-        service.CreateSharingScope().CreateLifetimeScope();
-    public static IIocService CreateSharingScope(this IIocService service) => new SharingScopeContainer(service);
+        new CombinedScope(service);
+
+    public static IIocService CreateSharingScope(this IIocService service) => 
+        new SharingScopeContainer(service);
+    
     public static IDisposableIocService CreateLifetimeScope(this IIocService service) => 
         new DisposableIocService(service);
 

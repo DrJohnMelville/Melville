@@ -74,14 +74,9 @@ public class DisposableIocService: GenericScope, IDisposableIocService
     public DisposableIocService(IIocService parentScope) : base(parentScope)
     {
     }
-
-    public bool CanGet(IBindingRequest request) => 
-        base.CanGet(ChangeDisposeRegistration.TryDisposeChange(request, register));
-
-    public object? Get(IBindingRequest request)
-    {
-        return base.Get(ChangeDisposeRegistration.TryDisposeChange(request, register));
-    }
+    /// <inheritdoc />
+    protected override IBindingRequest WrapRequest(IBindingRequest request) => 
+        ChangeDisposeRegistration.TryDisposeChange(request, register);
 
     public ValueTask DisposeAsync() => register.DisposeAsync();
     public void Dispose() => register.Dispose();

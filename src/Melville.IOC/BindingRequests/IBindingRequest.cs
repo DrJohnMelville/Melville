@@ -26,6 +26,7 @@ public interface IBindingRequest
 
     CreateSingletonRequest? SingletonRequestParent { get; }
     IRegisterDispose DisposeScope { get; }
+    IScope SharingScope { get; }
 }
 
 public static class BindingRequestExtensions

@@ -32,4 +32,5 @@ public class ForwardingRequest(IBindingRequest inner) : IBindingRequest
     public override string ToString() => Trace;
     public virtual CreateSingletonRequest? SingletonRequestParent => inner.SingletonRequestParent;
     public virtual IRegisterDispose DisposeScope => inner.DisposeScope;
+    public virtual IScope SharingScope => inner.SharingScope;
 }

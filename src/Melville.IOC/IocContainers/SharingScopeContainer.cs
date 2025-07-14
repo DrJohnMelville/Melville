@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers.ActivationStrategies;
 using Melville.IOC.IocContainers.Debuggers;
@@ -9,14 +10,9 @@ using Melville.IOC.IocContainers.Debuggers;
 
 namespace Melville.IOC.IocContainers;
 
-public class GenericScope: IIocService
+public abstract class GenericScope(IIocService parentScope) : IIocService
 {
-    public GenericScope(IIocService parentScope)
-    {
-        ParentScope = parentScope;
-    }
-    
-    public IIocService ParentScope { get; }
+    public IIocService ParentScope { get; } = parentScope;
 
 
     public IRegisterDispose DefaultDisposeRegistration
@@ -26,29 +22,60 @@ public class GenericScope: IIocService
     }
 
     public virtual bool CanGet(IBindingRequest request) => 
-        ParentScope.CanGet(request);
+        ParentScope.CanGet(WrapRequest(request));
 
     public virtual object? Get(IBindingRequest request) => 
-        ParentScope.Get(request);
+        ParentScope.Get(WrapRequest(request));
 
     public IIocDebugger Debugger => ParentScope.Debugger;
+
+    protected abstract IBindingRequest WrapRequest(IBindingRequest request);
 }
 
-public interface IScope
-{
-    bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result);
-    void SetScopeValue(IBindingRequest source, object? value, IActivationStrategy key);
-}
-    
 public class SharingScopeContainer(IIocService parentScope) : 
-    GenericScope(parentScope), IScope
+    GenericScope(parentScope)
 {
-    private readonly Dictionary<IActivationStrategy, object?> scopeItems = new();
-        
-    public virtual bool TryGetValue(IBindingRequest source, IActivationStrategy key,
-        [NotNullWhen(true)] out object? value) =>
-        scopeItems.TryGetValue(key, out value);
+    private readonly ScopeRegistry scopeItems = new();
 
-    public void SetScopeValue(IBindingRequest source, object? value, IActivationStrategy key) => 
-        scopeItems.Add(key, value);
+    /// <inheritdoc />
+    protected override IBindingRequest WrapRequest(IBindingRequest request) =>
+        new ScopeChain(request, scopeItems, request.DisposeScope);
+}
+
+public partial class CombinedScope(IIocService parent) : GenericScope(parent), IDisposableIocService
+{
+    private readonly ScopeRegistry scopeItems = new();
+    private readonly DisposalRegister register = new();
+
+    /// <inheritdoc />
+    protected override IBindingRequest WrapRequest(IBindingRequest request) => 
+        new ScopeChain(request, WrapScope(scopeItems), 
+            ChangeDisposeRegistration.TryDisposeChange(request.DisposeScope, register));
+
+    protected virtual IScope WrapScope(IScope inner) => inner;
+
+    /// <inheritdoc />
+    public void Dispose() => register.Dispose();
+
+    /// <inheritdoc />
+    public ValueTask DisposeAsync()
+    {
+        Dispose();
+        return ValueTask.CompletedTask;
+    }
+}
+
+public class ScopeRegistry: Dictionary<IActivationStrategy, object?>, IScope
+{
+    /// <inheritdoc />
+    public bool TryGetValue(
+        IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result) =>
+        TryGetValue(key, out result);
+
+    /// <inheritdoc />
+    public bool TrySetValue(IBindingRequest source, object? value, IActivationStrategy key)
+    {
+        this[key] = value;
+        return true;
+    }
 }

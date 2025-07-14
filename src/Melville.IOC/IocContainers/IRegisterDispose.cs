@@ -42,6 +42,9 @@ public class ChangeDisposeRegistration : ForwardingRequest
 
     public override IRegisterDispose DisposeScope => disposer;
 
+    public static IRegisterDispose TryDisposeChange(IRegisterDispose old, IRegisterDispose newDisposer) =>
+        old.IsDisposalContainer ? old : newDisposer;
+
     public static IBindingRequest TryDisposeChange(IBindingRequest inner, IRegisterDispose disposer) =>
         inner.DisposeScope.IsDisposalContainer ? inner : ForceDisposeChange(inner, disposer);
     

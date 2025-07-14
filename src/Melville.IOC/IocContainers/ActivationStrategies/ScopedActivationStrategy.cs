@@ -27,20 +27,10 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
     {
         bindingRequest.SingletonRequestParent?.TryCreateScopedChild(bindingRequest);
 
-        var bag = bindingRequest.IocService.ScopeList();
-        var parentScopes = ParentScopes(bindingRequest);
-        foreach (var parentScope in parentScopes)
-        {
-            if (parentScope.TryGetValue(bindingRequest, this, out var ret)) return ret;
-        }
-
-        return RecordScopedValue(bindingRequest, base.Create(bindingRequest));
-    }
-
-    private object? 
-        RecordScopedValue(IBindingRequest bindingRequest, in object? create)
-    {
-        Scope(bindingRequest).SetScopeValue(bindingRequest, create, this);
-        return create;
+        if (bindingRequest.SharingScope.TryGetValue(bindingRequest, this, out var ret)) return ret;
+        var value = base.Create(bindingRequest);
+        if (!bindingRequest.SharingScope.TrySetValue(bindingRequest, value, this))
+            throw new IocException("Attempted to create a scoped value outside of a scope.");
+        return value;
     }
 }

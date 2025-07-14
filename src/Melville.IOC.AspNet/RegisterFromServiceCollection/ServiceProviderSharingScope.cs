@@ -8,49 +8,14 @@ using Melville.IOC.IocContainers.ActivationStrategies;
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
 public partial class ServiceProviderSharingScope(IIocService outer) :
-    SharingScopeContainer(outer),
+    CombinedScope(outer),
     IServiceProvider, ISupportRequiredService, IServiceScope, IServiceScopeFactory,
     IServiceProviderIsService
 {
-    #region
+    /// <inheritdoc />
+    protected override IScope WrapScope(IScope inner) =>
+        new ServiceProviderScopeAdapter(inner, this);
 
-    public override bool CanGet(IBindingRequest request) => 
-        base.CanGet(ChangeDisposeRegistration.TryDisposeChange(request, disposeContainer));
-
-    public override object? Get(IBindingRequest request) => 
-        base.Get(ChangeDisposeRegistration.TryDisposeChange(request, disposeContainer));
-
-    #endregion
-
-    #region Add this, with all its interfaces to the scope
-    public override bool TryGetValue(IBindingRequest source, IActivationStrategy key,
-        [NotNullWhen(true)] out object? value)
-    {
-        if (RequestingATypeThisImplements(source.DesiredType))
-        {
-            value = this;
-            return true;
-        }
-        return base.TryGetValue(source, key, out value);
-    }
-
-    private static bool RequestingATypeThisImplements(Type type)
-    {
-        return type == typeof(IServiceProvider) ||
-               type == typeof(IServiceScope) ||
-               type == typeof(IServiceProviderIsService) ||
-               type == typeof(IServiceScopeFactory) ||
-               type == typeof(ISupportRequiredService);
-    }
-    #endregion
-
-    #region Disposal
-
-    private readonly DisposalRegister disposeContainer = new();
-
-    public void Dispose() => disposeContainer.Dispose();
-
-    #endregion
 
     #region Asp.Net overrides
 
@@ -68,4 +33,36 @@ public partial class ServiceProviderSharingScope(IIocService outer) :
     public bool IsService(Type serviceType) => this.CanGet(serviceType);
 
     #endregion
+}
+
+public class ServiceProviderScopeAdapter(
+    IScope inner, ServiceProviderSharingScope specialValue) : IScope
+{
+    /// <inheritdoc />
+    public bool TryGetValue(IBindingRequest source, IActivationStrategy key, [NotNullWhen(true)] out object? result)
+    {
+        if (inner.TryGetValue(source, key, out result))
+            return true;
+        if (RequestingATypeThisImplements(source.DesiredType))
+        {
+            result = specialValue;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <inheritdoc />
+    public bool TrySetValue(IBindingRequest source, object? value, IActivationStrategy key) => 
+        inner.TrySetValue(source, value, key);
+
+    private static bool RequestingATypeThisImplements(Type type)
+    {
+        return type == typeof(IServiceProvider) ||
+               type == typeof(IServiceScope) ||
+               type == typeof(IServiceProviderIsService) ||
+               type == typeof(IServiceScopeFactory) ||
+               type == typeof(ISupportRequiredService);
+    }
+
 }
