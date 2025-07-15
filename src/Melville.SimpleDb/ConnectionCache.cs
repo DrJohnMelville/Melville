@@ -13,7 +13,7 @@ public class RepoDbConfiguration
 
     private static volatile int uniqueNum=1;
     public string ConnectionString => IsOnDiskDatabase() ? 
-        $"DataSource={FolderPath}" : $"DataSource=file{Interlocked.Increment(ref uniqueNum)};Mode=Memory;Cache=Shared";
+        $"DataSource={FolderPath}" : $"FullUri=file:mem{Interlocked.Increment(ref uniqueNum)}.db?mode=memory&cache=shared";
 
     public bool IsOnDiskDatabase() => FolderPath.Length > 0;
 

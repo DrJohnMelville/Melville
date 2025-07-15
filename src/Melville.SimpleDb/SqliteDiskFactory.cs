@@ -10,12 +10,12 @@ internal class SqliteDiskFactory(string connectionString) : IRepoConnectionFacto
     public IRepoDbConnection Create() => 
         new FileSqliteRepo(CreateDbConnection(connectionString));
 
-    private const string readOnlySuffix = ";Read Only=True";
+    protected virtual string ReadOnlySuffix => ";Read Only=True";
 
 
     /// <inheritdoc />
     public IRepoDbConnection CreateReadOnly() => 
-        new FileSqliteRepo(CreateDbConnection(connectionString + readOnlySuffix));
+        new FileSqliteRepo(CreateDbConnection(connectionString + ReadOnlySuffix));
 
     private SQLiteConnection CreateDbConnection(string connStr) =>
         new SQLiteConnection(connStr, true).OpenAndReturn();

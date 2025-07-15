@@ -8,6 +8,8 @@ namespace Melville.SimpleDb;
 internal sealed class MemoryRepoFactory(SQLiteConnection sqLiteConnection) :
     SqliteDiskFactory(sqLiteConnection.ConnectionString), IDisposable
 {
+    protected override string ReadOnlySuffix => "";
+
     public void Dispose()
     {
         // holding one connection makes the database continue to exist.
