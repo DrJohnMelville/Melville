@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
 using Xunit;
@@ -15,12 +16,17 @@ public class IocServiceTypeResolutionTest
         sut.Get<IIocService>().Should().Be(sut);
     }
     [Fact]
+    public void ResolveIocContainer()
+    {
+        sut.Get<IocContainer>().Should().Be(sut);
+    }
+    [Fact]
     public void ResolveBindableIocService()
     {
         sut.Get<IBindableIocService>().Should().Be(sut);
     }
     [Fact]
-    public void ResolveIocContainer()
+    public void ResolveChild()
     {
 
         // there is something funky here it is not accessing the inner child container.
@@ -29,6 +35,12 @@ public class IocServiceTypeResolutionTest
         child.Get<IDisposableIocService>().Should().Be(child);
         child.Get<IIocService>().Should().Be(child);
         child.Get<IBindableIocService>().Should().Be(child);
+        child.Get<IocContainer>().Should().Be(child);
     }
-#warning make it so you can biud to IBindingRequest
+
+    [Fact]
+    public void BindToBindingRequest()
+    {
+        sut.Get<IBindingRequest>().DesiredType.Should().Be(typeof(IBindingRequest));
+    }
 }

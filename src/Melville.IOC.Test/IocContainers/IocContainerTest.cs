@@ -88,6 +88,14 @@ public class IocContainerTest
         Assert.NotNull(ret.SimpleObject);
     }
     [Fact]
+    public void BindUsingMethodWithIoc2()
+    {
+        sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+        sut.Bind<SecondaryObject>().ToMethod((i,j) => new SecondaryObject(i.Get<ISimpleObject>()));
+        var ret = sut.Get<SecondaryObject>();
+        Assert.NotNull(ret.SimpleObject);
+    }
+    [Fact]
     public void BindUsingCustomMethodWithIoc()
     {
         sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
