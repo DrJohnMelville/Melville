@@ -5,7 +5,6 @@ public class StandardTypeResolutionPolicy : TypeResolutionPolicyList
     public StandardTypeResolutionPolicy()
     {
         var cache = new CachedResolutionPolicy(InterceptionPolicy.AsInterceptionRule());
-    //    Policies.Add(new ArgumentBindingPolicy());
         Policies.Add(cache);
         Policies.Add(new MemorizeResult(cache, new GetIocServiceTypes()));
         Policies.Add(new GenericResolutionPolicy(cache));
