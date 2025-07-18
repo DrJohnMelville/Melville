@@ -51,7 +51,7 @@ internal class SqliteDiskFactory : IRepoConnectionFactory
         /// <inheritdoc />
         public void Dispose()
         {
-            if (connection is null) return;
+            if (connection is not {State: ConnectionState.Open}) return;
             factory.lifecycle.ConnectionClosed(connection);
             connection.Dispose();
             connection = null;

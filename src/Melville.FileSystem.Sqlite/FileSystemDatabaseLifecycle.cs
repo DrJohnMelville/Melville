@@ -8,7 +8,14 @@ public class FileSystemDatabaseLifecycle(Migration[] migrations): MigratedWalLif
 {
     public override void DatabaseOpened(IRepoDbConnection connection)
     {
-        connection.GetConnection().Execute("PRAGMA locking_mode = EXCLUSIVE;");
         base.DatabaseOpened(connection);
+        connection.GetConnection().Execute("PRAGMA locking_mode = EXCLUSIVE;");
+    }
+
+    /// <inheritdoc />
+    public override void DatabaseClosed(IRepoDbConnection connection)
+    {
+        // open and close to delete wal file.
+        base.DatabaseClosed(connection);
     }
 }

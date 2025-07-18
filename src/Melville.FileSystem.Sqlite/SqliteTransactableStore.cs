@@ -18,6 +18,7 @@ public class SqliteTransactableStore(IRepoConnectionFactory repo) : ITransactabl
     public ValueTask DisposeAsync()
     {
         readerScope.Dispose();
+        repo.Dispose();
         return ValueTask.CompletedTask;
     }
 
