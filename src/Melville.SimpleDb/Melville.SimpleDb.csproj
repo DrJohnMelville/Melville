@@ -24,4 +24,8 @@
 		<PackageReference Include="System.Data.SQLite.Core" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="LifeCycles\" />
+	</ItemGroup>
+
 </Project>

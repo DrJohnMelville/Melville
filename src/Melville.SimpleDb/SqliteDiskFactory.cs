@@ -1,42 +1,66 @@
 ﻿using System;
 using System.Data;
 using System.Data.SQLite;
+using Melville.SimpleDb.LifeCycles;
 
 namespace Melville.SimpleDb;
 
-internal class SqliteDiskFactory(string connectionString) : IRepoConnectionFactory
+internal class SqliteDiskFactory : IRepoConnectionFactory
 {
+    private readonly string s;
+    private readonly IDatabaseLifecycle lifecycle;
+
+    public SqliteDiskFactory(string connectionString, IDatabaseLifecycle lifecycle)
+    {
+        s = connectionString;
+        this.lifecycle = lifecycle;
+        using var conn = Create();
+        lifecycle.DatabaseOpened(conn);
+    }
+
+    public virtual void Dispose()
+    {
+        using var conn = Create();
+        lifecycle.DatabaseClosed(conn);
+    }
+
     /// <inheritdoc />
     public IRepoDbConnection Create() => 
-        new FileSqliteRepo(CreateDbConnection(connectionString));
+        new FileSqliteRepo(this, false);
 
     protected virtual string ReadOnlySuffix => ";Read Only=True";
 
 
     /// <inheritdoc />
     public IRepoDbConnection CreateReadOnly() => 
-        new FileSqliteRepo(CreateDbConnection(connectionString + ReadOnlySuffix));
+        new FileSqliteRepo(this, true);
 
-    private SQLiteConnection CreateDbConnection(string connStr) =>
-        new SQLiteConnection(connStr, true).OpenAndReturn();
-
-    private sealed class FileSqliteRepo(SQLiteConnection connection): IRepoDbConnection
+    private SQLiteConnection CreateDbConnection(bool isReadOnly)
     {
-        private SQLiteConnection? connection = connection;
+        var ret = new SQLiteConnection(s + AddReadOnly(isReadOnly), true);
+        ret.Open();
+        lifecycle.ConnectionCreated(ret);
+        return ret;
+    }
+
+    private string AddReadOnly(bool isReadOnly) => isReadOnly ? ReadOnlySuffix : "";
+
+    private sealed class FileSqliteRepo(SqliteDiskFactory factory, bool isReadOnly): IRepoDbConnection
+    {
+        private SQLiteConnection? connection;
         /// <inheritdoc />
         public void Dispose()
         {
+            if (connection is null) return;
+            factory.lifecycle.ConnectionClosed(connection);
             connection.Dispose();
             connection = null;
 
         }
 
         /// <inheritdoc />
-        public SQLiteConnection GetConnection()
-        {
-            return connection ??
-                   throw new ObjectDisposedException(nameof(FileSqliteRepo));
-        }
+        private SQLiteConnection GetConnection() => connection ??= factory.CreateDbConnection(isReadOnly);
+
         IDbConnection IRepoDbConnection.GetConnection() => GetConnection();
 
         /// <inheritdoc />

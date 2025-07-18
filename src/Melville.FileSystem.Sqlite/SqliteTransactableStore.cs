@@ -11,7 +11,7 @@ public class SqliteTransactableStore(IRepoConnectionFactory repo) : ITransactabl
     public SqliteTransactableStore(string path): this(new RepoDbConfiguration()
     {
         FolderPath = path
-    }.CreateFactory(DbTables.All))
+    }.CreateFactory(new FileSystemDatabaseLifecycle(DbTables.All)))
     {
     }
     
