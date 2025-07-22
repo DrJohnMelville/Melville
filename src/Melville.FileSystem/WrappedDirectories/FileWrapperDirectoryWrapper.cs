@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using Melville.FileSystem.PseudoTransactedFS;
 using Melville.FileSystem.RelativeFiles;
 using Melville.INPC;
 
@@ -14,8 +17,21 @@ public interface IFileWrapper
 
 public static class WrappedDirectoryOperations
 {
-    public static IDirectory WrapWith(this IDirectory inner, IFileWrapper wrapper) =>
+    public static IDirectory WrapWith(
+        this IDirectory inner, IFileWrapper wrapper) =>
         new FileWrapperDirectoryWrapper(inner, wrapper);
+
+    public static IDirectory WrapWith(
+        this IDirectory inner, IStreamWrapper wrapper) =>
+        inner.WrapWith(new FileToStreamWrapper(wrapper));
+
+    public static ITransactedDirectory WrapWith(
+        this ITransactedDirectory inner, IFileWrapper wrapper) =>
+        new FileWrapperDirectoryWrapper(inner, wrapper);
+
+    public static ITransactedDirectory WrapWith(
+        this ITransactedDirectory inner, IStreamWrapper wrapper) =>
+        inner.WrapWith(new FileToStreamWrapper(wrapper));
 }
 
 public abstract partial class WrappedDirectoryBase : IDirectory
@@ -39,7 +55,8 @@ public abstract partial class WrappedDirectoryBase : IDirectory
 
 }
 
-public partial class FileWrapperDirectoryWrapper: WrappedDirectoryBase
+public partial class FileWrapperDirectoryWrapper: WrappedDirectoryBase,
+    ITransactedDirectory
 {
     [FromConstructor] private readonly IDirectory innerDirectory;
     [FromConstructor] private readonly IDirectory? parent;
@@ -55,4 +72,15 @@ public partial class FileWrapperDirectoryWrapper: WrappedDirectoryBase
     protected override IFile WrapChild(IFile file) => wrapper.WrapFile(file, this);
     protected override IDirectory WrapChild(IDirectory dir) => wrapper.WrapDirectory(dir, this);
     protected override IDirectory GetTargetDirectory() => innerDirectory;
+
+    private ITransactedDirectory? InnerTransDir => 
+        innerDirectory as ITransactedDirectory;
+    /// <inheritdoc />
+    public ValueTask Commit() => InnerTransDir?.Commit() ?? ValueTask.CompletedTask;
+
+    /// <inheritdoc />
+    public void Rollback() => InnerTransDir?.Rollback();
+
+    /// <inheritdoc />
+    public void Dispose() => (innerDirectory as IDisposable)?.Dispose();
 }
