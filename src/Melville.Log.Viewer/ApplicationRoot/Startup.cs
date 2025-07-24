@@ -5,7 +5,6 @@ using Melville.FileSystem;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Melville.Log.Viewer.HomeScreens;
-using Melville.Log.Viewer.NamedPipeServers;
 using Melville.MVVM.Wpf.MvvmDialogs;
 using Melville.MVVM.Wpf.RootWindows;
 using Melville.WpfAppFramework.StartupBases;
@@ -25,7 +24,6 @@ public class Startup : StartupBase
     protected override void RegisterWithIocContainer(IBindableIocService service)
     {
         SetupConfiguration(service);
-        SetupPipeListener(service);
         SetupMainWindowContent(service);
         SetupNugetFolderMonitoring(service);
     }
@@ -53,19 +51,8 @@ public class Startup : StartupBase
     private void SetIcon(RootNavigationWindow arg) => 
         arg.SetWindowIconFromResource("Melville.Log.Viewer", "ApplicationRoot/app.ico");
 
-    private static void SetupPipeListener(IBindableIocService service)
-    {
-        service.Bind<IShutdownMonitor>().To<ShutdownMonitor>().AsSingleton();
-        service.Bind<IPipeListener>().And<PipeListener>().To<PipeListener>()
-            .FixResult(i=>((PipeListener)i).Start())
-            .AsSingleton();
-    }
-
     private static void SetupConfiguration(IBindableIocService service)
     {
         service.AddConfigurationSources(i => i.AddUserSecrets<Startup>());
-        service.Bind<IList<TargetSite>>().To<List<TargetSite>>(ConstructorSelectors.DefaultConstructor)
-            .InitializeFromConfiguration("Links")
-            .AsSingleton();
     }
 }

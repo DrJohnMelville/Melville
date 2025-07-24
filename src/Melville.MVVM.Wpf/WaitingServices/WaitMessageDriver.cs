@@ -22,6 +22,7 @@ public partial class WaitMessageDriver :IWaitingService
   /// current task.
   /// </summary>
   [AutoNotify] private string? progressMessage;
+
   #region Progress
 
   /// <summary>

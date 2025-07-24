@@ -2,9 +2,10 @@
 
     <PropertyGroup>
         <OutputType>WinExe</OutputType>
-        <TargetFramework>net8.0-windows10.0.18362.0</TargetFramework>
+        <TargetFramework>net9.0-windows10.0.18362.0</TargetFramework>
         <UseWPF>true</UseWPF>
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -33,6 +34,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Melville.FileSystem.Sqlite\Melville.FileSystem.Sqlite.csproj" />
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
       <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
       <ProjectReference Include="..\Melville.Linq.Statistics\Melville.Linq.Statistics.csproj" />
@@ -42,7 +44,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
+      <PackageReference Include="Microsoft.Web.WebView2" />
+      <PackageReference Include="System.Data.SqlClient" />
+      <PackageReference Include="System.Drawing.Common" />
+      <PackageReference Include="System.Formats.Asn1" />
+      <PackageReference Include="System.Text.Encodings.Web" />
+      <PackageReference Include="System.Text.RegularExpressions" />
     </ItemGroup>
 
     <ItemGroup>

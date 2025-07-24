@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Xunit;
 
@@ -62,8 +65,14 @@ public class MultipleResolutionTest
     public void MultipleResolutionBindNone()
     {
         var objects = sut.Get<IList<IMultipleImplementation>>();
-            
         Assert.Empty(objects);
+    }
+
+    [Fact] public void MultipleResolutionBindNoneSharesResult()
+    {
+        var objects = sut.Get<IList<IMultipleImplementation>>();
+        var objects2 = sut.Get<IList<IMultipleImplementation>>();
+        objects2.Should().BeSameAs(objects);
     }
     [Fact]
     public void MultipleResolutionBindImplicit()
@@ -174,5 +183,28 @@ public class MultipleResolutionTest
             .WhenNotConstructingType<ImplementationList>();
         var ret = sut.Get<IMultipleImplementation>();
         Assert.Equal(3, ((ImplementationList)ret).Impls.Count);
+    }
+
+    [Fact]
+    public void CannotOverrideFinalBinding()
+    {
+        sut.Bind<int>().ToConstant(1).AsFinal();
+        sut.Bind<int>().ToConstant(2);
+        sut.Get<IList<int>>().Should().BeEquivalentTo([1]);
+    }
+
+    [Fact]
+    public void OverwiteBindingReplacesPriorBinding()
+    {
+        sut.Bind<int>().ToConstant(1);
+        sut.OverwriteBinding<int>().ToConstant(2);
+        sut.Get<IList<int>>().Should().BeEquivalentTo([2]);
+    }
+    [Fact]
+    public void CannotOverWriteFinalBinding()
+    {
+        sut.Bind<int>().ToConstant(1).AsFinal();
+        sut.Invoking(i => i.OverwriteBinding<int>().ToConstant(2))
+            .Should().Throw<IocException>();
     }
 }

@@ -1,18 +1,15 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
-public class ForwardingActivationStrategy : IActivationStrategy
+public class ForwardingActivationStrategy(IActivationStrategy innerActivationStrategy) : IActivationStrategy
 {
-    protected IActivationStrategy InnerActivationStrategy { get; set; }
+    protected IActivationStrategy InnerActivationStrategy { get; set; } = innerActivationStrategy;
 
-    public ForwardingActivationStrategy(IActivationStrategy innerActivationStrategy)
-    {
-        this.InnerActivationStrategy = innerActivationStrategy;
-    }
-
-    public bool CanCreate(IBindingRequest bindingRequest) => 
+    public virtual bool CanCreate(IBindingRequest bindingRequest) => 
         InnerActivationStrategy.CanCreate(bindingRequest);
 
     public virtual object? Create(IBindingRequest bindingRequest) => 
@@ -20,6 +17,14 @@ public class ForwardingActivationStrategy : IActivationStrategy
     public virtual SharingScope SharingScope() => InnerActivationStrategy.SharingScope();
     public virtual bool ValidForRequest(IBindingRequest request) => InnerActivationStrategy.ValidForRequest(request);
 
-    public void CreateMany(IBindingRequest bindingRequest, Func<object?, int> accumulator) =>
+    public void CreateMany(IBindingRequest bindingRequest, IList accumulator) =>
         InnerActivationStrategy.CreateMany(bindingRequest, accumulator);
+
+    public IEnumerable<T> FindSubstrategy<T>() where T:class =>
+        (this as T, InnerActivationStrategy.FindSubstrategy<T>()) switch
+        {
+            (null, var ret) => ret,
+            var (me, old) => [me, ..old],
+        };
+
 }

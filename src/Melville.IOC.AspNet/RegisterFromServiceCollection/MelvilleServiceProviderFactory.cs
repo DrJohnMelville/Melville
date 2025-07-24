@@ -1,38 +1,22 @@
 ﻿using System;
 using Melville.IOC.IocContainers;
+using Melville.IOC.TypeResolutionPolicy;
 using Microsoft.Extensions.DependencyInjection;
 
 
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
-public class MelvilleServiceProviderFactory: IServiceProviderFactory<IocContainer>
+public class MelvilleServiceProviderFactory(bool allowRootDisposables, Action<IBindableIocService>? setupRegistration = null)
+    : IServiceProviderFactory<IocContainer>
 {
-    private readonly bool allowRootDisposables;
-    private readonly Action<IBindableIocService>? setupRegistration;
-
-    public MelvilleServiceProviderFactory(
-        bool allowRootDisposables, Action<IBindableIocService>? setupRegistration = null)
-    {
-        this.allowRootDisposables = allowRootDisposables;
-        this.setupRegistration = setupRegistration;
-    }
-
     public IocContainer CreateBuilder(IServiceCollection services)
     {
         var ret = new IocContainer();
-        RegisterServiceCollectionWithContainer.BindServiceCollection(ret, services);
+        ret.BindServiceCollection(services);
         setupRegistration?.Invoke(ret);
         return ret;
     }
 
-    public IServiceProvider CreateServiceProvider(IocContainer containerBuilder)
-    {
-        containerBuilder.AllowDisposablesInGlobalScope = allowRootDisposables;
-        var adapter = new ServiceProviderAdapter(containerBuilder);
-        containerBuilder.BindIfNeeded<IServiceScopeFactory>().And<IServiceProvider>()
-            .ToConstant(adapter).DisposeIfInsideScope();
-        // The outermost scope never gets disposed, but this is ok because it is supposed to last for
-        // the entire program.
-        return adapter;
-    }
+    public IServiceProvider CreateServiceProvider(IocContainer containerBuilder) => 
+        containerBuilder.CreateServiceProvider(allowRootDisposables);
 }

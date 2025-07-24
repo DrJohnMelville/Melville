@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
@@ -6,24 +7,30 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 
-public readonly struct GenerateMultipleDependencyPropertes
+public enum FrameworkType
 {
-    public static readonly SearchForAttribute Searcher = new("Melville.INPC.GenerateDPAttribute");
+    Wpf = 0,
+    Maui = 1
+}; 
 
-    private readonly CodeWriter codeWriter;
-    private readonly SemanticModel semanticModel;
-    private readonly MemberDeclarationSyntax target;
-    private readonly ITypeSymbol parentSymbol;
+public readonly struct GenerateMultipleDependencyPropertes(
+    CodeWriter codeWriter,
+    SemanticModel semanticModel,
+    MemberDeclarationSyntax target,
+    ITypeSymbol parentSymbol,
+    FrameworkType frameworkType)
+{
+    public static readonly SearchForAttribute DpSearcher = 
+        new("Melville.INPC.GenerateDPAttribute");
+    public static readonly SearchForAttribute BpSearcher = 
+        new("Melville.INPC.GenerateBPAttribute");
 
-    public GenerateMultipleDependencyPropertes(
-        CodeWriter codeWriter, SemanticModel semanticModel, MemberDeclarationSyntax target, 
-        ITypeSymbol parentSymbol)
+    private SearchForAttribute Searcher => frameworkType switch
     {
-        this.codeWriter = codeWriter;
-        this.semanticModel = semanticModel;
-        this.target = target;
-        this.parentSymbol = parentSymbol;
-    }
+        FrameworkType.Wpf => DpSearcher,
+        FrameworkType.Maui => BpSearcher,
+        _ => throw new ArgumentOutOfRangeException(nameof(frameworkType))
+    };
 
     public void Generate()
     {
@@ -38,9 +45,17 @@ public readonly struct GenerateMultipleDependencyPropertes
         if (ParseAttribute(attribute) is { } parser &&
             EnsureValidAttribute(attribute, parser))
         {
-            parser.Generate(codeWriter);
+            CreateDependencyPropertyGenerator(parser)
+                .GenerateDependencyPropertyDeclaration();
         }
     }
+
+    private AbstractPropertyCodeGenerator CreateDependencyPropertyGenerator(RequestParser parser) =>
+        frameworkType switch
+        {
+            FrameworkType.Maui => new BindablePropertyCodeGenerator(parser, codeWriter),
+            _ => new DependencyPropertyCodeGenerator(parser, codeWriter)
+        };
 
     private RequestParser ParseAttribute(AttributeSyntax attribute)
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Melville.IOC.BindingRequests;
@@ -11,8 +12,13 @@ public class MultipleActivationStrategy : IActivationStrategy
 {
     private readonly List<IActivationStrategy> strateies = new List<IActivationStrategy>();
 
-    public MultipleActivationStrategy(IActivationStrategy strategy) => strateies.Add(strategy);
-        
+    public MultipleActivationStrategy(
+        IActivationStrategy strategy1, IActivationStrategy strategy2)
+    {
+        strateies.Add(strategy1);
+        strateies.Add(strategy2);
+    }
+
     private IActivationStrategy? SelectActivator(IBindingRequest bindingRequest) => 
         strateies.LastOrDefault(i => i.ValidForRequest(bindingRequest));
         
@@ -26,18 +32,29 @@ public class MultipleActivationStrategy : IActivationStrategy
          throw new IocException($"No binding for {bindingRequest.DesiredType.Name} is valid in this context.")
         ).Create(bindingRequest);
 
-    public void CreateMany(IBindingRequest bindingRequest,
-        Func<object?, int> accumulator)
+    public void CreateMany(IBindingRequest bindingRequest, IList accumulator)
     {
         foreach (var strategy in strateies)
         {
-            var request = bindingRequest.Clone();
-            if (!strategy.ValidForRequest(request)) continue;
-            accumulator(strategy.Create(request) ?? throw new IocException("Type resolved to null"));
+            if (!strategy.ValidForRequest(bindingRequest)) continue;
+            var o = strategy.Create(bindingRequest);
+            if (bindingRequest.IsCancelled)
+            {
+                if (o is IDisposable disp) disp.Dispose();
+                continue;
+            }
+            if (o is null) continue;
+            accumulator.Add(o);
         }
     }
 
-
     public SharingScope SharingScope() => strateies.Select(i => i.SharingScope()).Min();
     public bool ValidForRequest(IBindingRequest request) => SelectActivator(request) != null;
+
+    /// <inheritdoc />
+    public IEnumerable<T> FindSubstrategy<T> () where T : class
+    {
+        var ret = strateies.SelectMany(i => i.FindSubstrategy<T>());
+        return this is T casted ? ret.Prepend(casted) : ret;
+    }
 }

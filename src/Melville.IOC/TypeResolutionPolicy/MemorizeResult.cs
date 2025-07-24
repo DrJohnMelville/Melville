@@ -22,6 +22,7 @@ public class MemorizeResult : ITypeResolutionPolicy
         {
             null => null,
             ObjectFactory obj => throw new InvalidProgramException("this should never happen."),
-            var ret => cache.Bind(request.DesiredType, true).DoBinding(ret).GetFinalFactory()
+            var ret => cache.Bind(request.DesiredType, BindingPriority.KeepOld).DoBinding(ret).
+                GetFinalFactory()
         };
 }

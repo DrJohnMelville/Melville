@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using Melville.Generators.INPC.GenerationTools.AstUtilities;
 using Melville.Generators.INPC.GenerationTools.CodeWriters;
 using Microsoft.CodeAnalysis;
@@ -15,7 +16,7 @@ public class INPCGenerator: IIncrementalGenerator
     {
         context.RegisterSourceOutput(
             context.SyntaxProvider.ForAttributeWithMetadataName(attributeFullName,
-                (i,_)=> i is TypeDeclarationSyntax or VariableDeclaratorSyntax,
+                DesiredSyntaxTypes,
                 (i,_)=> i)
                 .Collect()
                 .SelectMany((i,_) => 
@@ -23,6 +24,12 @@ public class INPCGenerator: IIncrementalGenerator
                 .Select((j,_)=>j),
             Generate
         );
+    }
+
+    private bool DesiredSyntaxTypes(SyntaxNode i, CancellationToken _)
+    {
+        return i is TypeDeclarationSyntax or VariableDeclaratorSyntax or
+            PropertyDeclarationSyntax;
     }
 
     private void Generate(SourceProductionContext context, IGrouping<ISymbol?, GeneratorAttributeSyntaxContext> classToGenerate)
@@ -36,15 +43,28 @@ public class INPCGenerator: IIncrementalGenerator
             notifyImplementation.DeclareMethod(cw);
             foreach (var member in classToGenerate)
             {
-                new AttributeCopier(cw, "property").CopyAttributesFrom(member.TargetNode);
-                if (member.TargetSymbol is not IFieldSymbol field) continue;
-                new PropertyGenerator(
-                    cw, field, classSymbol, notifyImplementation,dependencies,
-                    new PropertyParametersParser(member.Attributes).Parse())
-                    .RenderSingleField();
+                GeneratorFor(
+                        cw, member, classSymbol, notifyImplementation, dependencies)
+                    ?.RenderSingleField();
             }
         }
     }
+
+    private static PropertyGenerator? GeneratorFor(
+        SourceProductionCodeWriter cw, 
+        GeneratorAttributeSyntaxContext member, ITypeSymbol classSymbol, 
+        INotifyImplementationStategy notifyImplementation, 
+        PropertyDependencyGraph dependencies) =>
+        member.TargetSymbol switch{
+            IFieldSymbol field => new PropertyGenerator(
+                cw, new FieldSourceSymbol(field, member),
+                classSymbol, notifyImplementation,dependencies),
+            IPropertySymbol prop when
+                    prop.IsPartialDefinition => new PropertyGenerator(
+                cw, new PropertySourceSymbol(prop, member.TargetNode), 
+                classSymbol, notifyImplementation, dependencies),
+            _=> null
+        };
 }
 
 ;

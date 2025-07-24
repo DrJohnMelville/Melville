@@ -4,6 +4,7 @@ using System.Reflection;
 using Melville.Hacks;
 using Melville.INPC;
 using Melville.IOC.BindingRequests;
+using Melville.IOC.TypeResolutionPolicy;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
@@ -16,19 +17,24 @@ public partial class TypeActivationStrategy: IActivationStrategy
     public bool ValidForRequest(IBindingRequest request) => true;
     public bool CanCreate(IBindingRequest bindingRequest)
     {
-        foreach (var parameterInfo in paramTypes)
-        {
-            if (!bindingRequest.IocService.CanGet(bindingRequest.CreateSubRequest(parameterInfo)))
-                return false;
-        }
-        return true;
+        return bindingRequest.IocService.CanGet(paramTypes.Select(bindingRequest.CreateSubRequest));
     }
+
 
     public object? Create(IBindingRequest bindingRequest)
     {
+        bindingRequest.IocService.Debugger.ActivationRequested(bindingRequest);
         using var requests = new RentedBuffer<object?>(paramTypes.Length);
         FillParamaterSpan(bindingRequest, requests.Span);
-        return activator.Invoke(requests.Span);
+        if (bindingRequest.IsCancelled)
+        {
+            foreach (var item in requests.Span)
+            {
+                if (item is IDisposable disp) disp.Dispose();
+            }
+            return null;
+        }
+        return activator.Invoke(requests.Span).TryRegisterDisposeAndReturn(bindingRequest);
     }
 
     private void FillParamaterSpan(IBindingRequest bindingRequest, Span<object?> target)

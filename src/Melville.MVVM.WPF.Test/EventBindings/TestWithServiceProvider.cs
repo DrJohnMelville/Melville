@@ -1,7 +1,9 @@
 ﻿#nullable disable warnings
 using  System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Markup;
+using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings;
 using Moq;
 
@@ -28,6 +30,31 @@ public class TestWithServiceProvider
   protected object FireEvent(EventBinding markup)
   {
     var del = markup.ProvideValue(CreateServiceProvider()) as Delegate;
+    DiIntegration.SetContainer(Elt, new FakeDIBridge());
     return del.DynamicInvoke(Elt, RoutedEventArgs);
   }
+}
+
+public class FakeDIBridge : IDIIntegration
+{
+    /// <inheritdoc />
+    public void Dispose()
+    {
+    }
+
+    /// <inheritdoc />
+    public IDIIntegration CreateScope() => this;
+
+    /// <inheritdoc />
+    public object? Get(ParameterInfo info) => null;
+
+    /// <inheritdoc />
+    public object? Get(Type type)
+    {
+        if (type == typeof(TargetListCompositeExpander))
+            return new TargetListCompositeExpander(Array.Empty<ITargetListExpander>());
+        if (type == typeof(ParameterListCompositeExpander))
+            return new ParameterListCompositeExpander(Array.Empty<IParameterListExpander>());
+        return null;
+    }
 }

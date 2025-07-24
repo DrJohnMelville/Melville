@@ -1,0 +1,8 @@
+﻿FILEGROUPDESCRIPTORW
+FILEGROUPDESCRIPTORA
+
+GlobalLock
+GlobalUnlock
+GlobalAlloc
+GlobalSize
+GlobalFree

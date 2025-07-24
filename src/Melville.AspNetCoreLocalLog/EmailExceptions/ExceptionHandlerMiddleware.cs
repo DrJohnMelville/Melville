@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SendMailService;
-using Serilog;
 
 namespace AspNetCoreLocalLog.EmailExceptions;
 
@@ -67,7 +67,7 @@ public class ExceptionHandlerMiddleware: IConfigureExceptionMiddleware
 
     private Task HandleException(string message, string title)
     {
-        logger.Error(message);
+        logger.LogError(message);
         return SendExceptionEmails(message, title);
     }
 

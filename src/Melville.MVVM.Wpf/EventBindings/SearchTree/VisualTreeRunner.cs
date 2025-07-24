@@ -11,7 +11,7 @@ using Melville.INPC;
 using Melville.MVVM.Wpf.DiParameterSources;
 using Melville.MVVM.Wpf.EventBindings.ParameterResolution;
 using Melville.MVVM.Wpf.VisualTreeLocations;
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.MVVM.Wpf.EventBindings.SearchTree;
 
@@ -31,22 +31,24 @@ public partial class VisualTreeRunner : IVisualTreeRunner
         DependencyObject? target) => 
         target == null? this:new VisualTreeRunner(target);
 
+    public static event EventHandler<VisualTreeRunContext>? RunStarted;
+    public static event EventHandler<VisualTreeRunContext>? RunFailed;
+
     public bool RunTreeSearch(string targetMethodName, object?[] inputParams, out object? result)
     {
-        Log.Information("Search Tree Run Method {MethodName}", targetMethodName);
         var pathComponents = ReflectionHelper.SplitPathString(targetMethodName).ToList();
         var methodName = pathComponents.LastOrDefault() ?? "";
         var context = CreateContext(inputParams, methodName);
+        RunStarted?.Invoke(this, context);
         var targets = AddPathFollowing(context.Targets, pathComponents);
 
         foreach (var target in targets)
         {
             if (target == null) continue;
-            Log.Debug("Searching Object: {target}", target.ToString());
             if (RunOnTarget(target, ref context, out result)) return true;
         }
 
-        Log.Error("Failed to bind method: {MethodName}", targetMethodName);
+        RunFailed?.Invoke(this, context);
         result = null;
         return false;
     }
@@ -65,7 +67,6 @@ public partial class VisualTreeRunner : IVisualTreeRunner
     {
         result = null;
         if (target == null) return false;
-        Log.Debug("Searching Object: {target}", target.ToString());
         return 
             TryInvokeMethod(ref context, target, out result) || 
             TryInvokeCommand(ref context, target);
@@ -122,18 +123,26 @@ public partial class VisualTreeRunner : IVisualTreeRunner
         out object? o)
     {
         o = null;
-        Log.Debug("Trying Method {methodName} on {Type}", candidate.Name, candidate.DeclaringType?.Name);
+        var log = context.DIIntegration.Get(typeof(Microsoft.Extensions.Logging.ILogger<VisualTreeRunner>))
+            as Microsoft.Extensions.Logging.ILogger<VisualTreeRunner>;
+        log?.LogDebug("Trying Method {Candidate} on {Name}",
+            candidate.Name, candidate.DeclaringType?.Name);
         var parameters = ParameterResolver.Resolve(candidate.GetParameters(), ref context);
         if (parameters != null)
         {
+            // we do not use the using syntax on scope because we are in a immediate context
+            // but we might be calling an async handler.  If so, CleanupAfterCompletion uses a
+            // continuation passing style to defer the disposal until after the async
+            // task completes.
             var scope = parameters.Value.GetValues(ref context, out var arguments);
             var ret = candidate.Invoke(target, arguments);
-            o = ProcessMethodReturn(ret, context.InputParameters, scope);
+            o = CleanUpAfterCompletion(ret, context.InputParameters, scope);
             return true;
         }
         else
         {
-            Log.Error($"Failed to bind parameters for: {candidate.Name} on {candidate.DeclaringType?.Name}");
+            log?.LogError("Failed to bind parameters for: {Candidate} on {CandidateType}",
+            candidate.Name, candidate.DeclaringType?.Name);
         }
 
         return false;
@@ -157,7 +166,7 @@ public partial class VisualTreeRunner : IVisualTreeRunner
             .Where(i => i != null);
     }
 
-    private object? ProcessMethodReturn(object? ret, object?[] inputParams, IDisposable scope)
+    private object? CleanUpAfterCompletion(object? ret, object?[] inputParams, IDisposable scope)
     {
         switch (ret)
         {

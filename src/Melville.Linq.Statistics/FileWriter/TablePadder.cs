@@ -9,7 +9,7 @@ namespace Melville.Linq.Statistics.FileWriter
   {
     public static IEnumerable<IEnumerable<XElement>> PadColumns(IEnumerable<IEnumerable<XElement>> table)
     {
-      var ret = table.Select(i => FunctionalMethods.AsList<XElement>(i)).AsList();
+      var ret = table.Select(i => (i.ToList())).ToList();
       var widths = CountColumns(ret);
       var finalWidth = widths.Max();
       for (int i = 0; i < ret.Count; i++)
@@ -20,7 +20,7 @@ namespace Melville.Linq.Statistics.FileWriter
       return ret;
     }
 
-    private static int[] CountColumns(IList<IList<XElement>> table)
+    private static int[] CountColumns(List<List<XElement>> table)
     {
       var ret = new int[table.Count];
       for (int row = 0; row < ret.Length; row++)

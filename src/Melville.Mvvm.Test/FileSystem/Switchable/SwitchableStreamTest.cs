@@ -19,9 +19,9 @@ public sealed class SwitchableStreamTest
 
     var data = new byte[10];
     var ss = new SwitchableStream(ms);
-    ss.Read(data, 0, 3);
+    await ss.ReadExactlyAsync(data, 0, 3);
     await ss.SwitchSource(()=>Task.FromResult(ms2 as Stream));
-    ss.Read(data, 3, 3);
+    await ss.ReadExactlyAsync(data, 3, 3);
     for (int i = 0; i < 6; i++)
     {
       Assert.Equal(i * (i > 2?10:1) , data[i]);
@@ -78,7 +78,7 @@ public abstract class SwitchableFileTest
     using (var s = await sut.OpenRead())
     {
       var buf = new byte[6];
-      s.Read(buf, 0, 6);
+      s.ReadExactly(buf, 0, 6);
       for (int i = 0; i < 6; i++)
       {
         Assert.Equal(i, buf[i]);
@@ -95,8 +95,8 @@ public abstract class SwitchableFileTest
     using (var s2 = await sut.OpenRead())
     {
       var buf = new byte[6];
-      s.Read(buf, 0, 2);
-      s2.Read(buf, 2, 4);
+      s.ReadExactly(buf, 0, 2);
+      s2.ReadExactly(buf, 2, 4);
       for (int i = 0; i < 6; i++)
       {
         Assert.Equal(i, buf[i]);
@@ -119,9 +119,9 @@ public abstract class SwitchableFileTest
 
     var s = await sut.OpenRead();
 
-    await s.ReadAsync(ret, 0, 3);
+    await s.ReadExactlyAsync(ret, 0, 3);
     await sut.Relocate(_ => { });
-    await s.ReadAsync(ret, 3, 3);
+    await s.ReadExactlyAsync(ret, 3, 3);
     s.Dispose();
     Assert.True(sut.IsSwitched);
     Assert.Equal(answer, ret);      

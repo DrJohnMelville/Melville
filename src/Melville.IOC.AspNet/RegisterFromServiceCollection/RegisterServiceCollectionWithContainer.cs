@@ -73,8 +73,9 @@ public static class RegisterServiceCollectionWithContainer
     private static IPickBindingTarget<object> CreateBindingTarget(IBindableIocService container, ServiceDescriptor service)
     {
         return container.ConfigurePolicy<IPickBindingTargetSource>()
-            .Bind(service.ServiceType, false);
+            .Bind(service.ServiceType, BindingPriority.KeepBoth);
     }
+
 
     private static ITypesafeActivationOptions<object> CreateActivator(IPickBindingTarget<object> target, ServiceDescriptor service) =>
         service switch
@@ -84,9 +85,9 @@ public static class RegisterServiceCollectionWithContainer
             var x when x.ImplementationInstance != null => 
                 target.DoBinding(new ConstantActivationStrategy(service.ImplementationInstance)),
             var x when x.ImplementationFactory != null => 
-                target.DoBinding(new MethodActivationStrategy<object>
-                ((container, _)=>x.ImplementationFactory(
-                    new ServiceProviderAdapter(container)))),
+                target.DoBinding(new ArbitraryFunctionActivator
+                ((IServiceProvider sp)=>x.ImplementationFactory(
+                    sp))),
             _=>throw new InvalidOperationException(
                 "ServiceDescriptor must define one of ImplementationType, ImplementationInstance, or ImplementationFactory.")
         };

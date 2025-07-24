@@ -38,5 +38,9 @@ public readonly struct RentedBuffer<T>: IDisposable
     /// <summary>
     /// Returns the rented buffer to the ArrayPool.
     /// </summary>
-    public void Dispose() => ArrayPool<T>.Shared.Return(array);
+    public void Dispose()
+    {
+        Span.Clear();
+        ArrayPool<T>.Shared.Return(array);
+    }
 }

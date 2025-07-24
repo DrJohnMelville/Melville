@@ -4,23 +4,36 @@ using Melville.Generators.INPC.GenerationTools.CodeWriters;
 namespace Melville.Generators.INPC.ProductionGenerators.DependencyPropGen;
 
 
-public static class DependencyPropertyCodeGeneratorOperatiopns
+public class BindablePropertyCodeGenerator(RequestParser rp, CodeWriter cw) : 
+    AbstractPropertyCodeGenerator(rp, cw, 
+        "global::Microsoft.Maui.Controls.BindableObject",
+        "global::Microsoft.Maui.Controls.BindableProperty", "Create")
 {
-    public static void Generate(this RequestParser rp, CodeWriter cw)
+    public override void RenderDefaultAndChangeMethod()
     {
-        new DependencyPropertyCodeGenerator(rp,cw).GenerateDependencyPropertyDeclaration();
+        cw.Append("    ");
+        cw.Append(rp.DefaultExpression());
+        cw.Append(MauiChangeFunctionFinder.ComputeChangeFunction(rp));
     }
 }
-public readonly struct DependencyPropertyCodeGenerator
+public class DependencyPropertyCodeGenerator(RequestParser rp, CodeWriter cw) : AbstractPropertyCodeGenerator(rp, cw,
+    "global::System.Windows.DependencyObject", 
+    "global::System.Windows.DependencyProperty", "Register")
 {
-    private readonly RequestParser rp;
-    private readonly CodeWriter cw;
-
-    public DependencyPropertyCodeGenerator(RequestParser rp, CodeWriter cw)
+    public override void RenderDefaultAndChangeMethod()
     {
-        this.rp = rp;
-        this.cw = cw;
+        cw.Append($"    new global::System.Windows.FrameworkPropertyMetadata({rp.DefaultExpression()}{ChangeFunc()})");
     }
+
+    private string ChangeFunc() => WpfChangeFunctionFinder.ComputeChangeFunction(rp);
+
+}
+public abstract class AbstractPropertyCodeGenerator(
+    RequestParser rp, CodeWriter cw, string objType, string propertyType, 
+    string createMethod)
+{
+    protected readonly RequestParser rp = rp;
+    protected readonly CodeWriter cw = cw;
 
     public void GenerateDependencyPropertyDeclaration()
     {
@@ -35,23 +48,23 @@ public readonly struct DependencyPropertyCodeGenerator
         if (rp.FromCustomDpDeclaration) return;
         RenderXmlDocComment("field");
         CopyTargetAttributes("field");
-        cw.AppendLine($"public static readonly System.Windows.DependencyProperty {rp.DependencyPropName()} = ");
+        cw.AppendLine($"public static readonly {propertyType} {rp.DependencyPropName()} = ");
         var attached = rp.Attached ? "Attached" : "";
-        cw.AppendLine($"    System.Windows.DependencyProperty.Register{attached}(");
+        cw.AppendLine($"    {propertyType}.{createMethod}{attached}(");
         cw.AppendLine($"    \"{rp.PropName}\", typeof({TypeOfArgument()}), typeof({rp.ParentType()}),");
-        cw.AppendLine($"    new System.Windows.FrameworkPropertyMetadata({rp.DefaultExpression()}{ChangeFunc()}));");
+        RenderDefaultAndChangeMethod();
+        cw.AppendLine(");");
         cw.AppendLine();
     }
 
-    private void CopyTargetAttributes(string attributePrefix)
-    {
-        new AttributeCopier(cw, attributePrefix).CopyAttributesFrom(rp.TargetMemberSyntax);
-    }
+    public abstract void RenderDefaultAndChangeMethod();
+
+    private void CopyTargetAttributes(string attributePrefix) =>
+        new AttributeCopier(cw, attributePrefix)
+            .CopyAttributesFrom(rp.TargetMemberSyntax);
 
     private string TypeOfArgument() => 
         rp.Type != null && rp.Type.IsValueType ? rp.NullableTargetType() : rp.TargetType();
-
-    private string ChangeFunc() => ChangeFunctionFinder.ComputerChangeFunction(rp);
 
     private void GenerateAccessorMembers()
     {
@@ -71,22 +84,22 @@ public readonly struct DependencyPropertyCodeGenerator
         CopyTargetAttributes("property");
         cw.AppendLine($"public {rp.NullableTargetType()} {rp.PropName}");
         using var block = cw.CurlyBlock();
-        cw.AppendLine($"get => ({rp.NullableTargetType()})this.GetValue({rp.ParentType()}.{rp.DependencyPropName()});");
-        cw.AppendLine($"set => this.SetValue({rp.ParentType()}.{rp.DependencyPropName()}, value);");
+        cw.AppendLine($"get => ({rp.NullableTargetType()})this.GetValue(global::{rp.ParentType()}.{rp.DependencyPropName()});");
+        cw.AppendLine($"set => this.SetValue(global::{rp.ParentType()}.{rp.DependencyPropName()}, value);");
     }
 
     private void GenerateAttachedHelperMethods()
     {
         RenderXmlDocComment("getter");
         CopyTargetAttributes("method");
-        cw.AppendLine($"public static {rp.NullableTargetType()} Get{rp.PropName}(System.Windows.DependencyObject obj) =>");
-        cw.AppendLine($"    ({rp.NullableTargetType()})obj.GetValue({rp.ParentType()}.{rp.DependencyPropName()});");
+        cw.AppendLine($"public static {rp.NullableTargetType()} Get{rp.PropName}({objType} obj) =>");
+        cw.AppendLine($"    ({rp.NullableTargetType()})obj.GetValue(global::{rp.ParentType()}.{rp.DependencyPropName()});");
 
 
         RenderXmlDocComment("setter");
         CopyTargetAttributes("method");
-        cw.AppendLine($"public static void Set{rp.PropName}(System.Windows.DependencyObject obj, {rp.NullableTargetType()} value) =>");
-        cw.AppendLine($"    obj.SetValue({rp.ParentType()}.{rp.DependencyPropName()}, value);");
+        cw.AppendLine($"public static void Set{rp.PropName}({objType} obj, {rp.NullableTargetType()} value) =>");
+        cw.AppendLine($"    obj.SetValue(global::{rp.ParentType()}.{rp.DependencyPropName()}, value);");
     }
 
     private void RenderXmlDocComment(string kind)

@@ -20,11 +20,11 @@ public static class SimpleFileOperations
     public static async Task CopyUsingStreams(IFile destination, IFile source, CancellationToken token,
         FileAttributes attributes)
     {
-        using (var src = await source.OpenRead())
-        using (var dest = await destination.CreateWrite(attributes))
-        {
-            await src.CopyToAsync(dest, 10240, token);
-        }
+        await using var src = await source.OpenRead();
+        await using var dest = await destination.CreateWrite(attributes);
+        if (src.Length is > 0 and var sourceLength)
+            dest.SetLength(sourceLength);
+        await src.CopyToAsync(dest, 10240, token);
     }
     public static async Task MoveUsingFileSystem(FileAttributes attributes, string destinationPath, string sourcePath)
     {

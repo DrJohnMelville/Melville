@@ -26,12 +26,14 @@ public static class RunWithIocImplementation
         Type targetType, BindingFlags searchCriteria)
     {
         var methods = FindCallableTargetMethod(request, methodName, searchCriteria, targetType);
-        return methods.Invoke(target, ResolveParameters(request, methods));
+        var resolveParameters = ResolveParameters(request, methods);
+        if (request.IsCancelled) return null;
+        return methods.Invoke(target, resolveParameters);
     }
 
     private static object?[] ResolveParameters(IBindingRequest request, MethodInfo methods) => 
         request.IocService.Get(BindingRequestsFor(request, methods));
-
+    
     private static List<IBindingRequest> BindingRequestsFor(IBindingRequest request, MethodInfo methods) => 
         methods.GetParameters().Select(request.CreateSubRequest).ToList();
 
@@ -58,8 +60,5 @@ public static class RunWithIocImplementation
         BindingFlags.InvokeMethod;
 
     private static bool CanSupplyAllParameters(IBindingRequest request, MethodInfo method) =>
-        method.GetParameters().All(j => CanSupplyParameter(request, j));
-
-    private static bool CanSupplyParameter(IBindingRequest request, ParameterInfo parameter) => 
-        request.IocService.CanGet(request.CreateSubRequest(parameter).Clone());
+        request.IocService.CanGet(method.GetParameters().Select(request.CreateSubRequest));
 }

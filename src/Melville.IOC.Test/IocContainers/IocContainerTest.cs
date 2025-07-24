@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ActivationStrategies.TypeActivation;
 using Xunit;
@@ -17,19 +18,21 @@ public interface ISimpleObject2
 public class SimpleObjectImplementation : ISimpleObject, ISimpleObject2
 {
 }
-public class SecondaryObject
-{
-    public ISimpleObject SimpleObject { get; }
 
-    public SecondaryObject(ISimpleObject simpleObject)
-    {
-        SimpleObject = simpleObject;
-    }
-}
+public record SecondaryObject(ISimpleObject SimpleObject);
 
 public class IocContainerTest
 {
     private readonly IocContainer sut = new IocContainer();
+
+    [Fact]
+    public void CreateWithParameter()
+    {
+        var parameter = new SimpleObjectImplementation();
+        sut.Bind<SecondaryObject>().ToSelf().WithParameters(parameter);
+        sut.Get<SecondaryObject>().SimpleObject.Should().Be(parameter);
+        sut.CanGet<SecondaryObject>().Should().BeTrue();
+    }
         
     [Fact]
     public void CreateSimpleObject()
@@ -85,6 +88,14 @@ public class IocContainerTest
         Assert.NotNull(ret.SimpleObject);
     }
     [Fact]
+    public void BindUsingMethodWithIoc2()
+    {
+        sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
+        sut.Bind<SecondaryObject>().ToMethod((i,j) => new SecondaryObject(i.Get<ISimpleObject>()));
+        var ret = sut.Get<SecondaryObject>();
+        Assert.NotNull(ret.SimpleObject);
+    }
+    [Fact]
     public void BindUsingCustomMethodWithIoc()
     {
         sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>();
@@ -121,7 +132,14 @@ public class IocContainerTest
         }
         catch (Exception e)
         {
-            Assert.Equal("Cannot bind type: ISimpleObject\r\n    1. Melville.IOC.Test.IocContainers.ISimpleObject -- No Scope\r\n    2. Melville.IOC.Test.IocContainers.SecondaryObject -- No Scope", e.Message);
+            e.Message.Should().StartWith("""
+                Requested type: ISimpleObject
+                [1, 1] ParameterBindingRequest ISimpleObject
+                [1, 1] RootBindingRequest SecondaryObject
+                
+                Active Scopes:
+                IocContainer(0x
+                """);
             return;
         }
         Assert.Fail("should have thrown an exception");
@@ -138,7 +156,7 @@ public class IocContainerTest
     [Fact]
     public void QueryCanCreateFactory()
     {
-        Assert.False(sut.CanGet<Func<SecondaryObject>>());
+        Assert.True(sut.CanGet<Func<SecondaryObject>>());
         Assert.True(sut.CanGet<Func<ISimpleObject,SecondaryObject>>());
     }
 

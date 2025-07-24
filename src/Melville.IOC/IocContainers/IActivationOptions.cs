@@ -21,6 +21,7 @@ public interface ITypesafeActivationOptions<T>
     // sharing scopes
     IActivationOptions<T> AsSingleton() => AddActivationStrategy(SingletonActivationStrategy.EnsureSingleton);
     IActivationOptions<T> AsScoped() => AddActivationStrategy(i => new ScopedActivationStrategy(i));
+    IActivationOptions<T> AllowScopeInsideSingleton() => AddActivationStrategy(i => new AllowScopedInsideSingletonActivationStrategy(i));
 
     // Disposal scopes
     IActivationOptions<T> DoNotDispose() => AddActivationStrategy(i => new ForbidDisposalStrategy(i,true));
@@ -38,21 +39,23 @@ public interface ITypesafeActivationOptions<T>
         When(p => p.TypeBeingConstructed == null || !type.IsAssignableFrom(p.TypeBeingConstructed));
     IActivationOptions<T> WhenNotConstructingType<TTarget>() => WhenNotConstructingType(typeof(TTarget));
     IActivationOptions<T> BlockSelfInjection() => WhenNotConstructingType(typeof(T));
-    IActivationOptions<T> WhenParameterHasValue(object value) => When(i => i.ArgumentsFormChild.Contains(value));
+    IActivationOptions<T> WhenParameterHasValue(object value) => When(i => i.Arguments.Contains(value));
     IActivationOptions<T> WhenParameterHasValue(string value, StringComparison compareType) =>
         When(i => 
-            i.ArgumentsFormChild
+            i.Arguments
                 .OfType<string>()
                 .Any(j => j.Equals(value, compareType)));
     IActivationOptions<T> WhenParameterHasType<TParameter>() => WhenParameterHasType(typeof(TParameter));
 
     IActivationOptions<T> WhenParameterHasType(Type parameterType) =>
-        When(i => i.ArgumentsFormChild.Any(parameterType.IsInstanceOfType));
+        When(i => i.Arguments.Any(parameterType.IsInstanceOfType));
 
         
     // Additional construction info.
     IActivationOptions<T> WithParameters(params object[] parameters) => AddActivationStrategy(i =>
         new AddParametersStrategy(i, parameters));
+
+    IActivationOptions<T> AsFinal() => AddActivationStrategy(i=>new FinalActivationStrategy(i));
 
 }
 public interface IActivationOptions<T>:ITypesafeActivationOptions<T>
@@ -71,6 +74,4 @@ public interface IActivationOptions<T>:ITypesafeActivationOptions<T>
     IActivationOptions<T> WrapWith<TWrapper>() where TWrapper : T;
     IActivationOptions<T> WrapWith<TWrapper>(params object[] parameters) where TWrapper : T;
 
-    IActivationOptions<T> RegisterWrapperForDisposal() =>
-        AddActivationStrategy(i => new AttemptDisposeRegistration(i));
 }

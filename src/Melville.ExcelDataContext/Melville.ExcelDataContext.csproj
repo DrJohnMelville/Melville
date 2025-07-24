@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <UseWpf>true</UseWpf>
     <AssemblyName>Melville.ExcelDataContext</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -11,9 +11,9 @@
     <DefineConstants>NETCORE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
-    <PackageReference Include="LINQPad.Reference" Version="1.3.0" />
-    <PackageReference Include="LINQPad.Runtime" Version="8.3.7" />
+    <PackageReference Include="ExcelDataReader" />
+    <PackageReference Include="LINQPad.Reference" />
+    <PackageReference Include="LINQPad.Runtime" />
   </ItemGroup>
   <ItemGroup>
     <None Update="ConnectionDialog.xaml">

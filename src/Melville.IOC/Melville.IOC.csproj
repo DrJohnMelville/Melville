@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         
     </PropertyGroup>
     <PropertyGroup>
@@ -9,7 +9,7 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     </PropertyGroup>
     <ItemGroup>
-      <PackageReference Include="NuGet.Build.Tasks.Pack" Version="6.9.1">
+      <PackageReference Include="NuGet.Build.Tasks.Pack">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
@@ -23,5 +23,8 @@
       <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
       <ProjectReference Include="..\Melville.Generators.INPC\Melville.Generators.INPC.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
 
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="IocContainers\Debuggers\" />
     </ItemGroup>
 </Project>

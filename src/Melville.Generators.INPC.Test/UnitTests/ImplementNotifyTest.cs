@@ -569,4 +569,64 @@ namespace NM
         tb.LastFile().AssertContains("public partial class C<T>: Melville.INPC.IExternalNotifyPropertyChanged where T: IInt");
     }
 
+    [Fact]
+    public void PartialProperty()
+    {
+        var tb = new GeneratorTestBed(new INPCGenerator(),
+            """
+              using Melville.INPC;
+              public partial class C
+              { 
+                 [AutoNotify][field:Obsolete] public partial int IP2 {get; set;}
+              }
+            """+AttrDecl, typeof(AutoNotifyAttribute));
+        tb.AssertNoDiagnostics();
+        tb.LastFile().AssertContains("private int __generated_IP2;");
+        tb.LastFile().AssertContains("[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]");
+        tb.LastFile().AssertContains("[Obsolete]");
+    }
+
+    [Fact]
+    public void ProtectedPartialProperty()
+    {
+        var tb = new GeneratorTestBed(new INPCGenerator(),
+            """
+              using Melville.INPC;
+              public partial class C
+              { 
+                 [AutoNotify] protected partial int IP2 {get; set;}
+              }
+            """+AttrDecl, typeof(AutoNotifyAttribute));
+        tb.AssertNoDiagnostics();
+        tb.LastFile().AssertContains("protected partial int IP2");
+    }
+
+    [Fact]
+    public void IndividualPropertyAccessModifiers()
+    {
+        var tb = new GeneratorTestBed(new INPCGenerator(),
+            """
+              using Melville.INPC;
+              public partial class C
+              { 
+                 [AutoNotify] public partial int IP2 {get; private set;}
+              }
+            """+AttrDecl, typeof(AutoNotifyAttribute));
+        tb.AssertNoDiagnostics();
+        tb.LastFile().AssertContains("private set");
+    }
+    [Fact]
+    public void PartialPropertyWithInitializer()
+    {
+        var tb = new GeneratorTestBed(new INPCGenerator(),
+            """
+              using Melville.INPC;
+              public partial class C
+              { 
+                 [AutoNotify] public partial int IP2 {get; private set;} //# = 14;
+              }
+            """+AttrDecl, typeof(AutoNotifyAttribute));
+        tb.AssertNoDiagnostics();
+        tb.LastFile().AssertContains("private int __generated_IP2 = 14;");
+    }
 }

@@ -16,9 +16,14 @@ public sealed class GetIocServiceTypes: ITypeResolutionPolicy
         typeof(IocContainer),
         typeof(IBindableIocService)
     };
-    public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request) =>
-        Types.Contains(request.DesiredType) ?
-            new MethodActivationStrategy<object>(FirstElligibleContainer): null;
+    public IActivationStrategy? ApplyResolutionPolicy(IBindingRequest request)
+    {
+        if (Types.Contains(request.DesiredType))
+            return new MethodActivationStrategy<object>(FirstElligibleContainer);
+        if (request.DesiredType == typeof(IBindingRequest))
+            return new ConstantActivationStrategy(request);
+        return null;
+    }
 
     private object FirstElligibleContainer(IIocService service, IBindingRequest bindingRequest)
     {

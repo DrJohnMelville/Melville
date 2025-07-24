@@ -26,20 +26,6 @@ public sealed class ObjectLifetimeTests
         var o2 = sut.Get<SimpleObjectImplementation>();
         Assert.Equal(o1,o2);
     }
-    [Fact]
-    public void ScopedItem()
-    {
-        sut.Bind<SimpleObjectImplementation>().To<SimpleObjectImplementation>().AsScoped();
-        var s1 = sut.CreateScope();
-        var o1 = s1.Get<SimpleObjectImplementation>();
-        var o2 = s1.Get<SimpleObjectImplementation>();
-        Assert.Equal(o1,o2);
-        var s2 = sut.CreateScope();
-        var o3 = s2.Get<SimpleObjectImplementation>();
-        var o4 = s2.Get<SimpleObjectImplementation>();
-        Assert.Equal(o3,o4);
-        Assert.NotEqual(o1, o3);
-    }
 
     [Fact]
     public void PropogateScope()
@@ -60,7 +46,7 @@ public sealed class ObjectLifetimeTests
         Assert.Throws<IocException>(()=>sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>().AsSingleton().AsScoped());
     }
     [Fact]
-    public void ForbidScopedObjectsInStaticContext()
+    public void ForbidScopedObjectsInSingletonContext()
     {
         var scope = sut.CreateScope();
         sut.Bind<ISimpleObject>().To<SimpleObjectImplementation>().AsScoped();

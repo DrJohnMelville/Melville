@@ -4,11 +4,13 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
+using Melville.INPC;
 using Melville.MVVM.Wpf.EventBindings.SearchTree;
 
 namespace Melville.MVVM.Wpf.EventBindings;
 
-public class EventBinding : MarkupExtension
+[GenerateDP(typeof(object), "Parameter", Attached = true, Default = null, Nullable = true)]
+public partial class EventBinding : MarkupExtension
 {
   public EventBinding()
   {

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -7,7 +8,7 @@ using Melville.MVVM.Wpf.DiParameterSources;
 
 namespace Melville.MVVM.Wpf.EventBindings.SearchTree;
 
-public readonly struct VisualTreeRunContext
+public class VisualTreeRunContext: EventArgs
 {
     public IDIIntegration DIIntegration { get; }
     public DependencyObject Root { get; }
@@ -20,7 +21,7 @@ public readonly struct VisualTreeRunContext
         IDIIntegration diIntegration, DependencyObject root, string targetMethodName,
         IEnumerable<object?> inputParameters)
     {
-        DIIntegration = diIntegration;
+         DIIntegration = diIntegration;
         Root = root;
         TargetMethodName = targetMethodName;
         InputParameters = inputParameters.ToArray();

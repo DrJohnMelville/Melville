@@ -21,7 +21,8 @@ public abstract class IPickBindingTarget<TSource>
         => To<TSource>(pickConstructor);
     public IActivationOptions<TSource> ToSelf(ConstructorSelector pickConstructor)
         => To<TSource>(pickConstructor);
-    public IActivationOptions<TSource> ToMethod(Func<IIocService, IBindingRequest, TSource> method) =>
+    public IActivationOptions<TSource> 
+        ToMethod(Func<IIocService, IBindingRequest, TSource> method) =>
         DoBinding(new MethodActivationStrategy<TSource>(method));
 
     public IActivationOptions<TSource> ToMethod(Func<IIocService, TSource> method) =>
@@ -40,4 +41,6 @@ public abstract class IPickBindingTarget<TSource>
     public IActivationOptions<TSource> To<TDestination>(ConstructorSelector pickConstructor) 
         where TDestination : TSource =>
         To<TDestination>(i => pickConstructor(i).AsActivationStrategy());
+
+    public IActivationOptions<TSource> Prohibit() => DoBinding(new ProhibitedActivationStrategy());
 }

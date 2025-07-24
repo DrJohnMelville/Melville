@@ -1,30 +1,20 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Melville.INPC;
 using Melville.IOC.BindingRequests;
+using Melville.IOC.IocContainers.ChildContainers;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
-public sealed class ForbidDisposalStrategy : ForwardingActivationStrategy
+public sealed class ForbidDisposalStrategy(
+       IActivationStrategy inner, bool forbidDisposeEvenIfInScope)
+    : ForwardingActivationStrategy(inner)
 {
-    private readonly bool forbidDisposeEvenIfInScope;
+    public override object? Create(IBindingRequest bindingRequest) => 
+        InnerActivationStrategy.Create(WrapIfNeeded(bindingRequest));
 
-    public ForbidDisposalStrategy(IActivationStrategy inner, bool forbidDisposeEvenIfInScope): base(inner)
-    {
-        this.forbidDisposeEvenIfInScope = forbidDisposeEvenIfInScope;
-    }
-
-    public override object? Create(IBindingRequest bindingRequest)
-    {
-        if ((!bindingRequest.IocService.ScopeList().OfType<IRegisterDispose>().Any()) ||
-            forbidDisposeEvenIfInScope)
-        {
-            SetDisposalContextToAContextThatWillNeverGetDisposed(bindingRequest);
-        }
-
-        return InnerActivationStrategy.Create(bindingRequest);
-    }
-
-    private static void SetDisposalContextToAContextThatWillNeverGetDisposed(IBindingRequest bindingRequest)
-    {
-        bindingRequest.IocService = new DisposableIocService(bindingRequest.IocService);
-    }
+    private IBindingRequest WrapIfNeeded(IBindingRequest req) =>
+        forbidDisposeEvenIfInScope ?
+            ChangeDisposeRegistration.ForceDisposeChange(req, PreventDisposal.Instance):
+            ChangeDisposeRegistration.TryDisposeChange(req, PreventDisposal.Instance);
 }

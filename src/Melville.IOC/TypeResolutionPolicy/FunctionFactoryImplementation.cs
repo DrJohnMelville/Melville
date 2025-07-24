@@ -2,6 +2,7 @@
 using Melville.Hacks;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.ActivationStrategies;
 
 namespace Melville.IOC.TypeResolutionPolicy;
 
@@ -18,8 +19,7 @@ public class FunctionFactoryImplementation
     }
 
     public object? CreateTargetObject(params object[] parameters) =>
-        bindingRequest.IocService.Get(bindingRequest.CreateSubRequest(desiredType, parameters))
-        ?? throw new IocException("Type resolved to null");
+        bindingRequest.IocService.Get(bindingRequest.CreateSubRequest(desiredType, parameters));
 
     public TResult Call<TResult>() =>
         (TResult)CreateTargetObject()!;

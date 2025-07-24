@@ -11,8 +11,9 @@ namespace Melville.FileSystem;
 
 public class MemoryDirectory : MemoryFileSystemObject, IDirectory
 {
-  private readonly Dictionary<string, MemoryDirectory> subDirectories = new Dictionary<string, MemoryDirectory>();
-  private readonly Dictionary<string, IFile> files = new Dictionary<string, IFile>();
+  private readonly Dictionary<string, MemoryDirectory> subDirectories =
+      new(StringComparer.OrdinalIgnoreCase);
+  private readonly Dictionary<string, IFile> files = new(StringComparer.OrdinalIgnoreCase);
   private bool exists;
 
   public MemoryDirectory(string path) : base(path) { }
@@ -31,7 +32,7 @@ public class MemoryDirectory : MemoryFileSystemObject, IDirectory
   public IEnumerable<IDirectory> AllSubDirectories()
   {
     CheckForThrow();
-    return subDirectories.Values;
+    return subDirectories.Values.Where(i=>i.Exists());
   }
 
   public void Create(FileAttributes attributes = FileAttributes.Directory)
@@ -77,7 +78,7 @@ public class MemoryDirectory : MemoryFileSystemObject, IDirectory
   }
 
   public static Regex MatchGlob(string glob) => 
-    new Regex($"[/\\\\]{RegexExtensions.GlobToRexex(glob)}$", RegexOptions.IgnoreCase);
+    new Regex($"""[/\\]{RegexExtensions.GlobToRegex(glob)}$""", RegexOptions.IgnoreCase);
 
   public IEnumerable<IFile> AllFiles(string glob)
   {

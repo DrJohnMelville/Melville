@@ -1,19 +1,12 @@
-﻿using Melville.IOC.BindingRequests;
+﻿using Melville.INPC;
+using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
 
-public interface IForbidDisposal
+public sealed partial class ConstantActivationStrategy: IActivationStrategy
 {
-}
-
-public sealed class ConstantActivationStrategy: IActivationStrategy, IForbidDisposal
-{
-    private readonly object? value;
-    public ConstantActivationStrategy(object? value)
-    {
-        this.value = value;
-    }
-
+    [FromConstructor] private readonly object? value;
+ 
     public SharingScope SharingScope() => IocContainers.SharingScope.Singleton;
     public bool ValidForRequest(IBindingRequest request) => true;
     public bool CanCreate(IBindingRequest bindingRequest) => true;

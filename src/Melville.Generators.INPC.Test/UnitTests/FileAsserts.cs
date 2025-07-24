@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Xunit;
 
@@ -15,12 +16,12 @@ public readonly struct FileAsserts
     }
 
     public string Text() => source.ToString();
-    public void AssertContains(string snippet) => Assert.Contains(snippet, Text());
-    public void AssertDoesNotContain(string snippet) => Assert.DoesNotContain(snippet, Text());
-    public void AssertEqual(string content) => Assert.Equal(content, Text());
-    public void AssertNotEqual(string content) => Assert.NotEqual(content, Text());
-    public void AssertRegex(Regex regex) => Assert.Matches(regex, Text());
-    public void AssertRegex(string regex) => Assert.Matches(regex, Text());
+    public void AssertContains(string snippet) => Text().Should().Contain(snippet);
+    public void AssertDoesNotContain(string snippet) => Text().Should().NotContain(snippet);
+    public void AssertEqual(string content) => Text().Should().Be(content);
+    public void AssertNotEqual(string content) => Text().Should().NotBe(content);
+    public void AssertRegex(Regex regex) => Text().Should().MatchRegex(regex);
+    public void AssertRegex(string regex) => Text().Should().MatchRegex(regex);
 
     public void AssertContainsIgnoreWhiteSpace(string snippet)
     {

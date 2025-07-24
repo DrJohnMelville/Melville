@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers.ActivationStrategies;
 
@@ -18,7 +19,8 @@ public class MethodActivationStrategy<T>: IActivationStrategy
     public bool CanCreate(IBindingRequest bindingRequest) => true;
 
     public object? Create(IBindingRequest bindingRequest)=>
-        method(bindingRequest.IocService, bindingRequest);
+        method(bindingRequest.IocService, bindingRequest)
+            .TryRegisterDisposeAndReturn(bindingRequest);
 
     public SharingScope SharingScope() => IocContainers.SharingScope.Transient;
 }

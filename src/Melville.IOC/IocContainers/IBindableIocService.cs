@@ -26,13 +26,11 @@ public static class BindableIocServiceOperations
     private static IPickBindingTargetSource ClosedTypeBindings<T>(IBindableIocService service) => 
         service.ConfigurePolicy<IPickBindingTargetSource>();
     public static IPickBindingTarget<T> Bind<T>(this IBindableIocService service) => 
-        ClosedTypeBindings<T>(service).Bind<T>(false);
-    [Obsolete("This is a typo that will eventually be eliminated.  Use BindIfNeeded")]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public static IPickBindingTarget<T> BindIfMNeeded<T>(this IBindableIocService service) => 
-        service.BindIfNeeded<T>();
+        ClosedTypeBindings<T>(service).Bind<T>(BindingPriority.KeepBoth);
     public static IPickBindingTarget<T> BindIfNeeded<T>(this IBindableIocService service) => 
-        ClosedTypeBindings<T>(service).Bind<T>(true);
+        ClosedTypeBindings<T>(service).Bind<T>(BindingPriority.KeepOld);
+public static IPickBindingTarget<T> OverwriteBinding<T>(this IBindableIocService service) => 
+        ClosedTypeBindings<T>(service).Bind<T>(BindingPriority.KeepNew);
 
     #endregion
 

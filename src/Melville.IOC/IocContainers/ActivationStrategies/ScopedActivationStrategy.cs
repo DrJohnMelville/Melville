@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Melville.IOC.BindingRequests;
 
 namespace Melville.IOC.IocContainers.ActivationStrategies;
@@ -15,19 +16,12 @@ public class ScopedActivationStrategy : ForwardingActivationStrategy
 
     public override SharingScope SharingScope() => IocContainers.SharingScope.Scoped;
     
-    private IScope Scope(IBindingRequest req) => 
-        req.IocService.ScopeList().OfType<IScope>().FirstOrDefault()??
-        throw new IocException($"Attempted to create a scoped {req.DesiredType.Name} outside of a scope.");
-
-    public override object? Create(IBindingRequest bindingRequest)=>
-        Scope(bindingRequest).TryGetValue(this, out var ret) ? 
-            ret : // presumably the value got registered for disposal when created 
-            RecordScopedValue(bindingRequest, base.Create(bindingRequest));
-
-    private object? 
-        RecordScopedValue(IBindingRequest bindingRequest, in object? create)
+    public override object? Create(IBindingRequest bindingRequest)
     {
-        Scope(bindingRequest).SetScopeValue(this, create);
-        return create;
+        if (bindingRequest.SharingScope.TryGetValue(bindingRequest, this, out var ret)) return ret;
+        var value = base.Create(bindingRequest);
+        if (!bindingRequest.SharingScope.TrySetValue(bindingRequest, this, value))
+            throw new IocException("Attempted to create a scoped value outside of a scope.");
+        return value;
     }
 }

@@ -53,4 +53,14 @@ public class SelfBindByDefaultTest
             .GetInstantiationPolicy<CachedResolutionPolicy>()?
             .ApplyResolutionPolicy(new RootBindingRequest(typeof(SimpleObjectImplementation), sut));
     }
+
+    private abstract class AbsType();
+
+    [Fact]
+    public void CannotSelfBindAbstractType()
+    {
+        sut.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
+        Assert.False(sut.CanGet<AbsType>());
+        Assert.Null(sut.Get(typeof(AbsType)));
+    }
 }

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
 
         <Title>Melville.FileSystem</Title>
         <PackageDescription>Injectable file system facade with transactions</PackageDescription>
@@ -13,6 +13,10 @@
       <ProjectReference Include="..\Melville.INPC\Melville.INPC.csproj" />
       <ProjectReference Include="..\Melville.Linq\Melville.Linq.csproj" />
       <ProjectReference Include="..\Melville.Hacks\Melville.Hacks.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="BlockFile\" />
     </ItemGroup>
 
 </Project>

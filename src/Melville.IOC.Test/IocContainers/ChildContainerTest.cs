@@ -1,4 +1,5 @@
 ﻿using System;
+using FluentAssertions;
 using Melville.IOC.IocContainers;
 using Melville.IOC.IocContainers.ChildContainers;
 using Xunit;
@@ -9,26 +10,19 @@ public class ChildContainerTest
 {
     private class Dep{}
     private interface IBO { Dep Dep { get; }}
-    private class BO1: IBO{
-        public BO1(Dep dep)
-        {
-            Dep = dep;
-        }
+    private record BO1 (Dep Dep): IBO{ }
 
-        public Dep Dep { get; }
-    }
-
-    private class BO2 : IBO
-    {
-        public BO2(Dep dep)
-        {
-            Dep = dep;
-        }
-
-        public Dep Dep { get; }
-    }
+    private record BO2(Dep Dep) : IBO;
         
     private readonly IocContainer sut = new IocContainer();
+
+    private record DisposableBO(Dep Dep) : IBO, IDisposable
+    {
+        public bool IsDisposed { get; private set; }
+
+        /// <inheritdoc />
+        public void Dispose() => IsDisposed = true;
+    }
 
     [Fact]
     public void ChildContainterResolve()
@@ -45,6 +39,29 @@ public class ChildContainerTest
         Assert.True(v1 is BO1);
         Assert.True(v2 is BO2);
         Assert.Equal(v1.Dep, v2.Dep);
+    }
+
+    [Fact]
+    public void ThreeLevelTree()
+    {
+        var intermed = new DisposableChildContainer(sut, sut);
+        intermed.Bind<DisposableBO>().ToSelf().AsSingleton();
+        var leaf1 = intermed.Get<DisposableChildContainer>();
+        var leaf2 = intermed.Get<DisposableChildContainer>();
+
+        var o1 = leaf1.Get<DisposableBO>();
+        var o2 = leaf2.Get<DisposableBO>();
+
+        o1.Should().BeSameAs(o2);
+
+        leaf1.Dispose();
+        o2.IsDisposed.Should().BeFalse();
+        o1.IsDisposed.Should().BeFalse();
+
+        intermed.Dispose();
+        o2.IsDisposed.Should().BeTrue();
+        o1.IsDisposed.Should().BeTrue();
+
     }
     [Fact]
     public void ChildScopeContainterResolve()
@@ -100,4 +117,14 @@ public class ChildContainerTest
         Assert.True(obj.Disposed);
     }
 
+    [Fact]
+    public void CanCreateScopedInASingletonContext()
+    {
+        sut.Bind<DisposableChildContainer>()
+            .ToSelf().DisposeIfInsideScope().AsSingleton();
+        var c1 = sut.Get<DisposableChildContainer>();
+        c1.Bind<DisposableSingleton>().ToSelf().AsScoped();
+        var obj = c1.CreateScope().Get<DisposableSingleton>();
+
+    }
 }

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0-windows</TargetFramework>
+        <TargetFramework>net9.0-windows</TargetFramework>
         <Description>This is a library of my favorite wpf controls</Description>
         <OutputType>Library</OutputType>
         <DebugType>Full</DebugType>
@@ -12,17 +12,21 @@
 
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Moq" Version="4.20.70" />
-        <PackageReference Include="xunit" Version="2.8.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Moq" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="xunit.runner.visualstudio">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
+        <PackageReference Include="Xunit.StaFact" />
 
         <ProjectReference Include="..\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj" />
         <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />
         <ProjectReference Include="..\Melville.TestHelpers\Melville.TestHelpers.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="MouseDragging\DroppedFolder\" />
     </ItemGroup>
 </Project>

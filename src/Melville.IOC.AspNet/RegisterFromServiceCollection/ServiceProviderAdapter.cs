@@ -1,41 +1,25 @@
 ﻿using System;
+using Melville.IOC.BindingRequests;
 using Melville.IOC.IocContainers;
+using Melville.IOC.IocContainers.Debuggers;
+using Melville.IOC.TypeResolutionPolicy;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Melville.IOC.AspNet.RegisterFromServiceCollection;
 
-public class ServiceProviderAdapter : IServiceProvider, ISupportRequiredService, IServiceScope, 
-    IServiceScopeFactory
+public static class ServiceProviderAdaptorFactory
 {
-    private IIocService inner;
-
-    public ServiceProviderAdapter(IIocService inner)
+    public static IServiceProvider CreateServiceProvider(this IocContainer ioc, bool allDisposablesInRoot)
     {
-        this.inner = inner;
-    }
-
-    public object? GetService(Type serviceType)
-    {
-        try
-        {
-            return inner.Get(serviceType);
-        }
-        catch (IocException) // .Net provider does not throw when cannot create an object
-        {
-            return null;
-        }
-    }
-
-    public object GetRequiredService(Type serviceType) => inner.Get(serviceType);
-
-    public void Dispose()
-    {
-        (inner as IDisposable)?.Dispose();
-    }
-
-    public IServiceProvider ServiceProvider => this;
-    public IServiceScope CreateScope()
-    {
-        return new ServiceProviderAdapter(inner.CreateScope());
+        ioc.DefaultDisposeRegistration= PreventDisposal.Instance;
+        ioc.AddTypeResolutionPolicyToEnd(new FailRequestPolicy());
+        var ret = new ServiceProviderSharingScope(ioc);
+        ioc.Bind<IServiceProvider>().
+            And<ISupportRequiredService>().
+            And<IServiceScope>().
+            And<IServiceScopeFactory>().
+            And<IServiceProviderIsService>().ToMethod(()=>ret)
+            .AsScoped().AllowScopeInsideSingleton();
+        return ret;
     }
 }

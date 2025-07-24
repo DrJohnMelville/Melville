@@ -7,8 +7,13 @@ namespace DependencyMapper.ModelFactory;
 public readonly partial struct ProjectReader(
     IList<Dependency> dependencies, IDirectory nugetBase)
 {
-    private readonly PackageReader readFromProject = new(
-        "PackageReference", "Include", "Version", nugetBase, dependencies);
+    private async Task<PackageReader> ReadFromProject(IFile projectFile) => new(
+        "PackageReference", "Include", 
+        new CompositeVersionReader([
+            new AttributeVersionReader("Version"),
+            new ChildVersionReader("Version"),
+            .. await GlobalVersionReaderFactory.CreateFromFolder(projectFile.Directory)
+        ]), nugetBase, dependencies);
 
     public async ValueTask<Dependency> ReadProject(IFile projectFile)
     {
@@ -42,7 +47,7 @@ public readonly partial struct ProjectReader(
             ret.AddDependency(await ReadProject(projectFile.FileAtRelativePath(node)!));
         }
 
-        await readFromProject.LoadReferencedPackages(project, ret);
+        await (await ReadFromProject(projectFile)).LoadReferencedPackages(project, ret);
     }
 
     private static IEnumerable<string> GetDependantProjects(XElement project) =>
@@ -51,3 +56,4 @@ public readonly partial struct ProjectReader(
             .OfType<string>();
 
 }
+

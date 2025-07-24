@@ -2,7 +2,7 @@
 using System.Windows.Data;
 using System.Windows.Media;
 using Melville.MVVM.Wpf.Bindings;
-using Serilog.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Melville.Log.Viewer.LogViews;
 
@@ -15,19 +15,18 @@ public class LogEntryViewModel
         this.logEvent = logEvent;
     }
 
-    public DateTimeOffset TimeStamp => logEvent.Timestamp.ToLocalTime().DateTime;
-    public string Message => logEvent.MessageTemplate.Render(logEvent.Properties);
-    public LogEventLevel Level => logEvent.Level;
-    public string? Exception => logEvent.Exception?.ToString();
-
-    public static IValueConverter LevelToBrush = LambdaConverter.Create((LogEventLevel level) =>
+    public DateTimeOffset TimeStamp => logEvent.TimeStamp.ToLocalTime();
+    public string Message => logEvent.Text;
+    public LogLevel Level => logEvent.Level;
+  
+    public static IValueConverter LevelToBrush = LambdaConverter.Create((LogLevel level) =>
         level switch
         {
-            LogEventLevel.Fatal => Brushes.Black,
-            LogEventLevel.Error => Brushes.Red,
-            LogEventLevel.Warning => Brushes.DeepPink,
-            LogEventLevel.Information => Brushes.DarkOrange,
-            LogEventLevel.Debug => Brushes.LawnGreen,
+            LogLevel.Critical=> Brushes.Black,
+            LogLevel.Error => Brushes.Red,
+            LogLevel.Warning => Brushes.DeepPink,
+            LogLevel.Information => Brushes.DarkOrange,
+            LogLevel.Debug => Brushes.LawnGreen,
             _ => Brushes.DarkGreen
         });
 }

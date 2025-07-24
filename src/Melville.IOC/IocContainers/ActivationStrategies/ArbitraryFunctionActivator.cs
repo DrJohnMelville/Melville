@@ -15,7 +15,8 @@ public class ArbitraryFunctionActivator(
             bindingRequest.IocService.CanGet(i.ParameterType));
 
     public object? Create(IBindingRequest bindingRequest) => 
-        targetMethod.Method.Invoke(targetMethod.Target, ComputeArguments(bindingRequest));
+        targetMethod.Method.Invoke(targetMethod.Target, ComputeArguments(bindingRequest))
+            .TryRegisterDisposeAndReturn(bindingRequest);
 
     private object?[] ComputeArguments(IBindingRequest bindingRequest)
     {

@@ -1,4 +1,3 @@
-using AspNetCoreLocalLog.HubLog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,7 +21,6 @@ public class Startup
     {
         services.AddControllersWithViews();
         services.AddCapWebTokenService("CapWeb", "7v0ehQkQOsWuzx9bT7hcQludASvUFcD5l5JEdkNDPaM");
-        services.AddLoggingHub();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +49,6 @@ public class Startup
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}").RequireAuthorization();
-            endpoints.UseLoggingHub("Administrator");
         });
     }
 }

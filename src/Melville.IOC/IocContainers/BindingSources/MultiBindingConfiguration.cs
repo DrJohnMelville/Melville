@@ -8,17 +8,17 @@ public class MultiBindingConfiguration<TSource>: IPickBindingTarget<TSource>
 {
     private readonly List<Type> sources = new List<Type>();
     private readonly BindingRegistry registry;
-    private readonly bool ifNeeded;
+    private readonly BindingPriority priority;
 
-    public MultiBindingConfiguration(BindingRegistry registry, bool ifNeeded)
+    public MultiBindingConfiguration(BindingRegistry registry, BindingPriority priority)
     {
         this.registry = registry;
-        this.ifNeeded = ifNeeded;
+        this.priority = priority;
         sources.Add(typeof(TSource));
     }
     public override IActivationOptions<TSource> DoBinding(IActivationStrategy strategy)
     {
-        return registry.Bind<TSource>(sources, strategy, ifNeeded);
+        return registry.Bind<TSource>(sources, strategy, priority);
     }
         
     public override IPickBindingTarget<TSource> And<TDestination>()

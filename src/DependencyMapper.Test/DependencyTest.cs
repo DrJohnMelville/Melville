@@ -45,17 +45,56 @@ public class DependencyTest
         proj.Title.Should().Be("ProjName");
     }
 
-    [Fact]
-    public async Task ProjectToPackageReference()
+    [Theory]
+    [InlineData("""
+    <Project>
+        <ItemGroup>
+            <PackageReference Include="c.d" Version="1.2.3"/>
+        </ItemGroup>
+    </Project>
+    """)]
+    [InlineData("""
+    <Project>
+        <ItemGroup>
+            <PackageReference Include="c.d">
+                <Version>1.2.3</Version>
+            </PackageReference>
+        </ItemGroup>
+    </Project>
+    """)]
+    public async Task ProjectToPackageReference(string projectFile)
     {
         var dir = new MockDirectoryTreeBuilder("C:\\Solution")
-            .Folder("a", a => a.File("a.csproj", """
-                <Project>
-                    <ItemGroup>
-                        <PackageReference Include="c.d" Version="1.2.3"/>
-                    </ItemGroup>
-                </Project>
-                """))
+            .Folder("a", a => a.File("a.csproj", projectFile))
+            .Object;
+        var proj = await sut.ReadProject(dir.FileAtRelativePath("a\\a.csproj")!);
+
+        proj.Dependencies.Should().HaveCount(1);
+        proj.Dependencies[0].Title.Should().Be("c.d (1.2.3)");
+    }
+
+    [Fact]
+    public async Task ProjectToPackageReferenceWithGlobalVersion(
+        )
+    {
+        var dir = new MockDirectoryTreeBuilder("C:\\Solution")
+            .Folder("a", a =>
+            
+                a.File("Directory.Packages.props", """
+                    <Project>
+                        <ItemGroup>
+                            <PackageVersion Include="c.d" Version="1.2.3"/>
+                        </ItemGroup>
+                    </Project>
+                    """)
+                .File("a.csproj", """
+                    <Project>
+                        <ItemGroup>
+                            <PackageReference Include="c.d"/>
+                        </ItemGroup>
+                    </Project>
+                    """)
+            )
             .Object;
         var proj = await sut.ReadProject(dir.FileAtRelativePath("a\\a.csproj")!);
 

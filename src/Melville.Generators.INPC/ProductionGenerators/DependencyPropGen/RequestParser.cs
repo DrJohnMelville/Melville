@@ -23,7 +23,13 @@ public class RequestParser
     public bool Valid() => PropName.Length > 0 && Type != null;
     public bool FromCustomDpDeclaration => storedDependencyPropertyName != null;
     public string TargetType() => Type?.FullyQualifiedName()??"";
-    public string NullableTargetType() => (Type?.FullyQualifiedName()??"")+ (Nullable?"?":"");
+    public string GlobalTargetType()
+    {
+        var name = NullableTargetType();
+        return name.Contains(".") ? "global::" + name: name;
+    }
+
+    public string NullableTargetType() => (TargetType())+ (Nullable?"?":"");
     public string ParentType() => ParentSymbol.FullyQualifiedName();
     private string? storedDependencyPropertyName;
     public string DependencyPropName() => storedDependencyPropertyName?? (PropName + "Property");
@@ -161,7 +167,11 @@ public class RequestParser
 
     private bool ComputeAttached(bool isStatic, ImmutableArray<IParameterSymbol> symbolParameters) =>
         isStatic && symbolParameters.Length > 0 &&
-        symbolParameters[0].Type.FullyQualifiedName() == "System.Windows.DependencyObject";
+        IsParentObjectType(symbolParameters[0].Type.FullyQualifiedName());
+
+    private static bool IsParentObjectType(string name) =>
+        name is "System.Windows.DependencyObject" or 
+            "Microsoft.Maui.Controls.BindableObject";
 
     private ITypeSymbol? FilterTypeSymbolForNullability(ITypeSymbol? sym)
     {
@@ -197,9 +207,15 @@ public class RequestParser
 
     private void TryParseDpDeclaration(VariableDeclarationSyntax vds)
     {
-        if (!vds.Type.ToString().EndsWith("DependencyProperty") ||
+        if (!IsDeclarationType(vds.Type.ToString()) ||
             vds.Variables.Count != 1) return;
         TryParseDpDeclaration(vds.Variables[0]);
+    }
+
+    private static bool IsDeclarationType(string typeName)
+    {
+        return typeName.EndsWith("DependencyProperty") ||
+               typeName.EndsWith("BindableProperty");
     }
 
     private void TryParseDpDeclaration(VariableDeclaratorSyntax vds)
@@ -246,8 +262,10 @@ public class RequestParser
     private bool TryGetAttachedStatus(string method, out bool attached)
     {
         attached = false;
-        if (method.EndsWith("DependencyProperty.Register")) return true;
-        if (method.EndsWith("DependencyProperty.RegisterAttached"))
+        if (method.EndsWith("DependencyProperty.Register") ||
+                            method.EndsWith("BindableProperty.Create")) return true;
+        if (method.EndsWith("DependencyProperty.RegisterAttached") ||
+            method.EndsWith("BindableProperty.CreateAttached"))
         {
             attached = true;
             return true;

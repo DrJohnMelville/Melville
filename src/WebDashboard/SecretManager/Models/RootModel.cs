@@ -120,8 +120,8 @@ public sealed class PublishFileHolder: XmlFileHolder
     public string DeployedPath => Xml.Descendants(msBuildNamespace+"DeployIisAppPath")
         .FirstOrDefault()?.Value ??"No Path Found";
 
-    public string UserSecretId => Xml
-        .Descendants(msBuildNamespace+"UserSecretsId")
+    public string UserSecretId => 
+        Xml.Descendants(msBuildNamespace+"UserSecretsId").Concat(Xml.Descendants("UserSecretsId"))
         .FirstOrDefault()?.Value ?? "";
 }
 
