@@ -15,4 +15,8 @@
       <ProjectReference Include="..\Melville.Hacks\Melville.Hacks.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="BlockFile\" />
+    </ItemGroup>
+
 </Project>
