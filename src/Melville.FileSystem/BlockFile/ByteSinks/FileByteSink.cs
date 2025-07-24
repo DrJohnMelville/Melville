@@ -38,4 +38,7 @@ public class FileByteSink(string path,
         RandomAccess.WriteAsync(handle, source, offset);
 
     public void Dispose() => handle.Dispose();
+
+    /// <inheritdoc />
+    public void Flush() => RandomAccess.FlushToDisk(handle);
 }

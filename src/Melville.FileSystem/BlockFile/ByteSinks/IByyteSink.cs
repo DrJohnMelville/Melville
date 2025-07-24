@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-using Melville.Linq;
 
 namespace Melville.FileSystem.BlockFile.ByteSinks;
 
@@ -16,68 +16,32 @@ public interface IByteSink: IDisposable
     void Write(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset);
     ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset);
     ValueTask WriteAsync(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset);
+    void Flush();
 }
 
-public class MemoryBytesSink: IByteSink
+public static class ByteSinkOperations
 {
-    private byte[] data;
-    public MemoryBytesSink(byte[]? data = null)
+    public static async Task ReadExactAsync(
+        this IByteSink sink, Memory<byte> target, long offset, int tries = 3)
     {
-        this.data = data ?? [];
-    }
-    public long Length
-    {
-        get => data.Length;
-        set => Array.Resize(ref data, (int)value);
-    }
-
-    public void Dispose() { }
-    public int Read(Span<byte> target, long offset)
-    {
-        var ret = (int)Math.Min(Length - offset, target.Length);
-        data.AsSpan((int)offset, ret).CopyTo(target);
-        return ret;
-    }
-
-    public long Read(IReadOnlyList<Memory<byte>> targets, long offset)
-    {
-        var total = 0L;
-        foreach (var target in targets)
+        for (int i = 0; i < tries; i++)
         {
-            var local = Read(target.Span, offset + total);
-            total += local;
-            if (local < target.Length) break;
+            if (await sink.ReadAsync(target, offset) == target.Length)
+                return;
         }
-        return total;
-    }
-    public ValueTask<int> ReadAsync(Memory<byte> target, long offset) => new(Read(target.Span, offset));
-    public ValueTask<long> ReadAsync(IReadOnlyList<Memory<byte>> targets, long offset) => new(Read(targets, offset));
-    public void Write(ReadOnlySpan<byte> source, long offset)
-    {
-        var nextPos = offset + source.Length;
-        if (nextPos > Length) Length = nextPos;
-        source.CopyTo(data.AsSpan((int)offset));
+        throw new IOException(
+            $"Failed to read {target.Length} bytes from sink at offset {offset} after {tries} tries.");
     }
 
-    public void Write(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset)
+    public static void ReadExact(
+        this IByteSink sink, Span<byte> target, long offset, int tries = 3)
     {
-        foreach (var item in source)
+        for (int i = 0; i < tries; i++)
         {
-            Write(item.Span, offset);
-            offset += item.Length;
+            if (sink.Read(target, offset) == target.Length)
+                return;
         }
+        throw new IOException(
+            $"Failed to read {target.Length} bytes from sink at offset {offset} after {tries} tries.");
     }
-    public ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset)
-    {
-        Write(source.Span, offset);
-        return ValueTask.CompletedTask;
-    }
-    public ValueTask WriteAsync(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset)
-    {
-        Write(source, offset);
-        return ValueTask.CompletedTask;
-    }
-
-    public string Dump => data.BinaryDump();
-
 }
