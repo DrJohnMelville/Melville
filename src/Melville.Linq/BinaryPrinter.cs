@@ -6,6 +6,11 @@ namespace Melville.Linq;
 
 public static class BinaryPrinter
 {
+    public static string BinaryDump(this IEnumerable<byte> bytes)
+    {
+        return string.Join(Environment.NewLine, 
+            bytes.BinaryFormat().Select((i,index)=>$"{index * 16:X8} {i}"));
+    }
     public static IEnumerable<string> BinaryFormat(this IEnumerable<byte> bytes)
     {
         return bytes.Chunks(16).

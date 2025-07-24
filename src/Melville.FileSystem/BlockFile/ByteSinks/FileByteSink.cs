@@ -4,20 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Win32.SafeHandles;
 
-namespace Melville.FileSystem.BlockFile;
-
-public interface IByteSink: IDisposable
-{
-    long Length { get; set; }
-    int Read(Span<byte> target, long offset);
-    long Read(IReadOnlyList<Memory<byte>> targets, long offset);
-    ValueTask<int> ReadAsync(Memory<byte> target, long offset);
-    ValueTask<long> ReadAsync(IReadOnlyList<Memory<byte>> targets, long offset);
-    void Write(ReadOnlySpan<byte> source, long offset);
-    void Write(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset);
-    ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset);
-    ValueTask WriteAsync(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset);
-}
+namespace Melville.FileSystem.BlockFile.ByteSinks;
 
 public class FileByteSink(string path,
     FileMode mode = FileMode.OpenOrCreate, 
