@@ -141,7 +141,7 @@ public class BlockMultiStreamTest
     public async Task RoundTripSingleStream()
     {
         var bytes = new MemoryBytesSink([]);
-        var sut = new BlockMultiStream(bytes, 8, 0);
+        var sut = new BlockMultiStream(bytes, 8);
         var writer = await sut.GetWriterAsync();
         await writer.WriteAsync(data1);
         await VerifyStream(sut, writer.FirstBlock, data1);
@@ -212,5 +212,21 @@ public class BlockMultiStreamTest
         sink.Data[..16].Should().BeEquivalentTo(
             "08000000 01000000 EFBEADDE 06000000".BytesFromHexString());
 
+    }
+    [Fact]
+    public async Task RewriteStream()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        var data = sink.Data.AsSpan().ToArray();
+        await sut.DeleteStreamAsync(1,5);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        using (var writer = await sut.GetWriterAsync())
+        {
+            await writer.WriteAsync(data2);
+        }
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data.Take(data.Length).Should().BeEquivalentTo(data);
     }
 }

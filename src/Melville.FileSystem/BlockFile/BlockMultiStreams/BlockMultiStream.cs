@@ -19,10 +19,10 @@ public class BlockMultiStream(
     public uint BlockSize { get; } = blockSize;
     public uint RootBlock { get; private set; } = rootBlock;
     public uint BlockDataSize => blockSize - nextBlockTagSize;
-    private volatile uint nextBlock = nextBlock;
-    private volatile uint freeListHead = freeListHead;
-    private volatile uint uncomittedFreeListHead = 0xFFFFFFFF;
-    private volatile uint uncomittedFreeListTail = 0xFFFFFFFF;
+    private uint nextBlock = nextBlock;
+    private uint freeListHead = freeListHead;
+    private uint uncomittedFreeListHead = 0xFFFFFFFF;
+    private uint uncomittedFreeListTail = 0xFFFFFFFF;
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
     {
@@ -112,13 +112,19 @@ public class BlockMultiStream(
     public async Task<uint> NextFreeBlockAsync()
     {
         using var _ = await freeBlockMutex.WaitForHandleAsync();
-        return Interlocked.Increment(ref nextBlock)-1;
+        if (freeListHead is 0xFFFFFFFF) return nextBlock++;
+        var ret = freeListHead;
+        freeListHead = await NextBlockForAsync(freeListHead);
+        return ret;
     }
 
     public uint NextFreeBlock()
     {
         using var _ = freeBlockMutex.WaitForHandle();
-        return Interlocked.Increment(ref nextBlock) - 1;
+        if (freeListHead is 0xFFFFFFFF) return nextBlock++;
+        var ret = freeListHead;
+        freeListHead = NextBlockFor(freeListHead);
+        return ret;
     }
 
     public async Task WriteNextBlockLinkAsync(uint currentBlock, uint next)
