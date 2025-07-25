@@ -9,8 +9,8 @@ public abstract class BlockStream(BlockMultiStream data, uint firstBlock, long l
     : Stream
 {
     protected BlockMultiStream Data { get; } = data;
-    protected uint FirstBlock { get; } = firstBlock;
-    protected uint CurrentBlock { get; set; } = firstBlock;
+    public uint FirstBlock { get; } = firstBlock;
+    public uint CurrentBlock { get; set; } = firstBlock;
     protected long PriorLength { get; set; } = 0;
     private long length = length;
     public override long Length => this.length;

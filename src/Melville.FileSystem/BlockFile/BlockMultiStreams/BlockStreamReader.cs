@@ -19,12 +19,20 @@ public class BlockStreamReader(BlockMultiStream data, uint firstBlock, long leng
         {
             await TryAdvanceBlockAsync();
             localRead = await Data.ReadFromBlockDataAsync(
-                partialBuffer.OfMaxLen(Length - Position), CurrentBlock, CurrentBlockOffset);
+                TrimBufferToStreamLength(partialBuffer), CurrentBlock, CurrentBlockOffset);
             Position += localRead;
             partialBuffer = partialBuffer[localRead..];
         } while (localRead > 0 && partialBuffer.Length > 0);
 
         return buffer.Length - partialBuffer.Length;
+    }
+
+    private Memory<byte> TrimBufferToStreamLength(Memory<byte> partialBuffer)
+    {
+        var remainingLength = Length - Position;
+        return remainingLength > partialBuffer.Length
+            ? partialBuffer
+            : partialBuffer[..(int)remainingLength];
     }
 
     private ValueTask TryAdvanceBlockAsync() =>

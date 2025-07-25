@@ -11,26 +11,26 @@ namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
 public class BlockMultiStream(
     IByteSink bytes,
-    int blockSize = 4096,
-    uint freeListHead = 0) : IDisposable
+    uint blockSize = 4096,
+    uint freeListHead = 0xFFFFFFFF,
+    uint rootBlock = 0xFFFFFFFF,
+    uint nextBlock = 0) : IDisposable
 {
-    public int BlockSize { get; } = blockSize;
-    public int BlockDataSize => blockSize - nextBlockTagSize;
-    private volatile uint nextBlock = currentBlocksOnDisk(bytes, blockSize);
-
-    private static uint currentBlocksOnDisk(IByteSink bytes, int blockSize) =>
-        (uint)((bytes.Length + blockSize - 1) / blockSize);
-
+    public uint BlockSize { get; } = blockSize;
+    public uint RootBlock { get; private set; } = rootBlock;
+    public uint BlockDataSize => blockSize - nextBlockTagSize;
+    private volatile uint nextBlock = nextBlock;
     private volatile uint freeListHead = freeListHead;
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(8);
+        var buffer = ArrayPool<byte>.Shared.Rent(16);
         try
         {
-            await bytes.ReadExactAsync(buffer.AsMemory(0, 8), 0);
-            var sizes = MemoryMarshal.Cast<byte, uint>(buffer.AsSpan(0, 8));
-            return new BlockMultiStream(bytes, (int)sizes[0], sizes[1]);
+            var bufferMem = buffer.AsMemory(0, 16);
+            await bytes.ReadExactAsync(bufferMem, 0);
+            var sizes = MemoryMarshal.Cast<byte, uint>(bufferMem.Span);
+            return new BlockMultiStream(bytes, sizes[0], sizes[1], sizes[2], sizes[3]);
         }
         finally
         {
@@ -51,42 +51,42 @@ public class BlockMultiStream(
     public async Task<int> WriteToBlockDataAsync(
         ReadOnlyMemory<byte> buffer, uint block, int offset)
     {
-        var len = Math.Min(DataRemainingInBlock(offset), buffer.Length);
+        var len = (int)Math.Min(DataRemainingInBlock(offset), buffer.Length);
         await bytes.WriteAsync(buffer.OfMaxLen(len), PositionForDataInBlock(block, offset));
         return len;
     }
 
 
     private const int nextBlockTagSize = 4;
+    private const long headerSize = 16;
 
     private long PositionForDataInBlock(uint block, int offset) =>
-        (block * BlockSize) + offset;
+        (block * BlockSize) + offset + headerSize;
 
-    internal int DataRemainingInBlock(int offset) => BlockDataSize - offset;
+    private long PositionForNextBlockLink(uint block) =>
+        PositionForDataInBlock(block+1, -nextBlockTagSize);
 
+    internal int DataRemainingInBlock(int offset) => (int)BlockDataSize - offset;
+    
     public async Task<uint> NextBlockForAsync(uint currentBlock)
     {
-        var dataLocation = PositionForDataInBlock(currentBlock + 1, -4);
         var buffer = ArrayPool<byte>.Shared.Rent(nextBlockTagSize);
-            await bytes.ReadExactAsync(buffer.AsMemory(0, nextBlockTagSize), dataLocation);
+            await bytes.ReadExactAsync(
+                buffer.AsMemory(0, nextBlockTagSize), PositionForNextBlockLink(currentBlock));
             var ret = MemoryMarshal.Cast<byte, uint>(buffer)[0];
-            if (ret == 0)
-                throw new IOException("Attempt to read or seek off the end of the block list.");
             ArrayPool<byte>.Shared.Return(buffer);
             return ret;
     }
     public uint NextBlockFor(uint currentBlock)
     {
-        var dataLocation = PositionForDataInBlock(currentBlock + 1, -4);
+        var dataLocation = PositionForNextBlockLink(currentBlock);
         Span<byte> buffer = stackalloc byte[nextBlockTagSize];
         bytes.ReadExact(buffer, dataLocation);
         var ret = MemoryMarshal.Cast<byte, uint>(buffer)[0];
-        if (ret == 0)
-            throw new IOException("Attempt to read or seek off the end of the block list.");
         return ret;
     }
 
-    public async Task<Stream> GetWriterAsync() => 
+    public async Task<BlockWritingStream> GetWriterAsync() => 
         new BlockWritingStream(this, await NextFreeBlockAsync());
 
     private readonly SemaphoreSlim freeBlockMutex = new SemaphoreSlim(1); 
@@ -119,12 +119,11 @@ public class BlockMultiStream(
 
     public async Task WriteNextBlockLinkAsync(uint currentBlock, uint next)
     {
-        var dataLocation = PositionForDataInBlock(currentBlock + 1, -4);
         var buffer = ArrayPool<byte>.Shared.Rent(nextBlockTagSize);
         try
         {
             MemoryMarshal.Cast<byte, uint>(buffer.AsSpan())[0] = next;
-            await bytes.WriteAsync(buffer.AsMemory(0, 4), dataLocation);
+            await bytes.WriteAsync(buffer.AsMemory(0, 4), PositionForNextBlockLink(currentBlock));
         }
         finally
         {
@@ -132,12 +131,11 @@ public class BlockMultiStream(
         }
     }
 
-    public void WriteNextBlockLink(uint currentBlock, uint u)
+    public void WriteNextBlockLink(uint currentBlock, uint next)
     {
-        var dataLocation = PositionForDataInBlock(currentBlock + 1, -4);
         Span<byte> buffer = stackalloc byte[nextBlockTagSize];
-        MemoryMarshal.Cast<byte, uint>(buffer)[0] = u;
-        bytes.Write(buffer, dataLocation);
+        MemoryMarshal.Cast<byte, uint>(buffer)[0] = next;
+        bytes.Write(buffer, PositionForNextBlockLink(currentBlock));
     }
 
     public void Flush() => bytes.Flush();
