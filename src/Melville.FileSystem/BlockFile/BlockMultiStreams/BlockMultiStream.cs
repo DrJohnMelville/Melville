@@ -21,22 +21,39 @@ public class BlockMultiStream(
     public uint BlockDataSize => blockSize - nextBlockTagSize;
     private volatile uint nextBlock = nextBlock;
     private volatile uint freeListHead = freeListHead;
+    private volatile uint uncomittedFreeListHead = 0xFFFFFFFF;
+    private volatile uint uncomittedFreeListTail = 0xFFFFFFFF;
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(16);
-        try
-        {
-            var bufferMem = buffer.AsMemory(0, 16);
-            await bytes.ReadExactAsync(bufferMem, 0);
-            var sizes = MemoryMarshal.Cast<byte, uint>(bufferMem.Span);
-            return new BlockMultiStream(bytes, sizes[0], sizes[1], sizes[2], sizes[3]);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-        }
+        using var buffer = ArrayPool<byte>.Shared.RentHandle(16);
+        var bufferMem = buffer.AsMemory(0, 16);
+        await bytes.ReadExactAsync(bufferMem, 0);
+        var sizes = MemoryMarshal.Cast<byte, uint>(bufferMem.Span);
+        return new BlockMultiStream(bytes, sizes[0], sizes[1], sizes[2], sizes[3]);
     }
+
+    public async Task WriteHeaderBlockAsync(uint rootPosition)
+    {
+        using var _ = await freeBlockMutex.WaitForHandleAsync();
+        using var __ = await uncomittedFreeBlockMutex.WaitForHandleAsync();
+        if (uncomittedFreeListHead is not 0xFFFFFFFF)
+        {
+            await WriteNextBlockLinkAsync(uncomittedFreeListTail, freeListHead);
+            freeListHead = uncomittedFreeListHead;
+            uncomittedFreeListHead = uncomittedFreeListTail = 0xFFFFFFFF;
+        }
+        RootBlock = rootPosition;
+        using var buffer = ArrayPool<byte>.Shared.RentHandle((int)headerSize);
+        var innerBuffer = buffer.AsMemory(0, (int)headerSize);
+        var span = MemoryMarshal.Cast<byte, uint>(innerBuffer.Span);
+        span[0] = BlockSize;
+        span[1] = freeListHead;
+        span[2] = RootBlock;
+        span[3] = nextBlock;
+        await bytes.WriteAsync(innerBuffer, 0);
+    }
+
 
     public void Dispose() => bytes.Dispose();
 
@@ -70,12 +87,11 @@ public class BlockMultiStream(
     
     public async Task<uint> NextBlockForAsync(uint currentBlock)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(nextBlockTagSize);
-            await bytes.ReadExactAsync(
-                buffer.AsMemory(0, nextBlockTagSize), PositionForNextBlockLink(currentBlock));
-            var ret = MemoryMarshal.Cast<byte, uint>(buffer)[0];
-            ArrayPool<byte>.Shared.Return(buffer);
-            return ret;
+        using var buffer = ArrayPool<byte>.Shared.RentHandle(nextBlockTagSize);
+        await bytes.ReadExactAsync(
+            buffer.AsMemory(0, nextBlockTagSize), PositionForNextBlockLink(currentBlock));
+        var ret = MemoryMarshal.Cast<byte, uint>(buffer)[0];
+        return ret;
     }
     public uint NextBlockFor(uint currentBlock)
     {
@@ -89,46 +105,27 @@ public class BlockMultiStream(
     public async Task<BlockWritingStream> GetWriterAsync() => 
         new BlockWritingStream(this, await NextFreeBlockAsync());
 
+    // if you want both, you must aquire the mutexes in this order to avoid deadlock.
     private readonly SemaphoreSlim freeBlockMutex = new SemaphoreSlim(1); 
+    private readonly SemaphoreSlim uncomittedFreeBlockMutex = new SemaphoreSlim(1); 
     
     public async Task<uint> NextFreeBlockAsync()
     {
-        await freeBlockMutex.WaitAsync();
-        try
-        {
-            return Interlocked.Increment(ref nextBlock);
-        }
-        finally
-        {
-            freeBlockMutex.Release();
-        }
+        using var _ = await freeBlockMutex.WaitForHandleAsync();
+        return Interlocked.Increment(ref nextBlock)-1;
     }
 
     public uint NextFreeBlock()
     {
-        freeBlockMutex.Wait();
-        try
-        {
-            return Interlocked.Increment(ref nextBlock);
-        }
-        finally
-        {
-            freeBlockMutex.Release();
-        }
+        using var _ = freeBlockMutex.WaitForHandle();
+        return Interlocked.Increment(ref nextBlock) - 1;
     }
 
     public async Task WriteNextBlockLinkAsync(uint currentBlock, uint next)
     {
-        var buffer = ArrayPool<byte>.Shared.Rent(nextBlockTagSize);
-        try
-        {
-            MemoryMarshal.Cast<byte, uint>(buffer.AsSpan())[0] = next;
-            await bytes.WriteAsync(buffer.AsMemory(0, 4), PositionForNextBlockLink(currentBlock));
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(buffer);
-        }
+        using var buffer = ArrayPool<byte>.Shared.RentHandle(nextBlockTagSize);
+        MemoryMarshal.Cast<byte, uint>(buffer)[0] = next;
+        await bytes.WriteAsync(buffer.AsMemory(0, 4), PositionForNextBlockLink(currentBlock));
     }
 
     public void WriteNextBlockLink(uint currentBlock, uint next)
@@ -139,4 +136,28 @@ public class BlockMultiStream(
     }
 
     public void Flush() => bytes.Flush();
+
+    public async Task DeleteStreamAsync(uint startBock, uint endBlock)
+    {
+#if DEBUG
+        await VerifyStreamIntactAsync(startBock, endBlock);
+#endif
+        using var _ = await uncomittedFreeBlockMutex.WaitForHandleAsync();
+        if (uncomittedFreeListTail is 0xFFFFFFFF) uncomittedFreeListTail = endBlock;
+        await WriteNextBlockLinkAsync(endBlock, uncomittedFreeListHead);
+        uncomittedFreeListHead = startBock;
+    }
+
+#if DEBUG
+    private async Task VerifyStreamIntactAsync(uint startBlock, uint endBlock)
+    {
+        for (int i = 0; i < 10_000; i++)
+        {
+            if (startBlock == endBlock) return;
+            startBlock = await NextBlockForAsync(startBlock);
+        }
+        throw new InvalidOperationException("Could not find end after 10,000 blocks.");
+    }
+#endif
 }
+

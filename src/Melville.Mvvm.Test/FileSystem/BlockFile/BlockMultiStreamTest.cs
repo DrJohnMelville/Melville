@@ -143,35 +143,74 @@ public class BlockMultiStreamTest
         var bytes = new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8, 0);
         var writer = await sut.GetWriterAsync();
-        var data = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        await writer.WriteAsync(data);
-        var readDate = new byte[10];
-        var reader = sut.GetReader(writer.FirstBlock, writer.Length);
-        await reader.ReadExactlyAsync(readDate);
-        readDate.Should().BeEquivalentTo(data);
+        await writer.WriteAsync(data1);
+        await VerifyStream(sut, writer.FirstBlock, data1);
     }
+    private static readonly byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    private static readonly byte[] data2 = new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
     [Fact]
     public async Task RoundTripTwoBlockStream()
     {
-        var data1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        var data2 = new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
-        var bytes = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2);
+
+        await VerifyStream(sut, 0, data1);
+        await VerifyStream(sut, 1, data2);
+    }
+
+    private static async Task VerifyStream(BlockMultiStream sut, uint firstBlock, byte[] data)
+    {
+        var reader = sut.GetReader(firstBlock, data.Length);
+        var readData = new byte[data.Length];
+        await reader.ReadExactlyAsync(readData);
+        readData.Should().BeEquivalentTo(data);
+    }
+
+    private static async Task<BlockMultiStream> WriteInterleavedStreams(
+        byte[] source1, byte[] source2, MemoryBytesSink? store = null)
+    {
+        var bytes = store ?? new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8);
         var writer1 = await sut.GetWriterAsync();
         var writer2 = await sut.GetWriterAsync();
-        for (int i = 0; i < data1.Length; i++)
+        for (int i = 0; i < BlockMultiStreamTest.data1.Length; i++)
         {
-            await writer1.WriteAsync(data1.AsMemory(i, 1));
-            await writer2.WriteAsync(data2.AsMemory(i, 1));
+            await writer1.WriteAsync(source1.AsMemory(i, 1));
+            await writer2.WriteAsync(source2.AsMemory(i, 1));
         }
 
-        var reader1 = sut.GetReader(writer1.FirstBlock, writer1.Length);
-        var reader2 = sut.GetReader(writer2.FirstBlock, writer2.Length);
-        var readData1 = new byte[data1.Length];
-        var readData2 = new byte[data2.Length];
-        await reader1.ReadExactlyAsync(readData1);
-        await reader2.ReadExactlyAsync(readData2);
-        readData1.Should().BeEquivalentTo(data1);
-        readData2.Should().BeEquivalentTo(data2);
+        return sut;
+    }
+
+    [Fact]
+    public async Task WriteHeaderTest()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data[..16].Should().BeEquivalentTo(
+            "08000000 FFFFFFFF EFBEADDE 06000000".BytesFromHexString());
+    }
+
+    [Fact]
+    public async Task DeleteChainTest()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        await sut.DeleteStreamAsync(0,4);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data[..16].Should().BeEquivalentTo(
+            "08000000 00000000 EFBEADDE 06000000".BytesFromHexString());
+
+    }
+    [Fact]
+    public async Task DeleteChainTest2()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        await sut.DeleteStreamAsync(1,5);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data[..16].Should().BeEquivalentTo(
+            "08000000 01000000 EFBEADDE 06000000".BytesFromHexString());
+
     }
 }
