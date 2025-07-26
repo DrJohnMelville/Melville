@@ -4,7 +4,12 @@ using System.Threading.Tasks;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
-public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock)
+public interface IEndBlockWriteDataTarget
+{
+    void EndStreamWrite(uint startBlock, uint endBlock, long length);
+}
+
+public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockWriteDataTarget dataTargt)
     : BlockStream(DATA, firstBlock, 0)
 {
     public override bool CanWrite => true;
@@ -65,4 +70,10 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock)
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        dataTargt.EndStreamWrite(FirstBlock, CurrentBlock, Length);
+        base.Dispose(disposing);
+    }
 }

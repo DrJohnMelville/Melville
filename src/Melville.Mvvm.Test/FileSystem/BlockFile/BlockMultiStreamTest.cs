@@ -7,6 +7,7 @@ using FluentAssertions;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using Melville.FileSystem.BlockFile.ByteSinks;
 using Melville.Hacks.Reflection;
+using Moq;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem.BlockFile;
@@ -142,8 +143,11 @@ public class BlockMultiStreamTest
     {
         var bytes = new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8);
-        var writer = await sut.GetWriterAsync();
+        var target = new Mock<IEndBlockWriteDataTarget>();
+        var writer = await sut.GetWriterAsync(target.Object);
         await writer.WriteAsync(data1);
+        await writer.DisposeAsync();
+        target.Verify(x => x.EndStreamWrite(0, 2, data1.Length), Times.Once);
         await VerifyStream(sut, writer.FirstBlock, data1);
     }
     private static readonly byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -170,8 +174,8 @@ public class BlockMultiStreamTest
     {
         var bytes = store ?? new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8);
-        var writer1 = await sut.GetWriterAsync();
-        var writer2 = await sut.GetWriterAsync();
+        var writer1 = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>());
+        var writer2 = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>());
         for (int i = 0; i < BlockMultiStreamTest.data1.Length; i++)
         {
             await writer1.WriteAsync(source1.AsMemory(i, 1));
@@ -196,7 +200,7 @@ public class BlockMultiStreamTest
     {
         var sink = new MemoryBytesSink([]);
         var sut = await WriteInterleavedStreams(data1, data2, sink);
-        await sut.DeleteStreamAsync(0,4);
+        sut.DeleteStream(0,4);
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         sink.Data[..16].Should().BeEquivalentTo(
             "08000000 00000000 EFBEADDE 06000000".BytesFromHexString());
@@ -207,7 +211,7 @@ public class BlockMultiStreamTest
     {
         var sink = new MemoryBytesSink([]);
         var sut = await WriteInterleavedStreams(data1, data2, sink);
-        await sut.DeleteStreamAsync(1,5);
+        sut.DeleteStream(1, 5);
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         sink.Data[..16].Should().BeEquivalentTo(
             "08000000 01000000 EFBEADDE 06000000".BytesFromHexString());
@@ -220,9 +224,9 @@ public class BlockMultiStreamTest
         var sut = await WriteInterleavedStreams(data1, data2, sink);
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         var data = sink.Data.AsSpan().ToArray();
-        await sut.DeleteStreamAsync(1,5);
+        sut.DeleteStream(1, 5);
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
-        using (var writer = await sut.GetWriterAsync())
+        using (var writer = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>()))
         {
             await writer.WriteAsync(data2);
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -12,17 +13,20 @@ namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 public class BlockMultiStream(
     IByteSink bytes,
     uint blockSize = 4096,
-    uint freeListHead = 0xFFFFFFFF,
-    uint rootBlock = 0xFFFFFFFF,
+    uint freeListHead = BlockMultiStream.InvalidBlock,
+    uint rootBlock = BlockMultiStream.InvalidBlock,
     uint nextBlock = 0) : IDisposable
 {
+    public const uint InvalidBlock = 0xFFFFFFFF;
+
     public uint BlockSize { get; } = blockSize;
     public uint RootBlock { get; private set; } = rootBlock;
     public uint BlockDataSize => blockSize - nextBlockTagSize;
     private uint nextBlock = nextBlock;
     private uint freeListHead = freeListHead;
-    private uint uncomittedFreeListHead = 0xFFFFFFFF;
-    private uint uncomittedFreeListTail = 0xFFFFFFFF;
+
+    private readonly ConcurrentQueue<(uint Start, uint End)>
+        chainsPendingDelete = new();
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
     {
@@ -36,13 +40,7 @@ public class BlockMultiStream(
     public async Task WriteHeaderBlockAsync(uint rootPosition)
     {
         using var _ = await freeBlockMutex.WaitForHandleAsync();
-        using var __ = await uncomittedFreeBlockMutex.WaitForHandleAsync();
-        if (uncomittedFreeListHead is not 0xFFFFFFFF)
-        {
-            await WriteNextBlockLinkAsync(uncomittedFreeListTail, freeListHead);
-            freeListHead = uncomittedFreeListHead;
-            uncomittedFreeListHead = uncomittedFreeListTail = 0xFFFFFFFF;
-        }
+        await AddDeletedChainsToFreeList();
         RootBlock = rootPosition;
         using var buffer = ArrayPool<byte>.Shared.RentHandle((int)headerSize);
         var innerBuffer = buffer.AsMemory(0, (int)headerSize);
@@ -53,7 +51,6 @@ public class BlockMultiStream(
         span[3] = nextBlock;
         await bytes.WriteAsync(innerBuffer, 0);
     }
-
 
     public void Dispose() => bytes.Dispose();
 
@@ -102,17 +99,17 @@ public class BlockMultiStream(
         return ret;
     }
 
-    public async Task<BlockWritingStream> GetWriterAsync() => 
-        new BlockWritingStream(this, await NextFreeBlockAsync());
+    public async Task<BlockWritingStream> GetWriterAsync(
+        IEndBlockWriteDataTarget target) => 
+        new BlockWritingStream(this, await NextFreeBlockAsync(), target);
 
     // if you want both, you must aquire the mutexes in this order to avoid deadlock.
     private readonly SemaphoreSlim freeBlockMutex = new SemaphoreSlim(1); 
-    private readonly SemaphoreSlim uncomittedFreeBlockMutex = new SemaphoreSlim(1); 
     
     public async Task<uint> NextFreeBlockAsync()
     {
         using var _ = await freeBlockMutex.WaitForHandleAsync();
-        if (freeListHead is 0xFFFFFFFF) return nextBlock++;
+        if (freeListHead is InvalidBlock) return nextBlock++;
         var ret = freeListHead;
         freeListHead = await NextBlockForAsync(freeListHead);
         return ret;
@@ -121,7 +118,7 @@ public class BlockMultiStream(
     public uint NextFreeBlock()
     {
         using var _ = freeBlockMutex.WaitForHandle();
-        if (freeListHead is 0xFFFFFFFF) return nextBlock++;
+        if (freeListHead is InvalidBlock) return nextBlock++;
         var ret = freeListHead;
         freeListHead = NextBlockFor(freeListHead);
         return ret;
@@ -143,15 +140,24 @@ public class BlockMultiStream(
 
     public void Flush() => bytes.Flush();
 
-    public async Task DeleteStreamAsync(uint startBock, uint endBlock)
+    public void DeleteStream(uint startBock, uint endBlock)
     {
+        if (startBock == InvalidBlock || endBlock == InvalidBlock)
+            return;
+        chainsPendingDelete.Enqueue((startBock, endBlock));
+    }
+
+    private async Task AddDeletedChainsToFreeList()
+    {
+        // this method is called inside the free block mutex
+        while (chainsPendingDelete.TryDequeue(out var chain))
+        {
 #if DEBUG
-        await VerifyStreamIntactAsync(startBock, endBlock);
+            await VerifyStreamIntactAsync(chain.Start, chain.End);
 #endif
-        using var _ = await uncomittedFreeBlockMutex.WaitForHandleAsync();
-        if (uncomittedFreeListTail is 0xFFFFFFFF) uncomittedFreeListTail = endBlock;
-        await WriteNextBlockLinkAsync(endBlock, uncomittedFreeListHead);
-        uncomittedFreeListHead = startBock;
+            await WriteNextBlockLinkAsync(chain.End, freeListHead);
+            freeListHead = chain.Start;
+        }
     }
 
 #if DEBUG
