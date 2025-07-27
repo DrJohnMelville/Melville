@@ -57,4 +57,9 @@ public class BlockFile(
     public long Size { get; set; } = size;
 
     public override FileAttributes Attributes => FileAttributes.Normal;
+
+    public void WriteFileTo(IBlockDirectoryTarget target)
+    {
+        target.SendFileData(Name, startBlock,endBlock, Size);
+    }
 }

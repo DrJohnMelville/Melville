@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
@@ -101,7 +102,6 @@ public class BlockDirectoryTest
     {
         var subDir = root.SubDirectory("SubDir");
         var subDir2 = root.SubDirectory("SubDir2");
-
         root.AllSubDirectories().Should().BeEquivalentTo(
             [subDir, subDir2]);
     }

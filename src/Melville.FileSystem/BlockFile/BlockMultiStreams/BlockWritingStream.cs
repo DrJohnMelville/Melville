@@ -1,12 +1,22 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Melville.INPC;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
 public interface IEndBlockWriteDataTarget
 {
     void EndStreamWrite(uint startBlock, uint endBlock, long length);
+}
+
+[StaticSingleton]
+public partial class NullEndBlockWriteDataTarget : IEndBlockWriteDataTarget
+{
+    /// <inheritdoc />
+    public void EndStreamWrite(uint startBlock, uint endBlock, long length)
+    {
+    }
 }
 
 public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockWriteDataTarget dataTargt)

@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Melville.FileSystem.BlockFile.FileSystemObjects;
 
@@ -12,8 +14,26 @@ public class BlockRootDirectory(BlockMultiStream store) :
     BlockDirectory(null, "")
 {
     public override string Path => "";
-
     public override BlockMultiStream Store => store;
+
+    private uint namesHead = BlockMultiStream.InvalidBlock;
+    private uint namesTail = BlockMultiStream.InvalidBlock;
+    private uint offsetsHead = BlockMultiStream.InvalidBlock;
+    private uint offsetsTail = BlockMultiStream.InvalidBlock;
+
+    public async ValueTask CompleteWriteToStore()
+    {
+        await using var nameStream = await store.GetWriterAsync(
+            NullEndBlockWriteDataTarget.Instance);
+        await using var offsetStream = await store.GetWriterAsync(
+            NullEndBlockWriteDataTarget.Instance);
+        var target = new FullBlockDirectoryTarget(
+            nameStream, offsetStream, nameStream.FirstBlock);
+        store.DeleteStream(namesHead, namesTail);
+        store.DeleteStream(offsetsHead, offsetsTail);
+        await store.WriteHeaderBlockAsync(offsetsHead);
+        namesHead = ;
+    }
 }
 
 public class BlockDirectory(BlockDirectory? parent, string name): 
@@ -23,7 +43,7 @@ public class BlockDirectory(BlockDirectory? parent, string name):
         parent?.Store ?? throw new ArgumentNullException(nameof(parent));
 
     private SortedDictionary<string, BlockDirectory> directories = new();
-    private SortedDictionary<string, IFile> files = new();
+    private SortedDictionary<string, BlockFile> files = new();
 
     public IDirectory SubDirectory(string name)
     {
@@ -101,4 +121,48 @@ public class BlockDirectory(BlockDirectory? parent, string name):
 
     /// <inheritdoc />
     public override FileAttributes Attributes => FileAttributes.Directory;
+
+    public async ValueTask WriteToAsync(IBlockDirectoryTarget target)
+    {
+        target.SendFolderCount((uint)directories.Count);
+        foreach (var dir in directories)
+        {
+            target.SendFolderName(dir.Key);
+            await dir.Value.WriteToAsync(target);
+        }
+        target.SendFileCount((uint)files.Count);
+        foreach (var file in files)
+        {
+            file.Value.WriteFileTo(target);
+        }
+    }
+}
+
+public readonly struct DictonaryCleaner<TKey, TItem>(
+    IDictionary<TKey, TItem> dicctionary,
+    Func<KeyValuePair<TKey, TItem>, bool> shouldCull)
+{
+    public void DoCull()
+    {
+        var iter = dicctionary.GetEnumerator();
+        while (iter.MoveNext())
+        {
+            if (!shouldCull(iter.Current)) continue;
+            RecursiveCull(iter);
+            return;
+        }
+    }
+
+    private void RecursiveCull(IEnumerator<KeyValuePair<TKey, TItem>> iter)
+    {
+#warning -- check some really big deletes to make sure they do not blow the stack
+        var key = iter.Current.Key;
+        while (iter.MoveNext())
+        {
+            if (!shouldCull(iter.Current)) continue;
+            RecursiveCull(iter);
+            break;
+        }
+        dicctionary.Remove(key);
+    }
 }
