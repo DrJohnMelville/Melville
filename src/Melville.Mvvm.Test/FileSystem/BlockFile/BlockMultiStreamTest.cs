@@ -147,7 +147,8 @@ public class BlockMultiStreamTest
         var writer = await sut.GetWriterAsync(target.Object);
         await writer.WriteAsync(data1);
         await writer.DisposeAsync();
-        target.Verify(x => x.EndStreamWrite(0, 2, data1.Length), Times.Once);
+        target.Verify(x => x.EndStreamWrite(
+            new StreamEnds(0,2), data1.Length), Times.Once);
         await VerifyStream(sut, writer.FirstBlock, data1);
     }
     private static readonly byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -200,7 +201,7 @@ public class BlockMultiStreamTest
     {
         var sink = new MemoryBytesSink([]);
         var sut = await WriteInterleavedStreams(data1, data2, sink);
-        sut.DeleteStream(0,4);
+        sut.DeleteStream(new StreamEnds(0,4));
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         sink.Data[..16].Should().BeEquivalentTo(
             "08000000 00000000 EFBEADDE 06000000".BytesFromHexString());
@@ -211,7 +212,7 @@ public class BlockMultiStreamTest
     {
         var sink = new MemoryBytesSink([]);
         var sut = await WriteInterleavedStreams(data1, data2, sink);
-        sut.DeleteStream(1, 5);
+        sut.DeleteStream(new StreamEnds(1, 5));
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         sink.Data[..16].Should().BeEquivalentTo(
             "08000000 01000000 EFBEADDE 06000000".BytesFromHexString());
@@ -224,7 +225,7 @@ public class BlockMultiStreamTest
         var sut = await WriteInterleavedStreams(data1, data2, sink);
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         var data = sink.Data.AsSpan().ToArray();
-        sut.DeleteStream(1, 5);
+        sut.DeleteStream(new StreamEnds(1, 5));
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         using (var writer = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>()))
         {

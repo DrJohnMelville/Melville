@@ -16,11 +16,9 @@ public class BlockRootDirectory(BlockMultiStream store) :
     public override string Path => "";
     public override BlockMultiStream Store => store;
 
-    private uint namesHead = BlockMultiStream.InvalidBlock;
-    private uint namesTail = BlockMultiStream.InvalidBlock;
-    private uint offsetsHead = BlockMultiStream.InvalidBlock;
-    private uint offsetsTail = BlockMultiStream.InvalidBlock;
-
+    private StreamEnds nameLocation = StreamEnds.Invalid;
+    private StreamEnds offsetsLocation = StreamEnds.Invalid;
+    
     public async ValueTask CompleteWriteToStore()
     {
         await using var nameStream = await store.GetWriterAsync(
@@ -29,10 +27,11 @@ public class BlockRootDirectory(BlockMultiStream store) :
             NullEndBlockWriteDataTarget.Instance);
         var target = new FullBlockDirectoryTarget(
             nameStream, offsetStream, nameStream.FirstBlock);
-        store.DeleteStream(namesHead, namesTail);
-        store.DeleteStream(offsetsHead, offsetsTail);
-        await store.WriteHeaderBlockAsync(offsetsHead);
-        namesHead = ;
+        store.DeleteStream(nameLocation);
+        store.DeleteStream(offsetsLocation);
+        await store.WriteHeaderBlockAsync(offsetStream.FirstBlock);
+        nameLocation = nameStream.StreamEnds();
+        offsetsLocation = offsetStream.StreamEnds();
     }
 }
 

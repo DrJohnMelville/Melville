@@ -7,14 +7,14 @@ namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
 public interface IEndBlockWriteDataTarget
 {
-    void EndStreamWrite(uint startBlock, uint endBlock, long length);
+    void EndStreamWrite(in StreamEnds ends, long length);
 }
 
 [StaticSingleton]
 public partial class NullEndBlockWriteDataTarget : IEndBlockWriteDataTarget
 {
     /// <inheritdoc />
-    public void EndStreamWrite(uint startBlock, uint endBlock, long length)
+    public void EndStreamWrite(in StreamEnds ends, long length)
     {
     }
 }
@@ -83,7 +83,9 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBloc
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        dataTargt.EndStreamWrite(FirstBlock, CurrentBlock, Length);
+        dataTargt.EndStreamWrite(StreamEnds(), Length);
         base.Dispose(disposing);
     }
+
+    public StreamEnds StreamEnds() => new(FirstBlock, CurrentBlock);
 }

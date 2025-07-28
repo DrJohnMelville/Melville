@@ -25,7 +25,7 @@ public class BlockMultiStream(
     private uint nextBlock = nextBlock;
     private uint freeListHead = freeListHead;
 
-    private readonly ConcurrentQueue<(uint Start, uint End)>
+    private readonly ConcurrentQueue<StreamEnds>
         chainsPendingDelete = new();
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
@@ -140,11 +140,10 @@ public class BlockMultiStream(
 
     public void Flush() => bytes.Flush();
 
-    public void DeleteStream(uint startBock, uint endBlock)
+    public void DeleteStream(StreamEnds stream)
     {
-        if (startBock == InvalidBlock || endBlock == InvalidBlock)
-            return;
-        chainsPendingDelete.Enqueue((startBock, endBlock));
+        if (!stream.IsValid()) return;
+        chainsPendingDelete.Enqueue(stream);
     }
 
     private async Task AddDeletedChainsToFreeList()
@@ -153,7 +152,7 @@ public class BlockMultiStream(
         while (chainsPendingDelete.TryDequeue(out var chain))
         {
 #if DEBUG
-            await VerifyStreamIntactAsync(chain.Start, chain.End);
+            await VerifyStreamIntactAsync(chain);
 #endif
             await WriteNextBlockLinkAsync(chain.End, freeListHead);
             freeListHead = chain.Start;
@@ -161,12 +160,13 @@ public class BlockMultiStream(
     }
 
 #if DEBUG
-    private async Task VerifyStreamIntactAsync(uint startBlock, uint endBlock)
+    private async Task VerifyStreamIntactAsync(StreamEnds chain)
     {
+        var currentBlock = chain.Start;
         for (int i = 0; i < 10_000; i++)
         {
-            if (startBlock == endBlock) return;
-            startBlock = await NextBlockForAsync(startBlock);
+            if (currentBlock == chain.End) return;
+            currentBlock = await NextBlockForAsync(currentBlock);
         }
         throw new InvalidOperationException("Could not find end after 10,000 blocks.");
     }

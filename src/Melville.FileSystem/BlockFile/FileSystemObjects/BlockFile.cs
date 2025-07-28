@@ -6,22 +6,25 @@ namespace Melville.FileSystem.BlockFile.FileSystemObjects;
 
 public class BlockFile(
     BlockDirectory parent, string name, 
-    uint startBlock = BlockMultiStream.InvalidBlock, 
-    uint endBlock = BlockMultiStream.InvalidBlock,
+    StreamEnds streamEnds,
     uint size = 0) : 
     BlockFileSystemObject(parent, name), IFile, IEndBlockWriteDataTarget
 {
-    private uint startBlock = startBlock;
-    private uint endBlock = endBlock;
+    public BlockFile(BlockDirectory parent, string name) :
+        this(parent, name, StreamEnds.Invalid, 0)
+    {
+    }
+
+    private StreamEnds streamEnds = streamEnds;
     /// <inheritdoc />
     public override bool Exists() => 
-        startBlock != BlockMultiStream.InvalidBlock;
+        streamEnds.IsValid();
 
     /// <inheritdoc />
     public override void Delete()
     {
-        parent.Store.DeleteStream(startBlock, endBlock);
-        startBlock = endBlock = BlockMultiStream.InvalidBlock;
+        parent.Store.DeleteStream(streamEnds);
+        streamEnds = StreamEnds.Invalid;
     }
 
     /// <inheritdoc />
@@ -29,7 +32,7 @@ public class BlockFile(
     {
         if (!Exists())
             throw new FileNotFoundException($"File {Path} does not exist.");
-        return Task.FromResult(Parent!.Store.GetReader(startBlock, Size));
+        return Task.FromResult(Parent!.Store.GetReader(streamEnds.Start, Size));
     }
 
     /// <inheritdoc />
@@ -39,11 +42,10 @@ public class BlockFile(
     }
 
     /// <inheritdoc />
-    public void EndStreamWrite(uint startBlock, uint endBlock, long length)
+    public void EndStreamWrite(in StreamEnds ends, long length)
     {
         Delete(); // delete any prior stream data
-        this.startBlock = startBlock;
-        this.endBlock = endBlock;
+        streamEnds = ends;
         Size = length;
     }
 
@@ -60,6 +62,6 @@ public class BlockFile(
 
     public void WriteFileTo(IBlockDirectoryTarget target)
     {
-        target.SendFileData(Name, startBlock,endBlock, Size);
+        target.SendFileData(Name, streamEnds, Size);
     }
 }
