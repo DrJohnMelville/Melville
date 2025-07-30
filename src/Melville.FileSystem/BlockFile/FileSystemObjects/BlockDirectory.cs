@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -27,11 +28,23 @@ public class BlockRootDirectory(BlockMultiStream store) :
             NullEndBlockWriteDataTarget.Instance);
         var target = new FullBlockDirectoryTarget(
             nameStream, offsetStream, nameStream.FirstBlock);
+        await WriteToAsync(target);
+        await target.FlushAsync();
         store.DeleteStream(nameLocation);
         store.DeleteStream(offsetsLocation);
         await store.WriteHeaderBlockAsync(offsetStream.FirstBlock);
         nameLocation = nameStream.StreamEnds();
         offsetsLocation = offsetStream.StreamEnds();
+    }
+
+    public async ValueTask ReadFromStore()
+    {
+        var offsetReader = PipeReader.Create(
+            store.GetReader(store.RootBlock, long.MaxValue));
+        var nameOffset = await offsetReader.ReadUintBySize<uint>(4);
+        var nameReader = PipeReader.Create(
+            store.GetReader(nameOffset, long.MaxValue));
+        await ReadFromStreams(nameReader, offsetReader);
     }
 }
 
@@ -44,8 +57,11 @@ public class BlockDirectory(BlockDirectory? parent, string name):
     private SortedDictionary<string, BlockDirectory> directories = new();
     private SortedDictionary<string, BlockFile> files = new();
 
-    public IDirectory SubDirectory(string name)
-    {
+    IDirectory IDirectory.SubDirectory(string name) => 
+        SubDirectory(name);
+
+    public BlockDirectory SubDirectory(string name)
+    {  
         if (directories.TryGetValue(name, out var result))
             return result;
         var newDir = new BlockDirectory(this, name);
@@ -54,7 +70,8 @@ public class BlockDirectory(BlockDirectory? parent, string name):
     }
 
     /// <inheritdoc />
-    public IFile File(string name)
+    IFile IDirectory.File(string name) => File(name);
+    public BlockFile File(string name)
     {
         if (files.TryGetValue(name, out var result))
             return result;
@@ -133,6 +150,31 @@ public class BlockDirectory(BlockDirectory? parent, string name):
         foreach (var file in files)
         {
             file.Value.WriteFileTo(target);
+        }
+    }
+
+    protected async ValueTask ReadFromStreams(PipeReader nameReader, PipeReader offsetReader)
+    {
+        var folderCount = await nameReader.ReadCompactUint();
+        await ReadDirectories(nameReader, offsetReader, folderCount);
+
+        var fileCount = (int)await nameReader.ReadCompactUint();
+        for (int i = 0; i < fileCount; i++)
+        {
+            var name = await nameReader.ReadEncodedString();
+            var file = File(name);
+            file.ReadOffsets(offsetReader);
+        }
+
+    }
+
+    private async ValueTask ReadDirectories(PipeReader nameReader, PipeReader offsetReader, uint folderCount)
+    {
+        for (int i = 0; i < folderCount; i++)
+        {
+            var name = await nameReader.ReadEncodedString();
+            var subdir = SubDirectory(name);
+            await subdir.ReadFromStreams(nameReader, offsetReader);
         }
     }
 }

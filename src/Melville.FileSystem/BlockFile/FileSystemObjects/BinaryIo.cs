@@ -21,6 +21,18 @@ public static class BinaryIo
                 "Unable to encode string to utf8");
         writer.Advance(length);
     }
+
+    public static async ValueTask<string> ReadEncodedString(
+        this PipeReader pr)
+    {
+        var length = (int)await pr.ReadCompactUint();
+        var result = await pr.ReadAtLeastAsync(length);
+        var source = result.Buffer.MinSpan(stackalloc byte[length]);
+        var ret = Encoding.UTF8.GetString(source);
+        pr.AdvanceTo(result.Buffer.GetPosition(length));
+        return ret;
+    }
+
     public static void WriteCompactUint(
         this PipeWriter writer, uint number)
     {

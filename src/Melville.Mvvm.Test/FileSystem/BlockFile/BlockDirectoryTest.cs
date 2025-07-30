@@ -106,4 +106,27 @@ public class BlockDirectoryTest
             [subDir, subDir2]);
     }
 
+    [Fact]
+    public async Task RoundTripEmpty()
+    {
+        await RoundTripDirectory();
+    }
+
+    private async Task RoundTripDirectory()
+    {
+        await root.CompleteWriteToStore();
+        var root2 = new BlockRootDirectory(mus);
+        await root2.ReadFromStore();
+        root2.AllFiles().Should().BeEquivalentTo(root.AllFiles());
+    }
+
+    [Fact]
+    public async Task RoundTripDirectoryWithFiles()
+    {
+        var file1 = root.File("File1.txt");
+        await (await file1.CreateWrite()).DisposeAsync();
+        var file2 = root.File("File2.txt");
+        await (await file2.CreateWrite()).DisposeAsync();
+        await RoundTripDirectory();
+    }
 }

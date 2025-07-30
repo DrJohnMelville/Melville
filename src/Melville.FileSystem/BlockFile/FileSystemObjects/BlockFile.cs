@@ -1,5 +1,7 @@
 ﻿    using System.IO;
-using System.Threading.Tasks;
+    using System.IO.Pipelines;
+    using System.Runtime.InteropServices;
+    using System.Threading.Tasks;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
 
 namespace Melville.FileSystem.BlockFile.FileSystemObjects;
@@ -7,7 +9,7 @@ namespace Melville.FileSystem.BlockFile.FileSystemObjects;
 public class BlockFile(
     BlockDirectory parent, string name, 
     StreamEnds streamEnds,
-    uint size = 0) : 
+    long size = 0) : 
     BlockFileSystemObject(parent, name), IFile, IEndBlockWriteDataTarget
 {
     public BlockFile(BlockDirectory parent, string name) :
@@ -63,5 +65,14 @@ public class BlockFile(
     public void WriteFileTo(IBlockDirectoryTarget target)
     {
         target.SendFileData(Name, streamEnds, Size);
+    }
+
+    public async ValueTask ReadOffsets(PipeReader offsetReader)
+    {
+        var result = await offsetReader.ReadAtLeastAsync(16);
+        var span = result.Buffer.MinSpan(stackalloc byte[16]);
+        var uints = MemoryMarshal.Cast<byte, uint>(span);
+        streamEnds = new StreamEnds(uints[0], uints[1]);
+        Size = MemoryMarshal.Cast<byte, long>(span)[1];
     }
 }
