@@ -11,43 +11,6 @@ using System.Threading.Tasks;
 
 namespace Melville.FileSystem.BlockFile.FileSystemObjects;
 
-public class BlockRootDirectory(BlockMultiStream store) : 
-    BlockDirectory(null, "")
-{
-    public override string Path => "";
-    public override BlockMultiStream Store => store;
-
-    private StreamEnds nameLocation = StreamEnds.Invalid;
-    private StreamEnds offsetsLocation = StreamEnds.Invalid;
-    
-    public async ValueTask CompleteWriteToStore()
-    {
-        await using var nameStream = await store.GetWriterAsync(
-            NullEndBlockWriteDataTarget.Instance);
-        await using var offsetStream = await store.GetWriterAsync(
-            NullEndBlockWriteDataTarget.Instance);
-        var target = new FullBlockDirectoryTarget(
-            nameStream, offsetStream, nameStream.FirstBlock);
-        await WriteToAsync(target);
-        await target.FlushAsync();
-        store.DeleteStream(nameLocation);
-        store.DeleteStream(offsetsLocation);
-        await store.WriteHeaderBlockAsync(offsetStream.FirstBlock);
-        nameLocation = nameStream.StreamEnds();
-        offsetsLocation = offsetStream.StreamEnds();
-    }
-
-    public async ValueTask ReadFromStore()
-    {
-        var offsetReader = PipeReader.Create(
-            store.GetReader(store.RootBlock, long.MaxValue));
-        var nameOffset = await offsetReader.ReadUintBySize<uint>(4);
-        var nameReader = PipeReader.Create(
-            store.GetReader(nameOffset, long.MaxValue));
-        await ReadFromStreams(nameReader, offsetReader);
-    }
-}
-
 public class BlockDirectory(BlockDirectory? parent, string name): 
     BlockFileSystemObject(parent, name), IDirectory
 {
@@ -56,6 +19,26 @@ public class BlockDirectory(BlockDirectory? parent, string name):
 
     private SortedDictionary<string, BlockDirectory> directories = new();
     private SortedDictionary<string, BlockFile> files = new();
+
+    public virtual bool RewriteNeeded
+    {
+        get => Parent?.RewriteNeeded ?? true;
+        set
+        {
+            if (Parent is not null)
+              Parent.RewriteNeeded = value;
+        }
+    }
+    public virtual bool FullRewriteNeeded
+    {
+        get => Parent?.FullRewriteNeeded ?? true;
+        set
+        {
+            if (Parent is not null)
+              Parent.FullRewriteNeeded = value;
+        }
+    }
+
 
     IDirectory IDirectory.SubDirectory(string name) => 
         SubDirectory(name);
@@ -77,6 +60,8 @@ public class BlockDirectory(BlockDirectory? parent, string name):
             return result;
         var newFile = new BlockFile(this, name);
         files.Add(name, newFile);
+        RewriteNeeded = true;
+        FullRewriteNeeded = true;
         return newFile;
     }
 
@@ -163,7 +148,7 @@ public class BlockDirectory(BlockDirectory? parent, string name):
         {
             var name = await nameReader.ReadEncodedString();
             var file = File(name);
-            file.ReadOffsets(offsetReader);
+             await file.ReadOffsets(offsetReader);
         }
 
     }

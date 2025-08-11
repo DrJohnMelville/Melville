@@ -25,7 +25,8 @@ public class BlockFile(
     /// <inheritdoc />
     public override void Delete()
     {
-        parent.Store.DeleteStream(streamEnds);
+        Parent?.Store.DeleteStream(streamEnds);
+        ForceDirectoryRewrite();
         streamEnds = StreamEnds.Invalid;
     }
 
@@ -47,8 +48,15 @@ public class BlockFile(
     public void EndStreamWrite(in StreamEnds ends, long length)
     {
         Delete(); // delete any prior stream data
+        ForceDirectoryRewrite();
         streamEnds = ends;
         Size = length;
+    }
+
+    private void ForceDirectoryRewrite()
+    {
+        if (Parent is not null)
+            Parent.RewriteNeeded = true;
     }
 
     /// <inheritdoc />
@@ -74,5 +82,6 @@ public class BlockFile(
         var uints = MemoryMarshal.Cast<byte, uint>(span);
         streamEnds = new StreamEnds(uints[0], uints[1]);
         Size = MemoryMarshal.Cast<byte, long>(span)[1];
+        offsetReader.AdvanceTo(result.Buffer.GetPosition(16));
     }
 }

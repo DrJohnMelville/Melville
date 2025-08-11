@@ -16,11 +16,9 @@ public interface IBlockDirectoryTarget: IAsyncDisposable
     ValueTask FlushAsync();
 }
 
-public class FullBlockDirectoryTarget(
-    Stream names, Stream offsets, uint namesBlock) : IBlockDirectoryTarget
+public class HalfBlockDirectoryTarget(Stream offsets, uint namesBlock) : IBlockDirectoryTarget
 {
-    private readonly PipeWriter namePipe = PipeWriter.Create(names);
-    private readonly PipeWriter offsetsPipe = 
+    private readonly PipeWriter offsetsPipe =
         CreateOffsetsWriter(offsets, namesBlock);
 
     private static PipeWriter CreateOffsetsWriter(Stream offsets, uint namesBlock)
@@ -32,48 +30,70 @@ public class FullBlockDirectoryTarget(
         return ret;
     }
 
-    public void SendFolderName(string name)
+    public virtual void SendFolderName(string name)
     {
-        namePipe.WriteEncodedString(name);
     }
-
     /// <inheritdoc />
-    public void SendFolderCount(uint count)
+    public virtual void SendFolderCount(uint count)
     {
-        namePipe.WriteCompactUint(count);
-
     }
-
     /// <inheritdoc />
-    public void SendFileCount(uint count)
+    public virtual void SendFileCount(uint count)
     {
-        namePipe.WriteCompactUint(count);
     }
-
     /// <inheritdoc />
-    public void SendFileData(string name, in StreamEnds ends, long size)
+    public virtual void SendFileData(string name, in StreamEnds ends, long size)
     {
-        namePipe.WriteEncodedString(name);
         var offsets = offsetsPipe.GetSpan(16);
         var nums = MemoryMarshal.Cast<byte, uint>(offsets);
         nums[0] = ends.Start;
         nums[1] = ends.End;
         MemoryMarshal.Cast<byte, long>(offsets)[1] = size;
         offsetsPipe.Advance(16);
+    }
+    public virtual async ValueTask FlushAsync()
+    {
+        await offsetsPipe.FlushAsync();
+    }
+    /// <inheritdoc />
+    public virtual async  ValueTask DisposeAsync()
+    {
+        await FlushAsync();
+        await offsets.DisposeAsync();
+    }
+}
 
+public class FullBlockDirectoryTarget(
+    Stream names, Stream offsets, uint namesBlock) : HalfBlockDirectoryTarget(offsets, namesBlock)
+{
+    private readonly PipeWriter namePipe = PipeWriter.Create(names);
+
+    public override void SendFolderName(string name) => namePipe.WriteEncodedString(name);
+
+    /// <inheritdoc />
+    public override void SendFolderCount(uint count) => namePipe.WriteCompactUint(count);
+
+    /// <inheritdoc />
+    public override void SendFileCount(uint count) => namePipe.WriteCompactUint(count);
+
+    /// <inheritdoc />
+    public override void SendFileData(string name, in StreamEnds ends, long size)
+    {
+        namePipe.WriteEncodedString(name);
+        base.SendFileData(name, ends, size);
     }
 
-    public async ValueTask FlushAsync()
+    public override async ValueTask FlushAsync()
     {
         await namePipe.FlushAsync();
-        await offsetsPipe.FlushAsync();
+        await base.FlushAsync();
     }
 
     /// <inheritdoc />
-    public async ValueTask DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
         await FlushAsync();
         await names.DisposeAsync();
-        await offsets.DisposeAsync();
+        await base.DisposeAsync();
     }
 }

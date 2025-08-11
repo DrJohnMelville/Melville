@@ -114,7 +114,7 @@ public class BlockDirectoryTest
 
     private async Task RoundTripDirectory()
     {
-        await root.CompleteWriteToStore();
+        await root.WriteToStore();
         var root2 = new BlockRootDirectory(mus);
         await root2.ReadFromStore();
         root2.AllFiles().Should().BeEquivalentTo(root.AllFiles());
@@ -127,6 +127,42 @@ public class BlockDirectoryTest
         await (await file1.CreateWrite()).DisposeAsync();
         var file2 = root.File("File2.txt");
         await (await file2.CreateWrite()).DisposeAsync();
+        await RoundTripDirectory();
+    }
+    [Fact]
+    public async Task RoundTripDirectoryWithFilesAndSubDirs()
+    {
+        var file1 = root.File("File1.txt");
+        await (await file1.CreateWrite()).DisposeAsync();
+        var subDirectory  = root.SubDirectory("SubDir");
+        var file2 = subDirectory.File("File2.txt");
+        await (await file2.CreateWrite()).DisposeAsync();
+        await RoundTripDirectory();
+    }
+    [Fact]
+    public async Task DeleteFileAndSubdir()
+    {
+        var file1 = root.File("File1.txt");
+        await (await file1.CreateWrite()).DisposeAsync();
+        var subDirectory  = root.SubDirectory("SubDir");
+        var file2 = subDirectory.File("File2.txt");
+        await (await file2.CreateWrite()).DisposeAsync();
+        await RoundTripDirectory();
+        file2.Delete();
+        await RoundTripDirectory();
+    }
+
+    [Fact] public async Task DeleteFileAndSubdirWithCreation()
+    {
+        var file1 = root.File("File1.txt");
+        await (await file1.CreateWrite()).DisposeAsync();
+        var subDirectory  = root.SubDirectory("SubDir");
+        var file2 = subDirectory.File("File2.txt");
+        await (await file2.CreateWrite()).DisposeAsync();
+        await RoundTripDirectory();
+        file2.Delete();
+        var File3 = root.File("File3.txt");
+        await (await File3.CreateWrite()).DisposeAsync();
         await RoundTripDirectory();
     }
 }
