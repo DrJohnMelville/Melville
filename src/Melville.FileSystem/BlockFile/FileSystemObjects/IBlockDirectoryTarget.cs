@@ -16,7 +16,7 @@ public interface IBlockDirectoryTarget: IAsyncDisposable
     ValueTask FlushAsync();
 }
 
-public class HalfBlockDirectoryTarget(Stream offsets, uint namesBlock) : IBlockDirectoryTarget
+public class OffsetWritingDirectoryTarget(Stream offsets, uint namesBlock) : IBlockDirectoryTarget
 {
     private readonly PipeWriter offsetsPipe =
         CreateOffsetsWriter(offsets, namesBlock);
@@ -63,8 +63,8 @@ public class HalfBlockDirectoryTarget(Stream offsets, uint namesBlock) : IBlockD
     }
 }
 
-public class FullBlockDirectoryTarget(
-    Stream names, Stream offsets, uint namesBlock) : HalfBlockDirectoryTarget(offsets, namesBlock)
+public class NameAndOffsetWritingDirectoryTarget(
+    Stream names, Stream offsets, uint namesBlock) : OffsetWritingDirectoryTarget(offsets, namesBlock)
 {
     private readonly PipeWriter namePipe = PipeWriter.Create(names);
 

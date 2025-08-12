@@ -17,13 +17,13 @@ public class BlockDirectoryWriterTest
     private readonly BlockRootDirectory root;
     private readonly MemoryStream names = new MemoryStream();
     private readonly MemoryStream blocks = new MemoryStream();
-    private readonly FullBlockDirectoryTarget sut;
+    private readonly NameAndOffsetWritingDirectoryTarget sut;
 
 
     public BlockDirectoryWriterTest()
     {
         root = new BlockRootDirectory(mus);
-        sut = new FullBlockDirectoryTarget(names, blocks, 0xAAAAAAAA);
+        sut = new NameAndOffsetWritingDirectoryTarget(names, blocks, 0xAAAAAAAA);
     }
 
     [Fact]
