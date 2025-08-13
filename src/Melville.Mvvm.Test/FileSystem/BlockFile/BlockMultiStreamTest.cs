@@ -134,7 +134,7 @@ public class BlockMultiStreamTest
         reader.Seek(5, SeekOrigin.Begin);
         reader.Seek(-2, SeekOrigin.Current);
         var buffer = new byte[2];
-        (await reader.ReadAsync(buffer)).Should().Be(2);
+        (await reader.ReadAtLeastAsync(buffer, 2)).Should().Be(2);
         buffer.Should().BeEquivalentTo([3,4]);
     }
 
@@ -151,6 +151,22 @@ public class BlockMultiStreamTest
             new StreamEnds(0,2), data1.Length), Times.Once);
         await VerifyStream(sut, writer.FirstBlock, data1);
     }
+
+    [Fact]
+    public async Task RoundTripSingleStreamSync()
+    {
+        var bytes = new MemoryBytesSink([]);
+        var sut = new BlockMultiStream(bytes, 8);
+        var target = new Mock<IEndBlockWriteDataTarget>();
+        var writer = await sut.GetWriterAsync(target.Object);
+        writer.Write(data1, 0, data1.Length);
+        await writer.DisposeAsync();
+        target.Verify(x => x.EndStreamWrite(
+            new StreamEnds(0,2), data1.Length), Times.Once);
+        VerifyStreamSync(sut, writer.FirstBlock, data1);
+    }
+
+
     private static readonly byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     private static readonly byte[] data2 = new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
     [Fact]
@@ -167,6 +183,13 @@ public class BlockMultiStreamTest
         var reader = sut.GetReader(firstBlock, data.Length);
         var readData = new byte[data.Length];
         await reader.ReadExactlyAsync(readData);
+        readData.Should().BeEquivalentTo(data);
+    }
+    private static void VerifyStreamSync(BlockMultiStream sut, uint firstBlock, byte[] data)
+    {
+        var reader = sut.GetReader(firstBlock, data.Length);
+        var readData = new byte[data.Length];
+        reader.ReadExactly(readData, 0, readData.Length);
         readData.Should().BeEquivalentTo(data);
     }
 

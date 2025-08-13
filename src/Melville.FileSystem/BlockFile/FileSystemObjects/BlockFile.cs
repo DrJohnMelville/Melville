@@ -31,11 +31,11 @@ public class BlockFile(
     }
 
     /// <inheritdoc />
-    public Task<Stream> OpenRead()
+    public async Task<Stream> OpenRead()
     {
         if (!Exists())
             throw new FileNotFoundException($"File {Path} does not exist.");
-        return Task.FromResult(Parent!.Store.GetReader(streamEnds.Start, Size));
+        return await Task.FromResult(Parent!.Store.GetReader(streamEnds.Start, Size));
     }
 
     /// <inheritdoc />

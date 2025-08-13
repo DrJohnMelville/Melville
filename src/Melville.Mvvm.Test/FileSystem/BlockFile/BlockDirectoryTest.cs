@@ -1,10 +1,11 @@
 ﻿using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
+using Melville.FileSystem;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using Melville.FileSystem.BlockFile.ByteSinks;
 using Melville.FileSystem.BlockFile.FileSystemObjects;
+using Melville.Hacks.Reflection;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem.BlockFile;
@@ -114,9 +115,10 @@ public class BlockDirectoryTest
 
     private async Task RoundTripDirectory()
     {
-        await root.WriteToStore();
+        await root.Commit();
         var root2 = new BlockRootDirectory(mus);
         await root2.ReadFromStore();
+        root2.GetField("nameLocation").Should().BeEquivalentTo(root.GetField("nameLocation"));
         root2.AllFiles().Should().BeEquivalentTo(root.AllFiles());
     }
 

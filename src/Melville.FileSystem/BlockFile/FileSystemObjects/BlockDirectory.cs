@@ -140,17 +140,16 @@ public class BlockDirectory(BlockDirectory? parent, string name):
 
     protected async ValueTask ReadFromStreams(PipeReader nameReader, PipeReader offsetReader)
     {
-        var folderCount = await nameReader.ReadCompactUint();
-        await ReadDirectories(nameReader, offsetReader, folderCount);
+            var folderCount = await nameReader.ReadCompactUint();
+            await ReadDirectories(nameReader, offsetReader, folderCount);
 
-        var fileCount = (int)await nameReader.ReadCompactUint();
-        for (int i = 0; i < fileCount; i++)
-        {
-            var name = await nameReader.ReadEncodedString();
-            var file = File(name);
-             await file.ReadOffsets(offsetReader);
-        }
-
+            var fileCount = (int)await nameReader.ReadCompactUint();
+            for (int i = 0; i < fileCount; i++)
+            {
+                var name = await nameReader.ReadEncodedString();
+                var file = File(name);
+                await file.ReadOffsets(offsetReader);
+            }
     }
 
     private async ValueTask ReadDirectories(PipeReader nameReader, PipeReader offsetReader, uint folderCount)

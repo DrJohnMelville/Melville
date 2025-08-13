@@ -10,9 +10,10 @@ using Melville.FileSystem.BlockFile.ByteSinks;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
+#warning make the default blocksize 4096+4 so that we can read 4k blocks from a single block
 public class BlockMultiStream(
     IByteSink bytes,
-    uint blockSize = 4096,
+    uint blockSize = 4096 + 4, // defaults to 4k of data + 4 bytes for the next block tag
     uint freeListHead = BlockMultiStream.InvalidBlock,
     uint rootBlock = BlockMultiStream.InvalidBlock,
     uint nextBlock = 0) : IDisposable
@@ -30,6 +31,8 @@ public class BlockMultiStream(
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
     {
+        if (bytes.Length is 0)
+            return new BlockMultiStream(bytes);
         using var buffer = ArrayPool<byte>.Shared.RentHandle(16);
         var bufferMem = buffer.AsMemory(0, 16);
         await bytes.ReadExactAsync(bufferMem, 0);
@@ -54,9 +57,13 @@ public class BlockMultiStream(
 
     public void Dispose() => bytes.Dispose();
 
-    public Stream GetReader(uint firstBlock, long streamLength) =>
-        new BlockStreamReader(this, firstBlock, streamLength);
+    public BlockStreamReader GetReader(uint firstBlock, long streamLength) => new(this, firstBlock, streamLength);
 
+    internal int ReadFromBlockData(
+        Span<byte> target, uint block, int offset) =>
+        bytes.Read(target.OfMaxLen(DataRemainingInBlock(offset)),
+            PositionForDataInBlock(block, offset));
+   
     internal ValueTask<int> ReadFromBlockDataAsync(
         Memory<byte> target, uint block, int offset) =>
         bytes.ReadAsync(target.OfMaxLen(DataRemainingInBlock(offset)),
@@ -67,6 +74,13 @@ public class BlockMultiStream(
     {
         var len = (int)Math.Min(DataRemainingInBlock(offset), buffer.Length);
         await bytes.WriteAsync(buffer.OfMaxLen(len), PositionForDataInBlock(block, offset));
+        return len;
+    }
+
+    public int WriteToBlockData(ReadOnlySpan<byte> buffer, uint block, int offset)
+    {
+        var len = (int)Math.Min(DataRemainingInBlock(offset), buffer.Length);
+        bytes.Write(buffer.OfMaxLen(len), PositionForDataInBlock(block, offset));
         return len;
     }
 

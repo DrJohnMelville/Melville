@@ -30,6 +30,28 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBloc
         // ignore hints about the length being set, but we can
         // write off the end of the stream to expand the length
     }
+
+    /// <inheritdoc />
+    public override int Read(Span<byte> buffer) => 
+        throw new NotSupportedException("This is a writing stream");
+
+    /// <inheritdoc />
+    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = new CancellationToken()) => 
+        throw new NotSupportedException("This is a writing stream");
+
+
+    public override void Write(ReadOnlySpan<byte> buffer)
+    {
+        while (buffer.Length > 0)
+        {
+            if (DataRemainingInBlock <= 0) AdvanceBlock();
+            var bytesWritten = Data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
+            Position += bytesWritten;
+            buffer = buffer[bytesWritten..];
+        }
+        TryUpdateLength();
+    }
+
     public override async ValueTask WriteAsync(
         ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
