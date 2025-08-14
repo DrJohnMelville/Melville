@@ -31,7 +31,7 @@ public static partial class FileOperations
     CopyProgressRoutine progress) =>
    CanUseFileSystemOptimization(destination, source) ?
       CopyAndSetAttributes(destination, source, token, progress, attributes) :
-      SimpleFileOperations.CopyUsingStreams(destination, source, token, attributes);
+      SimpleFileOperations.CopyUsingStreams(destination, source, token, attributes, progress);
 
   private static bool CanUseFileSystemOptimization(IFile destination, IFile source) => 
     destination.ValidFileSystemPath() && source.ValidFileSystemPath();

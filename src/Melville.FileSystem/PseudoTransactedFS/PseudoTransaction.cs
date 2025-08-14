@@ -26,16 +26,26 @@ internal class PseudoTransaction: ITransactionControl
         this.transactionNumber = transactionNumber;
     }
 
-    public IFile CreateEnlistedFile(IFile untransactedFile, IDirectory parentDir)
+    public IFile CreateEnlistedFile(IFile untransactedFile, IDirectory parentDir, bool createdFromRecovery)
     {
         var untransactedDirectory = untransactedFile?.Directory ??
             throw new ArgumentException("files enlisted in a transaction mush have a parent directory");
         var ret = new TransactedFile(untransactedFile,
-            untransactedDirectory.File($"{untransactedFile.Name}.{transactionNumber}.txn"),
+            CreateShadowFile(untransactedFile, untransactedDirectory, createdFromRecovery),
             parentDir);
         if (HasExistingFile(ret, out var file)) return file;
         items.Add(ret);
         return ret;
+    }
+
+    private Lazy<IFile> CreateShadowFile(IFile untransactedFile, IDirectory untransactedDirectory,
+        bool createdFromRecovery)
+    {
+        var shadowFile = new Lazy<IFile>(()=>
+            untransactedDirectory.File($"{untransactedFile.Name}.{transactionNumber}.txn"));
+        if (createdFromRecovery)
+            _ = shadowFile.Value
+                ;        return shadowFile;
     }
 
     private bool HasExistingFile(IFile candidate, [NotNullWhen(true)] out IFile? file)

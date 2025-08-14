@@ -83,8 +83,8 @@ public sealed class PseudoTransactedStore : TransactionStoreBase, ITransactableS
     }
     var list = new Dictionary<int, RepairTransaction>();
     var dirs = new[] {innerFileSystem}.SelectRecursive(i => i.AllSubDirectories());
-    
-    var unpackTxnFile = new Regex(@"^(.+)\\([^\\]+)\.(\d+)\.txn$");
+#warning  use a generated regex
+        var unpackTxnFile = new Regex(@"^(.+)\\([^\\]+)\.(\d+)\.txn$");
     
     foreach (var directory in dirs)
     {
@@ -101,7 +101,7 @@ public sealed class PseudoTransactedStore : TransactionStoreBase, ITransactableS
           txn.SetCommitFile(file);
         } else
         {
-          txn.CreateEnlistedFile(directory.File(fileName), directory);
+          txn.CreateEnlistedFile(directory.File(fileName), directory, true);
         }
       }
     }
