@@ -44,7 +44,8 @@ public static class DirectoryOperations
     return $"{Guid.NewGuid()}.{ext}";
   }
     
-  public static async Task DuplicateFrom(this IDirectory deestination, IDirectory source)
+  public static async Task DuplicateFrom(
+      this IDirectory deestination, IDirectory source, Action<string>? displayCurrentFile = null)
   {
 
     //I unrolled this recursive copy operation so it all stays inside one async block.
@@ -62,9 +63,10 @@ public static class DirectoryOperations
 
       foreach (var srcFile in current.source.AllFiles())
       {
-        var destFile = current.dest.File(srcFile.Name);
+        displayCurrentFile?.Invoke(srcFile.Name);
+                var destFile = current.dest.File(srcFile.Name);
         await destFile.CopyFrom(srcFile, CancellationToken.None, srcFile.Attributes);
-      }
+      } 
     }
   }
 }
