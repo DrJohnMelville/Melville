@@ -1,4 +1,5 @@
-﻿    using System.IO;
+﻿    using System.Diagnostics;
+    using System.IO;
     using System.IO.Pipelines;
     using System.Runtime.InteropServices;
     using System.Threading.Tasks;
@@ -47,6 +48,7 @@ public class BlockFile(
     /// <inheritdoc />
     public void EndStreamWrite(in StreamEnds ends, long length)
     {
+        Debug.Assert(streamEnds != ends, "Invalid delete -- perhaps from double closing the writing stream.");
         Delete(); // delete any prior stream data
         ForceDirectoryRewrite();
         streamEnds = ends;

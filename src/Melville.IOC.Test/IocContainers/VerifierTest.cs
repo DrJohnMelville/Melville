@@ -13,6 +13,7 @@ public class VerifierTest
     private class Bimpl: IB{}
     private class Composite(IA a, IB b)
     {
+        private bool Same => a == b; // ust the parameters to avoid a warning
     }
 
     private readonly IocContainer ioc = new();

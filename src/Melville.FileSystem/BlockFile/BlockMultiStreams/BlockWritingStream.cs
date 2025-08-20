@@ -19,7 +19,7 @@ public partial class NullEndBlockWriteDataTarget : IEndBlockWriteDataTarget
     }
 }
 
-public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockWriteDataTarget dataTargt)
+public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockWriteDataTarget dataTarget)
     : BlockStream(DATA, firstBlock, 0)
 {
     public override bool CanWrite => true;
@@ -47,7 +47,7 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBloc
             if (DataRemainingInBlock <= 0) AdvanceBlock();
             var bytesWritten = Data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
             Position += bytesWritten;
-            buffer = buffer[bytesWritten..];
+           buffer = buffer[bytesWritten..];
         }
         TryUpdateLength();
     }
@@ -102,10 +102,13 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBloc
         return Task.CompletedTask;
     }
 
+    bool hasDisposed = false;
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        dataTargt.EndStreamWrite(StreamEnds(), Length);
+        if (hasDisposed) return;
+        hasDisposed = true;
+        dataTarget?.EndStreamWrite(StreamEnds(), Length);
         base.Dispose(disposing);
     }
 

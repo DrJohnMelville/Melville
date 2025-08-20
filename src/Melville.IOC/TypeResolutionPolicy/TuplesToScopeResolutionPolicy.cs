@@ -70,7 +70,7 @@ public sealed class ScopedTupleActivationStrategy : IActivationStrategy
     {
         using var buffer = new RentedBuffer<object?>(desiredType.GetGenericArguments().Length);
         var values = buffer.Span;
-        var scope = bindingRequest.IocService.CreateScope();
+        var scope = new MandatoryDisposeScope(bindingRequest.IocService);
         values[0] = scope;
         var scopedRequest = new ChangeIocServiceRequest(bindingRequest, scope);
         scope.Fill(values[1..], RequestsForInnerItems(scopedRequest));
