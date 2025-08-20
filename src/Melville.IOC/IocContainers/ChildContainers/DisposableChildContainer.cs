@@ -18,10 +18,10 @@ public class
         set => throw new InvalidOperationException("Cannot change disposal registration in a disposable scope");
     }
 
-    public bool CanGet(IBindingRequest request) =>
+    public override bool CanGet(IBindingRequest request) =>
         base.CanGet(ChangeDisposeRegistration.ForceDisposeChange(request, innerService));
 
-    public object? Get(IBindingRequest request) =>
+    public override object? Get(IBindingRequest request) =>
         base.Get(ChangeDisposeRegistration.ForceDisposeChange(request, innerService));
 
     public IBindingRequest SwitchRequestToMyContext(IBindingRequest prior)

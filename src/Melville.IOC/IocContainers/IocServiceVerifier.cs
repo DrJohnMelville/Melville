@@ -28,9 +28,9 @@ public readonly struct IocServiceVerifier(params IEnumerable<Type> typesToTest)
     #region Filtering
 
     public IocServiceVerifier IfNotNamed(string regex) => IfNotNamed(new Regex(regex));
-    public IocServiceVerifier IfNotNamed(Regex regex) => If(i => !regex.IsMatch(i.FullName));
+    public IocServiceVerifier IfNotNamed(Regex regex) => If(i => !regex.IsMatch(i.FullName??""));
     public IocServiceVerifier IfNamed(string regex) => IfNamed(new Regex(regex));
-    public IocServiceVerifier IfNamed(Regex regex) => If(i => regex.IsMatch(i.FullName));
+    public IocServiceVerifier IfNamed(Regex regex) => If(i => regex.IsMatch(i.FullName??""));
 
     public IocServiceVerifier If(Func<Type, bool> filter) => new(typesToTest.Where(filter));
     #endregion

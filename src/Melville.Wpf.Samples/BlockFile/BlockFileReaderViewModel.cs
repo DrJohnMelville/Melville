@@ -33,6 +33,7 @@ public partial class BlockFileReaderViewModel
 
     private async Task ReadHeaderAsync()
     {
+        if (Stream is null) return;
         var buffer = new byte[16];
         await Stream.ReadExactlyAsync(buffer, 0, 16);
         var sizes = MemoryMarshal.Cast<byte, uint>(buffer.AsSpan());
