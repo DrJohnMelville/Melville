@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Data.SQLite;
 using Dapper;
 using Melville.FileSystem.PseudoTransactedFS;
 using Melville.SimpleDb;
@@ -109,8 +108,8 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection) : IDis
     private static object UpdateParameters(long fileId, long length, long blockSize) =>
         new { Length = length, LastWrite = DateTime.Now.Ticks, Id = fileId, blockSize };
 
-    public SQLiteBlobWrapper GetBlobForWriting(
-        long fileId, long blockSize, long blockIndex, SQLiteBlobWrapper blob)
+    public Stream GetBlobForWriting(
+        long fileId, long blockSize, long blockIndex)
     {
         var blockId = connection.ExecuteScalar<long>(
             """
@@ -119,34 +118,32 @@ public readonly struct SqliteFileStore(SqliteTransactionScope connection) : IDis
             ON CONFLICT(FileId, SequenceNumber) DO UPDATE SET Bytes = zeroblob(@blockSize)
             RETURNING Id
             """, new { fileId, blockSize, blockIndex });
-        return CreateBlob(blockId, false, blob);
+        return CreateBlob(blockId, false);
     }
 
-    private SQLiteBlobWrapper CreateBlob(long blockId, bool readOnly, SQLiteBlobWrapper blob)
+    private Stream CreateBlob(long blockId, bool readOnly)
     {
-        if (!blob.IsValid) return connection.BlobWrapper(blockId, readOnly);
-        blob.Reopen(blockId);
-        return blob;
+        return connection.BlobWrapper(blockId, readOnly);
     }
 
-    public SQLiteBlobWrapper GetBlobForReading(long fileId, long sequence, SQLiteBlobWrapper blob)
+    public Stream GetBlobForReading(long fileId, long sequence)
     {
         var id = connection.ExecuteScalar<long>("""
             SELECT Id FROM Blocks 
             WHERE FileId = @fileId AND SequenceNumber = @sequence
             """, new { fileId, sequence });
-        return CreateBlob(id, true, blob);
+        return CreateBlob(id, true);
     }
 
-    public async Task<SQLiteBlobWrapper> GetBlobForReadingAsync(
-        long fileId, long sequence, SQLiteBlobWrapper blob)
+    public async Task<Stream> GetBlobForReadingAsync(
+        long fileId, long sequence, Stream blob)
     {
         var id = await connection.ExecuteScalarAsync<long>(
             """
             SELECT Id FROM Blocks 
             WHERE FileId = @fileId AND SequenceNumber = @sequence
             """, new { fileId, sequence });
-        return CreateBlob(id, true, blob);
+        return CreateBlob(id, true);
     }
 
 

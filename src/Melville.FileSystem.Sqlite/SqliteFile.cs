@@ -1,6 +1,4 @@
-﻿using System.Data.SQLite;
-
-namespace Melville.FileSystem.Sqlite;
+﻿namespace Melville.FileSystem.Sqlite;
 
 public sealed class SqliteFile(SqliteFileStore store, string _name, string _path, long parentId) :
     SqliteFileSystemObject(store, _name, _path, parentId), IFile

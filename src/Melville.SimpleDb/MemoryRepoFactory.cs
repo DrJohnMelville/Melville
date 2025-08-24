@@ -1,10 +1,10 @@
-﻿using System.Data.SQLite;
-using Melville.SimpleDb.LifeCycles;
+﻿using Melville.SimpleDb.LifeCycles;
+using Microsoft.Data.Sqlite;
 
 namespace Melville.SimpleDb;
 
 internal sealed class MemoryRepoFactory(
-    SQLiteConnection sqLiteConnection, IDatabaseLifecycle lifecycle) :
+    SqliteConnection sqLiteConnection, IDatabaseLifecycle lifecycle) :
     SqliteDiskFactory(sqLiteConnection.ConnectionString, lifecycle)
 {
     protected override string ReadOnlySuffix => "";
