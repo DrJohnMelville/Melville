@@ -8,6 +8,8 @@ namespace Melville.FileSystem.BlockFile.ByteSinks;
 public class MemoryBytesSink: IByteSink
 {
     private byte[] data;
+    public byte[] Data => data;
+
     public MemoryBytesSink(byte[]? data = null)
     {
         this.data = data ?? [];

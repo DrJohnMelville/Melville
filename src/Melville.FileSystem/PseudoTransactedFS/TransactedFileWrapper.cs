@@ -10,7 +10,8 @@ internal sealed partial class TransactedFileWrapper : IFileWrapper
 
     public IFile WrapFile(IFile source, IDirectory? wrappedDirectory) =>
         transaction.CreateEnlistedFile(source, 
-            wrappedDirectory??throw new ArgumentException("Transacted files should have a parent."));
+            wrappedDirectory??throw new ArgumentException("Transacted files should have a parent."),
+            false);
 
     public IDirectory WrapDirectory(IDirectory source, IDirectory wrappedParent) => 
         new FileWrapperDirectoryWrapper(source, wrappedParent, this);

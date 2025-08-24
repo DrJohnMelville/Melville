@@ -1,10 +1,25 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Melville.INPC;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
-public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock)
+public interface IEndBlockWriteDataTarget
+{
+    void EndStreamWrite(in StreamEnds ends, long length);
+}
+
+[StaticSingleton]
+public partial class NullEndBlockWriteDataTarget : IEndBlockWriteDataTarget
+{
+    /// <inheritdoc />
+    public void EndStreamWrite(in StreamEnds ends, long length)
+    {
+    }
+}
+
+public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockWriteDataTarget dataTargt)
     : BlockStream(DATA, firstBlock, 0)
 {
     public override bool CanWrite => true;
@@ -15,6 +30,28 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock)
         // ignore hints about the length being set, but we can
         // write off the end of the stream to expand the length
     }
+
+    /// <inheritdoc />
+    public override int Read(Span<byte> buffer) => 
+        throw new NotSupportedException("This is a writing stream");
+
+    /// <inheritdoc />
+    public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = new CancellationToken()) => 
+        throw new NotSupportedException("This is a writing stream");
+
+
+    public override void Write(ReadOnlySpan<byte> buffer)
+    {
+        while (buffer.Length > 0)
+        {
+            if (DataRemainingInBlock <= 0) AdvanceBlock();
+            var bytesWritten = Data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
+            Position += bytesWritten;
+            buffer = buffer[bytesWritten..];
+        }
+        TryUpdateLength();
+    }
+
     public override async ValueTask WriteAsync(
         ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default)
     {
@@ -65,4 +102,12 @@ public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock)
         return Task.CompletedTask;
     }
 
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        dataTargt.EndStreamWrite(StreamEnds(), Length);
+        base.Dispose(disposing);
+    }
+
+    public StreamEnds StreamEnds() => new(FirstBlock, CurrentBlock);
 }

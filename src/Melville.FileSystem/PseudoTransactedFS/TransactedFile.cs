@@ -10,14 +10,16 @@ namespace Melville.FileSystem.PseudoTransactedFS;
   {
     public FileAttributes Attributes { get; private set; }
     [FromConstructor] private readonly IFile inner;
-    [FromConstructor] private readonly IFile innerShadow;
+    [FromConstructor] private readonly Lazy<IFile> innerShadow;
     [FromConstructor] public IDirectory Directory { get; private set; }
+
+    private IFile? WeakInnerShadow => innerShadow.IsValueCreated ? innerShadow.Value : null;
     
     public string Path => inner.Path;
     public string Name => inner.Name;
     public bool Exists() => inner.Exists() | HasPendingCommit();
-    public bool HasPendingCommit() => innerShadow.Exists();
-    [DelegateTo] private IFile ActiveProxy => innerShadow.Exists() ? innerShadow : inner;
+    public bool HasPendingCommit() => WeakInnerShadow?.Exists() ?? false;
+    [DelegateTo] private IFile ActiveProxy => HasPendingCommit() ? innerShadow.Value : inner;
 
     public Task<Stream> OpenRead() => inner.OpenRead();
 
@@ -28,20 +30,21 @@ namespace Melville.FileSystem.PseudoTransactedFS;
     public void Delete()
     {
       inner.Delete();
-      innerShadow.Delete();
+      WeakInnerShadow?.Delete();
     }
     
-    public bool ValidFileSystemPath() => inner.ValidFileSystemPath() && innerShadow.ValidFileSystemPath();
+    public bool ValidFileSystemPath() => inner.ValidFileSystemPath() &&
+                                         (WeakInnerShadow?.ValidFileSystemPath() ?? true);
 
     public Task<Stream> CreateWrite(FileAttributes attributes)
     {
       Attributes = attributes;
-      return innerShadow.CreateWrite(attributes);
+      return innerShadow.Value.CreateWrite(attributes);
     }
 
-    public Task Commit() => innerShadow.Exists()
-      ? inner.MoveFrom(innerShadow, CancellationToken.None, Attributes)
+    public Task Commit() => HasPendingCommit()
+      ? inner.MoveFrom(innerShadow.Value, CancellationToken.None, Attributes)
       : Task.CompletedTask;
 
-    public void Rollback() => innerShadow.Delete();
+    public void Rollback() => WeakInnerShadow?.Delete();
   }

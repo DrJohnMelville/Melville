@@ -6,6 +6,7 @@
         <Title>Melville.FileSystem</Title>
         <PackageDescription>Injectable file system facade with transactions</PackageDescription>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>

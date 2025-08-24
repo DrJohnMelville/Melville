@@ -7,6 +7,7 @@ using FluentAssertions;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using Melville.FileSystem.BlockFile.ByteSinks;
 using Melville.Hacks.Reflection;
+using Moq;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem.BlockFile;
@@ -16,10 +17,11 @@ public class BlockMultiStreamTest
     [Fact]
     public async Task ReadMultiStreamTest()
     {
-        var sut = await SingleBlockStream("08000000 0A000000 |00010203 00000000");
+        var sut = await SingleBlockStream("08000000 0A000000 FFFFFFFF 01000000 | 00000000");
         sut.BlockSize.Should().Be(8);
-        sut.GetField("nextBlock").Should().Be(2);
+        sut.GetField("nextBlock").Should().Be(1);
         sut.GetField("freeListHead").Should().Be(10);
+        sut.RootBlock.Should().Be(uint.MaxValue);
     }
 
     private static async Task<BlockMultiStream> SingleBlockStream(string data)
@@ -37,9 +39,9 @@ public class BlockMultiStreamTest
     [InlineData(4)]
     public async Task ReadSingleBlockStream(long streamLength)
     {
-        var sut = await SingleBlockStream("08000000 0A000000 |00010203 00000000");
+        var sut = await SingleBlockStream("08000000 0A000000 FFFFFFFF 00000000 | 00010203");
         var buffer = new byte[4];
-        await using var reader = sut.GetReader(1, streamLength);
+        await using var reader = sut.GetReader(0, streamLength);
         reader.CanRead.Should().BeTrue();
         reader.CanSeek.Should().BeTrue();
         reader.CanWrite.Should().BeFalse();
@@ -61,12 +63,12 @@ public class BlockMultiStreamTest
     public async Task ReadTwoBlockStreamAsync()
     {
         var sut = await SingleBlockStream("""
-        08000000 00000000
-        00010203 02000000
+        08000000 00000000 FFFFFFFF 00000000
+        00010203 01000000
         04050607 00000000
         """);
         var buffer = new byte[6];
-        await using var reader = sut.GetReader(1, 6);
+        await using var reader = sut.GetReader(0, 6);
         await reader.ReadExactlyAsync(buffer);
         buffer.Should().BeEquivalentTo([0, 1, 2, 3, 4, 5]);
     }
@@ -74,13 +76,13 @@ public class BlockMultiStreamTest
     public async Task ReadInvertedBlockStreamAsync()
     {
         var sut = await SingleBlockStream("""
-        08000000 00000000
-        04050607 00000000
-        00010203 01000000
+        08000000 00000000 FFFFFFFF 00000000
+        04050607 FFFFFFFF
+        00010203 00000000
         
         """);
         var buffer = new byte[6];
-        await using var reader = sut.GetReader(2, 6);
+        await using var reader = sut.GetReader(1, 6);
         await reader.ReadExactlyAsync(buffer);
         buffer.Should().BeEquivalentTo([0, 1, 2, 3, 4, 5]);
     }
@@ -89,12 +91,12 @@ public class BlockMultiStreamTest
     public async Task SeekWithinBlock()
     {
         var sut = await SingleBlockStream("""
-            08000000 00000000
-            04050607 00000000
-            00010203 01000000
+            08000000 00000000 FFFFFFFF 00000000
+            04050607 FFFFFFFF
+            00010203 00000000
 
             """);
-        await using var reader = sut.GetReader(2, 6);
+        await using var reader = sut.GetReader(1, 6);
         reader.CanSeek.Should().BeTrue();
         reader.Seek(3, SeekOrigin.Begin);
         var buffer = new byte[2];
@@ -105,12 +107,12 @@ public class BlockMultiStreamTest
     public async Task SeekForward()
     {
         var sut = await SingleBlockStream("""
-            08000000 00000000
-            04050607 00000000
-            00010203 01000000
+            08000000 00000000 FFFFFFFF 00000000
+            04050607 FFFFFFFF
+            00010203 00000000
 
             """);
-        await using var reader = sut.GetReader(2, 6);
+        await using var reader = sut.GetReader(1, 6);
         reader.CanSeek.Should().BeTrue();
         reader.Seek(5, SeekOrigin.Begin);
         var buffer = new byte[2];
@@ -122,17 +124,17 @@ public class BlockMultiStreamTest
     public async Task SeekBack()
     {
         var sut = await SingleBlockStream("""
-            08000000 00000000
-            04050607 00000000
-            00010203 01000000
+            08000000 00000000 FFFFFFFF 00000000
+            04050607 FFFFFFFF
+            00010203 00000000
 
             """);
-        await using var reader = sut.GetReader(2, 6);
+        await using var reader = sut.GetReader(1, 6);
         reader.CanSeek.Should().BeTrue();
         reader.Seek(5, SeekOrigin.Begin);
         reader.Seek(-2, SeekOrigin.Current);
         var buffer = new byte[2];
-        (await reader.ReadAsync(buffer)).Should().Be(2);
+        (await reader.ReadAtLeastAsync(buffer, 2)).Should().Be(2);
         buffer.Should().BeEquivalentTo([3,4]);
     }
 
@@ -140,13 +142,119 @@ public class BlockMultiStreamTest
     public async Task RoundTripSingleStream()
     {
         var bytes = new MemoryBytesSink([]);
-        var sut = new BlockMultiStream(bytes, 8, 0);
-        var writer = await sut.GetWriterAsync();
-        var data = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        await writer.WriteAsync(data);
-        var readDate = new byte[10];
-        var reader = sut.GetReader(1, 10);
-        await reader.ReadExactlyAsync(readDate);
-        readDate.Should().BeEquivalentTo(data);
+        var sut = new BlockMultiStream(bytes, 8);
+        var target = new Mock<IEndBlockWriteDataTarget>();
+        var writer = await sut.GetWriterAsync(target.Object);
+        await writer.WriteAsync(data1);
+        await writer.DisposeAsync();
+        target.Verify(x => x.EndStreamWrite(
+            new StreamEnds(0,2), data1.Length), Times.Once);
+        await VerifyStream(sut, writer.FirstBlock, data1);
+    }
+
+    [Fact]
+    public async Task RoundTripSingleStreamSync()
+    {
+        var bytes = new MemoryBytesSink([]);
+        var sut = new BlockMultiStream(bytes, 8);
+        var target = new Mock<IEndBlockWriteDataTarget>();
+        var writer = await sut.GetWriterAsync(target.Object);
+        writer.Write(data1, 0, data1.Length);
+        await writer.DisposeAsync();
+        target.Verify(x => x.EndStreamWrite(
+            new StreamEnds(0,2), data1.Length), Times.Once);
+        VerifyStreamSync(sut, writer.FirstBlock, data1);
+    }
+
+
+    private static readonly byte[] data1 = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    private static readonly byte[] data2 = new byte[] { 10, 11, 12, 13, 14, 15, 16, 17, 18, 19 };
+    [Fact]
+    public async Task RoundTripTwoBlockStream()
+    {
+        var sut = await WriteInterleavedStreams(data1, data2);
+
+        await VerifyStream(sut, 0, data1);
+        await VerifyStream(sut, 1, data2);
+    }
+
+    private static async Task VerifyStream(BlockMultiStream sut, uint firstBlock, byte[] data)
+    {
+        var reader = sut.GetReader(firstBlock, data.Length);
+        var readData = new byte[data.Length];
+        await reader.ReadExactlyAsync(readData);
+        readData.Should().BeEquivalentTo(data);
+    }
+    private static void VerifyStreamSync(BlockMultiStream sut, uint firstBlock, byte[] data)
+    {
+        var reader = sut.GetReader(firstBlock, data.Length);
+        var readData = new byte[data.Length];
+        reader.ReadExactly(readData, 0, readData.Length);
+        readData.Should().BeEquivalentTo(data);
+    }
+
+    private static async Task<BlockMultiStream> WriteInterleavedStreams(
+        byte[] source1, byte[] source2, MemoryBytesSink? store = null)
+    {
+        var bytes = store ?? new MemoryBytesSink([]);
+        var sut = new BlockMultiStream(bytes, 8);
+        var writer1 = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>());
+        var writer2 = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>());
+        for (int i = 0; i < BlockMultiStreamTest.data1.Length; i++)
+        {
+            await writer1.WriteAsync(source1.AsMemory(i, 1));
+            await writer2.WriteAsync(source2.AsMemory(i, 1));
+        }
+
+        return sut;
+    }
+
+    [Fact]
+    public async Task WriteHeaderTest()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data[..16].Should().BeEquivalentTo(
+            "08000000 FFFFFFFF EFBEADDE 06000000".BytesFromHexString());
+    }
+
+    [Fact]
+    public async Task DeleteChainTest()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        sut.DeleteStream(new StreamEnds(0,4));
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data[..16].Should().BeEquivalentTo(
+            "08000000 00000000 EFBEADDE 06000000".BytesFromHexString());
+
+    }
+    [Fact]
+    public async Task DeleteChainTest2()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        sut.DeleteStream(new StreamEnds(1, 5));
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data[..16].Should().BeEquivalentTo(
+            "08000000 01000000 EFBEADDE 06000000".BytesFromHexString());
+
+    }
+    [Fact]
+    public async Task RewriteStream()
+    {
+        var sink = new MemoryBytesSink([]);
+        var sut = await WriteInterleavedStreams(data1, data2, sink);
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        var data = sink.Data.AsSpan().ToArray();
+        sut.DeleteStream(new StreamEnds(1, 5));
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        using (var writer = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>()))
+        {
+            await writer.WriteAsync(data2);
+        }
+        await sut.WriteHeaderBlockAsync(0xDEADBEEF);
+        sink.Data.Take(data.Length).Should().BeEquivalentTo(data);
     }
 }

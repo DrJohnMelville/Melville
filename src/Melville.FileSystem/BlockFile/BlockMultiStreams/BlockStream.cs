@@ -9,8 +9,8 @@ public abstract class BlockStream(BlockMultiStream data, uint firstBlock, long l
     : Stream
 {
     protected BlockMultiStream Data { get; } = data;
-    protected uint FirstBlock { get; } = firstBlock;
-    protected uint CurrentBlock { get; set; } = firstBlock;
+    public uint FirstBlock { get; } = firstBlock;
+    public uint CurrentBlock { get; set; } = firstBlock;
     protected long PriorLength { get; set; } = 0;
     private long length = length;
     public override long Length => this.length;
@@ -19,13 +19,15 @@ public abstract class BlockStream(BlockMultiStream data, uint firstBlock, long l
     protected int CurrentBlockOffset => (int)(Position - PriorLength);
     protected int DataRemainingInBlock => Data.DataRemainingInBlock(CurrentBlockOffset);
 
+    public StreamEnds CurrentExtent() => new StreamEnds(FirstBlock, CurrentBlock);
+
     #region Overrides to the memory and span based overloads
 
     public override int Read(byte[] buffer, int offset, int count) =>
-        throw new NotSupportedException("Use ReadAsync instead");
+        Read(buffer.AsSpan(offset, count));
 
     public override void Write(byte[] buffer, int offset, int count) =>
-        throw new NotSupportedException("Use WriteAsync instead.");
+        Write(buffer.AsSpan(offset, count));
 
     /// <inheritdoc />
     public override Task<int> ReadAsync(
