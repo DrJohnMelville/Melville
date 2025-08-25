@@ -11,7 +11,7 @@ public class BlockFile(
     BlockDirectory parent, string name, 
     StreamEnds streamEnds,
     long size = 0) : 
-    BlockFileSystemObject(parent, name), IFile, IEndBlockWriteDataTarget
+    BlockFileSystemObject(parent, name), IFile, IEndBlockDataTarget
 {
     public BlockFile(BlockDirectory parent, string name) :
         this(parent, name, StreamEnds.Invalid, 0)
@@ -27,7 +27,7 @@ public class BlockFile(
     public override void Delete()
     {
         Parent?.Store.DeleteStream(streamEnds);
-        ForceDirectoryRewrite();
+        parent?.Root?.TriggerRewrite();
         streamEnds = StreamEnds.Invalid;
     }
 
@@ -36,12 +36,13 @@ public class BlockFile(
     {
         if (!Exists())
             throw new FileNotFoundException($"File {Path} does not exist.");
-        return await Task.FromResult(Parent!.Store.GetReader(streamEnds.Start, Size));
+        return await Task.FromResult(Parent!.Store.GetReader(streamEnds.Start, Size, this));
     }
 
     /// <inheritdoc />
     public async Task<Stream> CreateWrite(FileAttributes attributes = FileAttributes.Normal)
     {
+        await (parent.Root?.BeginWriteStream() ?? Task.CompletedTask);
         return await Parent!.Store.GetWriterAsync(this);
     }
 
@@ -50,16 +51,14 @@ public class BlockFile(
     {
         Debug.Assert(streamEnds != ends, "Invalid delete -- perhaps from double closing the writing stream.");
         Delete(); // delete any prior stream data
-        ForceDirectoryRewrite();
         streamEnds = ends;
         Size = length;
+        parent?.Root?.TriggerRewrite();
+        parent?.Root?.EndWriteStream();
     }
 
-    private void ForceDirectoryRewrite()
-    {
-        if (Parent is not null)
-            Parent.RewriteNeeded = true;
-    }
+    /// <inheritdoc />
+    public void EndStreamRead() => parent?.Root?.EndReadStream();
 
     /// <inheritdoc />
     public byte FinalProgress => 255;

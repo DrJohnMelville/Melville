@@ -5,21 +5,26 @@ using Melville.INPC;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
-public interface IEndBlockWriteDataTarget
+public interface IEndBlockDataTarget
 {
     void EndStreamWrite(in StreamEnds ends, long length);
+    public void EndStreamRead();
 }
 
 [StaticSingleton]
-public partial class NullEndBlockWriteDataTarget : IEndBlockWriteDataTarget
+public partial class NullEndBlockDataTarget : IEndBlockDataTarget
 {
     /// <inheritdoc />
     public void EndStreamWrite(in StreamEnds ends, long length)
     {
     }
+
+    public void EndStreamRead()
+    {
+    }
 }
 
-public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockWriteDataTarget dataTarget)
+public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockDataTarget dataTarget)
     : BlockStream(DATA, firstBlock, 0)
 {
     public override bool CanWrite => true;

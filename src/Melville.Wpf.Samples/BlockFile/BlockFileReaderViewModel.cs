@@ -19,7 +19,7 @@ public partial class BlockFileReaderViewModel
     [AutoNotify] public partial uint NextBlock { get; private set; }
     [AutoNotify] public partial uint DisplayBlock { get; set; } //# = 0xFFFFFFFFu;
     [AutoNotify] public partial uint BlockNextField { get; set; }
-    [AutoNotify] public partial string Dump { get; set; }
+    [AutoNotify] public partial string Dump { get; set; } //# = "";
 
     public async Task LoadFile([FromServices]IOpenSaveFile dlg)
     {

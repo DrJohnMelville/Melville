@@ -1,6 +1,7 @@
 ﻿using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Pipelines;
@@ -15,30 +16,12 @@ public class BlockDirectory(BlockDirectory? parent, string name):
     BlockFileSystemObject(parent, name), IDirectory
 {
     public virtual BlockMultiStream Store => 
-        parent?.Store ?? throw new ArgumentNullException(nameof(parent));
+        Parent?.Store ?? throw new ArgumentNullException(nameof(Parent));
 
     private SortedDictionary<string, BlockDirectory> directories = new();
     private SortedDictionary<string, BlockFile> files = new();
 
-    public virtual bool RewriteNeeded
-    {
-        get => Parent?.RewriteNeeded ?? true;
-        set
-        {
-            if (Parent is not null)
-              Parent.RewriteNeeded = value;
-        }
-    }
-    public virtual bool FullRewriteNeeded
-    {
-        get => Parent?.FullRewriteNeeded ?? true;
-        set
-        {
-            if (Parent is not null)
-              Parent.FullRewriteNeeded = value;
-        }
-    }
-
+    public virtual BlockRootDirectory? Root => Parent?.Root;
 
     IDirectory IDirectory.SubDirectory(string name) => 
         SubDirectory(name);
@@ -60,8 +43,7 @@ public class BlockDirectory(BlockDirectory? parent, string name):
             return result;
         var newFile = new BlockFile(this, name);
         files.Add(name, newFile);
-        RewriteNeeded = true;
-        FullRewriteNeeded = true;
+        Root?.TriggerFullRewrite();
         return newFile;
     }
 
@@ -91,16 +73,10 @@ public class BlockDirectory(BlockDirectory? parent, string name):
     }
 
     /// <inheritdoc />
-    public IFile FileFromRawPath(string path)
-    {
-        return null;
-    }
+    public IFile FileFromRawPath(string path) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    public bool IsVolitleDirectory()
-    {
-        return false;
-    }
+    public bool IsVolitleDirectory() => false;
 
     /// <inheritdoc />
     public IDisposable? WriteToken() => new FakeToken();
@@ -125,14 +101,16 @@ public class BlockDirectory(BlockDirectory? parent, string name):
 
     public async ValueTask WriteToAsync(IBlockDirectoryTarget target)
     {
-        target.SendFolderCount((uint)directories.Count);
-        foreach (var dir in directories)
+        var dirToWrite = directories.ToArray();
+        target.SendFolderCount((uint)dirToWrite.Length);
+        foreach (var dir in dirToWrite)
         {
             target.SendFolderName(dir.Key);
             await dir.Value.WriteToAsync(target);
         }
-        target.SendFileCount((uint)files.Count);
-        foreach (var file in files)
+        var filesToWrite = files.ToArray();
+        target.SendFileCount((uint)filesToWrite.Length);
+        foreach (var file in filesToWrite)
         {
             file.Value.WriteFileTo(target);
         }
@@ -161,33 +139,14 @@ public class BlockDirectory(BlockDirectory? parent, string name):
             await subdir.ReadFromStreams(nameReader, offsetReader);
         }
     }
-}
 
-public readonly struct DictonaryCleaner<TKey, TItem>(
-    IDictionary<TKey, TItem> dicctionary,
-    Func<KeyValuePair<TKey, TItem>, bool> shouldCull)
-{
-    public void DoCull()
+    protected void CullDeletedFiles()
     {
-        var iter = dicctionary.GetEnumerator();
-        while (iter.MoveNext())
+        foreach (var dir in directories.Values)
         {
-            if (!shouldCull(iter.Current)) continue;
-            RecursiveCull(iter);
-            return;
+            dir.CullDeletedFiles();
         }
-    }
 
-    private void RecursiveCull(IEnumerator<KeyValuePair<TKey, TItem>> iter)
-    {
-#warning -- check some really big deletes to make sure they do not blow the stack
-        var key = iter.Current.Key;
-        while (iter.MoveNext())
-        {
-            if (!shouldCull(iter.Current)) continue;
-            RecursiveCull(iter);
-            break;
-        }
-        dicctionary.Remove(key);
+        new DictionaryCleaner<string, BlockFile>(files, f=>!f.Value.Exists()).DoCull();
     }
 }

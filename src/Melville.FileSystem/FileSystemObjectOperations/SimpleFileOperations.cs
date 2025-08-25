@@ -32,7 +32,7 @@ public static class SimpleFileOperations
 
             await CopyWithProgressAsync(src, dest, progress, token, sourceLength);
         }
-        catch (NotSupportedException e)
+        catch (NotSupportedException)
         {
             await CopyWithProgressAsync(src, dest, progress, token, 10);
         }
