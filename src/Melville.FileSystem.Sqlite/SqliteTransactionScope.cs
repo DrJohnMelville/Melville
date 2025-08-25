@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Data.SQLite;
 using Dapper;
 using Melville.SimpleDb;
 
@@ -39,7 +38,7 @@ public readonly struct SqliteTransactionScope
     public IEnumerable<T> Query<T>(string sql, object? param = null) =>
         Target().Query<T>(sql, param, transaction);
 
-    public SQLiteBlobWrapper BlobWrapper(long blockId, bool readOnly) =>
+    public Stream BlobWrapper(long blockId, bool readOnly) =>
         connection.BlobWrapper("Blocks", "Bytes", blockId, readOnly);
 
     public void Commit() => transaction?.Commit();

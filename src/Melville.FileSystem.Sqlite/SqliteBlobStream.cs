@@ -1,7 +1,4 @@
-﻿using System.Data.SQLite;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using Melville.SimpleDb;
+﻿using System.Diagnostics;
 
 namespace Melville.FileSystem.Sqlite;
 
@@ -9,7 +6,7 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
 {
     protected long currentBlock;
     protected long positionInBlock;
-    protected SQLiteBlobWrapper blob;
+    protected Stream blob;
     protected long blobIsForBlock = -1;
     protected long blockSize = blockSize;
 
@@ -58,10 +55,14 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
 
     public void EnsureHasBlob()
     {
-        if (blob.IsValid && blobIsForBlock == currentBlock) return;
-        blob = GetNewBlob();
-        blobIsForBlock = currentBlock;
+        if (blob is null || blobIsForBlock != currentBlock)
+        {
+            blob?.Dispose();
+            blob = GetNewBlob();
+            blobIsForBlock = currentBlock;
+        }
+        if (positionInBlock != blob.Position) blob.Seek(positionInBlock, SeekOrigin.Begin);
     }
     
-    protected abstract SQLiteBlobWrapper GetNewBlob();
+    protected abstract Stream GetNewBlob();
  }

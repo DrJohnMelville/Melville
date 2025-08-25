@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Data;
-using System.Data.SQLite;
+using System.IO;
 using Melville.SimpleDb.LifeCycles;
+using Microsoft.Data.Sqlite;
 
 namespace Melville.SimpleDb;
 
@@ -35,9 +36,9 @@ internal class SqliteDiskFactory : IRepoConnectionFactory
     public IRepoDbConnection CreateReadOnly() => 
         new FileSqliteRepo(this, true);
 
-    private SQLiteConnection CreateDbConnection(bool isReadOnly)
+    private SqliteConnection CreateDbConnection(bool isReadOnly)
     {
-        var ret = new SQLiteConnection(s + AddReadOnly(isReadOnly), true);
+        var ret = new SqliteConnection(s + AddReadOnly(isReadOnly));
         ret.Open();
         lifecycle.ConnectionCreated(ret);
         return ret;
@@ -47,7 +48,7 @@ internal class SqliteDiskFactory : IRepoConnectionFactory
 
     private sealed class FileSqliteRepo(SqliteDiskFactory factory, bool isReadOnly): IRepoDbConnection
     {
-        private SQLiteConnection? connection;
+        private SqliteConnection? connection;
         /// <inheritdoc />
         public void Dispose()
         {
@@ -59,12 +60,12 @@ internal class SqliteDiskFactory : IRepoConnectionFactory
         }
 
         /// <inheritdoc />
-        private SQLiteConnection GetConnection() => connection ??= factory.CreateDbConnection(isReadOnly);
+        private SqliteConnection GetConnection() => connection ??= factory.CreateDbConnection(isReadOnly);
 
         IDbConnection IRepoDbConnection.GetConnection() => GetConnection();
 
         /// <inheritdoc />
-        public SQLiteBlobWrapper BlobWrapper(string table, string column, long key, bool readOnly) => 
-            new(SQLiteBlob.Create(GetConnection(), "main", table, column, key, readOnly));
+        public Stream BlobWrapper(string table, string column, long key, bool readOnly) => 
+            new SqliteBlob(GetConnection(), table, column, key, readOnly);
     }
 }

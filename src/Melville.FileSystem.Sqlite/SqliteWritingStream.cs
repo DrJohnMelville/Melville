@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Melville.SimpleDb;
 
 
@@ -51,7 +50,7 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
         {
             EnsureHasBlob();
             var destSize = (int)Math.Min(blockSize - positionInBlock, buffer.Length);
-            blob.Write(buffer[..destSize], (int)positionInBlock);
+            blob.Write(buffer[..destSize]);
             buffer = buffer[destSize..];
             IncrementPosition(destSize);
         }
@@ -76,7 +75,7 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
 
     private void CloseCurrentBlob()
     {
-        blob.Dispose();
+        blob?.Dispose();
         blob = default;
     }
 
@@ -96,6 +95,6 @@ public class SqliteWritingStream(SqliteFileStore store, long objectId, long bloc
     protected override void JumpTo(long block, long offset) => throw new NotSupportedException();
 
     /// <inheritdoc />
-    protected override SQLiteBlobWrapper GetNewBlob() => 
-        store.GetBlobForWriting(objectId, blockSize, currentBlock, blob);
+    protected override Stream GetNewBlob() => 
+        store.GetBlobForWriting(objectId, blockSize, currentBlock);
 }

@@ -1,5 +1,4 @@
-﻿using System.Data.SQLite;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Melville.SimpleDb;
 
@@ -32,7 +31,7 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
         while (InnerReadLength(buffer.Length - outerReadSize) is var innerReadSize and > 0)
         {
             EnsureHasBlob();
-            blob.Read(buffer.Slice(outerReadSize, innerReadSize), (int)positionInBlock);
+            blob.Read(buffer.Slice(outerReadSize, innerReadSize));
             IncrementPosition(innerReadSize);
             outerReadSize += innerReadSize;
         }
@@ -84,6 +83,6 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
         (currentBlock, positionInBlock) = (block, offset);
 
     /// <inheritdoc />
-    protected override SQLiteBlobWrapper GetNewBlob() =>
-        store.GetBlobForReading(objectId, currentBlock, blob);
+    protected override Stream GetNewBlob() =>
+        store.GetBlobForReading(objectId, currentBlock);
 }
