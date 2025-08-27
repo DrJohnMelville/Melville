@@ -54,10 +54,8 @@ public class BlockDirectoryWriterTest
 
     private async Task CreateFile(IDirectory directory, string name)
     {
-        await using (var f = await directory.File(name).CreateWrite())
-        {
-            await f.WriteAsync([0x42],0,1);
-        }
+        await using var f = await directory.File(name).CreateWrite();
+        await f.WriteAsync([0x42],0,1);
     }
 
     [Fact]

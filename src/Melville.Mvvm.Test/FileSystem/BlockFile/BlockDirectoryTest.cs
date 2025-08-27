@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Melville.FileSystem;
@@ -7,6 +8,7 @@ using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using Melville.FileSystem.BlockFile.ByteSinks;
 using Melville.FileSystem.BlockFile.FileSystemObjects;
 using Melville.Hacks.Reflection;
+using Microsoft.VisualBasic;
 using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem.BlockFile;
@@ -185,6 +187,61 @@ public class BlockDirectoryTest
             var buffer = new byte[100_000];
             await reader.ReadAtLeastAsync(buffer, 100_000, false);
             buffer.Should().BeEquivalentTo(new byte[100_000].Select(_ => (byte)65));
+        }
+    }
+
+    [Fact]
+    public async Task PreCreateFiles()
+    {
+        string fName =
+            @"C:\Users\jom252\OneDrive - Medical University of South Carolina\Documents\Scratch\photodoc bugs\overlap.Dat";
+        File.Delete(fName);
+        var dir = new BlockRootDirectory(
+            new BlockMultiStream(new MemoryBytesSink()));
+
+        var src = new CancellationTokenSource();
+        var files = Enumerable.Range(0, 10)
+            .Select(i => dir.File(Path.GetFileName($"{i}.dat"))).ToArray();
+        var background = BackgroundSave(dir, src.Token);
+        foreach (var file in files)
+        {
+            await using var writer = await file.CreateWrite();
+            await Task.Delay(200);
+        }
+        dir.AllFiles().Select(i=>i.Name).Should().BeEquivalentTo(Enumerable.Range(0,10).Select(i=>$"{i}.dat"));
+        await src.CancelAsync();
+        await background;
+    }
+
+    [Fact]
+    public async Task OverlapSaveAndWrite()
+    {
+        string fName =
+            @"C:\Users\jom252\OneDrive - Medical University of South Carolina\Documents\Scratch\photodoc bugs\overlap.Dat";
+        File.Delete(fName);
+        var dir = new BlockRootDirectory(
+            new BlockMultiStream(new MemoryBytesSink()));
+
+        var src = new CancellationTokenSource();
+        var background = BackgroundSave(dir, src.Token);
+        for (int i = 0; i < 10; i++)
+        {
+            var file = dir.File(Path.GetFileName($"{i}.dat"));
+            await using var writer = await file.CreateWrite();
+            await Task.Delay(200);
+        }
+        dir.AllFiles().Select(i=>i.Name).Should().BeEquivalentTo(Enumerable.Range(0,10).Select(i=>$"{i}.dat"));
+        await src.CancelAsync();
+        await background;
+    }
+
+    private async Task BackgroundSave(BlockRootDirectory dir, CancellationToken srcToken)
+    {
+        while (!srcToken.IsCancellationRequested)
+        {
+            await Task.Delay(200);
+            await dir.Commit();
+            return;
         }
     }
 }

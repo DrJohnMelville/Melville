@@ -190,35 +190,23 @@ public class BlockMultiStream(
         // this method is called inside the free block mutex
         while (chainsPendingDelete.TryDequeue(out var chain))
         {
-#if DEBUG
-            await VerifyStreamIntactAsync(chain);
-#endif
             await WriteNextBlockLinkAsync(chain.End, freeListHead);
             freeListHead = chain.Start;
         }
     }
-
-#if DEBUG
-    private async Task VerifyStreamIntactAsync(StreamEnds chain)
-    {
-        // Debug.Assert(chain.IsValid());
-        // var currentBlock = chain.Start;
-        // for (int i = 0; i < 10_000; i++)
-        // {
-        //     if (currentBlock == chain.End) return;
-        //     Debug.Assert(currentBlock != InvalidBlock);
-        //     Debug.Assert(currentBlock != freeListHead);
-        //     Debug.Assert(currentBlock != nextBlock);
-        //     currentBlock = await NextBlockForAsync(currentBlock);
-        // }
-        //
-        // throw new InvalidOperationException("Could not find end after 10,000 blocks.");
-    }
-#endif
 }
 
 public record struct StreamEnds(uint Start, uint End)
 {
     public static StreamEnds Invalid => new(0xFFFFFFFF, 0xFFFFFFFF);
     public bool IsValid() => Start != 0xFFFFFFFF && End != 0xFFFFFFFF;
+}
+
+public record struct StreamDescription(uint Start, uint End, long Length)
+{
+    public StreamEnds StreamEnds => new(Start, End);
+
+    public static StreamDescription Invalid => new(0xFFFFFFFF, 0xFFFFFFFF, 0);
+
+    public bool Exists() => StreamEnds.IsValid();
 }

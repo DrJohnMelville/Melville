@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime;
 
 namespace Melville.FileSystem.Sqlite;
 
@@ -6,7 +8,7 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
 {
     protected long currentBlock;
     protected long positionInBlock;
-    protected Stream blob;
+    protected Stream? blob;
     protected long blobIsForBlock = -1;
     protected long blockSize = blockSize;
 
@@ -53,6 +55,7 @@ public abstract class SqliteBlobStream(long blockSize) : Stream
         }
     }
 
+    [MemberNotNull(nameof(blob))]
     public void EnsureHasBlob()
     {
         if (blob is null || blobIsForBlock != currentBlock)

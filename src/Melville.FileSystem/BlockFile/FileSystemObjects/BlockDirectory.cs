@@ -1,5 +1,6 @@
 ﻿using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -7,7 +8,10 @@ using System.IO;
 using System.IO.Pipelines;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Melville.FileSystem.BlockFile.FileSystemObjects;
@@ -18,47 +22,59 @@ public class BlockDirectory(BlockDirectory? parent, string name):
     public virtual BlockMultiStream Store => 
         Parent?.Store ?? throw new ArgumentNullException(nameof(Parent));
 
-    private SortedDictionary<string, BlockDirectory> directories = new();
-    private SortedDictionary<string, BlockFile> files = new();
+    private ConcurrentDictionary<string, BlockDirectory> directories = new();
+    private ConcurrentDictionary<string, StreamDescription> files = new();
+
+    internal bool TryGetFile(string key, out StreamDescription value) => 
+        files.TryGetValue(key, out value);
+
+    internal void CreateOrUpdateFile(string key, StreamDescription file)
+    {
+        var full = false;
+        files.AddOrUpdate(key, _ =>
+        {
+            full = true;
+            return file;
+        }, (_, old) =>
+        {
+            Debug.Assert(file.StreamEnds != old.StreamEnds);
+            Store.DeleteStream(old.StreamEnds); // deletestream will only delete valid streams
+            return file;
+        });
+        // we do this after the AddOrUpdate to make sure the file exists that needs to be rewritten
+        if (full)
+            Root?.TriggerFullRewrite();
+        else
+            Root?.TriggerRewrite();
+    }
 
     public virtual BlockRootDirectory? Root => Parent?.Root;
 
     IDirectory IDirectory.SubDirectory(string name) => 
         SubDirectory(name);
 
-    public BlockDirectory SubDirectory(string name)
-    {  
-        if (directories.TryGetValue(name, out var result))
-            return result;
-        var newDir = new BlockDirectory(this, name);
-        directories.Add(name, newDir);
-        return newDir;
-    }
+    public BlockDirectory SubDirectory(string name) => 
+        directories.GetOrAdd(name, i => new BlockDirectory(this, i));
 
     /// <inheritdoc />
     IFile IDirectory.File(string name) => File(name);
     public BlockFile File(string name)
     {
-        if (files.TryGetValue(name, out var result))
-            return result;
-        var newFile = new BlockFile(this, name);
-        files.Add(name, newFile);
-        Root?.TriggerFullRewrite();
-        return newFile;
+        var size = TryGetFile(name, out  var desc) ? desc.Length : 0;
+        return new BlockFile(this, name, size);
     }
 
     /// <inheritdoc />
-    public IEnumerable<IFile> AllFiles()
-    {
-        return files.Values
-            .Where(i=>i.Exists());
-    }
+    public IEnumerable<IFile> AllFiles() => 
+        files.Select(i => new BlockFile(this, i.Key, i.Value.Length));
 
     /// <inheritdoc />
     public IEnumerable<IFile> AllFiles(string glob)
     {
         var regex = new Regex($"^{RegexExtensions.GlobToRegex(glob)}$");
-        return AllFiles().Where(i => regex.IsMatch(i.Name));
+        return files
+            .Where(i=>regex.IsMatch(i.Key))
+            .Select(i => new BlockFile(this, i.Key, i.Value.Length));
     }
 
     /// <inheritdoc />
@@ -101,18 +117,20 @@ public class BlockDirectory(BlockDirectory? parent, string name):
 
     public async ValueTask WriteToAsync(IBlockDirectoryTarget target)
     {
-        var dirToWrite = directories.ToArray();
+        var dirToWrite = directories
+            .Where(i=>i.Value.HasContent())
+            .OrderBy(i=>i.Key).ToArray();
         target.SendFolderCount((uint)dirToWrite.Length);
         foreach (var dir in dirToWrite)
         {
             target.SendFolderName(dir.Key);
             await dir.Value.WriteToAsync(target);
         }
-        var filesToWrite = files.ToArray();
-        target.SendFileCount((uint)filesToWrite.Length);
+        var filesToWrite = files.OrderBy(i=>i.Key).ToArray();
+        target.SendFileCount((uint)files.Count);
         foreach (var file in filesToWrite)
         {
-            file.Value.WriteFileTo(target);
+            target.SendFileData(file.Key, file.Value.StreamEnds, file.Value.Length);
         }
     }
 
@@ -125,10 +143,24 @@ public class BlockDirectory(BlockDirectory? parent, string name):
             for (int i = 0; i < fileCount; i++)
             {
                 var name = await nameReader.ReadEncodedString();
-                var file = File(name);
-                await file.ReadOffsets(offsetReader);
+                var description = await ReadOffsets(offsetReader);
+                CreateOrUpdateFile(name, description);
             }
     }
+
+    public async ValueTask<StreamDescription> ReadOffsets(PipeReader offsetReader)
+    {
+        var result = await offsetReader.ReadAtLeastAsync(16);
+        var span = result.Buffer.MinSpan(stackalloc byte[16]);
+
+        var uints = MemoryMarshal.Cast<byte, uint>(span);
+        var size = MemoryMarshal.Cast<byte, long>(span)[1];
+        
+        var ret = new StreamDescription(uints[0], uints[1], size);
+        offsetReader.AdvanceTo(result.Buffer.GetPosition(16));
+        return ret;
+    }
+
 
     private async ValueTask ReadDirectories(PipeReader nameReader, PipeReader offsetReader, uint folderCount)
     {
@@ -146,7 +178,9 @@ public class BlockDirectory(BlockDirectory? parent, string name):
         {
             dir.CullDeletedFiles();
         }
-
-        new DictionaryCleaner<string, BlockFile>(files, f=>!f.Value.Exists()).DoCull();
+        
+        new DictionaryCleaner<string, StreamDescription>(files, f=>!f.Value.Exists()).DoCull();
     }
+
+    private bool HasContent() => !files.IsEmpty || AllSubDirectories().Any(i=>HasContent());
 }

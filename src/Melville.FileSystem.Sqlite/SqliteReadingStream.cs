@@ -16,7 +16,7 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);
-        blob.Dispose();
+        blob?.Dispose();
         blob = default;
     }
 
@@ -31,7 +31,7 @@ public class SqliteReadingStream(SqliteFileStore store, long objectId, long bloc
         while (InnerReadLength(buffer.Length - outerReadSize) is var innerReadSize and > 0)
         {
             EnsureHasBlob();
-            blob.Read(buffer.Slice(outerReadSize, innerReadSize));
+            blob.ReadExactly(buffer.Slice(outerReadSize, innerReadSize));
             IncrementPosition(innerReadSize);
             outerReadSize += innerReadSize;
         }

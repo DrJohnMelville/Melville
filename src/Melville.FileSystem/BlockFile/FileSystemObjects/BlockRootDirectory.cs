@@ -111,6 +111,7 @@ public class BlockRootDirectory(BlockMultiStream store) :
         offsetsLocation = offsetStream.StreamEnds();
     }
 
+    [Conditional("DEBUG")]
     private void CheckForDeletedBlocks(BlockWritingStream nameStream, BlockWritingStream offsetStream)
     {
         store.AssertNotDeleted(offsetsLocation);
