@@ -10,11 +10,14 @@ namespace Melville.SimpleDb;
 public class RepoDbConfiguration
 {
     public string FolderPath { get; set; } = "";
+    public string Password { get; set; } = "";
 
     private static volatile int uniqueNum=1;
     public string ConnectionString => IsOnDiskDatabase() ? 
-        $"DataSource={FolderPath}" : 
+        $"DataSource={FolderPath}" + TryAddPassword() : 
         $"Data Source=file:mem{Interlocked.Increment(ref uniqueNum)}.db?mode=memory&cache=shared";
+
+    private string TryAddPassword() => Password.Length > 0 ? $";Password={Password}" : "";
 
     public bool IsOnDiskDatabase() => FolderPath.Length > 0;
 
