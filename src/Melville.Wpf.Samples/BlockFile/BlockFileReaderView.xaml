@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Melville.Wpf.Samples.BlockFile.BlockFileReaderView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Melville.Wpf.Samples.BlockFile"
+             xmlns:wpfHacks="clr-namespace:Melville.MVVM.Wpf.WpfHacks;assembly=Melville.MVVM.Wpf"
+             xmlns:eventBindings="clr-namespace:Melville.MVVM.Wpf.EventBindings;assembly=Melville.MVVM.Wpf"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0">Block Size</TextBlock>
+            <TextBlock Grid.Row="1">Free List Head</TextBlock>
+            <TextBlock Grid.Row="2">Root Dir Head</TextBlock>
+            <TextBlock Grid.Row="3">Next Block</TextBlock>
+            <TextBlock Grid.Row="4">Current Block</TextBlock>
+            <TextBlock Grid.Row="5">Current Block Next Field</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding BlockSize, Mode=OneWay}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding FreeHead, Mode=OneWay}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RootDir, Mode=OneWay}"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding NextBlock, Mode=OneWay}"/>
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{
+                Binding DisplayBlock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding BlockNextField}"/>
+            <ScrollViewer Grid.Row="6" Grid.ColumnSpan="2">
+                <TextBox IsReadOnly="True" Text="{Binding Dump}" FontFamily="Consolas"></TextBox>
+            </ScrollViewer>
+        </Grid>
+        <Button wpfHacks:VisibilityHack.CollapseUnlessNull="{Binding Stream}"
+                Click="{eventBindings:EventBinding LoadFile}">
+            Load File
+        </Button>
+    </Grid>
+</UserControl>

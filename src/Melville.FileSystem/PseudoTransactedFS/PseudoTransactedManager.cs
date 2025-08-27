@@ -53,7 +53,7 @@ public class TransactionStoreBase
   public Task<bool> RenewLease() => Task.FromResult(true);
 }
 
-public sealed class PseudoTransactedStore : TransactionStoreBase, ITransactableStore
+public sealed partial class PseudoTransactedStore : TransactionStoreBase, ITransactableStore
 {
 
   private bool isRepaired; // = false
@@ -73,8 +73,12 @@ public sealed class PseudoTransactedStore : TransactionStoreBase, ITransactableS
     return new TransactedDirectory(innerFileSystem);
   }
 
-  #region Repair any incomplete transaction state
-  public Task RepairIncompleteTransactions()
+    #region Repair any incomplete transaction state
+
+    [GeneratedRegex(@"^(.+)\\([^\\]+)\.(\d+)\.txn$")]
+    private static partial Regex UnpackTxnFileRegex();
+
+    public Task RepairIncompleteTransactions()
   {
     if (!innerFileSystem.Exists())
     {
@@ -83,15 +87,13 @@ public sealed class PseudoTransactedStore : TransactionStoreBase, ITransactableS
     }
     var list = new Dictionary<int, RepairTransaction>();
     var dirs = new[] {innerFileSystem}.SelectRecursive(i => i.AllSubDirectories());
-#warning  use a generated regex
-        var unpackTxnFile = new Regex(@"^(.+)\\([^\\]+)\.(\d+)\.txn$");
-    
+
     foreach (var directory in dirs)
     {
       var files = Enumerable.ToArray<IFile>(directory.AllFiles("*.txn"));
       foreach (var file in files)
       {
-        var fileStruct = unpackTxnFile.Match(file.Path);
+        var fileStruct = UnpackTxnFileRegex().Match(file.Path);
         Debug.Assert(fileStruct.Success);
         Debug.Assert(directory.Path.Equals(fileStruct.Groups[1].Value, StringComparison.Ordinal));
         var txn = GetRepairTransaction(int.Parse(fileStruct.Groups[3].Value), list);

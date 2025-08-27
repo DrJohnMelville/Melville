@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.IO.Pipelines;
-using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using Melville.FileSystem.PseudoTransactedFS;
+using Melville.Hacks;
 using Melville.INPC;
 
 namespace Melville.FileSystem.BlockFile.FileSystemObjects;
@@ -37,10 +37,38 @@ public class BlockRootDirectory(BlockMultiStream store) :
 
     private StreamEnds nameLocation = StreamEnds.Invalid;
     private StreamEnds offsetsLocation = StreamEnds.Invalid;
+    public override BlockRootDirectory? Root => this;
 
-    public override bool RewriteNeeded { get; set; } = true;
-    public override bool FullRewriteNeeded { get; set; } = true;
-    
+    private bool RewriteNeeded { get; set; } = true;
+    private bool FullRewriteNeeded { get; set; } = true;
+
+    #region  synchronization
+
+    private readonly SemaphoreSlim writeLock = new(1);
+
+    public Task BeginReadStream()
+    {
+        return Task.CompletedTask;
+    }
+    public Task BeginWriteStream()
+    {
+        return writeLock.WaitAsync();
+    }
+
+    public void EndReadStream()
+    {
+
+    }
+    public void EndWriteStream()
+    {
+        writeLock.Release();
+    }
+
+    public void TriggerRewrite() => RewriteNeeded = true;
+
+    public void TriggerFullRewrite() => FullRewriteNeeded = RewriteNeeded = true;
+    #endregion
+
     public ValueTask Commit()
     {
         var ret = (RewriteNeeded, FullRewriteNeeded) switch
@@ -62,14 +90,20 @@ public class BlockRootDirectory(BlockMultiStream store) :
 
     private async ValueTask WriteNamesAndOffsets()
     {
+        using var _ = await writeLock.WaitForHandleAsync();
+        CullDeletedFiles();
         await using var nameStream = await store.GetWriterAsync(
-            NullEndBlockWriteDataTarget.Instance);
+            NullEndBlockDataTarget.Instance);
         await using var offsetStream = await store.GetWriterAsync(
-            NullEndBlockWriteDataTarget.Instance);
+            NullEndBlockDataTarget.Instance);
+        CheckForDeletedBlocks(nameStream, offsetStream);
         var target = new NameAndOffsetWritingDirectoryTarget(
             nameStream, offsetStream, nameStream.FirstBlock);
+        CheckForDeletedBlocks(nameStream, offsetStream);
         await WriteToAsync(target);
+        CheckForDeletedBlocks(nameStream, offsetStream);
         await target.FlushAsync();
+        CheckForDeletedBlocks(nameStream, offsetStream);
         store.DeleteStream(nameLocation);
         store.DeleteStream(offsetsLocation);
         await store.WriteHeaderBlockAsync(offsetStream.FirstBlock);
@@ -77,10 +111,20 @@ public class BlockRootDirectory(BlockMultiStream store) :
         offsetsLocation = offsetStream.StreamEnds();
     }
 
+    private void CheckForDeletedBlocks(BlockWritingStream nameStream, BlockWritingStream offsetStream)
+    {
+        store.AssertNotDeleted(offsetsLocation);
+        store.AssertNotDeleted(nameLocation);
+        store.AssertNotDeleted(nameStream.CurrentExtent());
+        store.AssertNotDeleted(offsetStream.CurrentExtent());
+    }
+
     private async ValueTask WriteOffsetsOnly()
     {
+        using var _ = await writeLock.WaitForHandleAsync();
         await using var offsetStream = await store.GetWriterAsync(
-            NullEndBlockWriteDataTarget.Instance);
+            NullEndBlockDataTarget.Instance);
+        Debug.Assert(nameLocation.Start != offsetStream.StreamEnds().Start);
         var target = new OffsetWritingDirectoryTarget(offsetStream, nameLocation.Start);
         await WriteToAsync(target);
         await target.FlushAsync();
@@ -91,12 +135,14 @@ public class BlockRootDirectory(BlockMultiStream store) :
 
     public async ValueTask ReadFromStore()
     {
+        using var _ = await writeLock.WaitForHandleAsync();
         if (store.RootBlock == BlockMultiStream.InvalidBlock)
             return; // Nothing to read
-        await using var offsetReader = store.GetReader(store.RootBlock, long.MaxValue);
+        await using var offsetReader = store.GetReader(store.RootBlock, long.MaxValue, NullEndBlockDataTarget.Instance);
         var offsetPipe = PipeReader.Create(offsetReader);
         var nameOffset = await offsetPipe.ReadUintBySize<uint>(4);
-        await using var nameReader = store.GetReader(nameOffset, long.MaxValue);
+        Debug.Assert(store.RootBlock != nameOffset);
+        await using var nameReader = store.GetReader(nameOffset, long.MaxValue, NullEndBlockDataTarget.Instance);
         var namePipe = PipeReader.Create(nameReader);
         await ReadFromStreams(namePipe, offsetPipe);
 
@@ -118,3 +164,4 @@ public class BlockRootDirectory(BlockMultiStream store) :
     /// <inheritdoc />
     public void Dispose() => store.Dispose();
 }
+

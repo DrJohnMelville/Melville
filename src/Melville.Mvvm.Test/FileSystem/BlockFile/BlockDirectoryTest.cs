@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Melville.FileSystem;
@@ -166,5 +167,24 @@ public class BlockDirectoryTest
         var File3 = root.File("File3.txt");
         await (await File3.CreateWrite()).DisposeAsync();
         await RoundTripDirectory();
+    }
+    [Fact] public async Task WriteLongFileInSingleByes()
+    {
+        var file1 = root.File("File1.txt");
+        await using (var writer = await file1.CreateWrite())
+        {
+            var buffer = new byte[] { 65,  65 };
+            for (int i = 0; i < 50_000; i++)
+            {
+                writer.Write(buffer, 0, 2);
+            }
+        }
+
+        await using (var reader = await file1.OpenRead())
+        {
+            var buffer = new byte[100_000];
+            await reader.ReadAtLeastAsync(buffer, 100_000, false);
+            buffer.Should().BeEquivalentTo(new byte[100_000].Select(_ => (byte)65));
+        }
     }
 }

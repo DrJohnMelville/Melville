@@ -90,7 +90,7 @@ public class IocContainer: IBindableIocService, IIocService
 
     #region Get
         
-    public object? Get(IBindingRequest bindingRequest)
+    public virtual object? Get(IBindingRequest bindingRequest)
     {
         Debugger.TypeRequested(bindingRequest);
         var activator = FindActivationStrategy(bindingRequest);
@@ -111,7 +111,7 @@ public class IocContainer: IBindableIocService, IIocService
 
     #region CanGet
 
-    public bool CanGet(IBindingRequest request)
+    public virtual bool CanGet(IBindingRequest request)
     {
         try
         {

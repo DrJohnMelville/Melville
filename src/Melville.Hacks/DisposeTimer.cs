@@ -18,7 +18,7 @@ public class DisposeTimer: IDisposable
 
     private static void CheckDispose(object? state)
     {
-        ((DisposeTimer)state).CheckDispose();
+        (state as DisposeTimer)?.CheckDispose();
     }
 
     private void CheckDispose()

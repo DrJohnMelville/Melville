@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Buffers;
 
-namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
+namespace Melville.Hacks;
 
-#warning -- move this to Melville.Hacks
 public static class ArrayRenter
 {
     public static RentedArray<T> RentHandle<T>(this ArrayPool<T> pool, int size)

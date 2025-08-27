@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using FluentAssertions;
 using Melville.FileSystem.BlockFile.BlockMultiStreams;
 using Melville.FileSystem.BlockFile.ByteSinks;
+using Melville.FileSystem.BlockFile.FileSystemObjects;
 using Melville.Hacks.Reflection;
 using Moq;
 using Xunit;
@@ -41,7 +42,7 @@ public class BlockMultiStreamTest
     {
         var sut = await SingleBlockStream("08000000 0A000000 FFFFFFFF 00000000 | 00010203");
         var buffer = new byte[4];
-        await using var reader = sut.GetReader(0, streamLength);
+        await using var reader = sut.GetReader(0, streamLength, NullEndBlockDataTarget.Instance);
         reader.CanRead.Should().BeTrue();
         reader.CanSeek.Should().BeTrue();
         reader.CanWrite.Should().BeFalse();
@@ -63,12 +64,12 @@ public class BlockMultiStreamTest
     public async Task ReadTwoBlockStreamAsync()
     {
         var sut = await SingleBlockStream("""
-        08000000 00000000 FFFFFFFF 00000000
+        08000000 FFFFFFFF 00000000 A0000000
         00010203 01000000
         04050607 00000000
         """);
         var buffer = new byte[6];
-        await using var reader = sut.GetReader(0, 6);
+        await using var reader = sut.GetReader(0, 6, NullEndBlockDataTarget.Instance);
         await reader.ReadExactlyAsync(buffer);
         buffer.Should().BeEquivalentTo([0, 1, 2, 3, 4, 5]);
     }
@@ -76,13 +77,13 @@ public class BlockMultiStreamTest
     public async Task ReadInvertedBlockStreamAsync()
     {
         var sut = await SingleBlockStream("""
-        08000000 00000000 FFFFFFFF 00000000
+        08000000 FFFFFFFF 00000000 A0000000
         04050607 FFFFFFFF
         00010203 00000000
         
         """);
         var buffer = new byte[6];
-        await using var reader = sut.GetReader(1, 6);
+        await using var reader = sut.GetReader(1, 6, NullEndBlockDataTarget.Instance);
         await reader.ReadExactlyAsync(buffer);
         buffer.Should().BeEquivalentTo([0, 1, 2, 3, 4, 5]);
     }
@@ -91,12 +92,12 @@ public class BlockMultiStreamTest
     public async Task SeekWithinBlock()
     {
         var sut = await SingleBlockStream("""
-            08000000 00000000 FFFFFFFF 00000000
+            08000000 FFFFFFFF 00000000 A0000000
             04050607 FFFFFFFF
             00010203 00000000
 
             """);
-        await using var reader = sut.GetReader(1, 6);
+        await using var reader = sut.GetReader(1, 6, NullEndBlockDataTarget.Instance);
         reader.CanSeek.Should().BeTrue();
         reader.Seek(3, SeekOrigin.Begin);
         var buffer = new byte[2];
@@ -107,12 +108,12 @@ public class BlockMultiStreamTest
     public async Task SeekForward()
     {
         var sut = await SingleBlockStream("""
-            08000000 00000000 FFFFFFFF 00000000
+            08000000 FFFFFFFF 00000000 A0000000
             04050607 FFFFFFFF
             00010203 00000000
 
             """);
-        await using var reader = sut.GetReader(1, 6);
+        await using var reader = sut.GetReader(1, 6, NullEndBlockDataTarget.Instance);
         reader.CanSeek.Should().BeTrue();
         reader.Seek(5, SeekOrigin.Begin);
         var buffer = new byte[2];
@@ -124,12 +125,12 @@ public class BlockMultiStreamTest
     public async Task SeekBack()
     {
         var sut = await SingleBlockStream("""
-            08000000 00000000 FFFFFFFF 00000000
+            08000000 FFFFFFFF 00000000 A0000000
             04050607 FFFFFFFF
             00010203 00000000
 
             """);
-        await using var reader = sut.GetReader(1, 6);
+        await using var reader = sut.GetReader(1, 6, NullEndBlockDataTarget.Instance);
         reader.CanSeek.Should().BeTrue();
         reader.Seek(5, SeekOrigin.Begin);
         reader.Seek(-2, SeekOrigin.Current);
@@ -143,7 +144,7 @@ public class BlockMultiStreamTest
     {
         var bytes = new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8);
-        var target = new Mock<IEndBlockWriteDataTarget>();
+        var target = new Mock<IEndBlockDataTarget>();
         var writer = await sut.GetWriterAsync(target.Object);
         await writer.WriteAsync(data1);
         await writer.DisposeAsync();
@@ -157,7 +158,7 @@ public class BlockMultiStreamTest
     {
         var bytes = new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8);
-        var target = new Mock<IEndBlockWriteDataTarget>();
+        var target = new Mock<IEndBlockDataTarget>();
         var writer = await sut.GetWriterAsync(target.Object);
         writer.Write(data1, 0, data1.Length);
         await writer.DisposeAsync();
@@ -180,14 +181,14 @@ public class BlockMultiStreamTest
 
     private static async Task VerifyStream(BlockMultiStream sut, uint firstBlock, byte[] data)
     {
-        var reader = sut.GetReader(firstBlock, data.Length);
+        var reader = sut.GetReader(firstBlock, data.Length, NullEndBlockDataTarget.Instance);
         var readData = new byte[data.Length];
         await reader.ReadExactlyAsync(readData);
         readData.Should().BeEquivalentTo(data);
     }
     private static void VerifyStreamSync(BlockMultiStream sut, uint firstBlock, byte[] data)
     {
-        var reader = sut.GetReader(firstBlock, data.Length);
+        var reader = sut.GetReader(firstBlock, data.Length, NullEndBlockDataTarget.Instance);
         var readData = new byte[data.Length];
         reader.ReadExactly(readData, 0, readData.Length);
         readData.Should().BeEquivalentTo(data);
@@ -198,8 +199,8 @@ public class BlockMultiStreamTest
     {
         var bytes = store ?? new MemoryBytesSink([]);
         var sut = new BlockMultiStream(bytes, 8);
-        var writer1 = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>());
-        var writer2 = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>());
+        var writer1 = await sut.GetWriterAsync(Mock.Of<IEndBlockDataTarget>());
+        var writer2 = await sut.GetWriterAsync(Mock.Of<IEndBlockDataTarget>());
         for (int i = 0; i < BlockMultiStreamTest.data1.Length; i++)
         {
             await writer1.WriteAsync(source1.AsMemory(i, 1));
@@ -250,11 +251,60 @@ public class BlockMultiStreamTest
         var data = sink.Data.AsSpan().ToArray();
         sut.DeleteStream(new StreamEnds(1, 5));
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
-        using (var writer = await sut.GetWriterAsync(Mock.Of<IEndBlockWriteDataTarget>()))
+        using (var writer = await sut.GetWriterAsync(Mock.Of<IEndBlockDataTarget>()))
         {
             await writer.WriteAsync(data2);
         }
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         sink.Data.Take(data.Length).Should().BeEquivalentTo(data);
+    }
+
+
+    //
+    // [Fact]
+    // public async Task ExposeDirBug()
+    // {
+    //     var dir = CreateDif();
+    //     await WriteManyFiles(dir);
+    //
+    //     await dir.Commit();
+    //     dir.Dispose();
+    //
+    //     dir = CreateDif();
+    //
+    //     foreach (var f in dir.SubDirectory("SubDir").AllFiles().ToArray())
+    //     {
+    //         f.Delete();
+    //     }
+    //
+    //     await dir.Commit();
+    //     dir.Dispose();
+    //
+    //     dir = CreateDif();
+    //     await WriteManyFiles(dir);
+    // }
+
+    private static async Task WriteManyFiles(BlockRootDirectory dir)
+    {
+        var subDir = dir.SubDirectory("SubDir");
+        int i = 0;
+        var names = Directory.EnumerateFiles(
+            @"C:\Users\jom252\OneDrive - Medical University of South Carolina\Documents\Writing\Photography and exam chapter for starling");
+        foreach (var enumerateFile in names)
+        {
+            var f = subDir.File("File{i++}.txt");
+            await using var writer = await f.CreateWrite();
+            await using var src = File.OpenRead(enumerateFile);
+            await src.CopyToAsync(writer);
+        }
+    }
+
+    private static BlockRootDirectory CreateDif()
+    {
+        var sink = new FileByteSink(
+            @"C:\Users\jom252\OneDrive - Medical University of South Carolina\Documents\Scratch\photodoc bugs\FBSTest.db");
+        var bms = new BlockMultiStream(sink);
+        var dir = new BlockRootDirectory(bms);
+        return dir;
     }
 }

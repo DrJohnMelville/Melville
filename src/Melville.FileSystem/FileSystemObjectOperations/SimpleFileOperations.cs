@@ -25,13 +25,21 @@ public static class SimpleFileOperations
     {
         await using var src = await source.OpenRead();
         await using var dest = await destination.CreateWrite(attributes);
-        if (src.Length > 0) dest.SetLength(src.Length);
+        try
+        {
+            var sourceLength = src.Length;
+            if (sourceLength > 0) dest.SetLength(sourceLength);
 
-        await CopyWithProgressAsync(src, dest, progress, token);
+            await CopyWithProgressAsync(src, dest, progress, token, sourceLength);
+        }
+        catch (NotSupportedException)
+        {
+            await CopyWithProgressAsync(src, dest, progress, token, 10);
+        }
     }
 
     private static async Task CopyWithProgressAsync(Stream src, Stream dest, CopyProgressRoutine progress,
-        CancellationToken token)
+        CancellationToken token, long sourceLength)
     {
         var readingBuffer = ArrayPool<byte>.Shared.Rent(81920);
         var writingBuffer= ArrayPool<byte>.Shared.Rent(81920);
@@ -51,8 +59,8 @@ public static class SimpleFileOperations
                 bytesToWrite = bytesRead;
                 (readingBuffer, writingBuffer) = (writingBuffer, readingBuffer);
 
-                var progCall = progress(src.Length, totalBytesRead,
-                    src.Length, totalBytesRead, 1, CopyProgressCallbackReason.CALLBACK_CHUNK_FINISHED,
+                var progCall = progress(sourceLength, totalBytesRead,
+                    sourceLength, totalBytesRead, 1, CopyProgressCallbackReason.CALLBACK_CHUNK_FINISHED,
                     IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
                 switch (progCall)
                 {

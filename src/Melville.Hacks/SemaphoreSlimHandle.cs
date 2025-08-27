@@ -2,9 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
+namespace Melville.Hacks;
 
-#warning -- move this to melville.hack
 public static class SemaphoreSlimHandle
 {
     public static async ValueTask<SemaphoreReleaser> WaitForHandleAsync(this SemaphoreSlim semaphore)

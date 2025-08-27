@@ -72,7 +72,7 @@ public abstract class BlockStream(BlockMultiStream data, uint firstBlock, long l
 
     private void SeekForwardTo(long position)
     {
-        while (position >= PriorLength + data.BlockDataSize) AdvanceBlock();
+        while (position >= PriorLength + Data.BlockDataSize) AdvanceBlock();
         Position = position;
     }
 
