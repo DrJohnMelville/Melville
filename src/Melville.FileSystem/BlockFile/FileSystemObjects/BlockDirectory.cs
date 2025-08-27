@@ -37,8 +37,8 @@ public class BlockDirectory(BlockDirectory? parent, string name):
             return file;
         }, (_, old) =>
         {
-            Debug.Assert(file.StreamEnds != old.StreamEnds);
-            Store.DeleteStream(old.StreamEnds); // deletestream will only delete valid streams
+            if (file.StreamEnds != old.StreamEnds) 
+                Store.DeleteStream(old.StreamEnds); // deletestream will only delete valid streams
             return file;
         });
         // we do this after the AddOrUpdate to make sure the file exists that needs to be rewritten
@@ -66,13 +66,18 @@ public class BlockDirectory(BlockDirectory? parent, string name):
 
     /// <inheritdoc />
     public IEnumerable<IFile> AllFiles() => 
-        files.Select(i => new BlockFile(this, i.Key, i.Value.Length));
+        FilesThatExist().Select(i => new BlockFile(this, i.Key, i.Value.Length));
+
+    private IEnumerable<KeyValuePair<string, StreamDescription>> FilesThatExist()
+    {
+        return files.Where(i=>i.Value.Exists());
+    }
 
     /// <inheritdoc />
     public IEnumerable<IFile> AllFiles(string glob)
     {
         var regex = new Regex($"^{RegexExtensions.GlobToRegex(glob)}$");
-        return files
+        return FilesThatExist()
             .Where(i=>regex.IsMatch(i.Key))
             .Select(i => new BlockFile(this, i.Key, i.Value.Length));
     }
