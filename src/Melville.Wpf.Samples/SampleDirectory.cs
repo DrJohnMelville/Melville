@@ -1,5 +1,7 @@
 ﻿using Melville.Wpf.Samples.ApplicationBinding;
 using Melville.Wpf.Samples.ApplicationBinding.ClipboardMonitor;
+using Melville.Wpf.Samples.BlockFile;
+using Melville.Wpf.Samples.BlockFileCacne;
 using Melville.Wpf.Samples.CalendarControls;
 using Melville.Wpf.Samples.DialogBox;
 using Melville.Wpf.Samples.DiBinding;
@@ -18,14 +20,13 @@ using Melville.Wpf.Samples.TreeDragging;
 using Melville.Wpf.Samples.WaitMessageTest;
 using Melville.Wpf.Samples.WebView2Integration;
 using System.Windows.Controls;
-using Melville.Wpf.Samples.BlockFile;
 
 namespace Melville.Wpf.Samples;
 
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<BlockFileReaderViewModel>();
+        SearchTreeForSample<BlockFileCacheViewModel>();
 
     public SampleDirectory()
     {
@@ -68,7 +69,8 @@ public class SampleDirectory : SampleDirectoryDsl
                 Page<MonitoredCopyViewModel>("Copy with Progress")),
             Node("Performance",
                 Page<SqliteFsViewModel>("Sqlite File System"),
-                Page<BlockFileReaderViewModel>("Block File System")
+                Page<BlockFileReaderViewModel>("Block File System"),
+                Page<BlockFileCacheViewModel>("Block File Cache")
                 )
         );
 }

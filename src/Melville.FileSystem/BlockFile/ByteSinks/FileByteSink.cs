@@ -6,6 +6,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Melville.FileSystem.BlockFile.ByteSinks;
 
+
 public class FileByteSink(string path,
     FileMode mode = FileMode.OpenOrCreate, 
     FileAccess access = FileAccess.ReadWrite, 

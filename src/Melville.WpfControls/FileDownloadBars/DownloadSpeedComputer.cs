@@ -1,6 +1,8 @@
-﻿using System;
-using Melville.INPC;
+﻿using Melville.INPC;
 using Melville.SystemInterface.Time;
+using System;
+using System.Net.Sockets;
+using System.Text;
 
 namespace Melville.WpfControls.FileDownloadBars;
 
@@ -12,8 +14,9 @@ public partial class DownloadSpeedComputer
 
     public string ReportInterval(long totalBytes)
     {
-        var ret = ShowSpeed(totalBytes - priorBytes, wallClock.CurrentLocalTime() - lastTime);
-        lastTime = wallClock.CurrentLocalTime();
+        DateTime now = wallClock.CurrentLocalTime();
+        var ret = ShowSpeed(totalBytes - priorBytes, now - lastTime);
+        lastTime = now;
         priorBytes = totalBytes;
         return ret;
     }
