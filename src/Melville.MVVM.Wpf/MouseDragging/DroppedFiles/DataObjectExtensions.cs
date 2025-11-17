@@ -86,8 +86,6 @@ public static class DataObjectReaderExtensions
     {
          return target switch
         {
-            System.Windows.DataObject swdo => 
-                GetFromDataObject(swdo, position),
             System.Runtime.InteropServices.ComTypes.IDataObject comDataObject => 
                 ExtractFromComType(position, comDataObject),
             _=> target.GetData(StreamingFileClipboardFormats.FileContents) as Stream??
@@ -112,22 +110,4 @@ public static class DataObjectReaderExtensions
             tymed = TYMED.TYMED_ISTREAM
         };
 
-    private static Stream GetFromDataObject(DataObject swdo, int position)
-    {
-        var inner = InnerData(swdo);
-        return PrivateGetData(inner, StreamingFileClipboardFormats.FileContents, true,
-            DVASPECT.DVASPECT_CONTENT, position) as Stream ??
-               throw new ArgumentNullException("Returned stream is null");
-    }
-
-    [UnsafeAccessor(UnsafeAccessorKind.Field, Name= "_innerData")]
-    private static extern ref IDataObject InnerData(DataObject target);
-
-#warning -- in .net 10 we will be able to use an UnsafeAccessor for this method
-    private static object
-        PrivateGetData(object rec, string format, bool autoConvert, DVASPECT aspect, int index)=>
-        rec.Call("GetData", format, autoConvert, aspect, index) ?? 
-        throw new ArgumentNullException("Could not return a Data object");
-
-    #endregion
 }

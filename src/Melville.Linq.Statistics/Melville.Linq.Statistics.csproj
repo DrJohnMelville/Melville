@@ -1,7 +1,6 @@
-﻿
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <DebugType>Full</DebugType>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -28,10 +27,6 @@
     <PackageReference Include="EPPlus.Core" />
     <PackageReference Include="LINQPad.Runtime" />
     <PackageReference Include="System.Data.SqlClient" />
-    <PackageReference Include="System.Drawing.Common" />
-    <PackageReference Include="System.Formats.Asn1" />
-    <PackageReference Include="System.Text.Encodings.Web" />
-    <PackageReference Include="System.Text.RegularExpressions" />
   </ItemGroup>
 
 

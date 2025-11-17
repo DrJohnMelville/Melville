@@ -21,8 +21,9 @@ public class HttpClientMockTest
     {
         mock.Setup(pathAndQuery, HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
         var http = mock.ToHttpClient();
-        Assert.Equal("FooBar", await http.GetStringAsync(url));
-        await Assert.ThrowsAsync<InvalidOperationException>(() => http.GetStringAsync(url + "x"));
+        Assert.Equal("FooBar", await http.GetStringAsync(url, TestContext.Current.CancellationToken));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => 
+        http.GetStringAsync(url + "x", TestContext.Current.CancellationToken));
     }
     [Theory]
     [InlineData("https://www.drjonmelville.com/")]
@@ -32,9 +33,9 @@ public class HttpClientMockTest
     {
         mock.Setup(new Regex("www."), HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
         var http = mock.ToHttpClient();
-        Assert.Equal("FooBar", await http.GetStringAsync(url));
+        Assert.Equal("FooBar", await http.GetStringAsync(url, TestContext.Current.CancellationToken));
         await Assert.ThrowsAsync<InvalidOperationException>(
-            () => http.GetStringAsync(url.Replace("www","xxx")));
+            () => http.GetStringAsync(url.Replace("www","xxx"), TestContext.Current.CancellationToken));
     }
     [Theory]
     [InlineData("https://www.drjonmelville.com/")]
@@ -44,7 +45,7 @@ public class HttpClientMockTest
     {
         mock.Setup(null!, HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
         var http = mock.ToHttpClient();
-        Assert.Equal("FooBar", await http.GetStringAsync(url));
+        Assert.Equal("FooBar", await http.GetStringAsync(url, TestContext.Current.CancellationToken));
     }
     [Theory]
     [InlineData("https://www.drjonmelville.com/")]
@@ -54,7 +55,7 @@ public class HttpClientMockTest
     {
         mock.Setup("   ", HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
         var http = mock.ToHttpClient();
-        Assert.Equal("FooBar", await http.GetStringAsync(url));
+        Assert.Equal("FooBar", await http.GetStringAsync(url, TestContext.Current.CancellationToken));
     }
     [Theory]
     [InlineData("https://www.drjonmelville.com/")]
@@ -64,8 +65,8 @@ public class HttpClientMockTest
     {
         mock.Setup(s=>s.Equals(url), HttpMethod.Get).ReturnsHttp("FooBar", "text/plain");
         var http = mock.ToHttpClient();
-        Assert.Equal("FooBar", await http.GetStringAsync(url));
-        await Assert.ThrowsAsync<InvalidOperationException>(() => http.GetStringAsync(url + "x"));
+        Assert.Equal("FooBar", await http.GetStringAsync(url, TestContext.Current.CancellationToken));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => http.GetStringAsync(url + "x", TestContext.Current.CancellationToken));
     }
 
 }

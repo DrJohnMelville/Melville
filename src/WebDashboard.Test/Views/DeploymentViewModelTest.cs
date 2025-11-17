@@ -55,7 +55,7 @@ public class DeploymentViewModelTest
         password.Setup(i => i.Password()).Returns("StupidPass");
         Assert.Equal(
             ("dotnet", @"publish C:\dir\Target.csproj /p:PublishProfile=PubFile /p:Password=StupidPass")
-            , await sut.Commands().SingleAsync());
+            , await sut.Commands().SingleAsync(cancellationToken: TestContext.Current.CancellationToken));
         Assert.Equal("New Web Config", Encoding.UTF8.GetString(configStream.ToArray()));
         configFile.Verify(i=>i.Delete(), Times.Once);
     }

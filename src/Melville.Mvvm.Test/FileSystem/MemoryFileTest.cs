@@ -71,7 +71,7 @@ public abstract class GenericFileTest(IFile sut)
         byte[] data = Enumerable.Range(0, size).Select(i => (byte)i).ToArray();
         await using (var str = await sut.CreateWrite())
         {
-            await str.WriteAsync(data);
+            await str.WriteAsync(data, TestContext.Current.CancellationToken);
         }
         await using (var rstr = await sut.OpenRead())
         {

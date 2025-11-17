@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0-windows</TargetFramework>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
 
@@ -19,10 +19,6 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="NuGet.Frameworks" />
     <PackageReference Include="System.Data.SqlClient" />
-    <PackageReference Include="System.Drawing.Common" />
-    <PackageReference Include="System.Formats.Asn1" />
-    <PackageReference Include="System.Text.Encodings.Web" />
-    <PackageReference Include="System.Text.RegularExpressions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.runner.visualstudio">
       <PrivateAssets>all</PrivateAssets>

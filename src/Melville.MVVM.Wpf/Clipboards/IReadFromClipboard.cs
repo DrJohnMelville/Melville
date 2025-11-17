@@ -35,7 +35,7 @@ public interface IReadFromClipboard
   /// <returns>An object that contains the data in the specified format, or <see langword="null" /> if the data is unavailable in the specified format.</returns>
   /// <exception cref="T:System.ArgumentNullException">
   /// <paramref name="format" /> is <see langword="null" />.</exception>
-  object GetData(string format);
+  object? GetData(string format);
 
   /// <summary>Returns a string containing text data on the Clipboard. </summary>
   /// <param name="format">A member of <see cref="T:System.Windows.TextDataFormat" /> that specifies the text data format to retrieve.</param>
@@ -53,7 +53,7 @@ public interface IReadFromClipboard
 
   /// <summary>Returns a data object that represents the entire contents of the Clipboard.</summary>
   /// <returns>A data object that enables access to the entire contents of the system Clipboard, or <see langword="null" /> if there is no data on the Clipboard.</returns>
-  IDataObject GetDataObject();
+  IDataObject? GetDataObject();
 
 
 }
@@ -80,8 +80,8 @@ public class ReadFromClipboard : IReadFromClipboard
     Clipboard.ContainsText(format);
 
   public void Flush() => Clipboard.Flush();
-  public object GetData(string format) => Clipboard.GetData(format);
+  public object? GetData(string format) => Clipboard.GetData(format);
   public string GetText(TextDataFormat format = TextDataFormat.UnicodeText) => Clipboard.GetText(format);
   public bool IsCurrent(IDataObject data) => Clipboard.IsCurrent(data);
-  public IDataObject GetDataObject() => Clipboard.GetDataObject();
+  public IDataObject? GetDataObject() => Clipboard.GetDataObject();
 }

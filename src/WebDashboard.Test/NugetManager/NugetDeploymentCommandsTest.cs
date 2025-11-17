@@ -41,6 +41,6 @@ public class NugetDeploymentCommandsTest
             ("gpr", "push \"C:\\x.nuspec\""),
             ("gpr", "push \"C:\\y.nuspec\""),
             ("gpr", "push \"C:\\z.nuspec\""),
-        }, await sut.Commands().ToArrayAsync());
+        }, await sut.Commands().ToArrayAsync(cancellationToken: TestContext.Current.CancellationToken));
     }
 }

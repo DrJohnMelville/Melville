@@ -64,13 +64,13 @@ public class BlockDirectoryTest
         var data = new byte[] { 1, 2, 3, 4, 5 };
         await using (var stream = await file.CreateWrite())
         {
-            await stream.WriteAsync(data);
+            await stream.WriteAsync(data, TestContext.Current.CancellationToken);
         }
 
         await using (var stream = await file.OpenRead())
         {
             var readData = new byte[data.Length];
-            (await stream.ReadAsync(readData)).Should().Be(data.Length);
+            (await stream.ReadAsync(readData, TestContext.Current.CancellationToken)).Should().Be(data.Length);
             readData.Should().BeEquivalentTo(data);
         }
     }
@@ -81,7 +81,7 @@ public class BlockDirectoryTest
         var file = root.File("File.txt");
         await using (var stream = await file.CreateWrite())
         {
-            await stream.WriteAsync(new byte[] { 1, 2, 3, 4, 5 });
+            await stream.WriteAsync(new byte[] { 1, 2, 3, 4, 5 }, TestContext.Current.CancellationToken);
         }
         file.Exists().Should().BeTrue();
         file.Delete();
@@ -185,7 +185,7 @@ public class BlockDirectoryTest
         await using (var reader = await file1.OpenRead())
         {
             var buffer = new byte[100_000];
-            await reader.ReadAtLeastAsync(buffer, 100_000, false);
+            await reader.ReadAtLeastAsync(buffer, 100_000, false, TestContext.Current.CancellationToken);
             buffer.Should().BeEquivalentTo(new byte[100_000].Select(_ => (byte)65));
         }
     }
@@ -206,7 +206,7 @@ public class BlockDirectoryTest
         foreach (var file in files)
         {
             await using var writer = await file.CreateWrite();
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
         }
         dir.AllFiles().Select(i=>i.Name).Should().BeEquivalentTo(Enumerable.Range(0,10).Select(i=>$"{i}.dat"));
         await src.CancelAsync();
@@ -228,7 +228,7 @@ public class BlockDirectoryTest
         {
             var file = dir.File(Path.GetFileName($"{i}.dat"));
             await using var writer = await file.CreateWrite();
-            await Task.Delay(200);
+            await Task.Delay(200, TestContext.Current.CancellationToken);
         }
         dir.AllFiles().Select(i=>i.Name).Should().BeEquivalentTo(Enumerable.Range(0,10).Select(i=>$"{i}.dat"));
         await src.CancelAsync();

@@ -33,7 +33,7 @@ public class PipeWriterMethodsTest
     public async Task RoundTripUint(uint item)
     { 
         writer.WriteCompactUint(item);
-        await writer.FlushAsync();
+        await writer.FlushAsync(TestContext.Current.CancellationToken);
         buffer.Seek(0, SeekOrigin.Begin);
         (await reader.ReadCompactUint()).Should().Be(item);
     }
