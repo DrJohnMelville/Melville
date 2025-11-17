@@ -10,35 +10,53 @@ using System.Threading.Tasks;
 
 namespace Melville.FileSystem.BlockFile.ByteSinks;
 
-public unsafe class MemoryMappedByteSink: IByteSink
+public unsafe class MemoryMappedByteSink : IByteSink
 {
     private readonly FileStream fs;
     private MemoryMappedFile file;
-    private MemoryMappedViewAccessor accessor;
-    private byte* basePointer;
     private readonly ReaderWriterLockSlim rwLock = new();
-    
+
     public MemoryMappedByteSink(string path)
     {
         fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        if (fs.Length < 32)
+        {
+            fs.Write(stackalloc byte[32]);
+        }
         CreatePointer();
     }
     [MemberNotNull(nameof(file))]
-    [MemberNotNull(nameof(accessor))]
     private void CreatePointer()
     {
         file = MemoryMappedFile.CreateFromFile(
             fs, null, fs.Length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, true);
-        accessor = file.CreateViewAccessor(0, 0, MemoryMappedFileAccess.ReadWrite);
-        accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref basePointer);
     }
 
-    private Span<Byte> GetSpan(long offset, int length) =>
-        new Span<byte>(basePointer + offset, length);
+    private unsafe readonly struct FileLocation : IDisposable
+    {
+        private readonly byte* pointer;
+        private readonly MemoryMappedViewAccessor accessor;
+        private readonly int length;
+        public FileLocation(MemoryMappedFile mmf, long offset, int length)
+        {
+            this.length = length;
+            this.accessor = mmf.CreateViewAccessor(offset, length);
+            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
+            pointer += GetOffset(accessor);
+        }
 
-    public long Length { 
-        get => fs.Length; 
-        set => throw new NotImplementedException(); 
+        [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_offset")]
+        extern static ref long GetOffset(UnmanagedMemoryAccessor accessor);
+
+        public void Dispose() => accessor.Dispose();
+
+        public Span<byte> Span => new(pointer, length);
+    }
+
+    public long Length
+    {
+        get => fs.Length;
+        set => throw new NotImplementedException();
     }
     public int Read(Span<byte> target, long offset)
     {
@@ -47,7 +65,8 @@ public unsafe class MemoryMappedByteSink: IByteSink
         rwLock.EnterReadLock();
         var desiredLength = target.Length;
         {
-            GetSpan(offset, desiredLength).CopyTo(target);
+            using var location = new FileLocation(file, offset, desiredLength);
+            location.Span.CopyTo(target);
         }
 
         rwLock.ExitReadLock();
@@ -61,10 +80,10 @@ public unsafe class MemoryMappedByteSink: IByteSink
         {
             read += Read(target.Span, offset);
             offset += target.Length;
-        }   
+        }
         return read;
     }
-    public ValueTask<int> ReadAsync(Memory<byte> target, long offset) => 
+    public ValueTask<int> ReadAsync(Memory<byte> target, long offset) =>
         new ValueTask<int>(Read(target.Span, offset));
     public ValueTask<long> ReadAsync(IReadOnlyList<Memory<byte>> targets, long offset) =>
         new ValueTask<long>(Read(targets, offset));
@@ -73,7 +92,10 @@ public unsafe class MemoryMappedByteSink: IByteSink
         int writeLength = source.Length;
         VerifySize(offset + writeLength);
         rwLock.EnterReadLock();
-            source.CopyTo(GetSpan(offset, writeLength));
+        {
+            using var location = new FileLocation(file, offset, writeLength);
+            source.CopyTo(location.Span);
+        }
         rwLock.ExitReadLock();
     }
 
@@ -112,11 +134,7 @@ public unsafe class MemoryMappedByteSink: IByteSink
         fs.Dispose();
     }
 
-    private void DisposeMap()
-    {
-        accessor.Dispose();
-        file.Dispose();
-    }
+    private void DisposeMap() => file.Dispose();
 
     public void Flush() { }
 }

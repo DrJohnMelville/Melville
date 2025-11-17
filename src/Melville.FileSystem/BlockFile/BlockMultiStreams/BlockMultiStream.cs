@@ -19,9 +19,10 @@ public class BlockMultiStream(
 {
     public const uint InvalidBlock = 0xFFFFFFFF;
 
-    public uint BlockSize { get; } = blockSize;
+    // blocksize is a long to force all math it is involved with to be a long
+    public long BlockSize { get; } = blockSize;
     public uint RootBlock { get; private set; } = rootBlock;
-    public uint BlockDataSize => BlockSize - nextBlockTagSize;
+    public uint BlockDataSize => blockSize - nextBlockTagSize;
     private uint nextBlock = nextBlock;
     private uint freeListHead = freeListHead;
 
@@ -30,7 +31,7 @@ public class BlockMultiStream(
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
     {
-        if (bytes.Length is 0)
+        if (bytes.Length < 16)
             return new BlockMultiStream(bytes);
         using var buffer = ArrayPool<byte>.Shared.RentHandle(16);
         var bufferMem = buffer.AsMemory(0, 16);
@@ -53,7 +54,7 @@ public class BlockMultiStream(
         using var buffer = ArrayPool<byte>.Shared.RentHandle((int)headerSize);
         var innerBuffer = buffer.AsMemory(0, (int)headerSize);
         var span = MemoryMarshal.Cast<byte, uint>(innerBuffer.Span);
-        span[0] = BlockSize;
+        span[0] = (uint)BlockSize;
         span[1] = freeListHead;
         span[2] = RootBlock;
         span[3] = nextBlock;

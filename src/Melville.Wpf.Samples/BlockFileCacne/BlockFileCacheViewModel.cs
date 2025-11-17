@@ -21,27 +21,34 @@ public partial class BlockFileCacheViewModel
     [AutoNotify]
     public partial string FileName { get; set; } //# = "No File Loaded";
 
-    public async Task LoadFile([FromServices]IOpenSaveFile osf)
+    public async Task LoadFile([FromServices] IOpenSaveFile osf)
     {
         var file = osf.GetLoadFile(null, "*.pdd", "Pdd Files (*.pdd)|*.pdd",
             "Select a PDD file to load");
         if (file is null) return;
-        await Task.Run(()=>LoadFile(file));
+        await Task.Run(() => LoadFile(file));
     }
 
     private async Task LoadFile(IFile file)
     {
-        var store = await BlockMultiStream.CreateFrom(new MemoryMappedByteSink(file.Path));
-  //      var store = await BlockMultiStream.CreateFrom(new FileByteSink(file.Path));
-        var root = new BlockRootDirectory(store);
-        await root.ReadFromStore();
-        var photos = root.SubDirectory("Photos");
-        foreach (var f in photos.AllFiles())
+        try
         {
-            FileName = f.Name;
-            await Task.Delay(100);
-            await DownloadBarViewModel.CopyFile(new MemoryFile("ljgbhhj"), f,
-                FileAttributes.None, CancellationToken.None);
+            using var store = await BlockMultiStream.CreateFrom(new MemoryMappedByteSink(file.Path));
+            //      var store = await BlockMultiStream.CreateFrom(new FileByteSink(file.Path));
+            var root = new BlockRootDirectory(store);
+            await root.ReadFromStore();
+            var photos = root.SubDirectory("Photos");
+            foreach (var f in photos.AllFiles())
+            {
+                FileName = f.Name;
+                await Task.Delay(100);
+                await DownloadBarViewModel.CopyFile(new MemoryFile("ljgbhhj"), f,
+                    FileAttributes.None, CancellationToken.None);
+            }
+        }
+        catch (IOException e)
+        {
+            FileName = $"Error loading file: {e.Message}";
         }
     }
 }

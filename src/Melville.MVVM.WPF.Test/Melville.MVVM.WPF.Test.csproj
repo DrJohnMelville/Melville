@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net9.0-windows</TargetFramework>
         <Description>This is a library of my favorite wpf controls</Description>
-        <OutputType>Library</OutputType>
+        <OutputType>Exe</OutputType>
         <DebugType>Full</DebugType>
         <IncludePackageReferencesDuringMarkupCompilation>true</IncludePackageReferencesDuringMarkupCompilation>
     </PropertyGroup>
@@ -14,13 +14,12 @@
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Moq" />
-        <PackageReference Include="xunit" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="xunit.runner.visualstudio">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Xunit.StaFact" />
+        <PackageReference Include="xunit.v3" />
 
         <ProjectReference Include="..\Melville.Mvvm.TestHelpers\Melville.Mvvm.TestHelpers.csproj" />
         <ProjectReference Include="..\Melville.MVVM\Melville.MVVM.csproj" />

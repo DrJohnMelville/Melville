@@ -13,6 +13,30 @@ using Xunit;
 
 namespace Melville.Mvvm.Test.FileSystem.BlockFile;
 
+public class BigBlockMultiStreamTest
+{
+    private readonly BlockMultiStream sut;
+    private readonly Mock<IByteSink> byteSink = new();
+
+    public BigBlockMultiStreamTest()
+    {
+        byteSink.SetupGet(x => x.Length).Returns(0);
+        sut = new BlockMultiStream(byteSink.Object);
+
+    }
+
+    [Theory]
+    [InlineData(0u, (0L * 4100L) + 20L)]
+    [InlineData(1u, (1L * 4100L) + 20L)]
+    [InlineData(0xF0000000u, (0xF0000000L * 4100L) + 20L)]
+    public async Task WriteBigField(uint block, long shouldBeLocation)
+    {
+        var data = new byte[4];
+        await sut.WriteToBlockDataAsync(data, block, 4);
+        byteSink.Verify(x => x.WriteAsync(It.IsAny<ReadOnlyMemory<byte>>(), shouldBeLocation), Times.Once);
+    }
+}
+
 public class BlockMultiStreamTest
 {
     [Fact]
@@ -33,6 +57,13 @@ public class BlockMultiStreamTest
         return sut;
     }
 
+    [Fact]
+    public void UintProd()
+    {
+        uint u1 = 10, u2 = 15;
+        (((long)u1) * u2).GetType().Should().Be(typeof(long));
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(2)]
@@ -46,7 +77,7 @@ public class BlockMultiStreamTest
         reader.CanRead.Should().BeTrue();
         reader.CanSeek.Should().BeTrue();
         reader.CanWrite.Should().BeFalse();
-        await reader.ReadAtLeastAsync(buffer, 4, false);
+        await reader.ReadAtLeastAsync(buffer, 4, false, TestContext.Current.CancellationToken);
         for (int i = 0; i < 4; i++)
         {
             if (i < streamLength)
@@ -70,7 +101,7 @@ public class BlockMultiStreamTest
         """);
         var buffer = new byte[6];
         await using var reader = sut.GetReader(0, 6, NullEndBlockDataTarget.Instance);
-        await reader.ReadExactlyAsync(buffer);
+        await reader.ReadExactlyAsync(buffer, TestContext.Current.CancellationToken);
         buffer.Should().BeEquivalentTo([0, 1, 2, 3, 4, 5]);
     }
     [Fact]
@@ -84,7 +115,7 @@ public class BlockMultiStreamTest
         """);
         var buffer = new byte[6];
         await using var reader = sut.GetReader(1, 6, NullEndBlockDataTarget.Instance);
-        await reader.ReadExactlyAsync(buffer);
+        await reader.ReadExactlyAsync(buffer, TestContext.Current.CancellationToken);
         buffer.Should().BeEquivalentTo([0, 1, 2, 3, 4, 5]);
     }
 
@@ -101,7 +132,7 @@ public class BlockMultiStreamTest
         reader.CanSeek.Should().BeTrue();
         reader.Seek(3, SeekOrigin.Begin);
         var buffer = new byte[2];
-        await reader.ReadExactlyAsync(buffer);
+        await reader.ReadExactlyAsync(buffer, TestContext.Current.CancellationToken);
         buffer.Should().BeEquivalentTo([3, 4]);
     }
     [Fact]
@@ -117,7 +148,7 @@ public class BlockMultiStreamTest
         reader.CanSeek.Should().BeTrue();
         reader.Seek(5, SeekOrigin.Begin);
         var buffer = new byte[2];
-        (await reader.ReadAsync(buffer)).Should().Be(1);
+        (await reader.ReadAsync(buffer, TestContext.Current.CancellationToken)).Should().Be(1);
         buffer.Should().BeEquivalentTo([5,0]);
     }
     
@@ -135,7 +166,7 @@ public class BlockMultiStreamTest
         reader.Seek(5, SeekOrigin.Begin);
         reader.Seek(-2, SeekOrigin.Current);
         var buffer = new byte[2];
-        (await reader.ReadAtLeastAsync(buffer, 2)).Should().Be(2);
+        (await reader.ReadAtLeastAsync(buffer, 2, cancellationToken: TestContext.Current.CancellationToken)).Should().Be(2);
         buffer.Should().BeEquivalentTo([3,4]);
     }
 
@@ -146,7 +177,7 @@ public class BlockMultiStreamTest
         var sut = new BlockMultiStream(bytes, 8);
         var target = new Mock<IEndBlockDataTarget>();
         var writer = await sut.GetWriterAsync(target.Object);
-        await writer.WriteAsync(data1);
+        await writer.WriteAsync(data1, TestContext.Current.CancellationToken);
         await writer.DisposeAsync();
         target.Verify(x => x.EndStreamWrite(
             new StreamEnds(0,2), data1.Length), Times.Once);
@@ -253,7 +284,7 @@ public class BlockMultiStreamTest
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         using (var writer = await sut.GetWriterAsync(Mock.Of<IEndBlockDataTarget>()))
         {
-            await writer.WriteAsync(data2);
+            await writer.WriteAsync(data2, TestContext.Current.CancellationToken);
         }
         await sut.WriteHeaderBlockAsync(0xDEADBEEF);
         sink.Data.Take(data.Length).Should().BeEquivalentTo(data);
