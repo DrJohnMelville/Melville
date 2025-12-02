@@ -4,12 +4,12 @@ using Microsoft.CodeAnalysis;
 namespace Melville.Generators.INPC.ProductionGenerators.INPC;
 
 public class FieldSourceSymbol(
-    IFieldSymbol field, GeneratorAttributeSyntaxContext context): IPropertySourceSymbol
+    IFieldSymbol fieldSymbol, GeneratorAttributeSyntaxContext context): IPropertySourceSymbol
 {
-    public string FieldName => field.Name;
-    public string PropertyName { get; } = field.Name.ComputePropertyName();
-    public ITypeSymbol Type => field.Type;
-    public ISymbol DocumentationSource => field;
+    public string FieldName => fieldSymbol.Name;
+    public string PropertyName { get; } = fieldSymbol.Name.ComputePropertyName();
+    public ITypeSymbol Type => fieldSymbol.Type;
+    public ISymbol DocumentationSource => fieldSymbol;
 
     public SyntaxNode SourceSyntax { get; } = context.TargetNode;
 
@@ -18,7 +18,7 @@ public class FieldSourceSymbol(
 
     public void TryWriteFieldDeclaration(CodeWriter target)
     {
-        // do nothing -- the field declaration already exists.
+        // do nothing -- the fieldSymbol declaration already exists.
     }
 
     public string GetterAccess => "";

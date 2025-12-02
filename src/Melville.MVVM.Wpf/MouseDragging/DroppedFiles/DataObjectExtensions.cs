@@ -110,4 +110,5 @@ public static class DataObjectReaderExtensions
             tymed = TYMED.TYMED_ISTREAM
         };
 
+    #endregion
 }

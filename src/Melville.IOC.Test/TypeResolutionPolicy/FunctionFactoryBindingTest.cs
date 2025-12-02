@@ -83,4 +83,20 @@ public class FunctionFactoryBindingTest
         Assert.False(sut.CanGet<HasThreeArguments>());
         Assert.True(sut.CanGet<HasThreeArguments>(1,2));
     }
+
+    private class RecursiveClass
+    {
+        public RecursiveClass(Func<int, RecursiveClass> factory, int i)
+        {
+            if (i > 0)
+            {
+                var _ = factory(i - 1);
+            }
+        }
+    }
+    [Fact]
+    public void RecursiveFactory()
+    {
+        var _ = sut.Get<RecursiveClass>(3);
+    }
 }

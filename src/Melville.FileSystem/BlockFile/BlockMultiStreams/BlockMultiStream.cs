@@ -152,7 +152,8 @@ public class BlockMultiStream(
     {
         Debug.Assert(currentBlock != next);
         using var buffer = ArrayPool<byte>.Shared.RentHandle(nextBlockTagSize);
-        MemoryMarshal.Cast<byte, uint>(buffer)[0] = next;
+        var span = buffer.AsSpan(0, nextBlockTagSize);
+        MemoryMarshal.Cast<byte, uint>(span)[0] = next;
         await bytes.WriteAsync(buffer.AsMemory(0, 4), PositionForNextBlockLink(currentBlock));
     }
 

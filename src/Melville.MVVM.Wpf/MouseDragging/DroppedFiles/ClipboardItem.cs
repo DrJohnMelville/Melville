@@ -31,15 +31,19 @@ public readonly struct ClipboardItem(FORMATETC format, object data)
 
     public void ReturnValue(in FORMATETC formatetc, out STGMEDIUM medium)
     {
+        ReturnValue(formatetc.tymed, out medium);
+    }
+
+    public void ReturnValue(TYMED tymed, out STGMEDIUM medium)
+    {
         switch (data)
         {
             case String str: WriteStringTo(str, out medium); break;
-            case byte[] bytes: WriteBytesTo(bytes, formatetc.tymed, out medium); break;
-            case Stream stream: WriteStreamTo(stream, formatetc.tymed, out medium); break;
+            case byte[] bytes: WriteBytesTo(bytes, tymed, out medium); break;
+            case Stream stream: WriteStreamTo(stream, tymed, out medium); break;
             default: throw new NotImplementedException("cannot convert to hglobal");
         }
     }
-
     private void WriteStringTo(string str, out STGMEDIUM medium)
     {
         var handle = CreateMovableHGlobal((str.Length + 1)*2, target =>

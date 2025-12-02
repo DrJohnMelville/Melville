@@ -29,7 +29,8 @@ public unsafe class MemoryMappedByteSink : IByteSink
     private void CreatePointer()
     {
         file = MemoryMappedFile.CreateFromFile(
-            fs, null, fs.Length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, true);
+            fs, null, fs.Length, MemoryMappedFileAccess.ReadWrite, HandleInheritability.None, 
+            true);
     }
 
     private unsafe readonly struct FileLocation : IDisposable
