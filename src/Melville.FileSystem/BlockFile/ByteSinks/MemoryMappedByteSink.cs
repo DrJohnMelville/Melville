@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,7 +50,11 @@ public unsafe class MemoryMappedByteSink : IByteSink
         [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_offset")]
         extern static ref long GetOffset(UnmanagedMemoryAccessor accessor);
 
-        public void Dispose() => accessor.Dispose();
+        public void Dispose()
+        {
+            accessor.SafeMemoryMappedViewHandle.ReleasePointer();
+            accessor.Dispose();
+        }
 
         public Span<byte> Span => new(pointer, length);
     }
