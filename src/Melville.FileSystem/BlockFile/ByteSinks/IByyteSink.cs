@@ -17,6 +17,13 @@ public interface IByteSink: IDisposable
     ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset);
     ValueTask WriteAsync(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset);
     void Flush();
+    /// <summary>
+    /// A client can give the sink a hint about the size of data that is comming.
+    /// The client is not obligated to use the alotment and may write without hinting.
+    /// Hinting size you do not use you may have unused space in the file.
+    /// </summary>
+    /// <param name="value"></param>
+    void HintIntendedWriteSize(long value);
 }
 
 public static class ByteSinkOperations

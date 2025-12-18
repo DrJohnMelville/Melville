@@ -30,7 +30,7 @@ public class BlockMultiStream(
         chainsPendingDelete = new();
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
-    {
+    { 
         if (bytes.Length < 16)
             return new BlockMultiStream(bytes);
         using var buffer = ArrayPool<byte>.Shared.RentHandle(16);
@@ -195,6 +195,15 @@ public class BlockMultiStream(
             await WriteNextBlockLinkAsync(chain.End, freeListHead);
             freeListHead = chain.Start;
         }
+    }
+
+    internal void HintIntendedWriteSize(long value) => 
+        bytes.HintIntendedWriteSize(ConvertToBlocks(value));
+
+    private long ConvertToBlocks(long value)
+    {
+        var blocks = (value + BlockDataSize - 1) / BlockDataSize;
+        return blocks * BlockSize;
     }
 }
 

@@ -42,4 +42,9 @@ public class FileByteSink(string path,
 
     /// <inheritdoc />
     public void Flush() => RandomAccess.FlushToDisk(handle);
+
+    public void HintIntendedWriteSize(long value)
+    {
+        // ignore the write hint
+    }
 }

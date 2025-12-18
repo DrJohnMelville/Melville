@@ -24,16 +24,15 @@ public partial class NullEndBlockDataTarget : IEndBlockDataTarget
     }
 }
 
-public class BlockWritingStream(BlockMultiStream DATA, uint firstBlock, IEndBlockDataTarget dataTarget)
-    : BlockStream(DATA, firstBlock, 0)
+public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBlockDataTarget dataTarget)
+    : BlockStream(data, firstBlock, 0)
 {
     public override bool CanWrite => true;
     public override bool CanRead => false;
 
     public override void SetLength(long value)
     {
-        // ignore hints about the length being set, but we can
-        // write off the end of the stream to expand the length
+        Data.HintIntendedWriteSize(value);
     }
 
     /// <inheritdoc />

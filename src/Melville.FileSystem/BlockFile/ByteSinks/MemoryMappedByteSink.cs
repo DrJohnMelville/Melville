@@ -110,9 +110,21 @@ public unsafe class MemoryMappedByteSink : IByteSink
         if (newSize < Length) return;
         rwLock.EnterWriteLock();
         DisposeMap();
-        fs.SetLength(newSize);
+        fs.SetLength(Math.Max(newSize, HintedSize()));
         CreatePointer();
         rwLock.ExitWriteLock();
+    }
+
+    long hintedWrites = 0;
+
+    private long HintedSize()
+    {
+        try {
+            return hintedWrites <= 0 ? Length : Length + hintedWrites;
+        }
+        finally { 
+          hintedWrites = 0;
+        }
     }
 
     public void Write(IReadOnlyList<ReadOnlyMemory<byte>> source, long offset)
@@ -121,6 +133,7 @@ public unsafe class MemoryMappedByteSink : IByteSink
         {
             Write(segment.Span, offset);
             offset += segment.Length;
+            Interlocked.And(ref hintedWrites, -segment.Length);
         }
     }
     public ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset)
@@ -143,4 +156,10 @@ public unsafe class MemoryMappedByteSink : IByteSink
     private void DisposeMap() => file.Dispose();
 
     public void Flush() { }
+
+    public void HintIntendedWriteSize(long value)
+    {
+        if (hintedWrites <= 0) hintedWrites = 0;
+        Interlocked.Add(ref hintedWrites, value);
+    }
 }

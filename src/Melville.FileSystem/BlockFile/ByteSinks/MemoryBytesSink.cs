@@ -73,4 +73,9 @@ public class MemoryBytesSink: IByteSink
     {
         // Flush is not meaningful on memory stores, so do nothing
     }
+
+    public void HintIntendedWriteSize(long value)
+    {
+      // ignore the write hint.
+    }
 }
