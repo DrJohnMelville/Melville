@@ -46,26 +46,12 @@ internal class SqliteDiskFactory : IRepoConnectionFactory
 
     private string AddReadOnly(bool isReadOnly) => isReadOnly ? ReadOnlySuffix : "";
 
-    private sealed class FileSqliteRepo(SqliteDiskFactory factory, bool isReadOnly): IRepoDbConnection
+    private sealed class FileSqliteRepo(SqliteDiskFactory factory, bool isReadOnly): RepoDbConnectionImpl()
     {
-        private SqliteConnection? connection;
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            if (connection is not {State: ConnectionState.Open}) return;
-            factory.lifecycle.ConnectionClosed(connection);
-            connection.Dispose();
-            connection = null;
 
-        }
+        protected override void Closing() => factory.lifecycle.ConnectionClosed(GetConnection());
 
-        /// <inheritdoc />
-        private SqliteConnection GetConnection() => connection ??= factory.CreateDbConnection(isReadOnly);
-
-        IDbConnection IRepoDbConnection.GetConnection() => GetConnection();
-
-        /// <inheritdoc />
-        public Stream BlobWrapper(string table, string column, long key, bool readOnly) => 
-            new SqliteBlob(GetConnection(), table, column, key, readOnly);
+        protected override SqliteConnection GetSqliteConnection() =>
+            factory.CreateDbConnection(isReadOnly);
     }
 }

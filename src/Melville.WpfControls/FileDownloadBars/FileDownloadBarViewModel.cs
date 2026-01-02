@@ -47,5 +47,14 @@ public partial class FileDownloadBarViewModel
         Message = speedComputer.ReportInterval(totalbytestransferred);
         return CopyProgressResult.PROGRESS_CONTINUE;
     }
-    
+    public CopyProgressResult ExternalProgressFunc(
+     long totalfilesize, long totalbytestransferred, long streamsize, long streambytestransferred,
+     uint dwstreamnumber, CopyProgressCallbackReason dwcallbackreason, IntPtr hsourcefile,
+     IntPtr hdestinationfile, IntPtr lpdata)
+    {
+        Copying = totalbytestransferred < totalfilesize;
+        return ProgressFunc(totalfilesize, totalbytestransferred, streamsize, streambytestransferred,
+            dwstreamnumber, dwcallbackreason, hsourcefile, hdestinationfile, lpdata);
+    }
+
 }

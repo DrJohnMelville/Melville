@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PddJpegExtractor": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\jom252\\OneDrive - Medical University of South Carolina\\Documents\\Scratch\\photodoc bugs\\Steele Weigel, Logan 09-18-2013 error.pdd\""
+    }
+  }
+}

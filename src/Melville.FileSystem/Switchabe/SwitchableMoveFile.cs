@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Melville.FileSystem.CopyWithProgress;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -25,9 +26,11 @@ public class SwitchableMoveFile : SwitchableFileBase
 
 public class SwitchableCopyFile : SwitchableFileBase
 {
-  public SwitchableCopyFile(IFile source, IFile destination) : base(source, destination)
+    private readonly CopyProgressRoutine progressRoutine;
+  public SwitchableCopyFile(IFile source, IFile destination, CopyProgressRoutine? progressRoutine = null) : base(source, destination)
   {
-  }
+        this.progressRoutine = progressRoutine ?? NoProgressResult.Handler;
+    }
   private List<SwitchableStream> streams = new List<SwitchableStream>();
 
   public override Task<Stream> OpenRead() =>
@@ -40,12 +43,10 @@ public class SwitchableCopyFile : SwitchableFileBase
     return ret;
   }
 
-  public override Task RelocateOverride()
-  {
-    return destination.CopyFrom(currentTarget, CancellationToken.None, FileAttributes.Normal);
-  }
+    public override Task RelocateOverride() =>
+        destination.CopyFrom(currentTarget, CancellationToken.None, FileAttributes.Normal, progressRoutine);
 
-  protected override async Task CleanupAfterSwitch()
+    protected override async Task CleanupAfterSwitch()
   {
     foreach (var stream in streams.ToList())
     {

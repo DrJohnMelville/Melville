@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32611.2
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11312.210 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.IOC", "src\Melville.IOC\Melville.IOC.csproj", "{38E22C65-8C05-4703-9587-A0133996C165}"
 EndProject
@@ -116,6 +116,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Melville.SimpleDb", "src\Melville.SimpleDb\Melville.SimpleDb.csproj", "{A639966E-2D89-4D9D-9AE3-1BC898A16855}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Melville.FileSystem.Sqlite", "src\Melville.FileSystem.Sqlite\Melville.FileSystem.Sqlite.csproj", "{5B734881-3CAD-F885-97D8-4F34048222DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PddJpegExtractor", "PddJpegExtractor\PddJpegExtractor.csproj", "{CE77EE01-3350-4783-863A-A3F0DF518085}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -299,6 +301,10 @@ Global
 		{5B734881-3CAD-F885-97D8-4F34048222DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B734881-3CAD-F885-97D8-4F34048222DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B734881-3CAD-F885-97D8-4F34048222DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE77EE01-3350-4783-863A-A3F0DF518085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE77EE01-3350-4783-863A-A3F0DF518085}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE77EE01-3350-4783-863A-A3F0DF518085}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE77EE01-3350-4783-863A-A3F0DF518085}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -347,6 +353,7 @@ Global
 		{2F00E9B1-1E12-4A83-96AC-FAD74CF64CE6} = {1B5461D7-0B04-4F30-BB66-1EDA98450329}
 		{A639966E-2D89-4D9D-9AE3-1BC898A16855} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 		{5B734881-3CAD-F885-97D8-4F34048222DA} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
+		{CE77EE01-3350-4783-863A-A3F0DF518085} = {3962AEC7-0B44-4291-8B32-55DB84511B8B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {32830D18-8400-4B5A-9A71-3D3D1E19FCD7}
