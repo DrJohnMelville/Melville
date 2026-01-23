@@ -90,9 +90,9 @@ public unsafe class MemoryMappedByteSink : IByteSink
         return read;
     }
     public ValueTask<int> ReadAsync(Memory<byte> target, long offset) =>
-        new ValueTask<int>(Read(target.Span, offset));
+        new(Task.Run(() => Read(target.Span, offset)));
     public ValueTask<long> ReadAsync(IReadOnlyList<Memory<byte>> targets, long offset) =>
-        new ValueTask<long>(Read(targets, offset));
+        new(Task.Run(() => Read(targets, offset)));
     public void Write(ReadOnlySpan<byte> source, long offset)
     {
         int writeLength = source.Length;
@@ -136,17 +136,11 @@ public unsafe class MemoryMappedByteSink : IByteSink
             Interlocked.And(ref hintedWrites, -segment.Length);
         }
     }
-    public ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset)
-    {
-        Write(source.Span, offset);
-        return ValueTask.CompletedTask;
-    }
+    public ValueTask WriteAsync(ReadOnlyMemory<byte> source, long offset) =>
+        new(Task.Run(() => Write(source.Span, offset)));
     public ValueTask WriteAsync(
-        IReadOnlyList<ReadOnlyMemory<byte>> source, long offset)
-    {
-        Write(source, offset);
-        return ValueTask.CompletedTask;
-    }
+        IReadOnlyList<ReadOnlyMemory<byte>> source, long offset) => 
+        new(Task.Run(() => Write(source, offset)));
     public void Dispose()
     {
         DisposeMap();
