@@ -19,10 +19,7 @@ public class BlockFile(BlockDirectory parent, string name, long size) :
     public override bool Exists() => Parent!.TryGetFile(Name, out var value) && value.Exists();
 
     /// <inheritdoc />
-    public override void Delete()
-    {
-        Parent.CreateOrUpdateFile(Name, StreamDescription.Invalid);
-    }
+    public override void Delete() => Parent.CreateOrUpdateFile(Name, StreamDescription.Invalid);
 
     /// <inheritdoc />
     public async Task<Stream> OpenRead()

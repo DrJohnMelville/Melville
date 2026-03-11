@@ -83,9 +83,19 @@ public class BlockDirectoryTest
         {
             await stream.WriteAsync(new byte[] { 1, 2, 3, 4, 5 }, TestContext.Current.CancellationToken);
         }
+        GetFullRWNeeded(file).Should().BeTrue();
+        await root.Commit();
+        GetFullRWNeeded(file).Should().BeFalse();
         file.Exists().Should().BeTrue();
+        GetFullRWNeeded(file).Should().BeFalse();
         file.Delete();
+        GetFullRWNeeded(file).Should().BeTrue();
         file.Exists().Should().BeFalse();
+    }
+
+    private static bool GetFullRWNeeded(Melville.FileSystem.BlockFile.FileSystemObjects.BlockFile file)
+    {
+        return (file.Parent.Root?.GetProperty("FullRewriteNeeded") as bool?)!.Value;
     }
 
     [Fact]

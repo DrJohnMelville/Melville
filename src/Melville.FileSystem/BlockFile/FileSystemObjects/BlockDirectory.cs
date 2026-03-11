@@ -42,7 +42,7 @@ public class BlockDirectory(BlockDirectory? parent, string name):
             return file;
         });
         // we do this after the AddOrUpdate to make sure the file exists that needs to be rewritten
-        if (full)
+        if (full || ! file.Exists())
             Root?.TriggerFullRewrite();
         else
             Root?.TriggerRewrite();
