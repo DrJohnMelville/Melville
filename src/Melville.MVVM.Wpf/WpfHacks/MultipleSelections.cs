@@ -51,32 +51,45 @@ public static partial class MultipleSelections
     /// <param name="e">EventArgs describing the changes to the source collection</param>
     private void ModelChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        switch (e.Action)
-        {
-          case NotifyCollectionChangedAction.Add:
-            AddItems();
-            break;
-          case NotifyCollectionChangedAction.Remove:
-            RemoveItems();
-            break;
-          case NotifyCollectionChangedAction.Replace:
-            AddItems();
-            RemoveItems();
-            break;
-          case NotifyCollectionChangedAction.Move:
-            // do nothing, order is not important
-            break;
-          case NotifyCollectionChangedAction.Reset:
-            SetListBoxSelectionToModel();
-            break;
-          default:
-            throw new ArgumentOutOfRangeException();
-        }
+            try
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        AddItems();
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        RemoveItems();
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        AddItems();
+                        RemoveItems();
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        // do nothing, order is not important
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        SetListBoxSelectionToModel();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                // log the error, but don't crash the app. This is a best effort to keep the listbox in sync with the model, but if it fails we don't want to crash the app.
+                Console.Error.WriteLine($"Error updating listbox selection: {ex}");
+            }
 
-      void AddItems()
+            void AddItems()
       {
         foreach (var item in e.NewItems ?? Array.Empty<object>())
         {
+          if (selector.SelectionMode == SelectionMode.Single)
+          {
+            selector.SelectedItem = item;
+            return;
+          }
           if (!selector.SelectedItems.Contains(item)) // this line prevents recursion
           {
             selector.SelectedItems.Add(item);
