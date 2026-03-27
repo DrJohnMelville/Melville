@@ -15,7 +15,7 @@ public partial class GenericTest
     }
 
     [AutoNotify] private IDictionary<Lazy<OuterClass.InnerClass?>,
-        Task<IComparable<CodeWriterTests>>>? complexProp;
+        Task<IComparable<GenericTest>>>? complexProp;
 
     [Fact]
     public void TestName()
