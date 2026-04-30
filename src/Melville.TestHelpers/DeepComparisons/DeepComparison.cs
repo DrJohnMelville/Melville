@@ -81,6 +81,7 @@ public sealed class DeepComparison
                 return (Math.Abs((date.Value - ((DateTime) o2)).TotalSeconds) < 5.0);
             }
 
+
             var comp1 = o1 as IComparable;
             if (comp1 != null)
             {
@@ -92,6 +93,9 @@ public sealed class DeepComparison
             {
                 return CheckTrue(false, enum1, o2, " (Enumerable Differs)");
             }
+
+            if (TryEquatable(type1, o1, o2, out var same)) return same;
+
 
             if (!FieldsEqual(o1, o2, type1))
             {
@@ -109,6 +113,19 @@ public sealed class DeepComparison
         {
             considered.Pop();
         }
+    }
+
+    private bool TryEquatable(Type type1, object o1, object o2, out bool same)
+    {
+        var eqType = typeof(IEquatable<>).MakeGenericType(type1);
+        if (eqType.IsAssignableFrom(type1) &&
+            eqType.GetMethod("Equals", [type1]).Invoke(o1, new[] { o2 }) is bool val)
+        { 
+            same = val;
+            return true;
+        }
+        same = false;
+        return false; 
     }
 
     private bool CheckTrue(bool test, object? expected, object? actual, string postfix)

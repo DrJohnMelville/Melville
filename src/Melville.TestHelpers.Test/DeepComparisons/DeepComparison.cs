@@ -1,5 +1,6 @@
 ﻿#nullable disable warnings
 using  System;
+using System.Numerics;
 using Melville.TestHelpers.Assertions;
 using Melville.TestHelpers.DeepComparisons;
 using Xunit;
@@ -119,5 +120,16 @@ public sealed class DeepComparisonTest
         AssertEx.Throws<Exception>("{Item}[0] (IComparable Differs)\r\nExpected: 1\r\nActual:   2", ()=> DeepComparison.AreSame(new[] {1, 1}, new[] {2,1}, true));
         AssertEx.Throws<Exception>("{Item}[1] (IComparable Differs)\r\nExpected: 1\r\nActual:   2", ()=> DeepComparison.AreSame(new[] {1, 1}, new[] {1,2}, true));
     }
+
+    [Fact]
+    public void Vector2Succeeed()
+    {
+        // Vector2 does not implement IComparable, but it does implement IEquatable<Vector2>
+        // this would crash before wew teseted IEquatables directly
+        Assert.True(DeepComparison.AreSame(new Vector2(1, 2), new Vector2(1, 2)));
+    }
+    [Fact]
+    public void Vector2Fail() => 
+        Assert.True(DeepComparison.AreSame(new Vector2(1, 2), new Vector2(1, 2)));
 
 }
