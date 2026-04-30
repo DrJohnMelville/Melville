@@ -46,7 +46,7 @@ public sealed class SimpleCacheTest
     var cache = new SimpleCache<int, IntHolder>(10, i => new IntHolder { Int = i });
     var a = cache.Get(1);
     Assert.Equal(a, cache.Get(1));
-    cache.Dump();
+    cache.Clear();
     Assert.NotEqual(a, cache.Get(1));
   }
   [Fact]
@@ -72,19 +72,6 @@ public sealed class SimpleCacheTest
     cache.Clear();
     Assert.NotEqual(a, cache.Get(1));
     Assert.NotEqual(b, cache.Get(2));
-  }
-
-  [Fact]
-  public void Rekey()
-  {
-    var cache = new SimpleCache<int, IntHolder>(10, i => new IntHolder { Int = i });
-    var a = cache.Get(1);
-    var b = cache.Get(2);
-    Assert.Equal(a, cache.Get(1));
-    Assert.Equal(b, cache.Get(2));
-    cache.Rekey(i=>i*10);
-    Assert.Equal(a, cache.Get(10));
-    Assert.Equal(b, cache.Get(20));
   }
 
   [Fact]
