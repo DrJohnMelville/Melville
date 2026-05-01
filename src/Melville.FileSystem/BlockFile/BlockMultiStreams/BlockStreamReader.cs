@@ -13,7 +13,7 @@ public class BlockStreamReader(BlockMultiStream data, uint firstBlock, long leng
     public override int Read(Span<byte> buffer)
     {
         // See te comment in ReadAsync about reading at most one block.
-        TryAdvanceBlock();
+        EnsureCurrentBlockForPosition();
         var localRead = Data.ReadFromBlockData(buffer.OfMaxLen(RemainingLength()), CurrentBlock, CurrentBlockOffset);
         Position += localRead;
         return localRead;
@@ -26,7 +26,7 @@ public class BlockStreamReader(BlockMultiStream data, uint firstBlock, long leng
         // reading the offset and directory name streams, we do not know the length, and buffering was reading off the
         // end of the stream.  Also we should not hit the disk to buffer bytes the consumer may never actually ask
         // for.  The contract for ReadAsync requires only that we put some bytes in the buffer, not that we fill it.
-        await TryAdvanceBlockAsync();
+        await EnsureCurrentBlockForPositionAsync();
             var localRead = await Data.ReadFromBlockDataAsync(
                 buffer.OfMaxLen(RemainingLength()), CurrentBlock, CurrentBlockOffset);
             Position += localRead;
@@ -36,15 +36,6 @@ public class BlockStreamReader(BlockMultiStream data, uint firstBlock, long leng
 
     private long RemainingLength() => Length - Position;
 
-    private ValueTask TryAdvanceBlockAsync() =>
-        AnotherBlockNeeded() ? AdvanceBlockAsync() : ValueTask.CompletedTask;
-    private void TryAdvanceBlock()
-    {
-        if (AnotherBlockNeeded())
-            AdvanceBlock();
-    }
-
-    private bool AnotherBlockNeeded() => DataRemainingInBlock <= 0 && Position < Length;
 
     public override void SetLength(long value) => throw new NotSupportedException();
 

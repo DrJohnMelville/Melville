@@ -107,8 +107,8 @@ public class BlockRootDirectory(BlockMultiStream store) :
         store.DeleteStream(nameLocation);
         store.DeleteStream(offsetsLocation);
         await store.WriteHeaderBlockAsync(offsetStream.FirstBlock);
-        nameLocation = nameStream.StreamEnds();
-        offsetsLocation = offsetStream.StreamEnds();
+        nameLocation = nameStream.CurrentExtent();
+        offsetsLocation = offsetStream.CurrentExtent();
     }
 
     [Conditional("DEBUG")]
@@ -125,13 +125,13 @@ public class BlockRootDirectory(BlockMultiStream store) :
         using var _ = await writeLock.WaitForHandleAsync();
         await using var offsetStream = await store.GetWriterAsync(
             NullEndBlockDataTarget.Instance);
-        Debug.Assert(nameLocation.Start != offsetStream.StreamEnds().Start);
+        Debug.Assert(nameLocation.Start != offsetStream.CurrentExtent().Start);
         var target = new OffsetWritingDirectoryTarget(offsetStream, nameLocation.Start);
         await WriteToAsync(target);
         await target.FlushAsync();
         store.DeleteStream(offsetsLocation);
         await store.WriteHeaderBlockAsync(offsetStream.FirstBlock);
-        offsetsLocation = offsetStream.StreamEnds();
+        offsetsLocation = offsetStream.CurrentExtent();
     }
 
     public async ValueTask ReadFromStore()

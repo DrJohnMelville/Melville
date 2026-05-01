@@ -2,7 +2,7 @@
   "profiles": {
     "PddJpegExtractor": {
       "commandName": "Project",
-      "commandLineArgs": "\"\\\\da\\db2\\Peds VIP\\1____Patient Images and PhotoDoc Files\\Patient Images 2026\\extract\\Fyall, Ja'mour T. 10-14-2025.pdd\""
+      "commandLineArgs": "\"C:\\Users\\jom252\\OneDrive - Medical University of South Carolina\\Documents\\Work to do\\2026 Expert consults\\debug big file.pdd\" "
     }
   }
 }

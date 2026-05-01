@@ -48,12 +48,12 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
     {
         while (buffer.Length > 0)
         {
-            if (DataRemainingInBlock <= 0) AdvanceBlock();
-            var bytesWritten = Data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
-            Position += bytesWritten;
+            EnsureCurrentBlockForPosition();
+           var bytesWritten = Data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
+           Position += bytesWritten;
            buffer = buffer[bytesWritten..];
+           TryUpdateLength();
         }
-        TryUpdateLength();
     }
 
     public override async ValueTask WriteAsync(
@@ -61,39 +61,14 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
     {
         while (buffer.Length > 0)
         {
-            if (DataRemainingInBlock <= 0) await AdvanceBlockAsync();
+            await EnsureCurrentBlockForPositionAsync();
             var bytesWritten = await Data.WriteToBlockDataAsync(
                 buffer, CurrentBlock, CurrentBlockOffset);
             Position += bytesWritten;
             buffer = buffer[bytesWritten..];
-        }
-
-        TryUpdateLength();
-    }
-
-    protected override async ValueTask AdvanceBlockAsync()
-    {
-        if (Position < Length) await base.AdvanceBlockAsync();
-        else
-        {
-            var nextBlock = await Data.NextFreeBlockAsync();
-            await Data.WriteNextBlockLinkAsync(CurrentBlock, nextBlock);
-            CurrentBlock = nextBlock;
-            PriorLength = Position;
+            TryUpdateLength();
         }
     }
-    protected override void AdvanceBlock()
-    {
-        if (Position < Length) base.AdvanceBlock();
-        else
-        {
-            var nextBlock = Data.NextFreeBlock();
-            Data.WriteNextBlockLink(CurrentBlock, nextBlock);
-            CurrentBlock = nextBlock;
-            PriorLength = Position;
-        }
-    }
-
 
     public override void Flush()
     {
@@ -112,9 +87,7 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
     {
         if (hasDisposed) return;
         hasDisposed = true;
-        dataTarget?.EndStreamWrite(StreamEnds(), Length);
+        dataTarget?.EndStreamWrite(CurrentExtent(), Length);
         base.Dispose(disposing);
     }
-
-    public StreamEnds StreamEnds() => new(FirstBlock, CurrentBlock);
 }
