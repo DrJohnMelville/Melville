@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Melville.Lists.Caches;
 
-public sealed class WeakCache<TKey, TResult> where TResult : class
+public sealed class WeakCache<TKey, TResult> where TResult : class where TKey: notnull
 {
   private readonly SimpleCache<TKey, WeakReference<TResult>> cache;
   private readonly Func<TKey, TResult> creator;

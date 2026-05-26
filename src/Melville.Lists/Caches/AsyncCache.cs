@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Melville.Lists.Caches;
 
-public class AsyncCache<TKey, TResult>
+public class AsyncCache<TKey, TResult> where TKey : notnull
 {
   private readonly SimpleCache<TKey, TaskHolder> cache;
   public AsyncCache(int size, Func<TKey, Task<TResult>> creator)

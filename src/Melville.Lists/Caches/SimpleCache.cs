@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Melville.Lists.Caches;
 
-public sealed class SimpleCache<TKey, TResult>(int size, Func<TKey, TResult> create)
+public sealed class SimpleCache<TKey, TResult>(int size, Func<TKey, TResult> create) where TKey: notnull
 {
     private class IndexedItems (TResult item, int counter)
     {

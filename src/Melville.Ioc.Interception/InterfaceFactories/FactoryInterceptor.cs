@@ -12,7 +12,7 @@ namespace Melville.Ioc.Interception.InterfaceFactories
         }
         public void Intercept(IInvocation invocation)
         {
-            var req = factoryRequest.CreateSubRequest(invocation.Method.ReturnType, invocation.Arguments);
+            var req = factoryRequest.CreateSubRequest(invocation.Method.ReturnType, invocation.Arguments!);
             invocation.ReturnValue = factoryRequest.IocService.Get(req);
         }
     }
