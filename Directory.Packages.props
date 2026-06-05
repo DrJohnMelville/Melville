@@ -14,7 +14,7 @@
     <PackageVersion Include="GraphSharp.Core" Version="1.1.0" />
     <PackageVersion Include="LINQPad.Reference" Version="1.3.1" />
     <PackageVersion Include="LINQPad.Runtime" Version="8.3.7" />
-    <PackageVersion Include="MailKit" Version="4.16.0" />
+    <PackageVersion Include="MailKit" Version="4.17.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.8" />
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.8" />
     <PackageVersion Include="Microsoft.Data.Sqlite.Core" Version="10.0.8" />
@@ -29,10 +29,10 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" />
     <PackageVersion Include="Microsoft.Maui.Controls" Version="9.0.30" />
     <PackageVersion Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.30" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.6.0" />
     <PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.3967.48" />
     <PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.275" />
-    <PackageVersion Include="MimeKit" Version="4.16.0" />
+    <PackageVersion Include="MimeKit" Version="4.17.0" />
     <PackageVersion Include="MockQueryable.Core" Version="10.0.8" />
     <PackageVersion Include="MockQueryable.Moq" Version="10.0.8" />
     <PackageVersion Include="Moq" Version="4.20.72" />

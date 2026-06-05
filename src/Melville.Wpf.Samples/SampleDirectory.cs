@@ -8,6 +8,7 @@ using Melville.Wpf.Samples.DiBinding;
 using Melville.Wpf.Samples.DragAndDropFilles;
 using Melville.Wpf.Samples.FileOperations;
 using Melville.Wpf.Samples.HIDExplore;
+using Melville.Wpf.Samples.KeyCounters;
 using Melville.Wpf.Samples.LinqPadGraph;
 using Melville.Wpf.Samples.MouseClicks;
 using Melville.Wpf.Samples.SampleTreeViewDisplays;
@@ -26,7 +27,7 @@ namespace Melville.Wpf.Samples;
 public class SampleDirectory : SampleDirectoryDsl
 {
     public ISampleTreeItem? DefaultItem() =>
-        SearchTreeForSample<BlockFileCacheViewModel>();
+        SearchTreeForSample<KeyCounterViewModel>();
 
     public SampleDirectory()
     {
@@ -58,7 +59,8 @@ public class SampleDirectory : SampleDirectoryDsl
                 Page<TreeDraggingViewModel>("Tree Dragging"),
                 Page<ParamBindingViewModel>("Parameter Binding"),
                 Page<DDFileViewModel>("Drag and Drop Virtual Files"),
-                Page<DropVisualizerViewModel>("Visualize the data from a drop operation")
+                Page<DropVisualizerViewModel>("Visualize the data from a drop operation"),
+                Page<KeyCounterViewModel>("Trap and count keystrokes")
             ),
             Node("Statistics",
                 Page<LinqGraphViewModel>("LinqPad Graphics Module")),
