@@ -29,4 +29,6 @@ public class LogEntryViewModel
             LogLevel.Debug => Brushes.LawnGreen,
             _ => Brushes.DarkGreen
         });
+
+    public Exception? Exception => null;
 }

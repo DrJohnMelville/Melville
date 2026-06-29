@@ -6,6 +6,7 @@ using Melville.FileSystem;
 using Melville.Lists;
 using Melville.Log.Viewer.LogViews;
 using Melville.Log.Viewer.NugetMonitor;
+using Melville.Log.Viewer.RedundantFolders;
 using Melville.Log.Viewer.UdpServers;
 using Melville.Log.Viewer.WelcomePage;
 using Melville.MVVM.BusinessObjects;
@@ -93,6 +94,26 @@ public class HomeScreenViewModel: NotifyBase
         if (osf.GetDirectory() is not { } dir) return;
         AddNewPage(new LogViewModel(console, "Local Nuget Monitor"));
         fact(dir, console);
+    }
+    public void ScanForRedundantFolders(
+        [FromServices] LogConsole console,
+        [FromServices] IOpenSaveFile osf,
+        [FromServices] Func<IDirectory, ILogConsole, IHandleRedundantFileObject, RedundantFolderScanner> fact) => 
+        ScanForFiles(console, osf, fact, LogOnlyStrategy.Instance);
+
+    private void ScanForFiles(LogConsole console, IOpenSaveFile osf, Func<IDirectory, ILogConsole, IHandleRedundantFileObject, RedundantFolderScanner> fact, IHandleRedundantFileObject strategy)
+    {
+        if (osf.GetDirectory() is not { } dir) return ;
+        AddNewPage(new LogViewModel(console, "Redundant folders"));
+        fact(dir, console, strategy).Scan();
+    }
+
+    public void DeleteRedundantFolders(
+        [FromServices] LogConsole console,
+        [FromServices] IOpenSaveFile osf,
+        [FromServices] Func<IDirectory, ILogConsole, IHandleRedundantFileObject, RedundantFolderScanner> fact) 
+    {
+        ScanForFiles(console, osf, fact, LogAndDeleteStrategy.Instance);
     }
 
     private void AddNewPage(LogViewModel page)

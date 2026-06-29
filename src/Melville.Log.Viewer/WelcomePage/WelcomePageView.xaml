@@ -17,5 +17,7 @@
         <Button Click="{eventBindings:EventBinding CopyUdpSender}">Copy UDP Sender to Clipboard</Button>
 
         <Button Margin ="0 20" Click="{eventBindings:EventBinding MonitorLocalNuget}">Monitory Local Nuget Folder for Updates</Button>
+        <Button Margin ="0 20 0 7" Click="{eventBindings:EventBinding ScanForRedundantFolders}">Scan for Redundants Folder</Button>
+        <Button Margin ="0 0 0 20" Click="{eventBindings:EventBinding DeleteRedundantFolders}">Delete Redundants Folder</Button>
     </StackPanel>
 </UserControl>
