@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Melville.Lists.Caches;
 
-public class WeakCacheAsync<TKey, TResult> where TResult : class
+public class WeakCacheAsync<TKey, TResult> where TResult : class where TKey: notnull
 {
   private readonly AsyncCache<TKey, WeakReference<TResult>> cache;
   private readonly Func<TKey, Task<TResult>> creator;
