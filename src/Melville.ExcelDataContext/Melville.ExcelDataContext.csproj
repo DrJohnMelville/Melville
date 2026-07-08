@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net10.0-windows</TargetFramework>
     <UseWpf>true</UseWpf>
-    <AssemblyName>Melville.ExcelDataContext</AssemblyName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>linqpad-driver</PackageTags>
     
