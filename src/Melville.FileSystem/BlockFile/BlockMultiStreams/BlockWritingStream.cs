@@ -1,39 +1,18 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Melville.INPC;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
-
-public interface IEndBlockDataTarget
-{
-    void EndStreamWrite(in StreamEnds ends, long length);
-    public void EndStreamRead();
-}
-
-[StaticSingleton]
-public partial class NullEndBlockDataTarget : IEndBlockDataTarget
-{
-    /// <inheritdoc />
-    public void EndStreamWrite(in StreamEnds ends, long length)
-    {
-    }
-
-    public void EndStreamRead()
-    {
-    }
-}
 
 public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBlockDataTarget dataTarget)
     : BlockStream(data, firstBlock, 0)
 {
+    private  BlockMultiStream writableData => (BlockMultiStream)data;
     public override bool CanWrite => true;
     public override bool CanRead => false;
 
-    public override void SetLength(long value)
-    {
-        Data.HintIntendedWriteSize(value);
-    }
+    public override void SetLength(long value) => data.HintIntendedWriteSize(value);
 
     /// <inheritdoc />
     public override int Read(Span<byte> buffer) => 
@@ -49,7 +28,7 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
         while (buffer.Length > 0)
         {
             EnsureCurrentBlockForPosition();
-           var bytesWritten = Data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
+           var bytesWritten = data.WriteToBlockData(buffer, CurrentBlock, CurrentBlockOffset);
            Position += bytesWritten;
            buffer = buffer[bytesWritten..];
            TryUpdateLength();
@@ -62,7 +41,7 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
         while (buffer.Length > 0)
         {
             await EnsureCurrentBlockForPositionAsync();
-            var bytesWritten = await Data.WriteToBlockDataAsync(
+            var bytesWritten = await data.WriteToBlockDataAsync(
                 buffer, CurrentBlock, CurrentBlockOffset);
             Position += bytesWritten;
             buffer = buffer[bytesWritten..];
@@ -72,7 +51,7 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
 
     public override void Flush()
     {
-        Data.Flush();
+        data.Flush();
     }
 
     public override Task FlushAsync(System.Threading.CancellationToken cancellationToken)
@@ -90,4 +69,19 @@ public class BlockWritingStream(BlockMultiStream data, uint firstBlock, IEndBloc
         dataTarget?.EndStreamWrite(CurrentExtent(), Length);
         base.Dispose(disposing);
     }
+
+    protected override uint GetNewBlock(uint tail)
+    {
+        var nextBlock = writableData.NextFreeBlock();
+        writableData.WriteNextBlockLink(tail, nextBlock);
+        return nextBlock;
+    }
+    protected override async ValueTask<uint> GetNewBlockAsync(uint tail)
+    {
+        var nextBlock = await writableData.NextFreeBlockAsync();
+        await writableData.WriteNextBlockLinkAsync(tail, nextBlock);
+        return nextBlock;
+
+    }
+
 }

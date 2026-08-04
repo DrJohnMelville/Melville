@@ -8,14 +8,14 @@ namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
 public abstract class BlockStream : Stream
 {
-    protected BlockMultiStream Data { get; }
+    protected ReadOnlyBlockMultiStream Data { get; }
     public uint FirstBlock => blocks[0];
     public uint CurrentBlock => blocks[(int)(Position / Data.BlockDataSize)];
     private long length;
 
     private readonly List<uint> blocks = new();
 
-    public BlockStream(BlockMultiStream data, uint firstBlock, long length)
+    public BlockStream(ReadOnlyBlockMultiStream data, uint firstBlock, long length)
     {
         Data = data;
         blocks.Add(firstBlock);
@@ -76,32 +76,20 @@ public abstract class BlockStream : Stream
     {
         while (!CurrentPositionHasKnownBlock())
         {
-            if (PositionDoesNotExistYet())
-            {
-                var nextBlock = Data.NextFreeBlock();
-                Data.WriteNextBlockLink(blocks[^1], nextBlock);
-                blocks.Add(nextBlock);
-            }
-            else
-            {
-                blocks.Add(Data.NextBlockFor(blocks[^1]));
-            }
+            blocks.Add(PositionDoesNotExistYet() ? 
+                GetNewBlock(blocks[^1]) : 
+                Data.NextBlockFor(blocks[^1]));
         }
     }
+    protected abstract uint GetNewBlock(uint tail);
+    protected abstract ValueTask<uint> GetNewBlockAsync(uint tail);
     protected async ValueTask EnsureCurrentBlockForPositionAsync()
     {
         while (!CurrentPositionHasKnownBlock())
         {
-            if (PositionDoesNotExistYet())
-            {
-                var nextBlock = await Data.NextFreeBlockAsync();
-                await Data.WriteNextBlockLinkAsync(blocks[^1], nextBlock);
-                blocks.Add(nextBlock);
-            }
-            else
-            {
-                blocks.Add(await Data.NextBlockForAsync(blocks[^1]));
-            }
+            blocks.Add(PositionDoesNotExistYet() ?
+                await GetNewBlockAsync(blocks[^1]) :
+                await Data.NextBlockForAsync(blocks[^1]));
         }
     }
 

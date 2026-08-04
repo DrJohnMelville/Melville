@@ -1,9 +1,11 @@
 ﻿using Melville.FileSystem.BlockFile.ByteSinks;
+using Melville.FileSystem.BlockFile.FileSystemObjects;
 using Melville.Hacks;
 using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,14 +17,10 @@ public class BlockMultiStream(
     uint blockSize = 4096 + 4, // defaults to 4k of data + 4 bytes for the next block tag
     uint freeListHead = BlockMultiStream.InvalidBlock,
     uint rootBlock = BlockMultiStream.InvalidBlock,
-    uint nextBlock = 0) : IDisposable
+    uint nextBlock = 0) : ReadOnlyBlockMultiStream(bytes, blockSize, rootBlock)
 {
-    public const uint InvalidBlock = 0xFFFFFFFF;
 
     // blocksize is a long to force all math it is involved with to be a long
-    public long BlockSize { get; } = blockSize;
-    public uint RootBlock { get; private set; } = rootBlock;
-    public uint BlockDataSize => blockSize - nextBlockTagSize;
     private uint nextBlock = nextBlock;
     private uint freeListHead = freeListHead;
 
@@ -30,17 +28,30 @@ public class BlockMultiStream(
         chainsPendingDelete = new();
 
     public static async Task<BlockMultiStream> CreateFrom(IByteSink bytes)
-    { 
+    {
         if (bytes.Length < 16)
             return new BlockMultiStream(bytes);
         using var buffer = ArrayPool<byte>.Shared.RentHandle(16);
         var bufferMem = buffer.AsMemory(0, 16);
         await bytes.ReadExactAsync(bufferMem, 0);
         var sizes = MemoryMarshal.Cast<byte, uint>(bufferMem.Span);
-        Debug.Assert(sizes[2] != sizes[3]);
-        Debug.Assert(sizes[1] != sizes[3]);
-        Debug.Assert(sizes[1] != sizes[2]);
+        VerifySizeAndBlocks(sizes);
         return new BlockMultiStream(bytes, sizes[0], sizes[1], sizes[2], sizes[3]);
+    }
+
+    private static void VerifySizeAndBlocks(Span<uint> sizes)
+    {
+        ProductionAssert(sizes[0] > 0);
+        Debug.Assert(sizes[0] == 4096); //technicall supports arbitrary block sizes, but we don't use them yet. so use the extra verification in debug builds
+        ProductionAssert(sizes[2] != sizes[3]);
+        ProductionAssert(sizes[1] != sizes[3]);
+        ProductionAssert(sizes[1] != sizes[2]);
+    }
+
+    private static void ProductionAssert(bool condition, [CallerArgumentExpression(nameof(condition))] string? message = null)
+    {
+        if (!condition)
+            throw new InvalidOperationException($"Failed assertion in BlockMultiStream: {message}");
     }
 
     public async Task WriteHeaderBlockAsync(uint rootPosition)
@@ -58,23 +69,9 @@ public class BlockMultiStream(
         span[1] = freeListHead;
         span[2] = RootBlock;
         span[3] = nextBlock;
+        VerifySizeAndBlocks(span);
         await bytes.WriteAsync(innerBuffer, 0);
     }
-
-    public void Dispose() => bytes.Dispose();
-
-    public BlockStreamReader GetReader(uint firstBlock, long streamLength, 
-        IEndBlockDataTarget target) => new(this, firstBlock, streamLength, target);
-
-    internal int ReadFromBlockData(
-        Span<byte> target, uint block, int offset) =>
-        bytes.Read(target.OfMaxLen(DataRemainingInBlock(offset)),
-            PositionForDataInBlock(block, offset));
-
-    internal ValueTask<int> ReadFromBlockDataAsync(
-        Memory<byte> target, uint block, int offset) =>
-        bytes.ReadAsync(target.OfMaxLen(DataRemainingInBlock(offset)),
-            PositionForDataInBlock(block, offset));
 
     public async Task<int> WriteToBlockDataAsync(
         ReadOnlyMemory<byte> buffer, uint block, int offset)
@@ -89,36 +86,6 @@ public class BlockMultiStream(
         var len = (int)Math.Min(DataRemainingInBlock(offset), buffer.Length);
         bytes.Write(buffer.OfMaxLen(len), PositionForDataInBlock(block, offset));
         return len;
-    }
-
-
-    private const int nextBlockTagSize = 4;
-    private const long headerSize = 16;
-
-    private long PositionForDataInBlock(uint block, int offset) =>
-        (block * BlockSize) + offset + headerSize;
-
-    private long PositionForNextBlockLink(uint block) =>
-        PositionForDataInBlock(block + 1, -nextBlockTagSize);
-
-    internal int DataRemainingInBlock(int offset) => (int)BlockDataSize - offset;
-
-    public async Task<uint> NextBlockForAsync(uint currentBlock)
-    {
-        using var buffer = ArrayPool<byte>.Shared.RentHandle(nextBlockTagSize);
-        await bytes.ReadExactAsync(
-            buffer.AsMemory(0, nextBlockTagSize), PositionForNextBlockLink(currentBlock));
-        var ret = MemoryMarshal.Cast<byte, uint>(buffer)[0];
-        return ret;
-    }
-
-    public uint NextBlockFor(uint currentBlock)
-    {
-        var dataLocation = PositionForNextBlockLink(currentBlock);
-        Span<byte> buffer = stackalloc byte[nextBlockTagSize];
-        bytes.ReadExact(buffer, dataLocation);
-        var ret = MemoryMarshal.Cast<byte, uint>(buffer)[0];
-        return ret;
     }
 
     public async Task<BlockWritingStream> GetWriterAsync(
@@ -205,19 +172,4 @@ public class BlockMultiStream(
         var blocks = (value + BlockDataSize - 1) / BlockDataSize;
         return blocks * BlockSize;
     }
-}
-
-public record struct StreamEnds(uint Start, uint End)
-{
-    public static StreamEnds Invalid => new(0xFFFFFFFF, 0xFFFFFFFF);
-    public bool IsValid() => Start != 0xFFFFFFFF && End != 0xFFFFFFFF;
-}
-
-public record struct StreamDescription(uint Start, uint End, long Length)
-{
-    public StreamEnds StreamEnds => new(Start, End);
-
-    public static StreamDescription Invalid => new(0xFFFFFFFF, 0xFFFFFFFF, 0);
-
-    public bool Exists() => StreamEnds.IsValid();
 }

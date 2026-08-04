@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Melville.FileSystem.BlockFile.BlockMultiStreams;
 
-public class BlockStreamReader(BlockMultiStream data, uint firstBlock, long length, IEndBlockDataTarget dataTarget)
+public class BlockStreamReader(ReadOnlyBlockMultiStream data, uint firstBlock, long length, IEndBlockDataTarget dataTarget)
     : BlockStream(data, firstBlock, length)
 {
     public override bool CanRead => true;
@@ -65,4 +65,14 @@ public class BlockStreamReader(BlockMultiStream data, uint firstBlock, long leng
         dataTarget.EndStreamRead();
         base.Dispose(disposing);
     }
+
+    protected override uint GetNewBlock(uint tail)
+    {
+        throw new NotSupportedException("This is a reading stream, should never create a new block");
+    }
+    protected override async ValueTask<uint> GetNewBlockAsync(uint tail)
+    {
+        throw new NotSupportedException("This is a reading stream, should never create a new block");
+    }
+
 }

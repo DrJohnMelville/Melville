@@ -2,7 +2,7 @@
   "profiles": {
     "PddJpegExtractor": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\jom252\\OneDrive - Medical University of South Carolina\\Documents\\Work to do\\2026 Expert consults\\debug big file.pdd\" "
+      "commandLineArgs": "\"C:\\Users\\jom252\\OneDrive - Medical University of South Carolina\\Documents\\Scratch\\photodoc bugs\\London-Altman, Elizabeth 02-08-2011 maybe bad.pdd\""
     }
   }
 }
